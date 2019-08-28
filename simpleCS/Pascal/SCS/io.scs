@@ -1,0 +1,32 @@
+(* IO Routines- File opening routines *)
+type  query_type = (interactive,batch);
+      txt        = string[80];
+
+var   qflag:query_type;
+      fn:txt;
+
+procedure page(var out:text);
+begin write(out,chr(12)) end;
+
+procedure open_input(var input:text; query_flag:query_type;
+                     message:txt; var filename:txt);
+begin
+ if (query_flag=batch) then assign(input,filename)
+  else begin
+   write('Enter ',message,' filename: ');readln(filename);
+   assign(input,filename);
+  end;
+ reset(input);
+end;
+
+procedure open_output(var output:text; query_flag:query_type;
+                      message:txt; var filename:txt);
+begin
+ if (query_flag=batch) then assign(output,filename)
+  else begin
+   write('Enter ',message,' filename: ');readln(filename);
+   assign(output,filename);
+  end;
+ rewrite(output);
+end;
+

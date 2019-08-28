@@ -1,0 +1,94 @@
+{ generate.dom }
+
+procedure gametogenesis(var ancestor,gamete:individual;
+                        var lchrom, nmutation, ncross,
+                            jparent:integer;
+                        var pmutation, pcross:real);
+{ Create a pair of gametes from a single parent }
+var j,jcross:integer;
+begin
+ { handle crossover and mutation }
+ crossover(ancestor.chrom[1], ancestor.chrom[2],
+           gamete.chrom[1], gamete.chrom[2],
+           lchrom, ncross, nmutation, jcross,
+           pcross, pmutation);
+ { set parent and crossing pointers }
+ for j := 1 to maxploidy do with gamete do begin
+   chromid[j].parent := jparent;
+   chromid[j].xsite  := jcross;
+  end;
+end;
+
+procedure fertilization(var chrom1, chrom2:chromosome;
+                        var parent1, parent2:parentid;
+                        var newindividual:individual);
+begin with newindividual do begin
+ chrom[1] := chrom1;
+ chrom[2] := chrom2;
+ chromid[1] := parent1;
+ chromid[2] := parent2;
+end; end;
+
+function other(j1:integer):integer;
+begin if (j1=1) then other := 2 else other := 1 end;
+
+procedure generation;
+{ Create a new generation through select, crossover, and mutation }
+var j, j1, j2, mate1, mate2, jcross:integer;
+    gamete1, gamete2:individual;
+    j3, j4:integer;
+begin
+ j := 1;
+ repeat    { select, generate gametetes until newpop is filled }
+  { pick 2 mates }
+  mate1 := 2; {select(popsize, sumfitness, oldpop);  pick pair of mates }
+  mate2 := 1; {select(popsize, sumfitness, oldpop); }
+  { make 4 gametes to make 2 zygotes }
+  gametogenesis(oldpop[mate1], gamete1,
+                lchrom, nmutation, ncross, mate1,
+                pmutation, pcross);
+for j3 := 1 to 2 do begin
+   for j4 := lchrom downto 1 do write(gamete1.chrom[j3,j4]:2);
+   writeln;
+  end;
+  gametogenesis(oldpop[mate2], gamete2,
+                lchrom, nmutation, ncross, mate2,
+                pmutation, pcross);
+for j3 := 1 to 2 do begin
+   for j4 := lchrom downto 1 do write(gamete2.chrom[j3,j4]:2);
+   writeln;
+  end;
+  { flip honest coin to decide arrangement }
+  if flip(0.5) then begin j1 := 1; j2 := 1 end
+    else begin j1 := 1; j2 := 2 end;
+  { fertilize without replacment }
+  fertilization(gamete1.chrom[j1],  gamete2.chrom[j2],
+                gamete1.chromid[j1], gamete2.chromid[j2],
+                newpop[j]);
+ for j3 := 1 to 2 do begin
+   for j4 := lchrom downto 1 do write(newpop[j].chrom[j3,j4]:2);
+   writeln;
+  end;
+  j1 := other(j1); j2 := other(j2);
+  fertilization(gamete1.chrom[j1],  gamete2.chrom[j2],
+                gamete1.chromid[j1], gamete2.chromid[j2],
+                newpop[j+1]);
+for j3 := 1 to 2 do begin
+   for j4 := lchrom downto 1 do write(newpop[j+1].chrom[j3,j4]:2);
+   writeln;
+  end;  { express, decode, and evaluate objective function }
+  with newpop[j  ] do begin
+    dominance(lchrom, chrom, echrom);
+    x := decode(echrom, lchrom);
+    objective := objfunc(x);
+   end;
+  with newpop[j+1] do begin
+    dominance(lchrom, chrom, echrom);
+    x := decode(echrom, lchrom);
+    objective := objfunc(x);
+   end;
+  { Increment population index }
+  j := j + 2;
+ until j>popsize
+end;
+

@@ -1,0 +1,207 @@
+# your home directory
+HOME =/uac/gds/tang028/TOLKIEN
+#
+# directory in which you put TOLKIEN include file
+#
+TKINCLUDEPATH = $(HOME)/include
+#
+# the following two variables, MYGNUINCPATH and GNUSRCPATH, define
+# the paths in which the modified gnu files supplied by
+# TOLKIEN is stored
+#
+MYGNUINCPATH = $(HOME)/gnu/include
+GNUSRCPATH = $(HOME)/gnu/src
+#
+# directory for TOLKIEN's source files
+#
+TKSRCPATH = $(HOME)/src
+#
+#
+LDFLAGS = -o
+CXX     = g++
+AR = ar
+ARFLAGS = rv
+CCFLAGS = -I$(TKINCLUDEPATH) -I$(MYGNUINCPATH) -DUSE_LIBGXX_INLINES -O
+#
+#
+TKOBJS = dpldbin.o hpldbin.o populatn.o slctrw.o slcttour.o \
+         slctsus.o ga.o trand.o clsifier.o xover.o \
+         tosllist.o todllist.o message.o toarray.o dict.o \
+         sortcltn.o assoc.o lookupky.o identdic.o tobject.o \
+         popcrd.o csfsys.o tritstr.o tclsf.o set.o \
+         collectn.o graycode.o ttclsf.o csfmatch.o atom.o \
+         individ.o haploid.o diploid.o chromo.o schemata.o \
+         ranksb.o scale.o hashset.o hashtabl.o identhsh.o \
+         tkcnvg.o slctrwwr.o msglist.o popelite.o select.o \
+         urndbits.o cfgfile.o slctlrnk.o binind.o \
+         bitstr.o bitsum.o popsmpl.o
+
+TKLIB = tolkien.a
+
+all : $(TKLIB)
+
+$(TKLIB) : $(TKOBJS)
+	$(AR) $(ARFLAGS)  $(TKLIB) $(TKOBJS)
+	$(AR) t $(TKLIB)
+	ranlib $(TKLIB)
+	\rm *.o
+
+collectn.o : $(TKSRCPATH)/collectn.cc 
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/collectn.cc
+
+bitstr.o : $(TKSRCPATH)/bitstr.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/bitstr.cc
+ 
+xover.o :  $(TKSRCPATH)/xover.cc 
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/xover.cc
+
+tobject.o : $(TKSRCPATH)/tobject.cc 
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/tobject.cc
+
+toarray.o :  $(TKSRCPATH)/toarray.cc 
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/toarray.cc
+
+tosllist.o :  $(TKSRCPATH)/tosllist.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/tosllist.cc
+
+todllist.o :  $(TKSRCPATH)/todllist.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/todllist.cc
+
+trand.o :  $(TKSRCPATH)/trand.cc 
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/trand.cc
+
+message.o :  $(TKSRCPATH)/message.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/message.cc
+
+ga.o :  $(TKSRCPATH)/ga.cc 
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/ga.cc
+
+clsifier.o :  $(TKSRCPATH)/clsifier.cc 
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/clsifier.cc
+
+populatn.o :  $(TKSRCPATH)/populatn.cc 
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/populatn.cc
+
+hpldbin.o :  $(TKSRCPATH)/hpldbin.cc 
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/hpldbin.cc
+
+slctrw.o :  $(TKSRCPATH)/slctrw.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/slctrw.cc
+
+slctsus.o :  $(TKSRCPATH)/slctsus.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/slctsus.cc
+
+slcttour.o :  $(TKSRCPATH)/slcttour.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/slcttour.cc
+
+slctlrnk.o :  $(TKSRCPATH)/slctlrnk.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/slctlrnk.cc
+
+tlset.o : $(TKSRCPATH)/tlset.cc 
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/tlset.cc
+
+identdic.o : $(TKSRCPATH)/identdic.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/identdic.cc
+
+dict.o : $(TKSRCPATH)/dict.cc 
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/dict.cc
+
+assoc.o : $(TKSRCPATH)/assoc.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/assoc.cc
+
+lookupky.o : $(TKSRCPATH)/lookupky.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/lookupky.cc
+
+tritstr.o : $(TKSRCPATH)/tritstr.cc 
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/tritstr.cc
+
+csfsys.o : $(TKSRCPATH)/csfsys.cc 
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/csfsys.cc
+
+tclsf.o :  $(TKSRCPATH)/tclsf.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/tclsf.cc
+
+ttclsf.o :  $(TKSRCPATH)/ttclsf.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/ttclsf.cc
+
+set.o :  $(TKSRCPATH)/set.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/set.cc
+
+dpldbin.o :  $(TKSRCPATH)/dpldbin.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/dpldbin.cc
+
+sortcltn.o :  $(TKSRCPATH)/sortcltn.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/sortcltn.cc
+
+graycode.o :  $(TKSRCPATH)/graycode.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/graycode.cc
+
+individ.o :  $(TKSRCPATH)/individ.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/individ.cc
+
+chromo.o :  $(TKSRCPATH)/chromo.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/chromo.cc
+
+atom.o :  $(TKSRCPATH)/atom.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/atom.cc
+
+haploid.o :  $(TKSRCPATH)/haploid.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/haploid.cc
+
+diploid.o :  $(TKSRCPATH)/diploid.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/diploid.cc
+
+csfmatch.o :  $(TKSRCPATH)/csfmatch.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/csfmatch.cc
+
+schemata.o :  $(TKSRCPATH)/schemata.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/schemata.cc
+
+ranksb.o :  $(TKSRCPATH)/ranksb.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/ranksb.cc
+
+scale.o :  $(TKSRCPATH)/scale.cc 
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/scale.cc
+
+hashset.o :  $(TKSRCPATH)/hashset.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/hashset.cc
+
+hashtabl.o :  $(TKSRCPATH)/hashtabl.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/hashtabl.cc
+
+identhsh.o :  $(TKSRCPATH)/identhsh.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/identhsh.cc
+
+tkcnvg.o :  $(TKSRCPATH)/tkcnvg.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/tkcnvg.cc
+
+slctrwwr.o :  $(TKSRCPATH)/slctrwwr.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/slctrwwr.cc
+
+msglist.o :  $(TKSRCPATH)/msglist.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/msglist.cc
+
+popcrd.o :  $(TKSRCPATH)/popcrd.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/popcrd.cc
+
+cfgfile.o :  $(TKSRCPATH)/cfgfile.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/cfgfile.cc
+
+urndbits.o :  $(TKSRCPATH)/urndbits.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/urndbits.cc
+
+popelite.o :  $(TKSRCPATH)/popelite.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/popelite.cc
+
+select.o :  $(TKSRCPATH)/select.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/select.cc
+
+bitsum.o :  $(TKSRCPATH)/bitsum.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/bitsum.cc
+
+binind.o :  $(TKSRCPATH)/binind.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/binind.cc
+
+popsmpl.o :  $(TKSRCPATH)/popsmpl.cc
+	$(CXX) -c $(CCFLAGS) $(TKSRCPATH)/popsmpl.cc
+ 

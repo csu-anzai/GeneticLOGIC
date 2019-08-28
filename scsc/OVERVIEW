@@ -1,0 +1,195 @@
+--- $Id: OVERVIEW,v 1.1 1993/10/08 16:06:18 joke Exp $
+
+        |-CONFIGME
+        |-COPYLITE  
+        |-INSTALL
+        |-LICENSE   
+        |-OVERVIEW  
+        |-README    
+        |           
+        |-config----|-bsd.cf            
+        |           |-dos.cf            
+        |           |-sunos.cf          
+        |           |-sys5.cf           
+        |           |-tos.cf            
+        |-configure 
+        |
+        |                               |-Makefile         
+        |                               |-compare.gnu      
+        |                               |-crand.c          
+        |                               |-f2c.h            
+        |           |-knuth-------------|-p2c.h            
+        |           |                   |-rand.f           
+        |           |                   |-scs-rand.c       
+        |           |                   |-sga-rand.c       
+        |           |                   |-simple3a.c       
+        |           |                   |-simple3a.p       
+        |           |
+        |           |                   |-Makefile         
+        |           |                   |-README           
+        |           |-plauger-----------|-rand.c           
+        |           |                   |-random.h         
+        |           |                   |-srand.c          
+        |           |                   |-trand.c          
+        |           |
+        |           |                   |-ERRATA           
+        |           |                   |-ERRATA2          
+        |           |                   |-Makefile         
+        |           |                   |-README           
+        |-contrib---|                   |-advance.scs      
+        |           |                   |-aoc.scs          
+        |           |                   |-class100.data    
+        |           |                   |-classifiers.data 
+        |           |                   |-debug            
+        |           |                   |-debug.gnu        
+        |           |                   |-declare.scs      
+        |           |                   |-detector.scs     
+        |           |                   |-effector.scs     
+        |           |                   |-environ.data     
+        |           |-vax-scs-----------|-environ.scs      
+        |           |                   |-ga.data          
+        |           |                   |-ga.scs           
+        |           |                   |-initial.scs      
+        |           |                   |-io.scs           
+        |           |                   |-lessthan.data    
+        |           |                   |-perfect.data     
+        |           |                   |-perform.scs      
+        |           |                   |-reinf.data       
+        |           |                   |-reinforc.scs     
+        |           |                   |-report.scs       
+        |           |                   |-scs.c            
+        |           |                   |-time.data        
+        |           |                   |-timekeep.scs     
+        |           |                   |-utility.scs      
+        |           |
+        |           |-vlcr--------------|-vlcr.c           
+        |
+        |           |-class10.dta       
+        |           |-class100.dta      
+        |           |-detec.dta         
+        |           |-environ.dta       
+        |-data------|-ga.dta            
+        |           |-lessthan.dta      
+        |           |-lessthan2.dta     
+        |           |-perfect.dta       
+        |           |-reinf.dta         
+        |           |-time.dta          
+        |
+        |           |-Makefile          
+        |           |-a4.sty            
+        |           |-c++.sty           
+        |           |-fancychapters.sty 
+        |           |-fancyfigures.sty  
+        |           |-fig-6.18.ps       
+        |           |-fig-6.19.ps       
+        |           |-fig-6.20.ps       
+        |           |-fig-6.21.ps       
+        |           |-fig-6.22.ps       
+        |           |-fig-cont.ps       
+        |           |-fig-dist.ps       
+        |           |-harvard.sty       
+        |           |-kluwer.bst        
+        |-docs------|-repro.aux         
+        |           |-repro.bbl         
+        |           |-repro.blg         
+        |           |-repro.dvi         
+        |           |-repro.log         
+        |           |-repro.ps          
+        |           |-repro.tex         
+|-scs-c-|           |-scs-c-doc.ps      
+        |           |-scs-c-doc.tex     
+        |           |-thebib.bib        
+        |           |-us.sty            
+        |
+        |-figs------|-Makefile          
+        |           |                   
+        |           |-data--------------|-fig-6.18---------|-detec.dta    
+        |           |                   |                  |-environ.dta  
+        |           |                   |                  |-ga.dta       
+        |           |                   |                  |-perfect.dta  
+        |           |                   |                  |-reinf.dta    
+        |           |                   |                  |-time.dta     
+        |           |                   |
+        |           |                   |                  |-detec.dta    
+        |           |                   |                  |-environ.dta  
+        |           |                   |-fig-6.19---------|-ga.dta       
+        |           |                   |                  |-lessthan.dta 
+        |           |                   |                  |-reinf.dta    
+        |           |                   |                  |-time.dta     
+        |           |                   |
+        |           |                   |                  |-detec.dta    
+        |           |                   |                  |-environ.dta  
+        |           |                   |-fig-6.20---------|-ga.dta       
+        |           |                   |                  |-lessthan.dta 
+        |           |                   |                  |-reinf.dta    
+        |           |                   |                  |-time.dta     
+        |           |                   |
+        |           |                   |-fig-6.21---------|-class100.dta 
+        |           |                   |                  |-detec.dta    
+        |           |                   |                  |-environ.dta  
+        |           |                   |                  |-ga.dta       
+        |           |                   |                  |-reinf.dta    
+        |           |                   |                  |-time.dta     
+        |           |                   |
+        |           |                   |                  |-class100.dta 
+        |           |                   |                  |-detec.dta    
+        |           |                   |-fig-6.22---------|-environ.dta  
+        |           |                                      |-ga.dta       
+        |           |                                      |-reinf.dta    
+        |           |                                      |-time.dta     
+        |           |-fig-6.18.gnu      
+        |           |-fig-6.19.gnu      
+        |           |-fig-6.20.gnu      
+        |           |-fig-6.21.gnu      
+        |           |-fig-6.22.gnu      
+        |
+        |-man-------|-scs.1             
+        |           |-scs.man             
+        |
+        |-src-------|-RCS---------------
+                    |-advance.c         
+                    |-advance.h         
+                    |-aoc.c             
+                    |-aoc.h             
+                    |-config.h          
+                    |-declare.h         
+                    |-detector.c        
+                    |-detector.h        
+                    |-effector.c        
+                    |-effector.h        
+                    |-environ.c         
+                    |-environ.h         
+                    |-ga.c              
+                    |-ga.h              
+                    |-getopt.c          
+                    |-getopt.h          
+                    |-getopt1.c         
+                    |-initial.c         
+                    |-initial.h         
+                    |-io.c              
+                    |-io.h              
+                    |-panic.c           
+                    |-panic.h           
+                    |-perform.c         
+                    |-perform.h         
+                    |-prand.c           
+                    |-prand.h           
+                    |-rand48.c          
+                    |-rand48.h          
+                    |-random.c          
+                    |-random.h          
+                    |-reinfor.c         
+                    |-reinfor.h         
+                    |-report.c          
+                    |-report.h          
+                    |-scs.c             
+                    |-scs.h             
+                    |-srand.c           
+                    |-srand.h           
+                    |-timekeep.c        
+                    |-timekeep.h        
+                    |-utility.c         
+                    |-utility.h         
+                    |-version.h         
+                    |-vlcr.c            
+                    |-vlcr.h            

@@ -1,0 +1,65 @@
+> From:	IN%"kolarov@interval.com"  "krasimir kolarov"  3-FEB-1993 20:46:54.17
+> To:	IN%"CSCON143@uoft02.utoledo.edu"  "Erik Mayer, University of Toledo"
+> CC:	
+> Subj:	RE: Follow-up
+> 
+> Erik,
+> 
+> I did get your last file declare.scs but the compilation 
+> blew after that. In the declaration of "population" there 
+> is no "initialstrength" component.
+> 
+
+	I know what happened.  There are one of two ways to fix this:
+
+	A: Modify the poptype structure in delare.scs:
+
+		typedef{
+			 .
+			 .
+			 .
+			 float initialstrength = 10.0;   /* add this line */
+		       }poptype;		
+
+      or B: Change the line in readclassifier() subroutine in perform.scs: 
+
+		class->stength = population.initialstrength;
+
+	   to:
+
+		fscanf("%f",&class->strength);
+
+	   then modify the data files so that each classifier has a strength
+	   after it.  For example:
+
+
+	       	###000:0 10
+		###100:1 10
+		##0#01:0 10
+
+	   instead of:
+
+		###000:0
+		###100:1
+		##0#01:0
+
+
+	   All the classifiers in the data files have the initial strength of
+           10.  I believe I introduced the population.initialstrength variable
+	   because all of the initial strengths were the same and I think I
+	   had some trouble reading in the initial strengths from the data
+           file. It was a while ago when I translated this code.
+
+> Krasimir
+> Krasimir Kolarov
+> Interval Research Corp., 
+> 1801C Page Mill Road,
+> Palo Alto, CA 94304, 
+>
+					- Erik Mayer 
+___
+  Internet: cscon143@uoft02.utoledo.edu    
+  Bitnet: cscon143@uoft02.BITNET                 
+
+
+

@@ -1,0 +1,23 @@
+6          { nposition }           { dh.dta - default hierarchy }
+10         { nclassifier }
+0.5        { pgeneral }
+0.10       { cbid }
+0.075      { bidsigma }
+0.01       { bidtax }
+0.000      { lifetax }
+0.25       { bid 1 }
+0.125      { bid 2 }
+0.25       { ebid 1 }
+0.125      { ebid 2 }
+###000:0  10  { default hierarchy }
+###100:1  10
+##0##1:0  10
+##1##1:1  10
+#0###0:0  10
+#1###0:1  10
+0###11:0  10
+1###11:1  10
+0###11:1  10  { monkey wrenches }
+######:0  10
+n             { bucketbrigadeflag }
+

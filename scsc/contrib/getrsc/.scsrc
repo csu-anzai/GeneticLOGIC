@@ -1,0 +1,10 @@
+--batch
+--classifier-data		data/class100.dta
+--detector-data			data/detec.dta
+--environmental-data		data/environ.dta
+--genetics-data			data/ga.dta
+--reinforcement-data		data/reinf.dta
+--timekeeper-data		data/time.dta
+--log-file			scs.log
+--plot-file			scs.plt
+--seed-for-random		0.3333

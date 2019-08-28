@@ -1,0 +1,19 @@
+NAME : hoto12.opt.tour
+COMMENT : Optimum tour for hoto12.tsp
+TYPE : TOUR
+DIMENSION : 12
+TOUR_SECTION
+9
+12
+4
+6
+2
+5
+10
+1
+8
+11
+7
+3
+-1
+EOF

@@ -1,0 +1,262 @@
+\documentstyle[a4,12pt]{article}
+
+\begin{document}
+
+
+\begin{center}
+  \begin{large}
+  {\bf Population Analysis For Beginners}\\[1cm]
+  \end{large}
+  Peter Ross\\
+  September 1993
+\end{center}
+
+
+This document contains a few hints to help you get started looking at actual
+chromosomes.
+
+When you use pga, you can specify a file name in which the run of the
+GA gets logged, by (say)
+\begin{verbatim}
+    pga -eknap -n21 foo
+\end{verbatim}
+to get a run of the knapsack problem logged in file foo. Because you
+specified a log file, you also get the chance to save the actual
+chromosomes in the file foo.chr; just press `S' whenever you want the
+current state of every population to be added to this file.
+
+You end up with a file foo containing, say:
+\begin{verbatim}
+............................................................
+===================================
+               eval = knap
+        max-fitness = 1.0
+       reproduction = one
+             select = rank
+     selection-bias = 1.50
+  chromosome-length = 21
+               pops = 5
+chromosomes-per-pop = 100
+ migration-interval = 10
+     crossover-type = two-point
+     crossover-rate = n/a
+      mutation-rate = 0.05
+ reporting-interval = 10
+
+
+Generations=0  Evaluations-so-far=0
+  0          0.0000109        0.0007628
+  1          0.0000033        0.0000646
+  2          0.0000037        0.0000429
+  3          0.0000065        0.0003830
+  4          0.0000024        0.0000236
+
+[...lots deleted...]
+
+Generations=900  Evaluations-so-far=4500
+  0          0.0063020        0.0101010
+  1          0.0044869        0.0084034
+  2          0.0071947        0.0256410
+  3          0.0093596        0.0526316
+  4          0.0052688        0.0126582
+
+[...lots more...]
+............................................................
+\end{verbatim}
+and if you saved the chromosomes at generation 900, you would also
+have a file foo.chr containing, say:
+\begin{verbatim}
+............................................................
+0  0    900      0.0101010  000010010110110101111   4996  4806  4361
+0  1    900      0.0084034  000010010110011010111   4653  4473  4293
+0  2    900      0.0069930  000010010110010111111   4391  4116  3951
+0  3    900      0.0069930  000010010110010111111   4946  4391  4901
+0  4    900      0.0069930  000010010110010111111   4991  4946  3961
+0  5    900      0.0062893  000010010110010101111   3501  3296  3496
+0  6    900      0.0062893  000010010110010101111   3572  3501  2514
+0  7    900      0.0062893  000010010110010101111   3961  3096  3951
+[...lots deleted...]
+4  90   900      0.0034843  000010010110000101111   4895  4420  4505
+4  91   900      0.0034843  000010010110000101111   4995  4560  4850
+4  92   900      0.0034722  000010010110000101110   4319  4249  4279
+4  93   900      0.0034483  000010010110000101100   4570  4540  3281
+4  94   900      0.0034483  000010010110000101100   4635  4570  3281
+4  95   900      0.0034483  000010010110000101100   4660  4635  3990
+4  96   900      0.0034483  000010010110000101100   4840  4660  4730
+4  97   900      0.0024096  000010010101110101111   4785  4380  4550
+4  98   900      0.0024038  000010010101110101110   3840  3540  3694
+4  99   900      0.0024038  000010010101110101110   4325  3840  4205
+............................................................
+\end{verbatim}
+The format is separately described in the file pga.tex.
+So what can you do with all this? Here are a couple of ideas.
+
+\subsection*{Clustering}
+
+Use your favourite editor to save the chromosomes from a population, say
+population 0, in a new file foo.pop0. Edit this to space out the
+bits of the chromosome, getting a file which looks like:
+\begin{verbatim}
+............................................................
+0 0 0 0 1 0 0 1 0 1 1 0 1 1 0 1 0 1 1 1 1   
+0 0 0 0 1 0 0 1 0 1 1 0 0 1 1 0 1 0 1 1 1   
+0 0 0 0 1 0 0 1 0 1 1 0 0 1 0 1 1 1 1 1 1   
+0 0 0 0 1 0 0 1 0 1 1 0 0 1 0 1 1 1 1 1 1   
+0 0 0 0 1 0 0 1 0 1 1 0 0 0 1 1 0 1 1 1 1   
+[...lots deleted...]
+............................................................
+\end{verbatim}
+You can now use the `cluster' program, available by anonymous FTP from
+\begin{verbatim}
+    icsi-ftp.berkeley.edu:pub/ai/cluster-2.3.tar.Z
+\end{verbatim}
+to produce nice dendrograms showing how these chromosomes cluster.
+For example, use
+\begin{verbatim}
+   % cluster -g -n1 foo.pop0 | \
+       xgraph -tk -t "Knapsack: gen 900 : pop 0"
+\end{verbatim}
+The \verb|-n1| causes \verb|cluster| to use city-block ($L^1$-norm)
+distances.  The \verb|-tk| causes \verb|xgraph| to suppress the
+unwanted grid. You can then ask xgraph to produce hardcopy. The
+cluster program can be used on a VT100-type terminal too, you don't
+need X11 and \verb|xgraph| but you do get nicer output with them. In the
+dendrogram, the fittest chromosome is numbered 0, the next fittest is
+1 and so on.
+
+Dendrograms are more interesting when there is reasonable diversity
+in the population. An alternative that is worth using when the
+population is close to convergence is the following.
+
+\subsection*{Summarising With Standard Unix Tools}
+
+You can use the following Unix command:
+\begin{verbatim}
+   % awk -e '$1=="0" {printf("%-3d %-12.7f %s\n",$2,$4,$5)}' \
+       foo.chr | sort +2 +0n | uniq -c -2
+\end{verbatim}
+
+The \verb|awk| script catches just population 0 (the \verb|$1=="0"|
+bit) and prints the chromosome number, its fitness and the actual
+chromosome in a neat way. The \verb|sort| command sorts this by field
+2 (numbering from 0, so the actual chromosome) first, and then by
+field 0 (the chromosome number) using numeric comparison when
+subsorting on field 0. The \verb|uniq| command produces a count of
+identical lines, and prints the first such line against each count;
+the `-2' tells \verb|uniq| to ignore the first two fields (the
+chromosome number and fitness). So you get output looking like:
+\begin{verbatim}
+............................................................
+   1 99  0.0044843    000010010110001101111
+   1 98  0.0057143    000010010110010011111
+   3 95  0.0059880    000010010110010100111
+  17 78  0.0061350    000010010110010101011
+   5 73  0.0061728    000010010110010101100
+   3 70  0.0062112    000010010110010101101
+   1 69  0.0062500    000010010110010101110
+  64 5   0.0062893    000010010110010101111
+   3 2   0.0069930    000010010110010111111
+   1 1   0.0084034    000010010110011010111
+   1 0   0.0101010    000010010110110101111
+............................................................
+\end{verbatim}
+which tells you, for example, that there was a block of 64 identical
+chromosomes and that chromosome number 5 was the first of these. Note
+that the fittest chromosome (number 0, the last line) is unique. The
+second fittest (number 1) is also unique. There are three identical
+chromosomes of which number 2 is the first; assuming that the chromosomes
+are ordered according to fitness (true except for \verb|-rssoneN| and
+\verb|-rssgenN|) these must be numbers 2, 3 and 4. Thus, reading from 
+the bottom up, you can tell that the chromosomes are of just 11
+different kinds, grouped as follows:
+\begin{verbatim}
+    0
+    1
+    2-4
+    5-68
+    69
+    70-72
+    73-77
+    78-94
+    95-97
+    98
+    99
+\end{verbatim}
+This output is a great deal easier to comprehend than the full set
+of chromosomes, and should help you to spot what is happening in the
+population.
+
+Note that this works nicely in this case because in the original run of
+pga, I happened to use a weights file of 21 numbers, and specified
+a chromosome length of 21. Thus there were no junk bits, introns, in the
+chromosomes. If there had been, they could take various values without
+affecting fitness at all and thus `smear' the summary significantly.
+You would still be able to spot what was going on, because the fitness
+values were constant for some adjacent clumps in the summary.
+
+If the population was generated by one of the spatially-structured
+reproduction operators, then the chromosomes will not be ordered by
+fitness. The following variant of the above UNIX pipeline will sort
+them by fitness first:
+\begin{verbatim}
+   % awk -e '$1=="0" {printf("%-3d %-12.7f %s\n",$2,$4,$5)}' \
+       foo.chr | sort +1nr +2 +0n | uniq -c -2
+\end{verbatim}
+The extra in this is the `+1nr' flag for \verb|sort|, which causes it to
+sort by fitness first, in numeric order, larger values first rather
+than last.
+
+\subsection*{What not to do}
+
+The two ideas outlined above can provide useful information about
+what's happening to a population. However, beginners often feel
+that schemas should be detectible by doing some very simple statistical
+processing on chromosomes. This section is meant to help you realise
+why this can be a poor idea. Consider the following naive idea:
+\begin{itemize}
+\item For each gene position, collect the set of values that appear
+      at that position (allowing duplicate values).
+\item Given such a set, work out its average, or median, or most
+      representative value, somehow. This `representative' value might
+      be a specific gene value, or it might be a wildcard if there is
+      no sufficiently representative value.
+\item Doing this for each gene position produces a schema.
+\end{itemize}
+The idea is tempting but hopeless, as is any method for generating
+schemas which depends solely on characteristics of the set of values
+that a gene can take in a given population. To see why, consider the
+following very simple population of three bit-string chromosomes of
+length 3:
+\begin{verbatim}
+    chromosome 1:  1 1 0
+    chromosome 2:  1 0 1
+    chromosome 3:  0 1 1
+\end{verbatim}
+At each of the three gene positions, the set of values consists of
+two 1s and a 0. Thus any statistical technique which uses only this
+information about a gene position must produce the same representative
+value for each of the three gene positions. This means that the
+technique can only produce one of the three schemas:
+\begin{verbatim}
+                   0 0 0
+                   1 1 1
+                   # # #
+\end{verbatim}
+The first two are unrepresentative of any member of the population; the
+third is always valid. This kind of argument shows that if such a
+technique produces a specific schema (not all wildcards), that schema
+may have no instances at all in the population!
+
+Since the set of three chromosomes above might be just a slice of length
+three of three much longer chromosomes, it should be clear that such
+statistical processing cannot reliably generate schemas even if applied
+to a small subset of a large population of long chromosomes. The reader
+is warned.
+
+
+\end{document}
+
+% Local Variables: 
+% mode: latex
+% TeX-master: t
+% End: 

@@ -1,0 +1,42 @@
+/* initial.scs */
+
+void initrepheader()	/* write header */
+{
+	fprintf(rep,"************************************\n");
+	fprintf(rep,"**    Simple classifier system    **\n");
+	fprintf(rep,"************************************\n");
+}
+
+void interactiveheader()	/* print interactive header */	
+{
+	initrepheader();
+}
+
+void initialization()		/* coordinate input and initialization */
+{
+
+	cfile = fopen("classifiers.data","r");
+	efile = fopen("environ.data","r");
+	rfile = fopen("reinf.data","r");
+	tfile = fopen("time.data","r");
+	gfile = fopen("ga.data","r");
+	rep   = fopen("report.out","w");
+	pfile = fopen("plot.out","w");
+
+	initrepheader();
+	initclassifiers();
+	initrepclassifiers();
+	initenvironment();
+	initrepenvironment();
+	initdetectors();
+	initrepdetectors();
+	initaoc();
+	initrepaoc();
+	initreinforcement();
+	initrepreinforcement();
+	inittimekeeper();
+	initreptimekeeper();
+	initga();
+	initrepga();
+
+}

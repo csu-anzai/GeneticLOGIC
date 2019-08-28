@@ -1,0 +1,5 @@
+0.2		// proportionselect		*** ga.dta ***
+0.02		// pmutation
+1.0		// pcrossover
+3		// crowdingfactor
+3		// crowdingsubpop

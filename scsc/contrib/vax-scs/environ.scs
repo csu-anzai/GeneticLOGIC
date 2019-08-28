@@ -1,0 +1,94 @@
+/* environ.scs: multiplexer environment */
+
+typedef struct {
+    int laddress, ldata, lsignal, address;
+    char output, classifieroutput;
+    message signal;
+}
+
+erecord;
+
+erecord environrec;
+FILE *efile;
+
+generatesignal ()
+{					/* generate random signal */
+    int j;
+
+    for (j = 1; j <= environrec.lsignal; ++j)
+	if (flip (0.5))
+	    environrec.signal[j] = '1';
+	else
+	    environrec.signal[j] = '0';
+}
+
+int 
+decode (mess, start, length)		/* decode substring */
+    message mess;
+    int start, length;
+{
+    int j, accum = 0, powerof2 = 1;
+
+    for (j = start; j <= start + length - 1; ++j) {
+	accum += powerof2 * (mess[j] - '0');
+	powerof2 *= 2;
+    }
+    return (accum);
+}
+
+multiplexeroutput ()
+{					/* calculate multiplexer output */
+    int j;
+   /* decode address */
+    environrec.address = decode (environrec.signal, 1, environrec.laddress);
+   /* set the output */
+    environrec.output =
+	environrec.signal[environrec.laddress + environrec.address + 1];
+}
+
+environment ()
+{					/* coordinate multiplexer */
+    generatesignal ();
+    multiplexeroutput ();
+}
+
+initenvironment ()
+{					/* initialize environment */
+    int j;
+    fscanf (efile, "%d%*s", &environrec.laddress);
+    environrec.ldata = round (poweri (2.0, environrec.laddress));
+    environrec.lsignal = environrec.laddress + environrec.ldata;
+    environrec.address = 0;
+    environrec.output = '0';
+    environrec.classifieroutput = '0';
+    for (j = 1; j <= environrec.lsignal; ++j)
+	environrec.signal[j] = '0';
+}
+
+initrepenvironment ()
+{					/* write initial report */
+    fprintf (rep, "\nEnvironmental Parameters (Multiplexer)\n");
+    fprintf (rep, "--------------------------------------\n");
+    fprintf (rep, "Number of address lines = %d\n", environrec.laddress);
+    fprintf (rep, "Number of data lines = %d\n", environrec.ldata);
+    fprintf (rep, "Total number of lines = %d\n", environrec.lsignal);
+}
+
+writesignal ()
+{					/* write signal in bit-reverse order */
+    int j;
+    for (j = environrec.lsignal; j >= 1; --j)
+	fputc (environrec.signal[j], rep);
+    fputc ('\n', rep);
+}
+
+reportenvironment ()
+{					/* write current multiplexer info */
+    fprintf (rep, "\nCurrent Multiplexer Status\n");
+    fprintf (rep, "--------------------------\n");
+    fprintf (rep, "Signal = ");
+    writesignal ();
+    fprintf (rep, "\nDecoded address = %d\n", environrec.address);
+    fprintf (rep, "Multiplexer output = %c\n", environrec.output);
+    fprintf (rep, "Classifier output = %c\n", environrec.classifieroutput);
+}

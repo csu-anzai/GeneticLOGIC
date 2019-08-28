@@ -1,0 +1,219 @@
+\documentstyle[a4,11pt,fancychapters,fancyfigures,harvard]{report} % European A4 paper
+%%%\documentstyle[us,11pt,fancychapters,fancyfigures,harvard]{report} % US letter size
+
+
+%% -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+%%  PREAMBLE
+%% -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+\parskip=0.5\baselineskip
+\parindent=0pt
+\pagestyle{headings}
+
+\def\MathRoman#1{{\ifmmode {\rm #1}\else $\rm #1$\fi}}
+
+\def\Mtpi{\M_{\mbox{\scriptsize TP3.0}}^{\mbox{\scriptsize integer(2)}}}
+\def\Mtpr{\M_{\mbox{\scriptsize TP3.0}}^{\mbox{\scriptsize real(6:12)}}}
+
+\def\Mieeef{\M_{\mbox{\scriptsize IEEE}}^{\mbox{\scriptsize float(4:7)}}}
+\def\Mieeed{\M_{\mbox{\scriptsize IEEE}}^{\mbox{\scriptsize double(8:15)}}}
+\def\Mieeex{\M_{\mbox{\scriptsize IEEE}}^{\mbox{\scriptsize long double(10:15)}}}
+
+\def\Mgeneric{\M_{\mbox{\scriptsize $<$implementation$>$}}^{\mbox{\scriptsize $<$type$>$($<$bytes$>$:$<$precision$>$)}}}
+
+\def\M{\MathRoman{I\kern -0.2em M}}
+
+\newtheorem{hype}{Hypothesis}
+
+%% -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+%%  TITLEPAGE
+%% -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+\title{\huge SCS-C:					\\
+	Some Observations using the			\\
+	Simple Classifier System
+}
+
+\author{{\bf J\"org Heitk\"otter}			\\
+	\verb+<joke@ls11.informatik.uni-dortmund.de>+
+}
+\date{	Systems Analysis Research Group, LSXI		\\
+	University of Dortmund 				\\
+	Department of Computer Science	 		\\
+	D--44221~Dortmund				\\
+	Germany						\\
+	\vspace{3ex}
+	\today
+}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+%% -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+\begin{abstract}
+This paper reproduces the results of Chapter~6 in Goldberg's book using
+the Simple Classifier System SCS-C.
+Beforehand, some thoughts on random number generators are presented,
+that foster the ground for reasoning why the displayed figures are
+not {\em exactly} the same as those printed in the book.
+
+{\bf Note:} captions of figures 6.18 through 6.22 are Copyright \copyright{} 1989 by
+David~E.~Goldberg\nocite{Goldberg:89e}.
+\end{abstract}
+
+\iffalse
+%% -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+\Chapter{%
+``The most prudent policy for a person to follow is to run each Monte Carlo
+program at least twice using quite different sources of random numbers,
+before taking the answers of the program seriously; this not only will
+give an indication of the stability of the results, it also will guard against
+the danger of trusting in a generator with hidden defiencies. (Every
+random number generator will fail in at least one application.)''
+\rightline{\rm\bf --- D.E.~Knuth~\citeyear{Knuth:81}}
+}{A Word on Random Numbers}
+
+The generation of pseudo random numbers still constitutes an art of computer
+programming, not only with respect to the quotation above, from Knuth's
+seminal work on ``The Art of Computer Programming.'' But also with respect
+to John von Neumann's observation, that {\em ``Anyone who considers
+arithmetical methods of producing random digits is, of course, in a state of
+sin.''}
+
+When Goldberg wrote {\em his} seminal book, ``Genetic Algorithms in Search,
+Optimization, and Machine Learning,'' he faced the problem to
+supply his {\sc pascal} example programs with an appropriate
+random number generator (RNG).
+In solving this problem, he implemented the RND given by Knuth (in
+{\sc fortran-77}\footnote{%
+It is still unclear if these routines are truly {\sc fortran-77},
+for the examples lack the {\sc call} statement of funtion {\sc irn55},
+at least at the opinion of {\sc sun's f77} compiler...
+}), as listed on pages 170--173 in~\cite{Knuth:81}.
+
+The implementation language of choice (not only at that time) directly
+led to another problem:\footnote{%
+The reader should note that this statement is {\em context sensitive}\/.
+From a global point of view, it is completely arbitrary to discuss two
+implementations of the same RNG, that produce different results, due
+to different implementations, and thus different sets $\M$, when
+comparing a {\sc pc turbo pascal} implemenatation, with
+a {\sc unix c}, implementation. But in this context, we have to argue and
+prove, that the results in the following chapter, simply cannot
+resemble the same figures as presented by Goldberg. We encourage the
+reader to keep this in mind, on further reading.}
+Knuth's original RNG generates 55
+pseudo random {\em long integer\/} numbers, that are then converted to
+{\em floating point\/} numbers $p_i \in\ ]\, 0.0\,\ldots\,1.0\, [$.
+
+To allow for a more precise definition of {\em floating point\/} or
+{\em whatevertyped} numbers, we use the a simple terminology,
+as specified in the following section.
+
+Computers\footnote{%
+More precisely: the run-time system of a given language, provided
+that no {\em numerical co-processor\/} is used.}
+use an internal representation of the number set, they
+are requested to compute in. This set is the {\em set of machine
+representable numbers\/}, or $\M$ for short. As we will see,
+$\M$ for different computers, and even for different language
+implementations on the same computer, can be surprisingly different.
+For this reason, be have to look at $\M$ more closely, for example
+we need to know its (1) implementation type, (2) representation
+type within a computer language, (3) size in bytes, and (4) the
+resulting precision in digits.\footnote{%
+Only used for {\em floating point\/} numbers, ie. the valid digits
+to the right side of the {\em floating point}.}
+
+Therefore we define the {\em generic set} $\M$ as:
+$$
+	\Mgeneric
+$$
+
+Concrete sets discussed here are:
+$$
+	\Mtpi,
+	\Mtpr
+$$
+and the standartized\footnote{%
+{\sc ansi/ieee} Std 754--1985}
+{\sc ieee} representations
+$$
+	\Mieeef, \mbox{and}
+	\Mieeed
+	\quad\cdot
+$$
+
+{\bf Sorry, no time to complete this stuff, yet...}
+
+\begin{hype}
+Goldberg's implementation of Knuth's random number generator produces
+a different set of pseudo random numbers $p_i \in\ ]\, 0.0\,\ldots\,1.0\, [$.
+\end{hype}
+
+\begin{hype}
+The performance of Learning Classifier Systems is crucially dependent on
+the random number generator used in their rule discovery system.
+\end{hype}
+
+\begin{hype}
+The degree of difficulty of the learning task of the 5-bit multiplexer
+problem, serving as an example of SCS-C, can be artificially increased,
+by providing a very long cycled random number generator, eg. {\sc unix}
+drand48(3).
+\end{hype}
+\fi
+
+%% -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+\setcounter{chapter}{5}
+\chapter[Introduction to GBML]{Introduction to Genetics--Based Machine Learning}
+
+[..]
+
+\section*{Results using the Simple Classifier System}
+
+\setcounter{figure}{17}
+\psFigure{fig-6.18}[]{%
+In testing the perfect rule set, the simple
+classifier system quickly lowers the strength of bad rules at the
+same time it elevates the strength of good rules. This results in
+near--perfect performance as measured by an all--time average.
+}
+
+\psFigure{fig-6.19}[]{%
+Without specifity--dependent bidding, the classifier system is
+unable to use the default hierarchy rules accurately.
+}
+
+\psFigure{fig-6.20}[]{%
+With specifity--dependent bidding, the classifier uses the default
+hierarchy to achieve near--perfect performance.
+}
+
+\psFigure{fig-6.21}[]{%
+Without the genetic algorithm activated, the SCS is able to achieve
+better--than--random performance by organizing extant rules into a
+default hierarchy.
+}
+
+\psFigure{fig-6.22}[]{%
+With the genetic algorithm activated, new rules are injected into
+the classifier store at regular intervals to improve performance
+oven further over that of Figure~6.21
+}
+
+%% -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+%%  BIBLIOGRAPHY
+%% -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+\nocite{Mue87}
+\nocite{Hei93b}
+\nocite{Gil89}
+\nocite{FGMS90}
+\nocite{PH90}
+\nocite{WK92}
+\nocite{WH87}
+
+\bibliographystyle{kluwer}
+\bibliography{thebib}
+
+\end{document}

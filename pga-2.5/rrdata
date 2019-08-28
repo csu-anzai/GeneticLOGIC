@@ -1,0 +1,17 @@
+These are the defaults specified in Holland's challenge:
+
+Blocksize (int) 8     Number of bits in a block
+Gapsize (int)   7     Number of irrelevant bits between consecutive blocks
+m* (int)        4     Up to this many bits in a low-level block gets reward
+u* (double)     1.0   First block in any higher level earns this
+u (double)      0.3   Later blocks in any higher level earns this
+v (double)      0.02  Reward/penalty per bit in low-level blocks
+
+Note that Holland specifies a number of levels (k) rather than a
+gapsize, so that there are two-to-the-k blocks at the lowest level.
+
+This file is read by pga when you specify -err for Royal Road functions.
+It looks for numbers in this file, in the order and of the types shown
+above. Non-numeric text is just ignored.
+
+

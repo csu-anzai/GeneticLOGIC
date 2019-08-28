@@ -1,0 +1,312 @@
+%%%\documentstyle[us,11pt,c++,fancyfigures,harvard]{article}  %% US letter paper
+\documentstyle[a4,11pt,c++,fancyfigures,harvard]{article}  %% European A4 paper
+
+
+%% -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+%%  PREAMBLE
+%% -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\topfraction}{0.95}
+\parskip=0.5\baselineskip
+\parindent=0pt
+\fancyovalframe
+
+
+%% -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+%%  TITLEPAGE
+%% -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+\title{	SCS-C:							\\
+	A C-language Implementation of a			\\ 
+	Simple Classifier System}
+
+\author{{\bf J\"org Heitk\"otter}				\\
+	\verb+<joke@ls11.informatik.uni-dortmund.de>+		\\
+	\							\\
+	University of Dortmund					\\
+	Department of Computer Science				\\
+	Systems Analysis Research Group, LSXI			\\
+	44221 Dortmund						\\
+	Germany							\\
+}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+
+
+%% -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+%%  ABSTRACT
+%% -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+\begin{abstract}
+This paper describes a C implementation of a Simple Classifier System,
+thus called SCS-C.
+\end{abstract}
+
+\newpage
+%% -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+\section{Introduction}
+
+SCS-C\footnote{{\bf Disclaimer:} SCS-C is distributed under the terms
+described in the {\tt LICENSE} file, accompanying the sources of this
+program. This license is also known as the GNU General Public License.
+This means that SCS-C has no warranty implied or given, and that the
+authors assume no liability for damage resulting from its use or misuse.
+Try also `{\tt scsc --warranty}'.} 
+is a C-language translation and extension of the original
+Pascal SCS code presented by Goldberg \citeyear{Goldberg:89e}. 
+It has some additional features, but its operation is 
+essentially the same as that of the original, Pascal version. 
+This report is included as an overview and reference to the SCS-C distribution.
+It is presented with the assumptions that the reader has a general
+understanding of Goldberg's original Pascal SCS code, and a good working
+knowledge of the C programming language.
+
+The report begins with an overview of the files included in the SCS-C
+distribution, but not the routines they contain. 
+Then follows a discussion of significant features of SCS-C
+that differ from those of the Pascal version.
+For the occasional ftp-user, we provide an example session to enable
+the reader to receive the latest version of SCS-C via anonymous ftp.
+
+
+%% -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+\section{The SCS-C distribution}
+\label{dist}
+
+The following gives a quick overview of the files distributed
+with SCS-C:
+
+%%For a concise explanation of the contents of each file, refer
+%%to the companion {\tt OVERVIEW} file (cf.~Figure~\ref{fig-dist}). 
+
+Figure~\ref{fig-dist} displays the directory tree of SCS-C at a glance.
+\psFancyFigure*{fig-dist}[height=0.8\textheight]{The SCS-C distribution
+at a glance.}
+Figure~\ref{fig-cont} zooms into SCS-C's {\tt ./contrib} folder.
+\psFancyFigure*{fig-cont}[]{The {\tt contrib} folder:
+various useful contributions to play with.}
+\psFancyFigure*{fig-figs}[]{The {\tt figs} folder contains the figures,
+generated for the {\tt docs/repro.tex} document; a reproduction of
+figures 6.18 to 6.22 in Goldber'g book.}
+While Figure~\ref{fig-figs} zooms into SCS-C's {\tt ./figs} folder.
+
+
+%% -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+\section{Configuring SCS-C for Your System}
+\label{config}
+
+SCS-C is distributed in gzip'ed tar form, ie. the complete directory
+tree has been glued together into one file using the Unix {\tt tar}
+command and afterwards this single file has been compressed with the
+GNU standard {\tt gzip} utility.\footnote{See the Unix manul pages
+of tar(1), and gzip(1) respectively.}
+After {\em gunzip\/}ing and un{\em tar\/}ing SCS-C, you have to
+{\em configure} it for your system.
+
+%%\clearpage
+Configuration means, in this case, supplying operating system dependencies,
+compiler dependencies, and some other, ie. maintenance information,
+that have been encapsulated from the SCS-C code
+into platform specfic configuration files, collected in the {\tt ./config}
+folder. All there is to do is (1) find the appropriate configuration file
+and (2) make this file known to the rest of the source code.\footnote{%
+If there is no appropriate configuration file, we think it's very easy
+to generate one for your system, using eg. {\tt bsd.cf} as a template file.}
+The latter can either be done manually, ie. by copying the appropriate
+file into the {\tt ./src} folder, renaming it to {\tt config.h}.
+For example on a DOS machine all there is to do is to issue:
+\begin{verbatim}
+  C:\SCS-C> copy config\dos.cf src\config.h
+  C:\SCS-C> make
+\end{verbatim}
+For unixoid systems\footnote{that have either a {\tt csh} or {\tt tcsh}
+installed} we provide a simple {\tt configure} shell script, with the
+following command syntax:
+\begin{verbatim}
+  example% configure
+  configure: usage: configure --<os-type>    (eg. configure --sunos)
+
+  example% configure --unix
+  configure: try either: configure --bsd, or: configure --sys5
+
+  example% configure --bsd
+  configure: SCS-C configured for generic BSD unix.
+  example% make
+\end{verbatim}
+In the end it's up to you which way you prefer. The {\tt configure} script
+merely {\em softlink\/}s a selected configuration file to
+{\tt ./src/config.h}.
+
+Please refer to the files {\tt INSTALL}, {\tt CONFIGME}, and {\tt Makefile}
+for more concise information.
+
+
+%% -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+\section{New Features of SCS-C}
+\label{features}
+
+SCS-C has several features that differ from those of the Pascal version.
+One is the ability to use various runtime options on the command line, i.e.
+{\tt scsc --help} results in the following message:
+{\small
+\begin{verbatim}
+  usage: scsc [options]
+         [-N, --no-noise-in-auction]
+         [-S, --no-specificity-in-auction]
+         [-b, --batch]
+         [-h, --help]
+         [-v, --version]
+         [-w, --warranty]
+
+         [-c, --classifier-data <classifier data file name>]
+         [-d, --detector-data <detector data file name>]
+         [-e, --environmental-data <environmental data file name>]
+         [-g, --genetics-data <GA data file name>]
+         [-r, --reinforcement-data <reinforcement data file name>]
+         [-t, --timekeeper-data <timekeeper data file name>]
+
+         [-l, --log-file <log file name>]
+         [-p, --plot-file <plot file name>]
+
+         [-s, --seed-for-random <seed value>]
+         [-T, --time-steps <number>]
+\end{verbatim}
+}
+
+Another new feature of SCS-C is its method of reading command line parameters
+from so-called {\em resource} files.\footnote{Unfortunately this feature
+is not included in the initial releases of SCS-C, ie. version numbers below
+1.00.}
+
+
+%% -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+\section{Summary}
+\label{summary}
+
+SCS-C is intended to be a simple program for first-time LCS experimentation.
+It is not intended to be definitive in terms of its efficiency, but
+some work has been put into the grace of its implementation. To be honest,
+I think it's really nifty stuff.
+And it should be very straight forward to tune SCS-C towards an
+object-oriented implemenation, for example by using \C++.
+The key issues of the current design can be summarized as:
+\begin{itemize}
+\item
+portability, by using customizable and easy-to-write configuration
+{\tt ./config/ *.cf} files
+\item
+configurability, also related to configuration files, and the
+companion {\tt configure} C-shell script
+\item
+extendability, by providing source-documented hooks and lots of
+LOF's simply included for encapsulation and prototyping\footnote{%
+The {\sc VAX} version of SCS placed in the {\tt ./contrib/vax-scs} folder
+consist of approx. 1,800 lines, SCS-C has some 5,000 lines of code (LOF),
+leaving alone the documention, and random number generator examples in
+{\tt ./contrib/knuth}.}
+\item
+accuracy, by providing a sample document {\tt ./docs/repro.tex} that
+reproduces some figures from Chapter~6 of David Goldberg's book.
+\end{itemize}
+
+The author is interested in the comments, criticisms, and bug reports
+from SCS-C users, so that the code can be refined for easier use in
+subsequent versions.
+
+%%\clearpage
+Please email your comments to \verb+<joke@ls11.informatik.uni-dortmund.de>+
+or write to:
+\begin{center}
+J\"org Heitk\"otter				\\
+c/o Systems Analysis Research Group, LSXI	\\
+University of Dortmund				\\
+Department of Computer Science			\\
+44221 Dortmund, Germany				\\
+\end{center}
+
+
+%% -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+\section{Availability}
+
+The SCS-C sources and their documentation are available through the
+{\em anonymous ftp} service of the Systems Analysis Research Group from
+server {\tt lumpi.informatik.uni- dortmund.de} (129.217.36.140).
+Get file `scsc-0.99j.tar.gz' from {\tt /pub/LCS/src}.
+
+What follows, is a short demo session for the occasional ftp user:
+{\footnotesize
+\begin{verbatim}
+    example% ftp lumpi.informatik.uni-dortmund.de
+    Connected to lumpi.
+    220 lumpi FTP server (Version 6.14 Fri Feb 21 18:11:53 MET 1992) ready.
+    Name (lumpi:heitkoet): anonymous
+    331 Guest login ok, send e-mail address as password.
+    Password: <your email address goes here>
+    230-
+    230-  Welcome to the official ES/GA FTP server at the University of Dortmund.
+    230-
+    230-  Local time here is Mon Feb  1 12:11:26 1993
+    230-
+    230-  --> This is an unsecure service now. It may be terminated at any
+    230-  --> time without prior announcement.
+    230-
+    230-  Make sure to transfer the files in binary mode!
+    230-
+    230-  Ulrich Hermes, hermes@ls11.informatik.uni-dortmund.de
+    230-  Frank Wiesenfeller, fw@irb.informatik.uni-dortmund.de (FTP)
+    230-
+    230-
+    230 Guest login ok, access restrictions apply.
+    ftp> dir
+    200 PORT command successful.
+    150 Opening ASCII mode data connection for /bin/ls.
+    total 9
+    -rw-------  1 11002 11000     0 Jul  7  1992 .hushlogin
+    drwxr-xr-x  5 11002 11      512 Apr 27  1992 EA
+    drwxr-xr-x  5 11002 11      512 Apr 27  1992 ES
+    drwxr-xr-x  5 11002 11      512 Jul  7  1992 GA
+    drwxr-xr-x  5 11002 11      512 Feb  8  1993 LCS
+    -rw-r--r--  1 11002 11      863 Jan 13 06:40 README
+    -rw-r--r--  1 11002 11       63 Jan 17 16:37 _THIS_SITE_IS_IN_GERMANY,_EUROPE
+    drwxr-xr-x  2 11002 11     1024 Dec 27 15:34 idl
+    drwxr-xr-x  3 11002 11      512 Nov 10 06:47 idl-pvwave
+    -rw-r--r--  1 11002 11     1864 Jan 23 15:01 ls-Ral.Z
+    226 Transfer complete.
+    588 bytes received in 0.43 seconds (1.3 Kbytes/s)
+    ftp> cd pub/LCS/src
+    ftp> binary
+    200 Type set to I.
+    ftp> get scsc-0.99j.tar.gz
+    [..]
+    ftp> bye
+    221 Goodbye.
+\end{verbatim}
+}
+
+{\bf Note:} version numbers are subject to change, due
+to the nature of the beast, so please don't get confused if it's not
+0.99j on your visit.
+
+
+%% -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+\section*{Acknowledgments}
+
+The author gratefully acknowledge support provided by Uwe Schnepf
+of the AI Research Division of the GMD, and Thomas B\"ack
+of the Systems Analysis Research Group, over the course of this project.
+
+He also greatly appreciates the work of David E. Goldberg
+on the Pascal version of SCS, and says `Thanks!' to  Uwe Schnepf for his
+unforseen enthusiasm and `for lending me a Sun to hack this stuff together,'
+during a nightshift week January
+11--16, 1993, at the AI research division of the GMD.
+
+Additional thanks must go to Monika Heitk\"otter, for hosting me during this
+week.
+
+
+%% -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+\bibliographystyle{kluwer}
+\bibliography{thebib}
+
+\end{document}

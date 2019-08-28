@@ -1,0 +1,81 @@
+This file contains just a few of the many issues and questions that you can
+investigate using pga.
+
+...................................
+Peter Ross,
+Department of AI,
+University of Edinburgh,
+80 South Bridge,
+Edinburgh EH1 1HN
+Scotland
+
+peter@aisb.ed.ac.uk
+...................................
+Last update: Sep 23 1993
+...................................
+
+
+1. The default reproduction strategy is `one'; namely, select from
+   the population, definitely do crossover (so the crossover rate
+   option is not applicable), maybe do mutation, insert into the
+   population. This is based on Whitley's GENITOR. Try it, and compare
+   it with `gen'-based reporduction in which (potentially) the whole
+   of the population gets modified at each generation. You should find
+   that in general `one'-based reproduction uses a lot fewer calls
+   of the fitness function (shown as `evaluations' on the display)
+   for most problems.
+
+   However, it is not always a winner. Try the following:
+     - use the default problem, `max', to maximise the number of 1s,
+       and the default crossover operation, two-point crossover.
+     - with a chromosome length of 100, the problem is solved before
+       the populations converge.
+     - with a chromosome length of 200, the average of each population
+       catches up with the best rapidly; the populations are converging
+       somewhat prematurely.
+     - with a chromosome length of 300, premature convergence is
+       clear, and eventually mutation has to do all the work.
+   Try this with even longer chromosomes.
+   Try using a higher mutation rate, or adaptive mutation.
+
+   Explain this result. Remember that in a initial population
+   of chromosomes each of length N, the `typical' random chromosome
+   will have N/2 bits set, and the distribution will be binomial.
+   The variance goes up only as sqrt(N) as N increases.
+
+   Does this still happen with one-point crossover, or with uniform
+   crossover, or tournament selection?
+
+2. Try the above, and the other problems, with different population
+   size and different numbers of populations. For example, is it
+   better to have one population of size P*S or P populations of
+   size S? And how does the migration interval affect this?
+
+3. You can make multiple populations independent by making the
+   migration interval 0. Thus you can see independent runs happening 
+   in parallel. Does migration help? Try, for example, the simple 
+   `max' problem with uniform crossover, a chromosome length of 300, 
+   and various combinations of population number, population size 
+   and migration interval.
+
+4. For each problem: try using a single population, and then see
+   how population size affects the likelihood of successfully solving
+   the problem. Experiment to see how low the `Evaluations' count
+   (the number of times the fitness function got called) can be
+   to solve the problem.
+
+5. Experiment with the 1-d knapsack problem, and compare the
+   `evaluations' count with the number of evluations needed in
+   other, search-based methods of solving the problem.
+
+6. Do a systematic comparison of the different crossover operations.
+   Is there a clear winner?
+
+7. With the `royal road' functions, the GA can get horribly stuck.
+   Try it and investigate how likely it is for the GA to find
+   the solution. In pga version 2.4 the royal road function was
+   R1 of Mitchell and Forrest's paper (see FOGA-2), which was
+   fairly easily solved. In this version the royal road function
+   is Holland's challenge problem, which is very much tougher for
+   most GAs.
+

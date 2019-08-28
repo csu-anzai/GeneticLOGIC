@@ -1,0 +1,36 @@
+{ declare.scs: declarations for scs }
+
+const  maxposition  = 50;
+       maxclass     = 100;
+       wildcard     = -1;
+
+type   bit        =  0..1; { a binary digit }
+       trit       = -1..1; { a ternary digit; 0=0; 1=1; -1=#}
+       action     =  bit;  { a binaray decision }
+       condition  = array[1..maxposition] of trit;
+       message    = array[1..maxposition] of bit;
+       classtype  = record
+                      c:condition;
+                      a:action;
+                      strength, bid, ebid:real;
+                      matchflag:boolean;
+                      specificity:integer;
+                    end;
+       classarray = array[1..maxclass] of classtype;
+       classlist  = record
+                      clist:array[1..maxclass] of integer;
+                      nactive:integer
+                    end;
+       poptype    = record
+                      classifier:classarray;
+                      nclassifier, nposition:integer;
+                      pgeneral, cbid, bidsigma, bidtax, lifetax,
+                      bid1, bid2, ebid1, ebid2,
+                      sumstrength, maxstrength, avgstrength, minstrength:real
+                    end;
+
+var    population:poptype;   { population of classifiers }
+       matchlist:classlist;  { who matched }
+       envmessage:message;   { environmental message }
+       rep:text;             { report device/file }
+

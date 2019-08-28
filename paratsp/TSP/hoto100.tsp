@@ -1,0 +1,123 @@
+NAME : hoto250.tsp
+COMMENT : GA auf Parsytec-GC (Totzke)
+TYPE : TSP
+DIMENSION : 100
+EDGE_WEIGHT_TYPE : HOTO
+NODE_COORD_SECTION
+:Sachsen-Anhalt
+1	13924	13208	Dessau
+2	13453	13745	Gardelegen
+3	13318	13212	Halberstadt
+4	13799	12907	Halle
+5	13591	13430	Magdeburg
+6	13376	13129	Quedlinburg
+7	13650	13332	Schoenebeck
+8	13320	13096	Thale
+9	13180	13150	Wernigerode
+10	14119	13255	Wittenberg
+:Mecklenburg-Vorpommern
+11	13755	14824	Guestrow
+12	13713	15050	Rostock
+13	14403	15485	Sassnitz
+14	13387	14660	Schwerin
+15	14148	15285	Stralsund
+16	13373	14875	Wismar
+17	14505	15106	Wolgast
+:Brandenburg
+18	14044	13696	Brandenburg
+19	14994	13254	Cottbus
+20	15106	13598	Eisenhuettenstadt
+21	15050	13752	Frankfurt/Oder
+22	14296	13710	Potsdam
+23	14841	14324	Schwedt
+24	13616	14153	Wittenberge
+:Berlin
+25	14460	13838	Berlin
+:Sachsen
+26	14255	12205	Aue
+27	15100	12783	Bautzen
+28	14311	12392	Chemnitz
+29	14759	12640	Dresden
+30	15383	12797	Goerlitz
+31	14984	12993	Hoyerswerda
+32	14033	12815	Leipzig
+33	14610	12719	Meissen
+34	13966	12097	Plauen
+35	14503	12831	Riesa
+36	14134	12305	Zwickau
+:Thueringen
+37	12982	12436	Eisenach
+38	13369	12453	Erfurt
+39	13909	12413	Gera
+40	13327	12209	Ilmenau
+41	13651	12440	Jena
+42	13203	12878	Nordhausen
+43	13216	12131	Suhl
+44	13508	12471	Weimar
+:Schleswig-Holstein
+45	12379	15534	Flensburg
+46	12733	15180	Kiel
+47	13019	14822	Luebeck
+48	12448	15336	Schleswig
+:Hamburg
+49	12709	14541	Hamburg
+:Bremen
+50	12133	14126	Bremen
+51	12011	14499	Bremerhaven
+:Niedersachsen
+52	13034	13494	Braunschweig
+53	12760	12882	Goettingen
+54	12446	13338	Hameln
+55	12627	13574	Hannover
+56	13269	13487	Helmstedt
+57	11843	14161	Oldenburg
+58	11780	13449	Osnabrueck
+59	12933	13403	Salzgitter
+60	13139	13642	Wolfsburg
+:Nordrhein-Westfalen
+61	10790	12197	Aachen
+62	12026	13258	Bielefeld
+63	11369	12785	Bochum
+64	11314	12174	Bonn
+65	11493	12822	Dortmund
+66	11145	12568	Duesseldorf
+67	11249	12768	Essen
+68	11306	12811	Gelsenkirchen
+69	11666	12963	Hamm
+70	11238	12348	Koeln
+71	11032	12654	Krefeld
+72	11571	13179	Muenster
+73	12144	13010	Paderborn
+74	11789	12298	Siegen
+75	11353	12615	Wuppertal
+:Hessen
+76	12142	11480	Darmstadt
+77	12148	11677	Frankfurt/Main
+78	12672	12073	Fulda
+79	12546	12696	Kassel
+80	12200	11671	Offenbach
+81	11930	11640	Wiesbaden
+:Rheinland-Pfalz
+82	11686	11110	Kaiserslautern
+83	11573	11863	Koblenz
+84	11939	11579	Mainz
+85	11093	11370	Trier
+:Saarland
+86	11277	10934	Saarbruecken
+:Baden-Wuertemberg
+87	11756	9929	Freiburg
+88	12178	11093	Heidelberg
+89	12038	10755	Karlsruhe
+90	12067	11157	Mannheim
+91	12470	10598	Stuttgart
+92	12414	10372	Tuebingen
+93	12921	10302	Ulm
+:Bayern
+94	13422	10298	Augsburg
+95	13705	11623	Bayreuth
+96	13865	11939	Hof
+97	13802	10143	Muenchen
+98	13469	11200	Nuernberg
+99	14817	10587	Passau
+100	14045	10882	Regensburg
+EOF

@@ -1,0 +1,175 @@
+
+/* perform.scs: classifier matching */
+
+FILE *cfile;
+
+char 
+randomchar (pgeneral)			/* generate random value for position */
+    float pgeneral;
+{
+    if (flip (pgeneral))
+	return (WILDCARD);
+    if (flip (0.5))
+	return ('1');
+    return ('0');
+}
+
+readcondition (c, pgeneral, nposition)	/* read single condition */
+    condition c;
+    float pgeneral;
+    int nposition;
+{
+    char ch;
+    int j;
+
+    ch = getc (cfile);
+    for (j = nposition; j >= 1; --j) {
+	ch = getc (cfile);
+	c[j] = (ch == 'R') ? randomchar (pgeneral) : ch;
+    }
+}
+
+readclassifier (class, pgeneral, nposition)	/* read single classifiers */
+    classtype *class;
+    float pgeneral;
+    int nposition;
+{
+    char ch;
+
+    readcondition (class -> c, pgeneral, nposition);
+
+    ch = getc (cfile);
+    class -> a = getc (cfile);
+
+    class -> strength = population.initialstrength;
+
+    class -> bid = 0.0;
+    class -> ebid = 0.0;
+    class -> matchflag = FALSE;
+}
+
+int 
+countspecificity (c, nposition)		/* count condition specificity */
+    condition c;
+    int nposition;
+{
+    int temp = 0;
+    while (nposition) {
+	if (c[nposition] != WILDCARD)
+	    ++temp;
+	--nposition;
+    }
+    return (temp);
+}
+
+initclassifiers ()
+{					/* initialize classifiers */
+    int j;
+
+    fscanf (cfile, "%d%*s", &population.nposition);
+    fscanf (cfile, "%d%*s", &population.nclassifier);
+    fscanf (cfile, "%f%*s", &population.initialstrength);
+    fscanf (cfile, "%f%*s", &population.pgeneral);
+    fscanf (cfile, "%f%*s", &population.cbid);
+    fscanf (cfile, "%f%*s", &population.bidsigma);
+    fscanf (cfile, "%f%*s", &population.bidtax);
+    fscanf (cfile, "%f%*s", &population.lifetax);
+    fscanf (cfile, "%f%*s", &population.bid1);
+    fscanf (cfile, "%f%*s", &population.bid2);
+    fscanf (cfile, "%f%*s", &population.ebid1);
+    fscanf (cfile, "%f%*s", &population.ebid2);
+
+    for (j = 1; j <= population.nclassifier; ++j) {
+	readclassifier (&population.classifier[j],
+			population.pgeneral, population.nposition);
+	population.classifier[j].specificity =
+	    countspecificity (population.classifier[j].c,
+			      population.nposition);
+    }
+}
+
+initrepclassifiers ()
+{					/* initial report on population parameters */
+    fprintf (rep, "\nPopulation Parameters\n");
+    fprintf (rep, "---------------------\n");
+    fprintf (rep, "Number of classifiers = %d\n", population.nclassifier);
+    fprintf (rep, "Number of positions   = %d\n", population.nposition);
+    fprintf (rep, "Bid coefficient       = %f\n", population.cbid);
+    fprintf (rep, "Bid spread            = %f\n", population.bidsigma);
+    fprintf (rep, "Bidding tax           = %f\n", population.bidtax);
+    fprintf (rep, "Existence tax         = %f\n", population.lifetax);
+    fprintf (rep, "General probability   = %f\n", population.pgeneral);
+    fprintf (rep, "Bid specificity base  = %f\n", population.bid1);
+    fprintf (rep, "Bid specificity mult. = %f\n", population.bid2);
+    fprintf (rep, "Ebid specificity base = %f\n", population.ebid1);
+    fprintf (rep, "Ebid specificity mult = %f\n", population.ebid2);
+}
+
+writecondition (c, nposition)		/* write condition */
+    condition c;
+    int nposition;
+{
+    int j;
+
+    for (j = nposition; j >= 1; --j)
+	fputc (c[j], rep);
+}
+
+writeclassifier (class, number, nposition)	/* write classifier */
+    int number, nposition;
+    classtype *class;
+{
+    fprintf (rep, "%3d  %7.2f  %7.2f   %7.2f      ", number, class -> strength,
+	     class -> bid, class -> ebid);
+    if (class -> matchflag)
+	fprintf (rep, "X   ");
+    else
+	fprintf (rep, "    ");
+    writecondition (class -> c, nposition);
+    fprintf (rep, ":[%c] ", class -> a);
+    fprintf (rep, "   %d\n", class -> specificity);
+}
+
+reportclassifiers ()
+{					/* header for classifier list */
+
+    int j;
+    fprintf (rep, "\n No.   Strength  Bid       Ebid      M   Classifier  Specif.\n");
+    fprintf (rep, "--------------------------------------------------------------\n");
+    for (j = 1; j <= population.nclassifier; ++j)
+	writeclassifier (&population.classifier[j], j,
+			 population.nposition);
+}
+
+boolean 
+match (c, m, nposition)			/* match single condition to message */
+    condition c;
+    message m;
+    int nposition;
+{
+    boolean matchtemp = TRUE;
+
+    while ((matchtemp == TRUE) && (nposition >= 0)) {
+	matchtemp = (c[nposition] == WILDCARD) ||
+	    (c[nposition] == m[nposition]);
+	--nposition;
+    }
+    return (matchtemp);
+}
+
+void 
+matchclassifiers (emess)		/* uses population and matchlist */
+    message emess;			/* to call: matchclassifiers(emess); */
+{
+    int j;
+    matchlist.nactive = 0;
+    for (j = 1; j <= population.nclassifier; j++) {
+	population.classifier[j].matchflag =
+	    match (population.classifier[j].c, emess,
+		   population.nposition);
+	if (population.classifier[j].matchflag) {
+	    ++matchlist.nactive;
+	    matchlist.clist[matchlist.nactive] = j;
+	}
+    }
+}

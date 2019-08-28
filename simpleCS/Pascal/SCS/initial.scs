@@ -1,0 +1,52 @@
+{ initial.scs: initialization coordination }
+
+procedure initrepheader(var rep:text);
+{ write a header to specified file/dev. }
+begin
+  writeln(rep,'********************************************');
+  writeln(rep,'       A Simple Classifier System - SCS');
+  writeln(rep,'         (C) David E. Goldberg,  1987');
+  writeln(rep,'             All Rights Reserved');
+  writeln(rep,'********************************************');
+  writeln(rep); writeln(rep);
+end;
+
+procedure interactiveheader;
+{ clear screen and print interactive header }
+begin
+  clrscr;
+  initrepheader(con)
+end;
+
+procedure initialization;
+{ coordinate input and initialization }
+begin
+  interactiveheader;
+  { random number & normal init. }
+  randomize; initrandomnormaldeviate;
+  { file/device init. }
+   open_input(cfile, interactive, '   classifier  ', fn);
+   open_input(efile, interactive, '  environment  ', fn);
+   open_input(rfile, interactive, ' reinforcement ', fn);
+   open_input(tfile, interactive, '  timekeeper   ', fn);
+   open_input(gfile, interactive, 'gen. algorithm ', fn);
+  open_output(  rep, interactive, '     report    ', fn);
+  open_output(pfile, interactive, '   plot file   ', fn);
+  { segment initialization: class., obj., det., aoc, reinf., timekeep., ga }
+  initrepheader(rep);
+  initclassifiers(cfile, population);
+  initrepclassifiers(rep, population);
+  initenvironment(efile, environrec);
+  initrepenvironment(rep, environrec);
+  initdetectors(efile, detectrec);
+  initrepdetectors(rep, detectrec);
+  initaoc(clearingrec);
+  initrepaoc(rep, clearingrec);
+  initreinforcement(rfile, reinforcementrec);
+  initrepreinforcement(rep, reinforcementrec);
+  inittimekeeper(tfile, timekeeprec);
+  initreptimekeeper(rep, timekeeprec);
+  initga(gfile, garec, population);
+  initrepga(rep, garec);
+end;
+

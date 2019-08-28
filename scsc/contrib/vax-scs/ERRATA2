@@ -1,0 +1,90 @@
+From Informatik.Uni-Dortmund.DE!Germany.EU.net!news.netmbx.de!mailgzrz.TU-Berlin.DE!math.fu-berlin.de!fauern!ira.uka.de!yale.edu!qt.cs.utexas.edu!cs.utexas.edu!zaphod.mps.ohio-state.edu!magnus.acs.ohio-state.edu!bgsuvax!uoft02.utoledo.edu!cscon143 Fri Feb  5 09:08:39 1993
+Article: 235 of comp.ai.genetic
+Path: Informatik.Uni-Dortmund.DE!Germany.EU.net!news.netmbx.de!mailgzrz.TU-Berlin.DE!math.fu-berlin.de!fauern!ira.uka.de!yale.edu!qt.cs.utexas.edu!cs.utexas.edu!zaphod.mps.ohio-state.edu!magnus.acs.ohio-state.edu!bgsuvax!uoft02.utoledo.edu!cscon143
+From: cscon143@uoft02.utoledo.edu
+Newsgroups: comp.ai.genetic
+Subject: SCS: Errata Errata
+Message-ID: <1993Feb4.115808.1521@uoft02.utoledo.edu>
+Date: 4 Feb 93 11:58:08 EST
+References: <1993Feb4.022419.1517@uoft02.utoledo.edu>
+Organization: University of Toledo, Computer Services
+Lines: 76
+
+>> Erik,
+>> 
+>> I did get your last file declare.scs but the compilation 
+>> blew after that. In the declaration of "population" there 
+>> is no "initialstrength" component.
+>> 
+
+ 	I know what happened.  There are one of two ways to fix this.
+	(version B is more like the one in the book)
+ 
+ 	A: 
+
+	  Step 1:  Modify the poptype structure in delare.scs:
+ 
+ 		typedef{
+ 			 .
+ 			 .
+ 			 .
+ 			 float initialstrength;   /* no initial value needed */
+ 		       }poptype;		
+	
+            Initialstrength is the initial strength for all the classifiers.
+	    It is read in from the data file by the line in perform.scs:
+
+		 fscanf(cfile,"%f%*s",&population.initialstrength);	
+
+
+ 
+     or  B: 
+
+ 
+	 Step 1: 
+
+	    Delete the line for initialstrength from the data files.	
+
+	  Step 2:
+
+	    Delete the line in perform.scs:
+
+		fscanf(cfile,"%f%*s",&population.initialstrength);	
+
+ 	 Step 3:
+	
+	  Modify the data files so that each classifier has a strength
+ 	   after it.  For example:
+ 
+ 
+ 	       	###000:0 10
+ 		###100:1 10
+ 		##0#01:0 10
+ 
+ 	   instead of:
+ 
+ 		###000:0
+ 		###100:1
+ 		##0#01:0
+
+	Step 4:
+
+	   Change the line in readclassifier() subroutine in perform.scs: 
+ 
+ 		class->stength = population.initialstrength;
+ 
+ 	   to:
+ 
+ 		fscanf("%f",&class->strength);
+
+
+
+	(Phew!)  That should be about it. 
+ 
+					- Erik Mayer 
+___
+  Internet: cscon143@uoft02.utoledo.edu    
+  Bitnet: cscon143@uoft02.BITNET                 
+
+
+

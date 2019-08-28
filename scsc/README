@@ -1,0 +1,42 @@
+SCS-C:
+-----
+
+   SCS-C is a (`mostly ANSI') C language translation and extension
+of Goldberg's Simple Classifier System, as presented in Appendix D
+in his seminal book "Genetic Algorithms in Search, Optimization, and
+Machine Learning", Addison-Wesley, Reading MA, 1989.
+
+   SCS-C has been developed in parallel on a Sun4 10/30 and an ATARI ST,
+and thus should be quite portable. It is also configurable (1) for the
+operating system you're running, and (2) the compiler you're using.
+Refer to the documentation on how to configure SCS-C for your needs.
+
+   SCS-C is distributed free of charge and the other terms of the GPL, ie.
+the GNU General Public License. Included are some additional goodies,
+e.g. the VAX/VMS version of SCS. Rewritten in C by Erik Mayer
+<emayer@uoft02.utoledo.edu> (see contrib/vax-scs/*), some random
+number generators (see contrib/plauger/*, contrib/knuth/*, contrib/vlcr/*),
+and a short paper (docs/repro.*) that reproduces the results from Chapter 6
+of Goldberg's book, and explains, why the generated figures of SCS-C
+simply cannot resemble the printed exactly. Some parts of the distribution
+are therefore "individually copyrighted", ie. by other authors, and
+are protected by the COPYLITE protection scheme. Refer to the file
+of the same name, that comes with the source distribution.
+
+   SCS-C v0.99j is available via ftp from lumpi.informatik.uni-dortmund.de
+(129.217.36.140).  Log in with user name "ftp" and give your full e-mail
+address as password.  The file scs-c-0.99j.tar.gz in directory /pub/LCS/src
+contains the complete software distribution; the documentation alone
+is available as scs-c-doc.tar.gz in directory /pub/LCS/docs.
+(You will need the GNU gzip/gunzip packages to uncompress the file(s)).
+
+For more information contact:
+
+	Joerg Heitkoetter
+       <joke@ls11.informatik.uni-dortmund.de>
+
+    c/o Systems Analysis Group, LSXI               ////
+	Department of Computer Science        UNI DO// 
+	University of Dortmund               ___ ////
+	D-44221 Dortmund                     \*\\///
+	Germany                               \\\\/

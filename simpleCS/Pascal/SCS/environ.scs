@@ -1,0 +1,96 @@
+{ environ.scs: multiplexer environment }
+
+{ environment declarations }
+type  erecord=record
+               laddress, ldata, lsignal, address, output,
+                classifieroutput:integer;
+               signal:message;
+              end;
+
+var   environrec:erecord;
+      efile:text;
+
+procedure generatesignal(var environrec:erecord);
+{ generate random signal }
+var j:integer;
+begin with environrec do
+ for j := 1 to lsignal do
+   if flip(0.5) then signal[j] := 1
+    else signal[j] := 0
+end;
+
+function decode(var mess:message; start, length:integer):integer;
+{ decode substring as unsigned binary integer }
+var j, accum, powerof2:integer;
+begin
+ accum := 0; powerof2 := 1;
+ for j := start to start+length-1 do begin
+   accum := accum + powerof2*mess[j];
+   powerof2 := powerof2 * 2;
+  end;
+ decode := accum
+end;
+
+procedure multiplexeroutput(var environrec:erecord);
+{ calculate correct multiplexer output }
+var j:integer;
+begin with environrec do begin
+{ decode the address }
+ address := decode(signal,1,laddress);
+{ set the output }
+ output := signal[laddress + address + 1]
+end end;
+
+procedure environment(var environrec:erecord);
+{ coordinate multiplexer calculations }
+begin
+ generatesignal(environrec);
+ multiplexeroutput(environrec);
+end;
+
+procedure initenvironment(var efile:text; var environrec:erecord);
+{ initialize the multiplexer environement }
+var j:integer;
+begin with environrec do begin
+ readln(efile, laddress);                  { read number of address lines }
+ ldata   := round(poweri(2.0, laddress));  { calculate number of data lines }
+ lsignal := laddress + ldata;              { calculate length of signal }
+ address := 0;                             { zero out multiplexer }
+ output  := 0;
+ classifieroutput := 0;
+ for j := 1 to lsignal do signal[j] := 0;
+end end;
+
+procedure initrepenvironment(var rep:text; var environrec:erecord);
+{ write initial environmental report }
+begin with environrec do begin
+  writeln(rep);
+  writeln(rep, 'Environmental Parameters (Multiplexer)');
+  writeln(rep, '--------------------------------------');
+  writeln(rep, 'Number of address lines  = ', laddress:8);
+  writeln(rep, 'Number of data lines     = ', ldata:8);
+  writeln(rep, 'Total number of lines    = ', lsignal:8);
+end end;
+
+procedure writesignal(var rep:text; var signal:message; lsignal:integer);
+{ write a signal in bit-reverse order }
+var j:integer;
+begin
+ for j := lsignal downto 1 do
+  write(rep,signal[j]:1)
+end;
+
+procedure reportenvironment(var rep:text; var environrec:erecord);
+{ write current multiplexer info }
+begin with environrec do begin
+ writeln(rep);
+ writeln(rep,'Current Multiplexer Status');
+ writeln(rep,'--------------------------');
+   write(rep,'Signal                =   ');
+   writesignal(rep,signal,lsignal); writeln(rep);
+ writeln(rep,'Decoded address       = ', address:8);
+ writeln(rep,'Multiplexer output    = ', output:8);
+ writeln(rep,'Classifier  output    = ', classifieroutput:8);
+end end;
+
+

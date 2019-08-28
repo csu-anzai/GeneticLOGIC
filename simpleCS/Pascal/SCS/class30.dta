@@ -1,0 +1,43 @@
+6          { nposition }           { class.dta }
+30         { nclassifier }
+0.75       { pgeneral }
+0.1        { cbid }
+0.1        { bidsigma }
+0.01       { bidtax }
+0.002      { lifetax }
+0.5        { bid 1 }
+0.0833     { bid 2 }
+0.5        { ebid 1 }
+0.0833     { ebid 2 }
+RRRRRR:0  10
+RRRRRR:0  10
+RRRRRR:0  10
+RRRRRR:0  10
+RRRRRR:0  10
+RRRRRR:0  10
+RRRRRR:0  10
+RRRRRR:0  10
+RRRRRR:0  10
+RRRRRR:0  10
+RRRRRR:0  10
+RRRRRR:0  10
+RRRRRR:0  10
+RRRRRR:0  10
+RRRRRR:0  10
+RRRRRR:1  10
+RRRRRR:1  10
+RRRRRR:1  10
+RRRRRR:1  10
+RRRRRR:1  10
+RRRRRR:1  10
+RRRRRR:1  10
+RRRRRR:1  10
+RRRRRR:1  10
+RRRRRR:1  10
+RRRRRR:1  10
+RRRRRR:1  10
+RRRRRR:1  10
+RRRRRR:1  10
+RRRRRR:1  10
+n               { bucketbrigadeflag }
+

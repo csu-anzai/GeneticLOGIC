@@ -1,0 +1,10 @@
+#!/bin/csh -f
+set debug = xups		# your favourite debugger here
+
+$debug -geometry 640x836-32+32 scs
+
+set lines = `wc -l plot.out | awk -e '{print $1}'`
+
+if ($lines > 0) then
+    gnuplot debug.gnu
+endif

@@ -1,0 +1,6 @@
+{ advance.scs: advance variables for next time step }
+
+procedure advance(var clearingrec:crecord);
+{ advance winner }
+begin with clearingrec do oldwinner := winner end;
+

@@ -1,0 +1,67 @@
+This directory contains the source of pga.
+
+Use
+   make pga
+to make it in this directory; then put the executable where you like.
+Use
+   make clean
+to tidy up.
+
+Remember that the demo versions of the files
+   rrdata ... giving parameters for the Royal Road (-err) problem
+   weights .. giving parameters for the knapsack (-eknap) problem
+are in the parent directory rather than this directory.
+
+Note: this code illustrates how some simple C mistakes can foul up
+      your results wonderfully without you noticing. In select.c 
+      there is a line
+        extern double sqrt();
+      Change it to
+        extern double srqt();   /* OOPS, misspelt */
+      and some C compilers will not complain - they will be unsurprised
+      that srqt() is never called, and they will assume that sqrt()
+      in rank_select() is returning an int. The code will still run,
+      but you will get very significantly different performance results!
+      Such problems more commonly occur with older K+R-type C compilers.
+      Many other examples of silent but unintended type coercions
+      can appear if you are not careful. For example, I once mistakenly
+      used a long to accumulate the size of the roulette wheel for
+      fitprop selection, even though the fitnesses are doubles; this
+      makes little difference except, for example, when all the
+      fitnesses lie in the range 0..1, when the effect is dramatic!
+      I wonder how many research papers contain results that are
+      radically affected by such trivial mistakes?
+
+
+INFORMATION FOR NON-UN*X USERS
+
+PGA uses the following system calls for its display. If you don't use
+Un*x you may wish to write replacements for these to suit your own
+system.
+
+initscr() ..... Does any initial things to your screen.
+endwin() ...... Tidies up the screen.
+tgetnum("li") . Returns the height of the screen in lines of text.
+move(Row,Col) . Moves the cursor to the given row and column.
+mvprintw(Row,Col,ControlString,Args..)
+                Moves the cursor to the given row and column and then
+                behaves rather like printf(..).
+clrtoeol() .... Clears to end of current screen line from cursor position.
+getch() ....... Returns next character typed.
+refresh() ..... Makes any screen changes done by the above functions
+                actually happen. Some operating systems won't need this.
+
+cbreak() ...... Lets your program read characters when typed, rather
+                than the operating system treasuring up complete lines
+                before pasing them to the program. On some operating
+                systems this isn't a problem, of course.
+nocbreak() .... Undoes the above.
+noecho() ...... Input doesn't echo on the screen any more.
+echo() ........ Undoes the above.
+
+
+
+
+Peter Ross
+Department of AI
+September 1993

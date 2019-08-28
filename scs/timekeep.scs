@@ -1,0 +1,99 @@
+/* timekeep.scs: timekeeper routines */
+
+#define ITERATIONSPERBLOCK 10000	/* 10,000 iterations per block */
+ 
+
+typedef struct{
+		int initialiteration,initialblock,iteration,block,reportperiod,
+			gaperiod,consolereportperiod,plotreportperiod,
+			nextplotreport,nextconsolereport,nextreport,nextga,
+			iterationsbrigade;
+		boolean reportflag,gaflag,consolereportflag,plotreportflag;
+		}  trecord;
+
+trecord timekeeprec;
+
+FILE *tfile;
+
+int addtime(t,dt,carryflag)	/* increment iterations counter */
+	int t,dt;
+	boolean carryflag;
+{
+	int tempadd;
+	tempadd = t+dt;
+	carryflag = (tempadd >= ITERATIONSPERBLOCK);
+	if(carryflag) tempadd = tempadd % ITERATIONSPERBLOCK;
+	return(tempadd);
+}
+
+inittimekeeper()	/* initialize timekeeper */
+{
+	boolean dummyflag;
+	timekeeprec.iteration = 0;
+	timekeeprec.block = 0;
+
+	fscanf(tfile,"%d%*s",&timekeeprec.initialiteration);
+	fscanf(tfile,"%d%*s",&timekeeprec.initialblock);
+	fscanf(tfile,"%d%*s",&timekeeprec.reportperiod);
+	fscanf(tfile,"%d%*s",&timekeeprec.consolereportperiod);
+	fscanf(tfile,"%d%*s",&timekeeprec.plotreportperiod);
+	fscanf(tfile,"%d%*s",&timekeeprec.gaperiod);
+	fscanf(tfile,"%d%*s",&timekeeprec.iterationsbrigade);
+
+	timekeeprec.iteration = timekeeprec.initialiteration;
+	timekeeprec.block = timekeeprec.initialblock;
+	timekeeprec.nextga = addtime(timekeeprec.iteration,timekeeprec.gaperiod,
+		dummyflag);
+	timekeeprec.nextreport = addtime(timekeeprec.iteration,
+		timekeeprec.reportperiod,dummyflag);
+	timekeeprec.nextconsolereport = addtime(timekeeprec.iteration,
+		timekeeprec.consolereportperiod,dummyflag);	 
+	timekeeprec.nextplotreport = addtime(timekeeprec.iteration,
+		timekeeprec.plotreportperiod,dummyflag);
+}
+
+initreptimekeeper()	/* initialize timekeeper */
+{
+	fprintf(rep,"\nTimekeeper Parameters\n");
+	fprintf(rep,"---------------------\n");
+	fprintf(rep,"Initial iteration  = %d\n",timekeeprec.initialiteration);
+	fprintf(rep,"Initial block      = %d\n",timekeeprec.initialblock);
+	fprintf(rep,"Report period      = %d\n",timekeeprec.reportperiod);
+	fprintf(rep,"Con report period  = %d\n",
+		timekeeprec.consolereportperiod);
+	fprintf(rep,"Plot report period = %d\n",timekeeprec.plotreportperiod);
+	fprintf(rep,"GA period          = %d\n",timekeeprec.gaperiod);
+}
+
+timekeeper()	/* keep time and set flags for time-driven events */
+{
+	boolean carryflag, dummyflag;
+	
+	timekeeprec.iteration = addtime(timekeeprec.iteration,1,carryflag);
+	if(carryflag) ++timekeeprec.block;
+	timekeeprec.reportflag = (timekeeprec.nextreport == 
+		timekeeprec.iteration);
+	if(timekeeprec.reportflag) 
+		timekeeprec.nextreport = addtime(timekeeprec.iteration,
+			timekeeprec.reportperiod, dummyflag);
+	timekeeprec.consolereportflag = (timekeeprec.nextconsolereport ==
+		timekeeprec.iteration);
+	if(timekeeprec.consolereportflag)
+		timekeeprec.nextconsolereport = addtime(timekeeprec.iteration,
+			timekeeprec.consolereportperiod, dummyflag);
+	timekeeprec.plotreportflag = (timekeeprec.nextplotreport ==
+		timekeeprec.iteration);
+	if(timekeeprec.plotreportflag)
+		timekeeprec.nextplotreport = addtime(timekeeprec.iteration,
+			timekeeprec.plotreportperiod, dummyflag);
+	timekeeprec.gaflag = (timekeeprec.nextga == timekeeprec.iteration);
+	if(timekeeprec.gaflag)
+		timekeeprec.nextga = addtime(timekeeprec.iteration,
+			timekeeprec.gaperiod, dummyflag);
+}
+
+reporttime()	/* print out block and iteration number */
+{
+	fprintf(rep,"[Block:iteration] = [%d:%d]\n",timekeeprec.block,
+		timekeeprec.iteration);
+}

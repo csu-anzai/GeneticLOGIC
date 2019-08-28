@@ -1,0 +1,9 @@
+
+/* effector.scs:
+	effector routine */
+
+effector ()
+{
+    environrec.classifieroutput =
+	population.classifier[clearingrec.winner].a;
+}

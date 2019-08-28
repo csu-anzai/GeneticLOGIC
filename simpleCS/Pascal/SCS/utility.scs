@@ -1,0 +1,79 @@
+{ utility.scs: utility procedures and functions }
+
+function poweri(x:real; i:integer):real;
+var powertemp:real;
+begin
+ powertemp := 1.0;
+ if i=0 then powertemp := 1.0
+  else if i>0 then
+    repeat
+     powertemp := powertemp * x;
+     i := i - 1
+    until i=0
+   else if i<0 then
+     repeat
+      powertemp := powertemp / x;
+      i := i + 1
+     until i=0;
+ poweri := powertemp
+end;
+
+{ global variables for randomnormaldeviate - watch for conflicting names }
+var rndx2:real;
+    rndcalcflag:boolean;
+
+procedure initrandomnormaldeviate;
+{ initialization routine for randomnormaldeviate }
+begin rndcalcflag := true end;
+
+function randomnormaldeviate:real;
+{ random normal deviate after ACM algorithm 267 / Box-Muller Method }
+var t, rndx1:real;
+begin
+ if rndcalcflag then begin
+    rndx1 := sqrt(-2.0*ln(random));
+    t  := 6.2831853072 * random;
+    rndx2 := rndx1 * sin(t);
+    rndcalcflag := false;
+    randomnormaldeviate := rndx1 * cos(t)
+  end else begin
+    randomnormaldeviate := rndx2;
+    rndcalcflag := true
+  end;
+end;
+
+function noise(mu, sigma:real):real;
+{ normal noise with specified mean & std dev: mu & sigma }
+begin noise := randomnormaldeviate * sigma + mu end;
+
+function rndreal(lo, hi:real):real;
+{ real random number between specified limits }
+begin rndreal := random*(hi-lo) + lo end;
+
+function max(x, y:real):real;
+{ return maximum of two values }
+begin if x > y then max := x else max := y end;
+
+function min(x, y:real):real;
+{ return minimum of two real values }
+begin if x < y then min := x else min := y end;
+
+function avg(x, y:real):real;
+{ return average of two real values }
+begin avg := 0.5 * (x + y) end;
+
+function halt:boolean;
+{ Test for key press and query for halt flag }
+const times = 100;
+var temp:boolean; ch:char; j:integer;
+begin
+  j := 0;
+  repeat j := j+1 until keypressed or (j>=times);
+  temp := (j<times);
+  if temp then begin
+     write('Halt (y/n)? > '); readln(ch);
+     temp := (ch = 'y') or (ch = 'Y');
+    end;
+  halt := temp;
+end;
+

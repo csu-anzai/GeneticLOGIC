@@ -1,0 +1,36 @@
+/* report.scs */
+
+FILE *pfile;   /* plot file */ 
+
+reportheader()	/* print report header */
+{
+	fprintf(rep,"\nSnapshot Report\n");
+	fprintf(rep,"---------------\n");
+}
+
+report()	/* report coordination routine */
+{
+	reportheader();
+	reporttime();
+	reportenvironment();
+	reportdetectors(population.nposition);
+	reportclassifiers();
+	reportaoc();
+	reportreinforcement();
+}
+
+consolereport()		/* print console report */
+{
+	printf("|-------------------------------|\n");
+	printf("   Iteration=   %f\n",reinforcementrec.totalcount);
+	printf("   P correct=   %f\n",reinforcementrec.proportionreward);
+	printf("   P50 correct= %f\n",reinforcementrec.proportionreward50);
+	printf("|-------------------------------|\n");
+}
+
+plotreport()	/* write points to plot file */
+{
+	fprintf(pfile,"%f %f %f\n",reinforcementrec.totalcount,
+		reinforcementrec.proportionreward,
+		reinforcementrec.proportionreward50);
+}	

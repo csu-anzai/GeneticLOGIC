@@ -1,0 +1,154 @@
+{ perform.scs: performance system - classifier matching }
+
+{ performance declarations - most are in declare.scs }
+var cfile:text;   { classifier file }
+
+function randomchar(pgeneral:real):integer;
+{ set position at random with specified generality probability }
+begin
+  if flip(pgeneral) then randomchar := wildcard
+   else if flip(0.5) then randomchar := 1
+    else randomchar := 0
+end;
+
+procedure readcondition(var cfile:text; var c:condition;
+                        var pgeneral:real; var nposition:integer);
+{ read a single condition }
+var ch:char; j:integer;
+begin
+  for j := nposition downto 1 do begin
+     read(cfile, ch);
+     case ch of
+       '0':c[j] :=  0;
+       '1':c[j] :=  1;
+       '#':c[j] := wildcard;
+       'R':c[j] :=  randomchar(pgeneral);
+      end
+   end
+end;
+
+procedure readclassifier(var cfile:text; var class:classtype;
+                             pgeneral:real; nposition:integer);
+{ read a single classifier }
+var ch:char;
+begin with class do begin
+  readcondition(cfile, c, pgeneral, nposition);  { read condtion }
+  read(cfile,ch);                                { read ":" & ignore }
+  read(cfile, a);                                { read action, a single trit }
+  readln(cfile, strength);                       { read strength }
+  bid := 0.0; ebid := 0.0; matchflag := false    { initialization }
+end end;
+
+function countspecificity(var c:condition; nposition:integer):integer;
+{ count condition specificity }
+var temp:integer;
+begin
+ temp := 0;
+ while nposition >= 1 do begin
+   if c[nposition] <> wildcard then temp := temp + 1;
+   nposition := nposition - 1;
+  end;
+ countspecificity := temp;
+end;
+
+procedure initclassifiers(var cfile:text; var population:poptype);
+{ initialize classifiers }
+var j:integer;
+begin with population do begin
+ readln(cfile,nposition);
+ readln(cfile,nclassifier);
+ readln(cfile,pgeneral);
+ readln(cfile,cbid);
+ readln(cfile,bidsigma);
+ readln(cfile,bidtax);
+ readln(cfile,lifetax);
+ readln(cfile,bid1);
+ readln(cfile,bid2);
+ readln(cfile,ebid1);
+ readln(cfile,ebid2);
+ for j := 1 to nclassifier do begin
+   readclassifier(cfile, classifier[j], pgeneral, nposition);
+   with classifier[j] do specificity := countspecificity(c, nposition);
+  end;
+end end;
+
+procedure initrepclassifiers(var rep:text; var population:poptype);
+{ Initial report on population parameters }
+begin with population do begin
+  writeln(rep);
+  writeln(rep,'Population Parameters');
+  writeln(rep,'---------------------');
+  writeln(rep,'Number of classifiers    = ',nclassifier:8);
+  writeln(rep,'Number of positions      = ',nposition:8);
+  writeln(rep,'Bid coefficient          = ',cbid:8:4);
+  writeln(rep,'Bid spread               = ',bidsigma:8:4);
+  writeln(rep,'Bidding tax              = ',bidtax:8:4);
+  writeln(rep,'Existence tax            = ',lifetax:8:4);
+  writeln(rep,'Generality probability   = ',pgeneral:8:4);
+  writeln(rep,'Bid specificity base     = ',bid1:8:4);
+  writeln(rep,'Bid specificity mult.    = ',bid2:8:4);
+  writeln(rep,'Ebid specificity base    = ',ebid1:8:4);
+  writeln(rep,'Ebid specificity mult.   = ',ebid2:8:4);
+end end;
+
+procedure writecondition(var rep:text; var c:condition; nposition:integer);
+{ convert internal condition format to external format and write to file/dev. }
+var j:integer;
+begin
+ for j := nposition downto 1 do
+   case c[j] of
+           1: write(rep,'1');
+           0: write(rep,'0');
+    wildcard: write(rep,'#');
+   end
+end;
+
+procedure writeclassifier(var rep:text; class:classtype;
+                              number,nposition:integer);
+{ write a single classifier }
+begin with class do begin
+ write(rep, number:5,' ',strength:8:2,' ',bid:8:2,' ',ebid:8:2);
+ if matchflag then write(rep,' X ') else write(rep,'   ');
+ writecondition(rep, c, nposition);
+ writeln(rep,':','[',a,']')
+end end;
+
+procedure reportclassifiers(var rep:text; var population:poptype);
+{ generate classifiers report }
+var j:integer;
+begin with population do begin
+ writeln(rep);
+ writeln(rep,'No.   Strength     bid      ebid M Classifier ');
+ writeln(rep,'-----------------------------------------------------');
+ writeln(rep);
+ for j := 1 to nclassifier do
+   writeclassifier(rep, classifier[j], j, nposition);
+end end;
+
+function match(var c:condition; var m:message; nposition:integer):boolean;
+{ match a single condition to a single message }
+var matchtemp:boolean;
+begin
+  matchtemp := true;
+  while (matchtemp = true) and (nposition > 0) do begin
+    matchtemp := (c[nposition] = wildcard) or (c[nposition] = m[nposition]);
+    nposition := nposition - 1
+   end;
+  match := matchtemp
+end;
+
+procedure matchclassifiers(var population:poptype; var emess:message;
+                           var matchlist:classlist);
+{ match all classifiers against environmental message and create match list }
+var j:integer;
+begin with population do with matchlist do begin
+  nactive := 0;
+  for j := 1 to nclassifier do with classifier[j] do begin
+    matchflag := match(c, emess, nposition);
+    if matchflag then begin
+       nactive := nactive + 1;
+       clist[nactive] := j
+     end
+   end;
+end end;
+

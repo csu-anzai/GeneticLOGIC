@@ -1,0 +1,302 @@
+/* ga.scs:
+	genetic algorithm code for SCS */
+
+#define MAXMATING (10+1)
+
+typedef struct{
+		int mate1,mate2,mort1,mort2,sitecross;
+	      }  mrecord;
+
+typedef mrecord marray[MAXMATING];
+
+typedef struct{
+		float proportionselect,pmutation,pcrossover;
+		int ncrossover,nmutation,crowdingfactor,crowdingsubpop,
+			nselect;
+		marray mating;
+	      }  grecord;
+
+grecord garec;
+
+FILE *gfile;
+
+initga()	/* initialize ga parameters */ 
+{
+	int j;
+	fscanf(gfile,"%f%*s",&garec.proportionselect);
+	fscanf(gfile,"%f%*s",&garec.pmutation);
+	fscanf(gfile,"%f%*s",&garec.pcrossover);
+	fscanf(gfile,"%d%*s",&garec.crowdingfactor);
+	fscanf(gfile,"%d%*s",&garec.crowdingsubpop);
+
+	/* number of matepairs to select */
+	j=(int)(garec.proportionselect*population.nclassifier*0.5);
+	garec.nselect=j;
+
+	garec.nmutation=0; garec.ncrossover=0;
+}
+
+initrepga()	/* initial report */
+{
+	fprintf(rep,"\nGenetic Algorithm Parameters\n");
+	fprintf(rep,"----------------------------\n");
+	fprintf(rep,"Proportion to select/gen  = %f\n",garec.proportionselect);
+	fprintf(rep,"Number to select          = %d\n",garec.nselect);
+	fprintf(rep,"Mutation probability      = %f\n",garec.pmutation);
+	fprintf(rep,"Crossover probability     = %f\n",garec.pcrossover);
+	fprintf(rep,"Crowding factor           = %d\n",garec.crowdingfactor);
+	fprintf(rep,"Crowding subpopulation    = %d\n",garec.crowdingsubpop);
+}
+
+int select()	/* select an individual according to strength */
+{
+	float rand,partsum;
+	int j;
+	
+	partsum = 0.0; j = 0;
+	rand = random() * population.sumstrength;
+	do {
+		++j;
+		partsum += population.classifier[j].strength;
+	}while((partsum < rand)&&(j<population.nclassifier));
+	return(j); 
+}
+
+trit mutation(positionvalue)
+/* mutate a single position with specified probability */
+	trit positionvalue;
+{
+	int tempmutation;
+	
+	if(flip(garec.pmutation)){
+		if(positionvalue=='#') positionvalue = 2;
+		else positionvalue -= '0';
+		tempmutation = (positionvalue + rnd(1,2)) % 3;
+		++garec.nmutation;
+	}
+	else return(positionvalue);
+	if(tempmutation==2) return('#');
+	else return(tempmutation+'0');
+}
+
+bit bmutation(positionvalue)
+/* mutate a single bit with specified probability */
+	bit positionvalue;
+{
+	int tempmutation;
+	
+	if(flip(garec.pmutation)){
+		tempmutation = ((positionvalue-'0') + 1) % 2;
+		++garec.nmutation;
+	}
+	else return(positionvalue);
+
+	return(tempmutation+'0');
+}
+
+
+crossover(i,child1,child2)
+	classtype *child1,*child2;
+	int i;
+{
+	int j;
+
+	if(flip(garec.pcrossover)) {
+		garec.mating[i].sitecross = rnd(1,population.nposition);
+		++garec.ncrossover;
+	}
+	/* transfer but no cross */
+	else garec.mating[i].sitecross = population.nposition + 1;
+
+	/* transfer action part regardless of sitecross */
+
+	child1->a = bmutation(population.classifier[garec.mating[i].mate1].a);
+	child2->a = bmutation(population.classifier[garec.mating[i].mate2].a);
+	
+	/* transfer and cross above cross site */
+	for(j = garec.mating[i].sitecross;j<=population.nposition;++j) {
+		child2->c[j] =
+		  mutation(population.classifier[garec.mating[i].mate1].c[j]);
+		child1->c[j] =
+		  mutation(population.classifier[garec.mating[i].mate2].c[j]);
+	}
+	/* transfer only below cross site */
+	for(j=1;j<garec.mating[i].sitecross;++j) {
+		child1->c[j] =
+		  mutation(population.classifier[garec.mating[i].mate1].c[j]);
+		child2->c[j] =
+		  mutation(population.classifier[garec.mating[i].mate2].c[j]);
+	}
+
+}
+
+int worstofn(n)
+	int n;
+{
+	int j,worst,candidate;
+	float worststrength;
+	
+	/* initialize with random selection */
+	worst = rnd(1,population.nclassifier);
+	worststrength = population.classifier[worst].strength;
+
+	/* select and compare from remaining subpopulation */
+	if(n>1) for(j=2;j<=n;++j) {
+		candidate = rnd(1,population.nclassifier);
+		if(worststrength>population.classifier[candidate].strength){
+			worst = candidate;
+			worststrength = population.classifier[worst].strength;
+		}
+	}
+	return(worst);
+}	
+
+int matchcount(classifier1,classifier2)
+/* count number of positions of similarity */
+	classtype *classifier1,*classifier2;
+{
+	int j,tempcount=0;
+
+	if(classifier1->a == classifier2->a) ++tempcount;
+	for(j=1;j<=population.nposition;++j)
+		if(classifier1->c[j]==classifier2->c[j]) ++tempcount;
+	return(tempcount);
+}
+
+int crowding(child)
+/* replacement using modified De Jong crowding */
+	classtype *child;
+{
+	int popmember,j,match,matchmax,mostsimilar,factor;
+	
+	matchmax = -1; mostsimilar = 0;
+	if(garec.crowdingfactor < 1) factor = 1;
+	else factor = garec.crowdingfactor;
+	for(j=1;j<=factor;++j) {
+		
+		/* pick worst of n */
+		popmember = worstofn(garec.crowdingsubpop);
+ 
+		match = matchcount(child,&population.classifier[popmember]);
+
+		if(match>matchmax) {
+			matchmax = match;
+			mostsimilar = popmember;
+		}
+	}
+	return(mostsimilar);
+}			
+ 
+statistics()
+/* population statistics - max, avg, min, sum of strength */
+{
+	int j;
+	
+	population.maxstrength = population.classifier[1].strength;
+	population.minstrength = population.classifier[1].strength;
+	population.sumstrength = population.classifier[1].strength;
+
+	for(j=2;j<=population.nclassifier;++j) {
+		population.maxstrength = max(population.maxstrength,
+			 population.classifier[j].strength);
+		population.minstrength = min(population.minstrength,
+			 population.classifier[j].strength);
+		population.sumstrength += population.classifier[j].strength;
+	}
+	population.avgstrength = population.sumstrength/population.nclassifier;	
+}
+
+ga()
+/* coordinate selection, mating, crossover, mutation, and replacement */
+{
+	int j,k,n,mate1,mate2,mort1,mort2;
+	classtype child1,child2;
+	float inheritance;
+
+	statistics();		/* get avg,max,min,sumstrength */
+
+	for(j=1;j<=garec.nselect;++j) {
+
+		garec.mating[j].mate1 = select();
+		garec.mating[j].mate2 = select();
+		mate1 = garec.mating[j].mate1;
+		mate2 = garec.mating[j].mate2;
+
+		/* cross and mutate */
+		crossover(j,&child1,&child2);
+
+		garec.mating[j].mort1 = crowding(&child1);
+		mort1 = garec.mating[j].mort1;
+
+	/* children inherit average of parental strength values */
+
+	inheritance =
+	      (population.classifier[mate1].strength+
+	      population.classifier[mate2].strength)/2.0;
+
+		population.sumstrength += (inheritance -
+			population.classifier[mort1].strength);
+
+		for(k=1;k<=population.nposition;++k)
+			population.classifier[mort1].c[k] = 
+				child1.c[k];
+
+		population.classifier[mort1].a = child1.a;
+		population.classifier[mort1].strength = 
+			inheritance;
+		population.classifier[mort1].matchflag = 0;
+		population.classifier[mort1].ebid = 0.0;
+		population.classifier[mort1].bid = 0.0;
+		population.classifier[mort1].specificity =
+			countspecificity(population.classifier[mort1].c,
+			  population.nposition);
+
+		garec.mating[j].mort2 = crowding(&child2);
+		mort2 = garec.mating[j].mort2;
+
+		population.sumstrength += (inheritance -
+			population.classifier[mort2].strength);
+
+		for(k=1;k<=population.nposition;++k)
+			population.classifier[mort2].c[k] = 
+				child2.c[k];
+		
+		population.classifier[mort2].a = child2.a;
+		population.classifier[mort2].strength =
+			 inheritance;
+		population.classifier[mort2].matchflag = 0;
+		population.classifier[mort2].ebid = 0.0;
+		population.classifier[mort2].bid = 0.0;
+		population.classifier[mort2].specificity =
+			countspecificity(population.classifier[mort2].c,
+			  population.nposition);
+
+
+	}
+}
+
+reportga()
+/* report on mating, crossover, and replacement */
+{
+	int j;
+	
+	fprintf(rep,"\nGenetic Algorithm Report\n");
+	fprintf(rep,"------------------------\n\n");
+	fprintf(rep,"Pair  Mate1  Mate2  SiteCross  Mort1  Mort2\n");
+	fprintf(rep,"-------------------------------------------\n");
+	for(j=1;j<=garec.nselect;++j)
+	{
+	fprintf(rep,"%4d   %4d   %4d   %4d       %4d   %4d\n",j,
+		garec.mating[j].mate1,garec.mating[j].mate2,
+		garec.mating[j].sitecross,garec.mating[j].mort1,
+		garec.mating[j].mort2);
+	}
+	fprintf(rep,"\nStatistics Report\n");
+	fprintf(rep,"-----------------\n");
+	fprintf(rep,"  Average strength  = %f\n",population.avgstrength);
+	fprintf(rep,"  Maximum strength  = %f\n",population.maxstrength);
+	fprintf(rep,"  Minimum strength  = %f\n",population.minstrength);
+	fprintf(rep,"  Sum of strength   = %f\n",population.sumstrength);
+	fprintf(rep," Number of crossings= %d\n",garec.ncrossover);
+	fprintf(rep," Number of mutations= %d\n",garec.nmutation);
+}

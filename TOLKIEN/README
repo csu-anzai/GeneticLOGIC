@@ -1,0 +1,39 @@
+1. CONTENT OF THIS DIRECTORY
+============================
+
+This directory contains several files and sub-directories :
+
+Files
+=====
+README			This file
+compiler.dif            Some differences in BC++ and g++
+warning.log             Explanation of some compiler warnings
+change.log              Changes made to date
+
+SUB-DIRECTORIES
+===============
+gnu                     source code and header files of GNU classes
+                        (contained in two sub-directories)
+include                 header files
+src                     source code
+samples                 sample programs, including :
+			De Jong's test bed,
+                        classifier system for a multiplexer problem,
+                        classifier system for a maze navigator,
+			Multimodal function optimization 
+		          using deterministic crowding,
+			Royal road functions,
+			TSP
+			
+2.  COMPATIBLE COMPILERS
+========================
+TOLKIEN has been tested under two environments :
+
+i)      BORLAND C++ ver. 3.1 on IBMPC
+ii)     GNU C++ (ver. 2.5.x) on SUN SPARC
+
+3.  BUGS AND SUGGESTIONS
+========================
+If you find any bugs or if you have any suggestions for improvement,
+please send to me at tang028@cs.cuhk.hk .
+

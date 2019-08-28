@@ -1,0 +1,70 @@
+--- $Id: INSTALL,v 1.1 1993/12/06 14:16:55 joke Exp $
+
+    Go though the following steps to compile/install SCS-C on your system:
+
+  * read CONFIGME. And "configure" SCS-C according to these rules.
+
+  * say "make" to build the executable "scsc".
+
+  * say "make doc" to generate the TeX DVI/PostScript documents
+"repro.dvi", "repro.ps", "scsc.dvi", "scsc.ps" in the "./docs" folder.
+
+  * that's all.
+
+			-= * =-
+
+    Some more on SCS-C tuning:
+
+  * to re-build the figures used in "./docs/repro.ps" just say "make figs".
+You need to have Gnuplot 3.5 installed on your system, though.
+
+  * to build SCS-C with a different "random number genetrator" edit the
+Makefile at these lines:
+
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+#	Random number generator setup (uncomment the one you want)
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+RANDOM	= $(SRC)/random.o	# Goldberg's default generator (Knuth 1981)
+#RANDOM	= $(SRC)/vlcr.o		# BYTE's very long cycled generator
+#RANDOM	= $(SRC)/prand.o	# Plauger's ANSI C random number generator
+#RANDOM	= $(SRC)/srand.o	# UN*X simple random number generator
+#RANDOM	= $(SRC)/rand48.o	# UN*X sophisticated random number generator
+
+  * to build SCS-C using a different compiler edit the Makefile at these
+lines:
+
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+#	C compiler & tools
+# -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+# define:
+#  -DLOCAL_MAINTAINER  if you want to support SCS-C locally (see version.h)
+CC	= cc
+CFLAGS	= -g -w
+
+#CC	= gcc
+#CFLAGS	= -g -O
+
+#CC	= acc
+#CFLAGS	= -g -w
+
+  * to support SCS-C locally define "-DLOCAL_MAINTAINER" in CFLAGS and
+ewdit the "./src/version.h" file accordingly.
+
+  * some more tools on your system are required to build all parts of SCS-C:
+
+MKPS	= "dvips -tletter -r -f"
+MKDEP	= makedepend
+MKPRO	= mkproto
+MKTAGS	= ctags -t
+MKPRETTY= tgrind
+
+LATEX	= latex
+BIBTEX	= bibtex
+
+DITROFF	= groff -Tps
+NROFF	= nroff
+
+COMPRESS= gzip -9 -v
+ZSUFF	= gz
+
+  *  Enjoy!

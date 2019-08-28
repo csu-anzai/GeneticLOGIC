@@ -1,0 +1,442 @@
+\documentstyle[a4,12pt]{article}
+
+\setlength{\oddsidemargin}{-0.5in}
+\setlength{\evensidemargin}{-0.5in}
+\setlength{\textwidth}{7in}
+
+\title{About PGA v2.5}
+\author{Peter Ross}
+\date{26 Sep 1993}
+
+\begin{document}
+\maketitle
+
+PGA was originally written by Geoffrey H. Ballinger and much modified
+and extended by Peter Ross, both at the University of Edinburgh. It is a
+simple testbed for multi-population genetic algorithms, with a choice of
+six well-known problems and a range of options. It is useful as a first
+introduction to genetic algorithms, but a package such as John
+Grefenstette's Genesis provides much more flexibility.
+
+\section*{The problems}
+
+In each of the problems below a chromosome (potential solution of the
+problem) is a string of 0s and 1s, which is decoded in a problem-specific way.
+The function value itself is taken as the `fitness function' of a
+chromosome, so the maximum of the function is also the maximum fitness.
+
+\begin{description}
+\item[max] The problem is to maximise the number of 1-bits in the
+  chromosome. The fitness of a chromosome is just the number of
+  1-bits.
+
+\item[dj1] De Jong's first function: the problem is to maximise the
+  function
+\[
+f(x_{1},x_{2},x_{3}) = 100 - x_{1}^{2} - x_{2}^{2} - x_{3}^{2}
+\] 
+  An $N$-bit chromosome is interpreted as three $N/3$-bit integers (last
+  two bits are ignored) and each integer is then rescaled to be a real
+  number in the range $-5.12$ to $+5.12$. The theoretical maximum
+  fitness is of course 100.
+
+\item[dj2] De Jong's second function: the problem is to maximise the
+  function
+\[
+f(x_{1},x_{2}) = 1000 - 100(x_{0}^{2}-x_{1})^{2} - (1-x_{0})^{2}
+\]
+  An $N$-bit chromosome is interpreted as two $N/2$-bit numbers, which
+  are then rescaled to be reals lying in the range $-2.048$ to $+2.048$.
+  The theoretical maximum fitness is 1000.
+
+\item[dj3] De Jong's third function: the problem is to maximise the
+  function
+\[
+f(x_{1},x_{2},x_{3},x_{4},x_{5}) = 25 -  \sum_{i=1}^{5}  \mbox{floor}(x_{i})
+\]
+  where the \verb|floor| function returns the largest integer not larger
+  than its argument. An $N$-bit chromosome is interpreted as five $N/5$-bit
+  numbers, which are then rescaled to lie in the range $-5.12$ to $5.12$.
+  This function has many flat plateaux; it would cause a hill-climbing
+  search algorithm severe problems.
+  The theoretical maximum fitness is 55.
+
+\item[dj5] De Jong's fifth function: the problem is to maximise the
+  function
+\[
+f(x_{1},x_{2}) = 500 - \frac{1}{0.002 + \sum_{j=1}^{25} \frac{1}{j + 
+   (x_{1} - a_{1j})^{6} + (x_{2} - a_{2j})^{6}}}
+\]
+  where an $N$-bit chromosome is interpreted as two $N/2$-bit
+  numbers, which are then rescaled to lie in the range $-65.536$ to
+  $65.536$. The numbers $a_{ij}$ are constants, typically taken from the
+  set $(0, {\pm}16, {\pm}32)$, so that the function has 25
+  equally-spaced and very pronounced maxima, only one of which is the
+  true global maximum. A hill-climbing search algorithm would be very
+  unlikely to find the global maximum. The theoretical maximum fitness
+  is about $499.001997$.
+
+\item[bf6] A modified form of the function `binary F6' used by Schaffer
+  et al (see {\em Proceedings of the Third International Conference on
+  Genetic Algorithms, 1989}) as a test for comparing efficiency of
+  different forms of genetic algorithm. The problem is to maximise the
+  function
+\[
+f(x_{1},x_{2}) = \frac{(\sin(\sqrt{x_{1}^{2} + x_{2}^{2}}))^{2}}{
+   1 + 0.001(x_{1}^{2} + x_{2}^{2})^{2}}
+\]
+  where an $N$-bit chromosome is interpreted as two $N/2$-bit numbers,
+  which are then rescaled to lie in the range $-100$ to $100$.
+  This function has many maxima, arranged in concentric rings
+  about the origin; all points on the ring closest to the origin 
+  (but not the origin itself) are the true global maxima. Each ring of
+  local maxima is separated from the next by a ring of local minima.
+  The theoretical maximum fitness of this function is about $0.994007$.
+
+\item[knap] A one-dimentsional knapsack problem. A target integer and
+  a further set of integers are read in from a file called `weights';
+  the size of the set can be as large as the size of a chromosome. The
+  input routine skips non-integers, so you can include textual
+  comments if you like; however, the very first item in the file must
+  be the target value. The task is to find a subset whose sum is as
+  close to the given target as possible, preferably exactly equal to
+  it. The fitness function is
+\[
+f(x_{1},\cdots,x_{n}) = \frac{1}{1 + 
+     \left| \mbox{target} - \sum_{i=1}^n x_i \right|}
+\] 
+  so that it has maximum value $1.0$, and is $0.5$ or less unless
+  the target is exactly obtained.
+
+\item[rr] The `Royal Road' function(s). In this problem each
+  chromosome is regarded as being composed of regularly-spaced
+  non-overlapping blocks of $K$ bits, separated by a number of
+  irrelevant bits. Various parameters control the scoring: $b$, $g$,
+  and $m^*$ are integers and $u^*$, $u$ and $v$ are real numbers. The
+  low-level blocks are of size $b$ bits, with $g$ irrelevant bits
+  making up a gap between each. Each low-level block scores 0 if
+  completely filled, or $mv$ if it contains $m$ bits and $m \leq m^*$,
+  or $-mv$ if there are more than $m^*$ bits set but the whole block
+  is not filled. Thus the low-level blocks are mildly deceptive. In
+  addition there is a hierarchy of completed blocks which earn bonus
+  points. The hierarchy has a number of levels; level 1 is the lowest,
+  and level $(j+1)$ has half the number of blocks that level $j$ has -
+  its blocks are adjacent pairs from the level below. If level $j$ has
+  $n_j > 0$ `filled' blocks then it earns a bonus score of $u^* +
+  (n_j-1)u$; thus $u^*$ is a special bonus for getting at least one
+  filled at that level. The topmost layer of the hierachy has one
+  block, which is filled if and only if every block in the lowest
+  level is filled.
+
+  See the paper by M.Mitchell, S.Forrest and J. Holland, ``The royal
+  road for genetic algorithms'' in (eds) F.J.Varela and P.Bourgine,
+  {\em Towards a Practice of Autonomous Systems: Proceedings of the
+  First European Conference on Artificial Life}, MIT Press, 1992
+  and a later paper by Mitchell and Holland available by FTP from
+  santafe.edu in /pub/mm and in {\em Foundations of Genetic Algorithms
+  2}, ed.\ L.D.Whitley, Morgan Kaufmann, 1993.  These papers report
+  that such `royal road' functions are very hard for some GAs and
+  analyse why. See also the challenge issued by John Holland in the GA
+  list, vol 7 no 22.
+
+  The various parameters can be specified in a file named
+  \verb|rrdata|; the program ignores non-numeric text and expects
+  the parameters to occur in a specific order. For example, the file
+  might contain this:
+\begin{center}
+\begin{verbatim}
+These are the defaults specified in Holland's challenge:
+
+Blocksize (int) 8    Bits in a block
+Gapsize (int)   7    Irrelevant bits between blocks
+m* (int)        4    Threshold for reward in low-level blocks
+u* (double)     1.0  First block in a higher level earns this
+u (double)      0.3  Later blocks in a higher level earn this
+v (double)      0.02 Reward-or-penalty/bit in low-level block
+
+Note that Holland specifies number of levels (k) rather than
+a gapsize so that there are two-to-the-k blocks at the lowest
+level.
+
+This file is read by pga when you specify -err for Royal Road
+functions.  It looks for numbers in this file, in the order 
+and of the types shown above. Non-numeric text is  ignored.
+\end{verbatim}
+\end{center}
+  If the file is absent, or there are fewer than six numbers,
+  the missing numbers default to the values shown here.
+\end{description}
+
+\section*{Running the program}
+
+If you run the program with the \verb|-h| option you get brief help
+as shown in figure \ref{fig:help}.
+\begin{figure}[p]
+\begin{center}
+\begin{verbatim}
+% pga -h
+PGA: parallel genetic algorithm testbed, version 2.5
+   -P<n>    Set number of populations. (5)
+   -p<n>    Set number of chromosomes per population. (50)
+   -n<n>    Set chromosome length. (32)
+   -l<n>    Set # of generations per stage. (100)
+   -i<n>    Set reporting interval in generations. (10)
+   -M<n>    Interval between migrations. (10)
+   -m<n>    Set bit mutation rate. (0.02)
+   -c<n>    Set crossover rate (only for `gen'). (0.6)
+   -b<n>    Set selection bias. (1.5)
+   -a       Adaptive mutation flag (FALSE)
+   -t       Twins: crossover produces pairs (FALSE)
+   -C<op>   Set crossover operator. (two)
+   -s<op>   Set selection operator. (rank)
+   -r<op>   Set reproduction operator. (one)
+   -e<fn>   Set evaluation function. (max)
+   -S<n>    Seed the random number generator. (from clock)
+   -h       Display this information.
+   <file>   Also log output in <file>. (none)
+
+   Crossover operators ... one, two, uniform.
+   Selection operators ... rank, fitprop,
+                           tnK (K=integer > 1),
+                           tmK (K=integer > 1).
+   Reproduction operators ... one, gen,
+                              ssoneN (N=integer > 0),
+                              ssgenN (N=integer > 0).
+   Evaluation functions ... max, dj1, dj2, dj3,
+                            dj5, bf6, knap,
+                            rr.
+\end{verbatim}
+\caption{PGA help summary}
+\label{fig:help}
+\end{center}
+\end{figure}
+The default values are shown in brackets. The program displays the
+chosen values of the various parameters, and runs the genetic algorithm
+using the chosen problem and parameters for the appropriate number of
+generations per population as set by the \verb|-l| (for `limit') option.
+At each reporting interval, as set by the \verb|-i| option, the display
+of the average and best fitness is updated. If you name a file on the
+command line and it can be opened, the same information at each
+reporting interval is appended to the file, for your later analysis.
+Note that it is possible to generate {\em large} files quickly by this
+means, so please tidy up after your experiments by deleting or
+compressing such files. Simple AWK scripts are provided which
+show how one might use such a file to plot a graph of average or
+best fitness, in one or all populations, using xgraph.
+
+PGA allows you to have multiple populations of chromosomes which
+`evolve' separately, with occasional migration of a chromosome
+from one population to all the others. Migration is controlled
+by the \verb|-M| option, which selects the interval (in generations)
+between migrations. At each migration, a chromosome is chosen
+from one population (the first population is chosen for the first
+migration, the second for the second and so on) according to the
+current selection procedure and copied into all the other populations.
+The populations remain fixed in size, so this insertion causes the
+least fit in a population to be destroyed. A migration interval of
+zero means that no migrations ever happen.
+
+The selection procedure is determined by the \verb|-s| option. There
+are four choices. The \verb|fitprop| option causes chromosomes in a
+population to be selected for reproduction or migration in proportion
+to their fitness. Obviously, the effect of this will depend on whether
+fitness values lie in the range 0 to 100 (say) or 1000 to 1100 (say).
+To counter this occasionally undesirable dependence on the range you
+can select the \verb|rank| procedure instead. This puts the
+chromosomes in rank ordering of fitness and then selects from that
+ordered set with a probability proportional to ranking. If the bias,
+as set by \verb|-b|, is 1.0 then the probability is a linear function
+of the ranking (first-ranked is most-favoured, and it behaves as
+\verb|fitprop| would if the rankings were the actual fitnesses); a
+bias of 2.0 favours the first-ranked markedly more strongly, and the
+probability distribution is essentially parabolic. Bias values between
+1.0 and 2.0 vary the distribution smoothly between these extremes.
+Tournament selection can be chosen using the \verb|tnN| option, where
+\verb|N| is some positive integer. In tournament selection, \verb|N|
+chromosomes are chosen uniformly randomly (that is, irrespective of
+fitness; and a chromosome could be chosen more than once), and the
+fittest of these is selected. For large \verb|N| this process can
+be expensive, so a modified form of tournament selection is also
+available using the \verb|tmN| option. In this, one chromosome is
+chosen at random, and then up to \verb|N| tries are made at random
+to pick another which is fitter than the first. The first such that is
+found is the selected chromosome; if none is found, the first-chosen
+is selected. This procedure is modelled on the classic `marriage
+problem' in dynamic programming textbooks in mathematics.
+
+At each generation, reproduction occurs in each population. There are
+four methods of reproduction, set by the \verb|-r| option.  The
+\verb|one| method selects two chromosomes according to the current
+selection procedure, performs two-point crossover on them to obtain a
+child or two, perhaps mutate it/them as well, and installs the result back
+in that population; the least fit of the population is destroyed.
+Mutation consist of randomly altering each bit with a probability
+determined by the \verb|-m| option, or adaptively if the \verb|-a|
+option is used. Adaptive mutation happens with a probability governed
+by the degree of similarity of the parents -- the probability would be
+0.0 for two totally dissimilar parents, running up to the value
+specified by \verb|-m| if the parents are identical.
+
+In \verb|gen| reproduction, the whole of a population is potentially
+replaced at each generation. The procedure is to loop N times where N is
+the population size, selecting two chromosomes each time according to
+the current selection procedure. These are crossed with a probability
+governed by the \verb|-c| option. If crossover didn't happen the parent
+is just retained. If crossover happened the child or children are also
+mutated with probability determined by the \verb|-m| option and the
+adaptive mutation flag. The resulting chromosomes are inserted back into
+the population, the least fit being destroyed as usual.
+
+There are also two spatially-oriented reproduction operators,
+\verb|ssoneN| and \verb|ssgenN| when $N$ is a positive integer. In these
+two, the populations are not sorted; instead they are regarded as a
+two-dimensional grid, roughly square (the population size is adjusted if
+necessary to ensure a rectangle, and the dimensions of the rectangle are
+shown alongside the population size in the output). This grid is also
+toroidal: leave one edge and you reappear at the opposite edge. In
+either, the chromosome at a given location is replaced by the child of
+two parents, each found by seeking the fittest on a random walk of
+length $N$ starting at that location. Replacement only happens if that
+child is fitter than the chromosome already there. In \verb|ssoneN| a
+single random location is chosen at each generation. In \verb|ssgenN| a
+complete replacement population is constructed by doing this for every
+location; the newly-constructed population then replaces the old one. If
+\verb|-t| (see below) is also specified then the parents produce two children
+and the second gets put in the location immediately `below' the first in
+the grid. If either of these operators are used, the selection procedure
+is forced to be this special spatial selection process, shown as
+\verb|*spatial*| in the output; it is an error to specify something
+different. These spatially-oriented reproduction operators are loosely
+modelled on Wright's shifting-balance model of evolution, whereas all
+the others are based loosely on Fisher's panmictic model.
+
+The crossover procedure is selected by the \verb|-C| option. The
+\verb|one| option selects one-point crossover: a random point along
+the chromosome is selected, and the child contains a copy
+of one parent up to that point and the other parent thereafter.
+The \verb|two| option selects two-point crossover: two random
+points are selected, and the child contains a copy of one parent
+between these two points and of the other parent before and after
+these points. The \verb|uniform| option selects uniform crossover:
+at each point of the chromosome, a random choice is made between
+the two parents as to which to copy at that point. There are
+important differences bewteen these three kinds of crossover; to
+see them, consider the unlikely event that two maximally dissimilar
+parents are chosen (such as \verb|000..0| and \verb|111..1|), and 
+that the chromosome length is $L$. With one-point crossover there
+are only $2(L+1)$ possible children. With two-point crossover there
+are $L(L+1)$ possible children. With uniform crossover any child
+is possible, there are $2^L$ possibilities.
+
+If the \verb|-t| flag is used, crossover produces two complementary
+children rather than one; this is often claimed to be useful to retain
+genetic diversity in the population.
+
+It is possible to change the length of a chromosome by using the
+\verb|-n| option. The default length is 32. The system will run slower
+if you increase the length much; each chromosome is held as a
+character array and long chromosomes therefore take longer to
+manipulate and decode. The upper limit on chromosome length is
+dictated by the amount of memory available and the `resolution' of the
+chromosome decoding algorithm if the problem chosen is such that the
+chromosome represents one or more numbers. For shortish chromosomes,
+the decoding to two or more numbers is done using integer arithmetic
+for speed; if you ask for long chromosomes floating point arithmetic
+may be necessary, which further reduces the speed. The decoding
+algorithm should cope with quite long chromosomes: each number could
+occupy up to 1022 chromosome positions (bits).
+
+An example of the system's display is shown in figure \ref{fig:output}.
+\begin{figure}[bthp]
+\begin{center}
+\begin{verbatim}
+(A)gain, (C)ontinue, (Q)uit: 
+          Populations: 5            Chromosomes per pop: 50
+                                      Chromosome length: 32
+Generations per stage: 100                 Reproduction: one
+   Reporting interval: 10                Crossover type: uniform, twins
+   Migration interval: 10                Crossover rate: n/a
+        Eval function: max                Mutation rate: 0.020000
+            Selection: rank
+       Selection bias: 1.50                  Generation: 100
+                                     Evaluations so far: 500
+             Pop.......Average..........Best.(max = 32)
+             0          21.5200000       27.0000000
+             1          20.7800000       24.0000000
+             2          21.7800000       24.0000000
+             3          22.1800000       25.0000000
+             4          20.4400000       25.0000000
+\end{verbatim}
+\caption{Example of PGA screen display}
+\label{fig:output}
+\end{center}
+\end{figure}
+An `=' will appear to the right of the population number (`Pop') whenever
+the average and best fitness values become equal.
+The `Evaluations so far' shows the number of times that the problem
+function has been called (after initialisation of the population(s))
+to find the fitness of some chromosome; it gives some feel for the
+work done by the genetic algorithm in finding the maximum fitness.
+Note that there are very many more evaluations of the problem function
+per generation in \verb|gen| reproduction than in \verb|one|
+reproduction, so the display will be updated much more slowly. You may
+wish to reduce the `generations per stage' (\verb|-l|) and `reporting
+interval' (\verb|-i|) to compensate.
+
+The program cycles for the number of generations shown against
+`Generations per stage' (the \verb|-l| option), updating the
+average/best information every `reporting interval' generations (the
+\verb|-i| option). It then pauses, and asks you
+\begin{verbatim}
+ (A)gain, (C)ontinue, (Q)uit:
+\end{verbatim}
+Type `a' to start again with the same parameters, basically to see
+if a random re-initialisation of the populations produces a
+significantly different result this time. Type `c' to continue evolving
+for further generations. Type `q' to quit. If you have specified an
+output file too, you will be asked
+\begin{verbatim}
+ (A)gain, (C)ontinue, (S)ave+continue, (Q)uit:
+\end{verbatim}
+instead. Type `s' to append information about the chromosomes in a
+file with extension `.chr' and then continue. The chromosomes are
+printed out in population order. A typical line looks like:
+\begin{verbatim}
+3   17  100     25.0000000  1001110...1    179     0     0
+\end{verbatim}
+The first number is the population. The second is the number within
+this population (ordered; fittest is first). The third is the generation
+number when this line was written out. The fourth is the fitness, this
+is followed by the chromosome itself. The last three numbers are used
+to track a chromosome's parentage: each chromosome has a unique ID
+number, starting from 1, and the first of these three numbers is this
+chromosome's ID. The next two give the IDs of its parents. If both
+are zero it is an aboriginal chromosome created at initialisation
+time.
+
+Note that the chromosome file, like the log file, can grow very fast.
+With default settings, the file will increase in size by about 19k bytes
+every time you press `s'! A separate document contains some basic ideas
+for analysing populations using standard Unix tools.
+
+PGA uses a random number generator that is seeded from the system
+clock. However, the \verb|-S| option allows you to seed it with a
+number of your choice so that you can repeat runs exactly. The initial
+set of chromosomes will depend {\em only} on the seed value and the
+\verb|-n|, \verb|-P| and \verb|-p| parameters. This allows you to run
+precise experiments on the effects of changing other parameters.
+
+\section*{Technical points}
+
+As mentioned above, each chromosome is held as a character array so
+it should easy to adapt the source to a good range of other problems.
+Function pointers are used for such operations as selection,
+reproduction and decoding in order to avoid the overhead of 
+conditional switching at each cycle. A simple reference-counting scheme is
+used to decide which chromosomes are still in use and which can be
+freed, so memory usage is independent of the number of cycles and/or
+number of restarts. This would be trivial were it not for the periodic
+migration of chromosomes between populations; such migrating chromosomes
+are not copied, for the sake of speed and memory turnover.
+
+\end{document}

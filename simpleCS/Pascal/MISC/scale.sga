@@ -1,0 +1,38 @@
+{ scale.sga: contains prescale, scale, scalepop for scaling fitnesses }
+
+procedure prescale(umax, uavg, umin:real; var a, b:real);
+{ Calculate scaling coefficients for linear scaling }
+const fmultiple = 2.0;     { Fitness multiple is 2 }
+var   delta:real;          { Divisor }
+begin
+ if umin > (fmultiple*uavg - umax) / (fmultiple - 1.0) { Non-negative test }
+     then begin  { Normal Scaling }
+       delta := umax - uavg;
+       a := (fmultiple - 1.0) * uavg / delta;
+       b := uavg * (umax - fmultiple*uavg) / delta;
+      end else begin   { Scale as much as possible }
+        delta := uavg - umin;
+        a := uavg / delta;
+        b := -umin * uavg / delta;
+       end;
+end;
+
+function scale(u, a, b:real):real;
+{ Scale an objective function value }
+begin  scale := a * u + b end;
+
+procedure scalepop(popsize:integer; var max, avg, min, sumfitness:real;
+                   var pop:population);
+{ Scale entire population }
+var j:integer;
+    a, b:real;    { slope & intercept for linear equation }
+begin
+ prescale(max, avg, min, a, b);  { Get slope and intercept for function }
+ sumfitness := 0.0;
+ for j := 1 to popsize do with pop[j] do begin
+   fitness := scale(objective, a, b);
+   sumfitness := sumfitness + fitness;
+  end;
+end;
+
+

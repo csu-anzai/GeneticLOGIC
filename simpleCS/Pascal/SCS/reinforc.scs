@@ -1,0 +1,86 @@
+{ reinforc.scs:  reinforcement and criterion procedures }
+
+{ reinforcement data declarations }
+type rrecord = record { reinforcement record type}
+                reward, rewardcount, totalcount, count50,
+                rewardcount50, proportionreward,
+                proportionreward50:real;
+                lastwinner:integer;
+               end;
+
+var reinforcementrec:rrecord;
+    rfile:text;     { reinforcement file - rfile }
+
+procedure initreinforcement(var rfile:text; var reinforcementrec:rrecord);
+{ initialize reinforcement parameters }
+begin with reinforcementrec do begin
+  readln(rfile, reward);
+  rewardcount        := 0.0;
+  rewardcount50      := 0.0;
+  totalcount         := 0.0;
+  count50            := 0.0;
+  proportionreward   := 0.0;
+  proportionreward50 := 0.0;
+  lastwinner := 0;
+end end;
+
+procedure initrepreinforcement(var rep:text; var reinforcementrec:rrecord);
+{ initial reinforcement report }
+begin with reinforcementrec do begin
+ writeln(rep);
+ writeln(rep, 'Reinforcement Parameters');
+ writeln(rep, '------------------------');
+ writeln(rep, 'Reinforcement reward     = ', reward:8:1);
+end end;
+
+function criterion(var rrec:rrecord; var environrec:erecord):boolean;
+{ return true if criterion is achieved }
+var tempflag:boolean;
+begin with rrec do with environrec do begin
+  tempflag := (output = classifieroutput);
+  totalcount := totalcount + 1;
+  count50 := count50 + 1;
+  { increment reward counters }
+  if tempflag then begin
+     rewardcount := rewardcount + 1;
+     rewardcount50 := rewardcount50 + 1;
+    end;
+  { calculate reward proportions: running & last 50 }
+  proportionreward := rewardcount/totalcount;
+  if ( round(count50 - 50.0) = 0) then begin
+    proportionreward50 := rewardcount50/50.0;
+    rewardcount50 := 0.0; count50 := 0.0 { reset }
+   end;
+  criterion := tempflag;
+end end;
+
+procedure payreward(var population:poptype; var rrec:rrecord;
+                    var clearingrec:crecord);
+{ pay reward to appropriate individual }
+begin with population do with rrec do with clearingrec do
+  with classifier[winner] do begin
+     strength := strength + reward;
+     lastwinner := winner
+end end;
+
+procedure reportreinforcement(var rep:text; var reinforcementrec:rrecord);
+{ report award }
+begin with reinforcementrec do begin
+  writeln(rep);
+  writeln(rep, 'Reinforcement Report');
+  writeln(rep, '--------------------');
+  writeln(rep, 'Proportion Correct (from start)  = ',
+                proportionreward:8:4);
+  writeln(rep, 'Proportion Correct (last fifty)  = ',
+                proportionreward50:8:4);
+  writeln(rep, 'Last winning classifier number   = ',
+                lastwinner:8);
+end end;
+
+procedure reinforcement(var reinforcementrec:rrecord; var population:poptype;
+                        var clearingrec:crecord; var environrec:erecord);
+{ make payment if criterion satisfied }
+begin
+  if criterion(reinforcementrec, environrec) then
+       payreward(population, reinforcementrec, clearingrec);
+end;

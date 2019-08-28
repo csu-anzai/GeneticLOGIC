@@ -1,0 +1,80 @@
+{ select2.sga: contains preselect, and select2 - remainder method }
+const maxpop = 100;
+
+type choicearray = array[1..maxpop] of integer;
+     individual  = record fitness:real end;
+     population  = array[1..maxpop] of individual;
+
+var  choices:choicearray;          { Array of choices }
+     nremain:integer;
+     popsize,j:integer;
+     sum,avg:real;
+     pop:population;
+
+{$I random.apb }
+
+procedure preselect(popsize:integer; avg:real;
+                    var pop:population; var choices:choicearray);
+{ Selection by stochastic remainder method }
+var  j, jassign, k:integer;
+     expected:real;
+     winner:boolean;
+     fraction:array[1..maxpop] of real;
+begin
+ j := 0; k := 0;
+ repeat  { Assign whole numbers }
+   j := j + 1;
+   expected := pop[j].fitness / avg;
+   jassign  := trunc(expected);
+   fraction[j] := expected - jassign;
+   while (jassign > 0) do begin
+     k := k + 1; jassign := jassign - 1;
+     choices[k] := j
+    end;
+ until j = popsize;
+ j := 0;
+ while k < popsize do begin   { Assign fractional parts }
+    j := j + 1; if j > popsize then j := 1;
+    if fraction[j] > 0.0 then begin
+       winner := flip(fraction[j]); { A winner if true }
+       if winner then begin
+         k := k + 1;
+         choices[k] := j;
+         fraction[j] := fraction[j] - 1.0;
+        end;
+      end;
+   end;
+end;
+
+function select(var popsize,nremain:integer;
+                var choices:choicearray; var pop:population):integer;
+{ select using remainder method }
+var jpick:integer;
+begin
+  jpick := rnd(1,nremain);
+  select  := choices[jpick];
+  writeln('jpick=',jpick,' choices=',choices[jpick],' nremain=',nremain);
+  choices[jpick] := choices[nremain];
+  nremain := nremain - 1;
+end;
+
+begin
+ randomize;
+ write('Enter popsize > '); readln(popsize);
+ sum := 0.0;
+ for j := 1 to popsize do begin
+   write('Enter fitness > '); readln(pop[j].fitness);
+   sum := sum + pop[j].fitness;
+  end;
+ avg := sum / popsize; writeln(' Avg = ',avg);
+ preselect(popsize,avg,pop,choices);
+ for j := 1 to popsize do
+   writeln('j=',j,' fitness=',pop[j].fitness, ' choices= ',choices[j]);
+ nremain := popsize;
+ for j := 1 to popsize do
+   write(select(popsize,nremain,choices,pop):2)
+end.
+
+
+
+

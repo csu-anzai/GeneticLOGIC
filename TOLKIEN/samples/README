@@ -1,0 +1,37 @@
+Sample programs constructed using TOLKIEN
+-----------------------------------------
+
+This directory contains several sample programs :
+
+1. DEJONG
+=========
+DeJong's classical test problems.
+Calling convention : dejong [function number]
+
+2. MAZE
+========
+A classifier system application for a maze navigator.
+Calling convention : Maze [number of runs]
+		     Maze 100 will cause the navigator to travel
+		     the maze a hundred times.
+A file trails.out will be produced which logged to paths taken.
+A file mpcls.csf will be produced which logged the classifiers.
+
+3. MPCLS
+========
+A classifier system application for a simple multiplexer.
+Calling convention : mpcls [number of trials]
+A file result.out will be produced.
+
+4. ROYALRD 
+==========
+Holland's royal road functions.
+
+5. TSP 
+======
+Using Whitley's Edge Recombination to solve symmetric TSPs.
+
+6. Multimodal
+=============
+A GA with deterministic crowding for multimodal function optimizations.
+

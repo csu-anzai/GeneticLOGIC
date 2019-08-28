@@ -1,0 +1,66 @@
+This diskette contains all the source code from ``The Standard C
+Library,'' by P.J. Plauger (Englewood Cliffs, N.J.: Prentice-Hall,
+1991). Fifteen subdirectories have names that match the standard
+headers. These contain all the *.c files presented in the text.
+(NOTE: Directories limits and stddef are empty.) The directory
+_headers contains all the *.h files presented throughout the
+text. The directory _test contains all the t*.c files presented
+as test programs throughout the text.
+
+The directory _unixvax replicates a number of these files. It also
+contains the sample version of raise.c described in the running
+text for the ULTRIX (UNIX VAX) operating system. The directory
+_unix68k contains only the file yvals.h, modified for the GCC
+compiler on Sun UNIX (680X0) workstations. That version of yvals.h
+also shows how to define _CPS if you wish to use the UNIX time
+system call directly. Finally, the directory _tc86 contains the
+file yvals.h modified for the Turbo C++ (ANSI C) compiler.
+
+Appendix A: Interfaces summarizes what you have to do to make
+use of this code. Please note that it is NOT prepackaged ready
+to go for any given operating environment.
+
+This code is protected by copyright. You may use and redistribute
+this code ONLY as part of executable images, and ONLY provided
+that the following notice is included prominently in the
+associated documentation and as part of the executable image:
+
+``Portions of this work are derived from The Standard C Library,
+copyright (c) 1991 by P.J. Plauger, published by Prentice-Hall,
+and are used with permission.''
+
+An authorized source for machine-readable copies of this code is:
+
+	The C Users Journal
+	R&D Publications, Inc.
+	2601 Iowa
+	Lawrence KS  66046
+	(913) 841-1631
+	(913) 841-2624 FAX
+
+You can license the right to distribute copies of the source code
+or of unlinked object modules. Contact:
+
+	Plum Hall, Inc.
+	1 Spruce Avenue
+	Cardiff NJ  08232
+	(609) 927-3770
+
+The author and publisher have used their best efforts in
+preparing this code. Those efforts include the development,
+research, and testing of the programs to determine their
+effectiveness. The author and publisher make no warranty
+of any kind, expressed or implied, with regard to these
+programs or the documentation contained in the book. The
+author and publisher shall not be liable in any event for
+incidental or consequential damages in connection with, or
+arising out of, the furnishing, performance, or use of these
+programs.
+
+Notwithstanding the above, the author shall gratefully
+accept any bug reports, suggested fixes, or suggestions for
+improvement. Please send such information to:
+
+	P.J. Plauger
+	398 Main Street
+	Concord MA  01742

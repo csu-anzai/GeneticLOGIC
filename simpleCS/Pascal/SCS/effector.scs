@@ -1,0 +1,9 @@
+{ effector.scs: effector routine }
+
+procedure effector(var population:poptype; var clearingrec:crecord;
+                   var environrec:erecord);
+{ set action in object as dictated by auction winner }
+begin with population do with clearingrec do with environrec do
+   classifieroutput := classifier[winner].a end;
+
+

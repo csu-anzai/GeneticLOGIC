@@ -1,0 +1,123 @@
+A Simple Classifier System (SCS):
+	from Appendix D of "Genetic Algorithms in Search, Optimization, and
+	Machine Learning" by David E. Goldberg.  
+	Rewritten in C by Erik Mayer  emayer@uoft02.utoledo.edu
+
+Compilation requires the following files:
+
+	scs.c		SCS main program
+	declare.scs	global variable declarations
+	initial.scs	initialization routines
+	detector.scs	environmental-to-classifier detectors
+	report.scs	classifier system reporting
+	timekeep.scs	time coordination routines
+	environ.scs	6-multiplexer environment
+	perform.scs	rule and message system
+	aoc.scs		apportionment of credit routines
+	effector.scs	classifer-to-environment effectors
+	reinforc.scs	reinforcement routines
+	advance.scs	iteration update routines
+	ga.scs		genetic algorithm
+	utility.scs	computational utilities
+	io.scs		input and output utilities
+
+
+Input data is in the following files:
+
+	classifers.data		contains list of classifiers, population data 
+	environ.data		environmental data
+	reinf.data		reinforcement data
+	time.data		timekeeping data
+	ga.data			genetic algorithm data
+
+Output is written to the following files:
+
+	report.out	Total report of SCS activity.
+	plot.out	contains percent correct and percent last 50 correct
+			for plotting performance graphs.
+
+
+Program is run by typing RUN SCS and giving the program a random number seed.
+
+The following is a short description on the operation of the simple
+classifier system:
+
+	The classifier system randomly generates a starting population
+	of classifiers.  The program then generates a random signal to
+	the environment (in this case the multiplexer).  The multiplexer
+	responds with the environmental message.  The program then attempts
+	to match the random signal with the classifiers and those that match
+	are allowed to bid.  The strengths of the matching classifiers are
+	deducted by the amount that is to be bid specified by the CBID variable
+	and the effective bids of the classifiers are compared.  The classifer
+	with the largest effective bid (the bid modified by EBID) wins and the
+	classifier message is compared with the enviromental message.  If the
+	messages match, the classifier is given a reward.  If the bucketbrigade
+	flag is activated, the classifier will post a reward to be given to 
+	the last matching classifier.  The genetic algorithm is activation at
+	the iteration interation specified by the variable GAPERIOD.  Pairs of 
+	classifiers are chosen randomly according to their strengths.  Bad
+	performing classifiers are replaced according to their similarities
+	to the new offsprings.  Data about the population and its parameters
+	is recorded in REPORT.OUT at periodic intervals.  
+
+-- 
+
+					- Erik Mayer 
+___
+  Internet: cscon143@uoft02.utoledo.edu    
+  Bitnet: cscon143@uoft02.BITNET                 
+
+
+
+In article <1993Jan31.184946.18396@netcom.com>, poliquin@netcom.com (Tom Poliquin) writes:
+> cscon143@uoft02.utoledo.edu writes:
+> : In article <1993Jan26.100340.1875@netcom.com>, poliquin@netcom.com (Tom Poliquin) writes:
+> : > 
+> : > .... is anyone planning to convert the classifier system code in
+> : > Goldberg's book into C ? It seems that only the SGA is in the archive.
+> : > 
+> : > Hopeful in advance.....
+> : > 
+> : > Tom Poliquin
+> : -- 
+> : 
+> : 	I did it for a class a year or so ago.  I had it running
+> : 	on the VAX.  I can send you the code if you want.
+> : 
+> : 					- Erik Mayer 
+> : ___
+> :   Internet: cscon143@uoft02.utoledo.edu    
+> :   Bitnet: cscon143@uoft02.BITNET     
+> 
+> Yes...
+> 
+> I'd be very interested.  (I sent u email but thought I'd also post
+> my response here too)
+> 
+> My current project is a powder delivery systems (similar on a
+> microscopic scale to Goldberg's gas delivery ?)
+> 
+> Very appreciatively (spelling?)
+> 
+> Tom
+> 
+
+	I'm probably going to get flamed for this, but I'm going to
+	post the CS to this newsgroup due to a large number of requests
+	for it.  There doesn't seem to be too many posts so I don't
+	think it'll inconvience anyone too much. 
+
+ 	The program is pretty much ANSI C so it should compile
+	on anything.  There are 20 files.  Details in README.
+
+	If anyone wants to put this on an ftp site, it would make it
+	more accessible for those who want it.
+
+					- Erik Mayer 
+___
+  Internet: cscon143@uoft02.utoledo.edu    
+  Bitnet: cscon143@uoft02.BITNET                 
+
+
+

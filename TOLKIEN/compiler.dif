@@ -1,0 +1,40 @@
+This file records the difference in behaviour between
+BC++ (3.1) and g++ (2.5.x).
+
+Problem
+-------
+The following piece of code which tries to extract a substring from
+an instance of class Message does not works for BC++ but not g++ :
+.
+.
+Message   msg;
+          // msg.operator const BitString &() has been defined
+BitString bits = ((const BitString &) msg).at(0,2);
+.
+.
+
+Remedy
+------
+Message   msg;
+BitString bits = ((const BitString &) msg);
+bits = bits.at(0,2);
+
+-----------------------------------------------------------------------------
+Problem
+-------
+g++ seems not able to invoke conversion operator :
+.
+.
+Message   msg;
+          // msg.operator const BitString &() has been defined
+TritString tstr;
+.
+.
+.
+tstr.matches((RCBitString) msg); // should have invoked
+                                 // msg.operator RCBitString()
+
+Remedy
+------
+tstr.matches(msg.operator RCBitString());
+

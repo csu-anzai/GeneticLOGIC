@@ -1,0 +1,153 @@
+
+/* utility.scs:
+	utility procedures and functions */
+
+
+
+#include <math.h>
+
+
+
+float 
+poweri (x, i)				/* power function */
+    float x;
+    int i;
+{
+    float powertemp = 1.0;
+
+    if (i == 0)
+	powertemp = 1.0;
+    else if (i > 0)
+	do {
+	    powertemp *= x;
+	    --i;
+	} while (i != 0);
+    else if (i < 0)
+	do {
+	    powertemp /= x;
+	    ++i;
+	} while (i != 0);
+    return (powertemp);
+}
+
+/* global variales for randomnormaldeviate - watch for conflicting names */
+float rndx2;
+boolean rndcalcflag;
+
+
+int 
+round (x)
+/* rounds real number to an integer */
+    float x;
+{
+    if ((x - (int) x) >= 0.5)
+	return ((int) x + 1);
+    else
+	return ((int) x);
+}
+
+
+#define MODULUS 729
+#define MULTIPLIER 40
+#define INCREMENT 3641
+int seed;
+int 
+pseudorandom ()
+{					/* return random number between 0 and Modulus-1 */
+    seed = (MULTIPLIER * seed + INCREMENT) % MODULUS;
+    return (seed);
+}
+
+float 
+random ()
+/* returns random number between 0 and 1 */
+{
+    return ((float) pseudorandom () / (float) (MODULUS - 1));
+}
+
+boolean 
+flip (x)
+/* coin flip simulation */
+    float x;
+{
+    int i;
+    i = (random () > x) ? 0 : 1;
+    return (i);
+}
+
+int 
+rnd (i, j)				/* returns random number between limits */
+    int i, j;
+{
+    i += (j - i) * random ();
+    return (i);
+}
+
+initrandomnormaldeviate ()
+{					/* initialization routine for randomnormaldeviate */
+    rndcalcflag = TRUE;
+}
+
+float 
+randomnormaldeviate ()
+/* random normal deviate after ACM algorithm 267 / Box-Muller Method */
+{
+    float t, rndx1;
+
+    if (rndcalcflag) {
+	rndx1 = sqrt (-2.0 * log (random ()));
+	t = 6.2831853072 * random ();
+	rndx2 = rndx1 * sin (t);
+	rndcalcflag = FALSE;
+	return (rndx1 * cos (t));
+    } else {
+	rndcalcflag = TRUE;
+	return (rndx2);
+    }
+}
+
+float 
+noise (mu, sigma)
+/* normal noise with specified mean and std dev: mu and sigma */
+    float mu, sigma;
+{
+    return (randomnormaldeviate () * sigma + mu);
+}
+
+float 
+rndreal (lo, hi)
+/* real random number between specified limits */
+    float lo, hi;
+{
+    return (random () * (hi - lo) + lo);
+}
+
+float 
+max (x, y)
+/* return maximum of two values */
+    float x, y;
+{
+    if (x > y)
+	return (x);
+    else
+	return (y);
+}
+
+float 
+min (x, y)
+/* return minimum of two values */
+    float x, y;
+{
+    if (x < y)
+	return (x);
+    else
+	return (y);
+}
+
+float 
+avg (x, y)
+/* return average of two values */
+    float x, y;
+{
+    return (0.5 * (x + y));
+}

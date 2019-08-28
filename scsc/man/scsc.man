@@ -1,0 +1,198 @@
+
+
+
+SCS-C(1)                EDUCATIONAL TOOLS                SCS-C(1)
+
+
+
+NAME
+     scsc - a simple classifier system in C
+
+
+SYNOPSIS
+     scsc [ _o_p_t_i_o_n_s ]
+
+          [-N, --no-noise-in-auction]
+
+          [-S, --no-specificity-in-auction]
+
+          [-b, --batch]
+
+          [-h, --help]
+
+          [-V, --version]
+
+          [-W, --warranty]
+
+          [-c, --classifier-data <_c_l_a_s_s_i_f_i_e_r _d_a_t_a _f_i_l_e _n_a_m_e>]
+
+          [-d, --detector-data <_d_e_t_e_c_t_o_r _d_a_t_a _f_i_l_e _n_a_m_e>]
+
+          [-e, --environmental-
+          data <_e_n_v_i_r_o_n_m_e_n_t_a_l _d_a_t_a _f_i_l_e _n_a_m_e>]
+
+          [-g, --genetics-data <_G_A _d_a_t_a _f_i_l_e _n_a_m_e>]
+
+          [-r, --reinforcement-
+          data <_r_e_i_n_f_o_r_c_e_m_e_n_t _d_a_t_a _f_i_l_e _n_a_m_e>]
+
+          [-t, --timekeeper-data <_t_i_m_e_k_e_e_p_e_r _d_a_t_a _f_i_l_e _n_a_m_e>]
+
+          [-l, --log-file <_l_o_g _f_i_l_e _n_a_m_e>]
+
+          [-p, --plot-file <_p_l_o_t _f_i_l_e _n_a_m_e>]
+
+          [-s, --seed-for-random <_s_e_e_d _v_a_l_u_e>]
+
+          [-T, --time-steps <_n_u_m_b_e_r>]
+
+
+DESCRIPTION
+     scsc implements the simple  classifier  system  SCS-C;  a  C
+     translation  of Goldberg's Pascal SCS (refer to the SEE ALSO
+     section below).
+
+     scsc's input and output streams, and some  of  it's  default
+     parameters  may  be  changed  using various options (see the
+     OPTIONS section below).
+
+
+
+
+
+Version 0.99j     Last change: 6 December 1993                  1
+
+
+
+
+
+
+SCS-C(1)                EDUCATIONAL TOOLS                SCS-C(1)
+
+
+
+OPTIONS
+     -N, --no-noise-in-aution
+          Turn off  the  noise  generating  function  during  the
+          apportionment of credit.
+
+     -S, --no-specificity-in-auction
+          Turn off default hierarchy seeking (you can also assign
+          zero  values  to  classifier-data  parameters  bid2 and
+          ebid2.)
+
+     -T, --time-steps _n_u_m_b_e_r
+          Run the system for  _n_u_m_b_e_r  of  timesteps.   (Note:  on
+          non-UNIX  machines  the user may interrupt scsc by hit-
+          ting a key on the keyboard. He is then prompted  if  he
+          want's  to  abort  execution,  or go on: _H_a_l_t (_y/_n)? On
+          UNIX systems this  facility  is  currently  not  imple-
+          mented, we use the shell's job control mechanism.)
+
+     -b, --batch
+          Run scsc in batch mode, ie. don't prompt the  user  for
+          any  input;  eg.  the random number generator's seed is
+          initialized with a default value  (0.02021965),  unless
+          specified  otherwise  with  the `-s, --seed-for-random'
+          flag.
+
+     -c, --classifier-data _f_i_l_e_n_a_m_e
+          The classifier data  will  be  read  in  from  _f_i_l_e_n_a_m_e
+          (defaults to _s_c_s_c._c_l_s).
+
+     -d, --detector-data _f_i_l_e_n_a_m_e
+          The  detector  data  will  be  read  in  from  _f_i_l_e_n_a_m_e
+          (defaults  to _s_c_s_c._d_e_t).  (Unused in the contributed 6-
+          bit multiplexer example.)
+
+     -e, --environmental-data _f_i_l_e_n_a_m_e
+          The environmental data will be read  in  from  _f_i_l_e_n_a_m_e
+          (defaults to _s_c_s_c._e_n_v).
+
+     -g, --genetics-data _f_i_l_e_n_a_m_e
+          The genetic algorithm parameters will be read  in  from
+          _f_i_l_e_n_a_m_e (defaults to _s_c_s_c._g_e_n).
+
+     -h, --help
+          Print a usage message containing all options.
+
+     -l, --log-file _f_i_l_e_n_a_m_e
+          Logging information will go to  _f_i_l_e_n_a_m_e  (defaults  to
+          _s_c_s_c._l_o_g).
+
+     -p, --plot-file _f_i_l_e_n_a_m_e
+          Plot data will go to _f_i_l_e_n_a_m_e (defaults to _s_c_s_c._p_l_t).
+
+
+
+
+Version 0.99j     Last change: 6 December 1993                  2
+
+
+
+
+
+
+SCS-C(1)                EDUCATIONAL TOOLS                SCS-C(1)
+
+
+
+     -r, --reinforcement-data _f_i_l_e_n_a_m_e
+          The reinforcement  parameters  will  be  read  in  from
+          _f_i_l_e_n_a_m_e (defaults to _s_c_s_c._r_f_c).
+
+     -s, --seed-for-random _s_e_e_d _v_a_l_u_e
+          Set the random number generator's seed  with  the  real
+          _s_e_e_d _v_a_l_u_e.
+
+     -t, --timekeeper-data _f_i_l_e_n_a_m_e
+          The time keeper's  parameters  will  be  read  in  from
+          _f_i_l_e_n_a_m_e (defaults to _s_c_s_c._t_i_m).
+
+     -V, --version
+          Print a version and copyright message; you will also be
+          informed  which  random  number  generator is currently
+          compiled into scsc.
+
+     -W, --warranty
+          Print a warranty information message.
+
+
+SEE ALSO
+     David E. Goldberg, _G_e_n_e_t_i_c _A_l_g_o_r_i_t_h_m_s _i_n  _S_e_a_r_c_h,  _O_p_t_i_m_i_z_a_-
+     _t_i_o_n,  _a_n_d  _M_a_c_h_i_n_e  _L_e_a_r_n_i_n_g,  Addison-Wesley,  Reading MA,
+     1989.
+
+     csh(1), jazz(1)
+
+
+AUTHOR
+     Copyright (C) 1993 by Joerg Heitkoetter
+     Systems Analysis Group, University of Dortmund, Germany.
+     Send bugs, comments, etc., to <joke@ls11.informatik.uni-dortmund.de>.
+
+
+AVAILABILITY
+     This work is protected by the terms of the GNU General  Pub-
+     lic  License.  Please refer to the LICENSE file accompanying
+     the sources of this software package for a lengthy,  boring,
+     but absolute complete description.
+
+     SCS-C is available via anonymous ftp  from  the  SyS  server
+     lumpi.informatik.uni-dortmund.de  (129.217.36.140)  as  file
+     `scsc-0.99j.tar.gz' in /pub/LCS/src.
+
+
+
+
+
+
+
+
+
+
+
+Version 0.99j     Last change: 6 December 1993                  3
+
+
+

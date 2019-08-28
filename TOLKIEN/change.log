@@ -1,0 +1,159 @@
+===============================================================================
+DATE    : 29 APR 94
+
+FILE    : samples\royalrd\rrjh.cc
+          samples\royalrd\rrmf.cc
+
+CHANGES :
+	  A pair of parentheses is misplaced.  The correct line should be
+
+          if (st.getSchema(i).matches(((RCBinHaploid) ga.bestInd()).operator RCBitString()))
+
+===============================================================================
+DATE    : 29 APR 94
+
+FILE    : gnu\include\dblvec.h
+CHANGES :
+
+Change ~DblVec() to virtual ~DblVec()
+
+===============================================================================
+DATE    : 10 APR 94
+
+FILE    : include\tclsf.h
+CHANGES :
+------------------------------------------------
+TTClassifier::mutate()
+TTClassifier::randomize()
+------------------------------------------------
+the function findSpecificity() should be called
+at the end of each function.
+
+FILE    : include\tclsf.h
+CHANGES :
+------------------------------------------------
+TClassifier::mutate()
+TClassifier::randomize()
+------------------------------------------------
+the function findSpecificity() should be called
+at the end of each function.
+
+FILE    : src\csfsys.cpp
+CHANGES :
+------------------------------------------------
+Message::auction()
+------------------------------------------------
+Change the line
+       if (pCsf->taxon(0).matches(msg))
+to
+       if (pCsf->taxon(0).matches(msg.operator RCBitString()))
+
+because it seems that g++ cannot parse correctly the statement :
+       if (pCsf->taxon(0).matches((RCBitString) msg))
+
+FILE    : src\message.cpp
+CHANGES :
+------------------------------------------------
+Message::filter()
+------------------------------------------------
+change the line
+       bits = cp.filter(*pMsg);
+to
+       bits = cp.filter(pMsg->operator RCBitString());
+
+FILE    : src\tclsf.cpp
+CHANGES :
+------------------------------------------------
+TClassifier::matchMsgs()
+------------------------------------------------
+change the line
+       if (txn.matches(*pMsg))
+to
+       if (txn.matches(pMsg->operator RCBitString()))
+
+FILE    : src\ttclsf.cpp
+CHANGES :
+------------------------------------------------
+TTClassifier::matchMsgs()
+------------------------------------------------
+change the line
+       if (taxon1.matches(*pMsg1)) {
+to
+       if (taxon1.matches(pMsg1->operator RCBitString()))
+
+change the line
+       if (taxon2.matches(* (PCMessage) miter2()))
+to
+       if (taxon2.matches((* (PCMessage) miter2())->operator RCBitString()))
+
+===============================================================================
+DATE    : 9 APR 94
+
+FILE    : src\csfsys.h
+CHANGES :
+------------------------------------------------
+void    ClassifierSystem::eBidSp()
+------------------------------------------------
+The value is assigned incorrect to flBidSp, which should be flEBidSp.
+
+FILE    : src\csfsys.cpp
+CHANGES :
+------------------------------------------------
+void    ClassifierSystem::ClassifierSystem()
+------------------------------------------------
+Adjust some default values :
+flBidRt -> 0.1
+flBidTaxRate -> 0.01
+uCrowdingFactor -> 3
+uCrowdingSubPop -> 3
+
+FILE    : src\tritstr.cpp
+CHANGES :
+------------------------------------------------
+BOOL    TritString::matches(RCBitString test) const
+------------------------------------------------
+Use BitString.operator ==() rather than BitString.matches()
+to test for matches.
+
+FILE    : src\tritstr.h
+CHANGES :
+------------------------------------------------
+all constructors of TritString
+------------------------------------------------
+flMutDC is set to (DEFAULT_MUTDC) (old value is 0)
+
+FILE    : include\tdefs.h
+CHANGES :
+------------------------------------------------
+DEFAULT_MUTDC
+------------------------------------------------
+changes from 0.2 to (1 / 3.0)
+
+===============================================================================
+DATE    : 6 APR 94
+
+FILE    : src\csfsys.cpp
+CHANGES :
+------------------------------------------------
+void    ClassifierSystem::preProcessing()
+------------------------------------------------
+support for the classifiers is not calculated if supportFlag is FALSE.
+
+------------------------------------------------
+void    ClassifierSystem::auction()
+------------------------------------------------
+Type indentification on classifiers is not performed.
+The set of classifiers is assumed to be of class TClassifier.
+
+===============================================================================
+DATE    : 5 APR 94
+
+FILE    : include\tclsf.h
+CHANGES :
+------------------------------------------------
+TClassifier::TClassifier(unsigned,unsigned,BOOL)
+------------------------------------------------
+append the following lines
+
+        findSpecificity();
+	findLength();

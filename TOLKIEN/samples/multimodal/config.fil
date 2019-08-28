@@ -1,0 +1,14 @@
+#
+#  configuration file for parameters used by the program dcga
+#
+[generation]
+500
+
+[population size]
+50
+
+[crossover rate]
+1.0
+
+[mutation rate]
+0.003

@@ -1,0 +1,29 @@
+program simple2;
+{ simple2: a program to read a number and print a message }
+
+const pi = 3.14159265;
+
+var   i:integer;
+
+function readnumber:integer;
+{ Read a number from the console }
+var j:integer;
+begin
+ write('Enter number > ');readln(j);
+ readnumber := j
+end;
+
+procedure writemessage(var out:text; number:integer);
+{ Write a message w/ number to  a specified output device }
+begin
+ writeln(out);
+ writeln(out,'      The number is ', number);
+ writeln(out,' The value of Pi is ', pi)
+end;
+
+begin { main program }
+ i := readnumber;     { function call to read number from console }
+ writemessage(lst,i); { write message to the printer }
+ writemessage(con,i)  { write message to the console }
+end.  { main program }
+

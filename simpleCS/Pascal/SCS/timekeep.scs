@@ -1,0 +1,85 @@
+{ timekeep.scs: timekeeper routines }
+
+{ data declarations }
+const iterationsperblock = 10000; { 10000 iterations per block }
+
+type  trecord = record  { timekeeper record type }
+                  initialiteration, initialblock, iteration, block,
+                  reportperiod, gaperiod, consolereportperiod,
+                  plotreportperiod, nextplotreport, nextconsolereport,
+                  nextreport, nextga:integer;
+                  reportflag, gaflag, consolereportflag, plotreportflag:boolean
+                end;
+
+var   timekeeprec:trecord;
+      tfile:text;
+
+function addtime(t, dt:integer; var carryflag:boolean):integer;
+{ increment iterations counter and set carry flag if necessary }
+var tempadd:integer;
+begin
+  tempadd := t + dt;
+  carryflag := (tempadd >= iterationsperblock);
+  if carryflag then
+    tempadd := tempadd mod iterationsperblock;
+  addtime := tempadd
+end;
+
+procedure inittimekeeper(var tfile:text; var timekeeprec:trecord);
+{ initialize timekeeper }
+var dummyflag:boolean;
+begin with timekeeprec do begin
+  iteration := 0; block := 0;
+  readln(tfile, initialiteration);
+  readln(tfile, initialblock);
+  readln(tfile, reportperiod);
+  readln(tfile, consolereportperiod);
+  readln(tfile, plotreportperiod);
+  readln(tfile, gaperiod);
+  iteration := initialiteration;
+  block := initialblock;
+  nextga := addtime(iteration, gaperiod, dummyflag);
+  nextreport := addtime(iteration, reportperiod, dummyflag);
+  nextconsolereport := addtime(iteration, consolereportperiod, dummyflag);
+  nextplotreport := addtime(iteration, plotreportperiod, dummyflag);
+end end;
+
+procedure initreptimekeeper(var rep:text; var timekeeprec:trecord);
+{ initial timekeeper report }
+begin with timekeeprec do begin
+  writeln(rep);
+  writeln(rep, 'Timekeeper Parameters');
+  writeln(rep, '---------------------');
+  writeln(rep, 'Initial iteration        = ', initialiteration:8);
+  writeln(rep, 'Initial block            = ', initialblock:8);
+  writeln(rep, 'Report period            = ', reportperiod:8);
+  writeln(rep, 'Console report period    = ', consolereportperiod:8);
+  writeln(rep, 'Plot report period       = ', plotreportperiod:8);
+  writeln(rep, 'Genetic algorithm period = ', gaperiod:8);
+end end;
+
+procedure timekeeper(var timekeeprec:trecord);
+{ keep time and set flags for time-driven events }
+var carryflag, dummyflag:boolean;
+begin with timekeeprec do begin
+  iteration := addtime(iteration, 1, carryflag);
+  if carryflag then block := block + 1;
+  reportflag := (nextreport = iteration);
+  if reportflag then { reset }
+    nextreport := addtime(iteration, reportperiod, dummyflag);
+  consolereportflag := (nextconsolereport = iteration);
+  if consolereportflag then
+    nextconsolereport := addtime(iteration, consolereportperiod, dummyflag);
+  plotreportflag := (nextplotreport = iteration);
+  if plotreportflag then
+    nextplotreport := addtime(iteration, plotreportperiod, dummyflag);
+  gaflag := (nextga = iteration);
+  if gaflag then nextga := addtime(iteration, gaperiod, dummyflag);
+end end;
+
+procedure reporttime(var rep:text; var timekeeprec:trecord);
+{ print out block and iteration number }
+begin with timekeeprec do
+ writeln(rep, '[ Block:Iteration ]   =   [ ',block,':',iteration,' ]');
+end;
+

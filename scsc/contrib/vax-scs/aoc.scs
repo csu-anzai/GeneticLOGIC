@@ -1,0 +1,104 @@
+
+/* aoc.scs:
+     appropiation of credit routines */
+
+typedef struct {
+    int winner, oldwinner;
+    boolean bucketbrigadeflag;
+}
+
+crecord;
+
+crecord clearingrec;
+
+initaoc ()
+{					/* initialize clearinghouse record */
+    char ch;
+    fscanf (cfile, "%*c%c%*s", &ch);
+    clearingrec.bucketbrigadeflag = ((ch == 'y') || (ch == 'Y'));
+   /* first classifier picked as first oldwinner */
+    clearingrec.winner = 1;
+    clearingrec.oldwinner = 1;
+}
+
+initrepaoc ()
+{					/* initial report of clearinghouse parameters */
+    fprintf (rep, "\nApportionment of Credit Parameters\n");
+    fprintf (rep, "----------------------------------\n");
+    fprintf (rep, "Bucket brigade flag = ");
+    if (clearingrec.bucketbrigadeflag)
+	fprintf (rep, "true\n");
+    else
+	fprintf (rep, "false\n");
+}
+
+int 
+auction (oldwinner)
+    int oldwinner;
+{
+    int j, k, winner;
+    float bidmaximum = 0.0;
+
+    winner = oldwinner;			/* if no match, oldwinner wins again */
+    if (matchlist.nactive)
+	for (j = 1; j <= matchlist.nactive; ++j) {
+	    k = matchlist.clist[j];
+	    population.classifier[k].bid = population.cbid *
+		(population.bid1 + population.bid2 *
+		 population.classifier[k].specificity)
+		* population.classifier[k].strength;
+	    population.classifier[k].ebid = population.cbid *
+		(population.ebid1 + population.ebid2 *
+		 population.classifier[k].specificity)
+		* population.classifier[k].strength +
+		noise (0.0, population.bidsigma);
+	    if (population.classifier[k].ebid > bidmaximum) {
+		winner = k;
+		bidmaximum = population.classifier[k].ebid;
+	    }
+	}
+    return (winner);
+}
+
+clearinghouse ()
+/* distribute payment from recent winner to oldwinner */
+{
+    float payment;
+
+    payment = population.classifier[clearingrec.winner].bid;
+    population.classifier[clearingrec.winner].strength -= payment;
+
+    if (clearingrec.bucketbrigadeflag)
+	population.classifier[clearingrec.oldwinner].strength += payment;
+}
+
+taxcollector ()
+/* collect existence and bidding taxes from population members */
+{
+    int j;
+    float bidtaxswitch;
+
+/* life tax from everyone and bidtax form actives */
+    if ((population.lifetax) || (population.bidtax))
+	for (j = 1; j <= population.nclassifier; ++j) {
+	    if (population.classifier[j].matchflag)
+		bidtaxswitch = 1.0;
+	    else
+		bidtaxswitch = 0.0;
+	    population.classifier[j].strength *=
+		(1 - population.lifetax - population.bidtax * bidtaxswitch);
+	}
+}
+
+reportaoc ()
+{
+    fprintf (rep, "\nNew winner [%d] : Old winner [%d]\n", clearingrec.winner,
+	     clearingrec.oldwinner);
+}
+
+aoc ()
+{					/* apportionment of credit coordinator */
+    clearingrec.winner = auction (clearingrec.oldwinner);
+    taxcollector ();
+    clearinghouse ();
+}

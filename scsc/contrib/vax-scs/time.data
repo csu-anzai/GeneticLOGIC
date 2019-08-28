@@ -1,0 +1,7 @@
+0	initial_iteration
+0	initial_block
+5000	report_period
+5000	console_report_period
+5000	plot_report_period
+5000	genetic_algorithm_period
+50000	Number_of_iterations

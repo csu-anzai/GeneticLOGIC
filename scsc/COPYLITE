@@ -1,0 +1,77 @@
+
+/* SCS-C -- Goldberg's Simple Classifier System in C (Goldberg 1989)
+
+   Copyright (C) 1993 Joerg Heitkoetter
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2, or (at your option)
+   any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program; if not, write to the Free Software
+   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+   $Id: COPYLITE,v 1.1 1993/10/08 16:11:07 joke Exp $ */
+
+
+	* WHATZ COPYLITE?
+
+   Copyright in a virtual medium is something very hard to define and/or
+persue. In general you should treat this book as you would treat any other
+book, with the following exceptions:
+
+ * if you think an information given in this guide is partially invalid or
+   simply wrong, rewrite the paragraph(s) and send them to the Texinfo
+   editor/coordinator. Notes of this kind are greatly appreciated even
+   if you cannot provide a rewritten paragraph, just tell what you think
+   is wrong.
+
+ * if you think information is omitted and/or must be provided on
+   subjects not yet discussed herein, no problem, drop the current
+   Texinfo editor/coordinator your new Texinfo @node and it will
+   be included in future releases.
+
+   These ideas are not that brandnew, usually this is what happens to
+FreeWare software packages, posted to The Net. But as time goes by and
+MultiMedia and electronically available texts (e-text) become more and
+more common, these give-aways are also well-suited for distribution
+under the GNU GENERAL PUBLIC LICENSE (GPL). Anyway, there's a subtle
+but intriguing difference between software pieces and electronically
+available texts, i.e. a text "implements" it's authors view, and thus
+changing it would immediately "fake" it's contents.
+
+We conclude that there must be a facility to INDIVIDUALLY COPYRIGHT "pieces"
+of e-texts, such that reflected opinions CANNOT be changed, unless these
+changes are approved by the original author(s).
+I therefore call the protection scheme COPYLITE, right after the traditional
+COPYRIGHT, and the GNUish COPYLEFT protection schemes.
+
+   THE TERMS OF THE GPL APPLY TO THIS TEXINFO PACKAGE WITH A SINLGE BUT
+SIGNIFICANT EXCEPTION: YOU MUSN'T CHANGE THE INDIVIDUALLY COPYRIGHTED PARTS
+OF THE BIG DUMMY'S GUIDE TO THE INTERNET! THESE ARE AS FOLLOWS:
+
+ * LICENSE: ``GNU General Public License''
+   Copyright (c) 1992 by Free Software Foundation. All rights reserved.
+
+ * contrib/knuth: ``Random Number Generator''
+   Copyright (c) 1981 by Donald Knuth. All rights reserved.
+
+ * contrib/vax-scs: ``SCS in C for the VAX operating system''
+   Copyright (c) 1993 by Erik Mayer. All rights reserved.
+
+ * contrib/plauger: ``ANSI C Random Number Generator''
+   Copyright (c) 1991 by P.J. Plauger/Prentice-Hall, Englewood Cliffs, N.J.
+   All rights reserved.
+
+			-=- * -=-
+
+	RESPECT COPYLIGHT, ENCOURAGE CREATIVITY
+
+			-=- * -=-
+

@@ -1,0 +1,28 @@
+77133 is a random target.
+
+The weights are powers of two, so any reasonable target
+is attainable in one and only one way. There are twenty-one
+numbers below, so the search space is pretty big.
+
+1048576
+524288
+262144
+131072
+65536
+32768
+16384
+8192
+4096
+2048
+1024
+512
+256
+128
+64
+32
+16
+8
+4
+2
+1
+

@@ -1,0 +1,86 @@
+program testmap;
+{ Test a mapped binary coding }
+const maxstring = 30;
+      maxparms  = 10;
+
+type  allele     = boolean;
+      chromosome = array[1..maxstring] of allele;
+      parmparm   = record     { parameters of the parameter }
+                    lparm:integer; { length of the parameter }
+                    parameter, maxparm, minparm:real; { parameter & range }
+                   end;
+      parmspecs  = array[1..maxparms] of parmparm;
+
+var   parms:parmspecs;
+      j, nparms, lchrom:integer;
+      ch:char;
+      chrom:chromosome;
+
+{ Include power function }
+{$I utility.sga }
+
+{ Include decode routine }
+{$I interfac.sga }
+
+procedure extract_parm(var chromfrom, chromto:chromosome;
+                       var jposition, lchrom, lparm:integer);
+{ Extract a substring from a full string }
+var j, jtarget:integer;
+begin
+ j := 1;
+ jtarget := jposition + lparm - 1;
+ if jtarget > lchrom then jtarget := lchrom; { Clamp if excessive }
+ while (jposition <= jtarget) do begin
+   chromto[j] := chromfrom[jposition];
+   jposition := jposition + 1;
+   j := j + 1;
+  end;
+end;
+
+function map_parm(x, maxparm, minparm, fullscale:real):real;
+{ Map an unsigned binary integer to range [minparm,maxparm] }
+begin map_parm :=  minparm + (maxparm - minparm)/fullscale*x end;
+
+procedure decode_parms(var nparms, lchrom:integer;
+                       var chrom:chromosome;
+                       var parms:parmspecs);
+var j, jposition:integer;
+    chromtemp:chromosome; { Temporary string buffer }
+begin
+ j := 1; { Parameter counter }
+ jposition := 1; { String position counter }
+ repeat
+  with parms[j] do if lparm>0 then begin
+    extract_parm(chrom, chromtemp, jposition, lchrom, lparm);
+    parameter := map_parm( decode(chromtemp, lparm),
+                           maxparm, minparm, power(2.0, lparm)-1.0 );
+   end else parameter := 0.0;
+  j := j + 1;
+ until j > nparms;
+end;
+
+begin
+ { Read string & parameter parameters }
+ write('Enter length of string> '); readln(lchrom);
+ write('Enter number of  parms> '); readln(nparms);
+ for j := 1 to nparms do with parms[j] do begin
+   write('Enter ',j,'th parm length > '); readln(lparm);
+   write('Enter ',j,'th max.  value > '); readln(maxparm);
+   write('Enter ',j,'th min.  value > '); readln(minparm);
+  end;
+ { Read string }
+ write('Enter string: ');
+ for j := lchrom downto 1 do begin
+   read(ch); chrom[j] := (ch = '1');
+  end; writeln;
+ { Decode parameters }
+ decode_parms(nparms, lchrom, chrom, parms);
+ writeln;
+ for j := 1 to nparms do with parms[j] do
+   writeln('The ',j,'th parameter = ', parameter);
+end.
+
+
+
+
+

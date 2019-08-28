@@ -1,0 +1,44 @@
+{ report.scs: report coordination routines }
+
+{ report declarations }
+var pfile:text; { plot file }
+
+procedure reportheader(var rep:text);
+{ send report header to specified file/dev. }
+begin
+  page(rep);
+  writeln(rep, 'Snapshot Report');
+  writeln(rep, '---------------');
+  writeln(rep);
+end;
+
+procedure report(var rep:text);
+{ report coordination routine }
+begin
+  reportheader(rep);
+  reporttime(rep, timekeeprec);
+  reportenvironment(rep, environrec);
+  reportdetectors(rep, envmessage, population.nposition);
+  reportclassifiers(rep, population);
+  reportaoc(rep, clearingrec);
+  reportreinforcement(rep, reinforcementrec);
+end;
+
+procedure consolereport(var reinforcementrec:rrecord);
+{ write console report }
+begin with reinforcementrec do begin
+  clrscr; { clear the screen }
+  writeln('|----------------------------|');
+  writeln('     Iteration =  ',totalcount:8:0);
+  writeln('     P correct =  ',proportionreward:8:6);
+  writeln('   P50 correct =  ',proportionreward50:8:6);
+  writeln('|----------------------------|');
+end end;
+
+procedure plotreport(var pfile:text; var reinforcementrec:rrecord);
+{ write plot report to pfile }
+begin with reinforcementrec do begin
+  writeln(pfile, totalcount:8:0,' ',proportionreward:8:6,' ',
+                 proportionreward50:8:6);
+end end;
+

@@ -1,0 +1,6 @@
+0		// initialiteration		*** time.dta ***
+0		// initialblock
+50000		// reportperiod
+50000		// consolereportperiod
+500		// plotperiod
+5000		// gaperiod (-1 means GA turned off)

@@ -1,0 +1,46 @@
+{ detector.scs: convert environmental states to env. message }
+
+{ detector data declarations }
+
+type drecord = record
+               end; { For this problem, no detector record is
+                      required.  Normally, the detector record
+                      contains information for mapping environmental
+                      state variables to the environmental bit-string. }
+
+var detectrec:drecord; { dummy detector record }
+
+procedure detectors(var environrec:erecord; var detectrec:drecord;
+                    var envmessage:message);
+{ convert environmental state to env. message }
+begin
+ with environrec do { place signal message in env. message }
+   envmessage := signal
+end;
+
+procedure writemessage(var rep:text; var mess:message; lmessage:integer);
+{ write a message in bit-reverse order }
+var j:integer;
+begin
+ for j := lmessage downto 1 do
+  write(rep,mess[j]:1)
+end;
+
+procedure reportdetectors(var rep:text; var envmessage:message;
+                          nposition:integer);
+{ write out environmental message }
+begin
+ writeln(rep);
+ write(rep, 'Environmental message:    ');
+ writemessage(rep, envmessage, nposition);
+ writeln(rep);
+end;
+
+procedure initdetectors(var efile:text; var detectrec:drecord);
+{ dummy detector initialization }
+begin end;
+
+procedure initrepdetectors(var rep:text; var detectrec:drecord);
+{ dummy initial detectors report }
+begin end;
+

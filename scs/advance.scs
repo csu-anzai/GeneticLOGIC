@@ -1,0 +1,7 @@
+/* advance.scs:
+	advance variables for next time step */
+
+advance()	/* advance winner */
+{
+	clearingrec.oldwinner=clearingrec.winner;
+}

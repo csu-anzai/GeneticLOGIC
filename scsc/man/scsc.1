@@ -1,0 +1,189 @@
+.\" $Id: scsc.1,v 1.1 1993/02/08 13:25:40 joke Exp $
+.TH SCS-C 1 "6 December 1993" "Version 0.99j" "EDUCATIONAL TOOLS"
+
+.\" this noise gets my name right!
+.\"     \*(oe\&
+.if t .ds oe \\zo\\v'-0.6m'..\\v'+0.6m'
+.if n .ds oe oe
+
+.SH NAME
+scsc \- a simple classifier system in C
+
+.SH SYNOPSIS
+.LP
+.B scsc
+[
+.I options
+]
+.TP
+	[\fB-N, --no-noise-in-auction\fR]
+.TP
+	[\fB-S, --no-specificity-in-auction\fR]
+.TP
+	[\fB-b, --batch\fR]
+.TP
+	[\fB-h, --help\fR]
+.TP
+	[\fB-V, --version\fR]
+.TP
+	[\fB-W, --warranty\fR]
+.TP
+	[\fB-c, --classifier-data \fI<classifier data file name>\fR]
+.TP
+	[\fB-d, --detector-data \fI<detector data file name>\fR]
+.TP
+	[\fB-e, --environmental-data \fI<environmental data file name>\fR]
+.TP
+	[\fB-g, --genetics-data \fI<GA data file name>\fR]
+.TP
+	[\fB-r, --reinforcement-data \fI<reinforcement data file name>\fR]
+.TP
+	[\fB-t, --timekeeper-data \fI<timekeeper data file name>\fR]
+.TP
+	[\fB-l, --log-file \fI<log file name>\fR]
+.TP
+	[\fB-p, --plot-file \fI<plot file name>\fR]
+.TP
+	[\fB-s, --seed-for-random \fI<seed value>\fR]
+.TP
+	[\fB-T, --time-steps \fI<number>\fR]
+
+.SH DESCRIPTION
+.B scsc
+implements the simple classifier system SCS-C; a C translation
+of Goldberg's Pascal SCS (refer to the
+.SM SEE ALSO
+section below).
+
+.BR scsc 's
+input and output streams, and some of it's default parameters
+may be changed using various options (see the 
+.SM OPTIONS
+section below).
+
+.SH OPTIONS
+.TP
+.B \-N, \-\-no-noise-in-aution
+Turn off the noise generating function during the
+apportionment of credit.
+.TP
+.B \-S, \-\-no-specificity-in-auction
+Turn off default hierarchy seeking
+(you can also assign zero values to classifier-data parameters
+.B bid2
+and
+.BR ebid2 .)
+.TP
+.B \-T, \-\-time-steps \fInumber\fR
+Run the system for
+.I number
+of timesteps.
+.RB ( Note:
+on non-UNIX machines the user may interrupt
+.B scsc
+by hitting a key on the keyboard. He is then prompted if
+he want's to abort execution, or go on:
+.I Halt (y/n)?
+On UNIX systems this facility is currently not implemented,
+we use the shell's job control mechanism.)
+.TP
+.B \-b, \-\-batch
+Run
+.B scsc
+in batch mode, ie. don't prompt the user for any input;
+eg. the random number generator's seed is initialized with
+a default value (0.02021965), unless specified otherwise with the
+.B `-s, --seed-for-random'
+flag.
+.TP
+.B \-c, \-\-classifier-data \fIfilename\fR
+The classifier data will be read in from \fIfilename\fR
+(defaults to \fIscsc.cls\fR).
+.TP
+.B \-d, \-\-detector-data \fIfilename\fR
+The detector data will be read in from \fIfilename\fR
+(defaults to \fIscsc.det\fR).
+(Unused in the contributed 6-bit multiplexer example.)
+.TP
+.B \-e, \-\-environmental-data \fIfilename\fR
+The environmental data will be read in from \fIfilename\fR
+(defaults to \fIscsc.env\fR).
+.TP
+.B \-g, \-\-genetics-data \fIfilename\fR
+The genetic algorithm parameters will be read in from \fIfilename\fR
+(defaults to \fIscsc.gen\fR).
+.TP
+.B \-h, \-\-help
+Print a usage message containing all options.
+.TP
+.B \-l, \-\-log-file \fIfilename\fR
+Logging information will go to \fIfilename\fR
+(defaults to \fIscsc.log\fR).
+.TP
+.B \-p, \-\-plot-file \fIfilename\fR
+Plot data will go to \fIfilename\fR
+(defaults to \fIscsc.plt\fR).
+.TP
+.B \-r, \-\-reinforcement-data \fIfilename\fR
+The reinforcement parameters will be read in from \fIfilename\fR
+(defaults to \fIscsc.rfc\fR).
+.TP
+.B \-s, \-\-seed-for-random \fIseed value\fR
+Set the random number generator's seed with the real
+.I seed value.
+.TP
+.B \-t, \-\-timekeeper-data \fIfilename\fR
+The time keeper's parameters will be read in from \fIfilename\fR
+(defaults to \fIscsc.tim\fR).
+.TP
+.B \-V, \-\-version
+Print a version and copyright message; you
+will also be informed which random number generator is
+currently compiled into
+.B scsc.
+.TP
+.B \-W, \-\-warranty
+Print a warranty information message.
+
+.SH SEE ALSO
+David E. Goldberg,
+.I Genetic Algorithms in Search, Optimization,
+.I and Machine Learning,
+Addison-Wesley, Reading MA, 1989.
+
+.BR csh (1),
+.BR jazz (1)
+
+.SH AUTHOR
+Copyright 
+.if t \(co 
+.if n (C)
+1993 by
+.if n Joerg Heitkoetter
+.if t J\*(oe\&rg Heitk\*(oe\&tter
+.nf
+Systems Analysis Group, University of Dortmund, Germany.
+.nf
+Send bugs, comments, etc., to <joke@ls11.informatik.uni-dortmund.de>.
+.fi
+
+.SH AVAILABILITY
+.LP
+This work is protected by the terms of the
+.SM GNU
+General Public License. Please refer to the
+.SM LICENSE
+file accompanying the sources of this software package for a lengthy, boring,
+but absolute complete description.
+
+SCS-C is available via anonymous ftp from the SyS server
+.B lumpi.informatik.uni-dortmund.de
+(129.217.36.140)
+as file `scsc-0.99j.tar.gz' in /pub/LCS/src.
+
+.\" These sources come from
+.\" .SM MAGPIE
+.\" \-\- The European Free Software Factory Project.
+.\" For more information on
+.\" .SM MAGPIE
+.\" send email to <joke@ls11.informatik.uni-dortmund.de>.

@@ -1,0 +1,92 @@
+{ aoc.scs: apportionment of credit routines }
+
+{ aoc data declarations - aoc uses cfile for input }
+type  crecord = record
+                  winner, oldwinner:integer;
+                  bucketbrigadeflag:boolean;
+                end;
+
+var   clearingrec:crecord;
+
+procedure initaoc(var clearingrec:crecord);
+{ initialize clearinghouse record }
+var ch:char;
+begin with clearingrec do begin
+ readln(cfile, ch);
+ bucketbrigadeflag := (ch = 'y') or (ch = 'Y');
+ winner := 1; oldwinner := 1    { 1st classifier picked as 1st oldwinner }
+end end;
+
+procedure initrepaoc(var rep:text; var clearingrec:crecord);
+{ initial report of clearinghouse parameters }
+begin with clearingrec do begin
+ writeln(rep);
+ writeln(rep, 'Apportionment of Credit Parameters');
+ writeln(rep, '----------------------------------');
+   write(rep, 'Bucket brigade flag      =    ');
+   if bucketbrigadeflag then writeln(rep, ' true') else
+     writeln(rep, 'false');
+end end;
+
+function auction(var population:poptype; var matchlist:classlist;
+                     oldwinner:integer):integer;
+{ auction among currently matched classifiers - return winner }
+var j, k, winner:integer; bidmaximum:real;
+begin with population do with matchlist do begin
+  bidmaximum := 0.0;
+  winner := oldwinner;  { if no match, oldwinner wins again }
+  if nactive > 0 then for j := 1 to nactive do begin k := clist[j];
+    with classifier[k] do begin
+      bid  := cbid * (bid1 + bid2 * specificity) * strength;
+      ebid := cbid * (ebid1 + ebid2 * specificity) * strength
+                + noise(0.0, bidsigma);
+      if (ebid > bidmaximum) then begin
+        winner := k;
+        bidmaximum := ebid
+       end
+     end end;
+  auction := winner
+ end end;
+
+procedure clearinghouse(var population:poptype; var clearingrec:crecord);
+{ distribute payment from recent winner to oldwinner }
+var payment:real;
+begin with population do with clearingrec do begin
+  with classifier[winner] do begin { payment }
+    payment := bid;
+    strength := strength - payment
+   end;
+  if bucketbrigadeflag then { pay oldwinner receipt if bb is on }
+    with classifier[oldwinner] do strength := strength + payment
+end end;
+
+procedure taxcollector(var population:poptype);
+{ collect existence and bidding taxes from population members }
+var j:integer; bidtaxswitch:real;
+begin with population do begin
+{ life tax from everyone & bidtax from actives }
+  if (lifetax <> 0.0) or (bidtax <> 0.0) then for j := 1 to nclassifier do
+    with classifier[j] do begin
+      if matchflag then bidtaxswitch := 1.0 else bidtaxswitch := 0.0;
+      strength := strength - lifetax*strength - bidtax*bidtaxswitch*strength;
+     end;
+end end;
+
+procedure reportaoc(var rep:text; var clearingrec:crecord);
+{ report who pays to whom }
+begin
+  writeln(rep);
+  with clearingrec do
+    writeln(rep, 'New winner [',winner,'] : Old winner [',oldwinner,']')
+end;
+
+procedure aoc(var population:poptype; var matchlist:classlist;
+              var clearingrec:crecord);
+{ apportionment of credit coordinator }
+begin
+  with clearingrec do winner := auction(population, matchlist, oldwinner);
+  taxcollector(population);
+  clearinghouse(population, clearingrec);
+end;
+
+

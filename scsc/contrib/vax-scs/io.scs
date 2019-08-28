@@ -1,0 +1,27 @@
+
+/*  io.scs:
+	io routines: file opening routines */
+
+open_input (f, fprompt)
+    FILE *f;
+    char fprompt[14];
+{
+    char fname[20];
+
+    printf ("Enter %s filename: ", fprompt);
+    scanf ("%s", fname);
+
+    f = fopen (fname, "r");
+}
+
+open_output (f, fprompt)
+    FILE *f;
+    char fprompt[14];
+{
+    char fname[20];
+
+    printf ("Enter %s filename: ", fprompt);
+    scanf ("%s", fname);
+
+    f = fopen (fname, "w");
+}

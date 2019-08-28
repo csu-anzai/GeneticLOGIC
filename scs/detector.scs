@@ -1,0 +1,39 @@
+/* detector.scs */
+
+typedef struct {
+		char dummy;
+		}drecord;
+
+drecord detectrec;
+
+detectors()	/* convert environmental state to environmental message */
+{
+	int j;
+	for(j=0;j<MAXPOSITION;++j) envmessage[j] = environrec.signal[j];
+}
+
+writemessage(mess,lmessage)	/* write message in bit-reverse order */
+	message mess;
+	int lmessage;
+{
+	int j;
+	for(j=lmessage;j>=1;--j) putc(mess[j],rep);
+	putc('\n',rep);
+}
+
+reportdetectors(nposition)	/* write environmental message */
+	int nposition;
+{
+	fprintf(rep,"\nEnvironmental message:  ");
+	writemessage(envmessage,nposition);
+	fprintf(rep,"\n");
+}
+
+initdetectors()		/* dummy detector initialization */
+{
+}
+
+initrepdetectors()	/* dummy initial detectors report */
+{
+}
+

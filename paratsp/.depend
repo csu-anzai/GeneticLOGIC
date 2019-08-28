@@ -1,0 +1,69 @@
+best.o : best.c define.h global.h fopen.h trace.h best.h 
+bit.o : bit.c define.h global.h other.h trace.h bit.h 
+boltzman.o : boltzman.c define.h global.h random.h trace.h boltzman.h 
+brselect.o : brselect.c define.h global.h boltzman.h random.h trace.h brselect.h 
+chkpoint.o : chkpoint.c define.h global.h best.h error.h fopen.h trace.h chkpoint.h 
+chrom.o : chrom.c define.h global.h other.h trace.h chrom.h 
+commpop.o : commpop.c define.h global.h chrom.h eval.h generate.h other.h parallel.h \
+  random.h trace.h commpop.h 
+control.o : control.c define.h global.h trace.h control.h 
+converge.o : converge.c define.h global.h error.h fopen.h other.h trace.h converge.h 
+cross.o : cross.c define.h global.h bit.h chrom.h error.h eval.h other.h random.h \
+  trace.h cross.h 
+dbuff.o : dbuff.c define.h global.h error.h fopen.h other.h trace.h dbuff.h 
+done.o : done.c define.h global.h trace.h done.h 
+dump.o : dump.c define.h global.h error.h fopen.h trace.h dump.h 
+elite.o : elite.c define.h global.h bit.h chrom.h eval.h filtwins.h mutation.h \
+  normal.h random.h trace.h elite.h 
+error.o : error.c define.h global.h fopen.h trace.h error.h 
+eval.o : eval.c define.h global.h best.h fitscale.h other.h readfile.h trace.h \
+  eval.h 
+filtwins.o : filtwins.c define.h global.h chrom.h mutation.h normal.h trace.h \
+  filtwins.h 
+fitscale.o : fitscale.c define.h global.h trace.h fitscale.h 
+fopen.o : fopen.c define.h global.h trace.h fopen.h 
+generate.o : generate.c define.h global.h best.h chkpoint.h commpop.h control.h \
+  done.h dump.h error.h fopen.h graphics.h init.h logit.h mate.h measure.h parallel.h \
+  trace.h generate.h 
+getopt.o : getopt.c getopt.h 
+global.o : global.c define.h readfile.h trace.h global.h 
+graphics.o : graphics.c define.h global.h fopen.h trace.h graphics.h 
+init.o : init.c define.h global.h brselect.h dbuff.h error.h fopen.h parallel.h \
+  popinit.h random.h trace.h init.h 
+input.o : input.c define.h global.h chrom.h dbuff.h dump.h error.h eval.h fopen.h \
+  getopt.h init.h interfac.h other.h parallel.h readfile.h trace.h input.h 
+interfac.o : interfac.c define.h global.h init.h input.h trace.h interfac.h 
+lex.yy.o : lex.yy.c define.h other.h readpars.h 
+logit.o : logit.c define.h global.h trace.h logit.h 
+main.o : main.c define.h global.h dump.h error.h eval.h fopen.h generate.h graphics.h \
+  input.h logit.h other.h parallel.h readfile.h schema.h trace.h main.h 
+maselect.o : maselect.c define.h global.h random.h trace.h maselect.h 
+mate.o : mate.c define.h global.h bit.h brselect.h chrom.h cross.h elite.h eval.h \
+  filtwins.h maselect.h mutation.h normal.h optlocal.h other.h replace.h trace.h \
+  mate.h 
+measure.o : measure.c define.h global.h converge.h dbuff.h error.h fopen.h logit.h \
+  other.h schema.h trace.h measure.h 
+mutation.o : mutation.c define.h global.h optlocal.h other.h random.h trace.h \
+  mutation.h 
+normal.o : normal.c define.h global.h mutation.h trace.h normal.h 
+optlocal.o : optlocal.c define.h global.h eval.h fitscale.h mutation.h trace.h \
+  optlocal.h 
+other.o : other.c define.h global.h error.h trace.h other.h 
+parallel.o : parallel.c define.h global.h best.h error.h fopen.h other.h logit.h \
+  trace.h parallel.h 
+popinit.o : popinit.c define.h global.h bit.h eval.h filtwins.h normal.h random.h \
+  trace.h popinit.h 
+random.o : random.c define.h global.h error.h other.h trace.h random.h 
+readfile.o : readfile.c define.h global.h error.h fopen.h other.h readpars.h \
+  trace.h readfile.h 
+readpars.o : readpars.c define.h global.h error.h readfile.h 
+readscan.o : readscan.c define.h other.h readpars.h 
+replace.o : replace.c define.h global.h bit.h random.h trace.h replace.h 
+report.o : report.c define.h global.h error.h fopen.h getopt.h interfac.h 
+satsp.o : satsp.c define.h global.h error.h eval.h fopen.h getopt.h interfac.h \
+  logit.h other.h parallel.h random.h readfile.h satsp.h 
+schema.o : schema.c define.h global.h error.h fopen.h other.h trace.h schema.h 
+setup.o : setup.c define.h global.h fopen.h getopt.h interfac.h 
+trace.o : trace.c define.h global.h trace.h 
+xtsp.o : xtsp.c define.h graphics.h 
+y.tab.o : y.tab.c define.h global.h error.h readfile.h 

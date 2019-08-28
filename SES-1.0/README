@@ -1,0 +1,105 @@
+
+This is the README for SES (Simple Evolution Strategy). It is not very well
+documented, but if you're interested in evolutionary algorithms, you
+probably have worked with programs much less documented than this one.
+
+Please send questions, comments and bug reports to
+
+/---------------------------------------------------------------------\
+| Joachim Sprave               	  joe@LS11.informatik.uni-dortmund.de |
+|                      //////\\                                       |
+| Univ. Dortmund      /        \        44221 Dortmund                |
+| Dept. CS           _|  _   _ |_       Tel.: +49-231-755 4678        |
+| Systems Analysis  |.|-(.)-(.)+.|      Fax : +49-231-755 2450        |
+\------------------  \|    J   |/  -----------------------------------/
+                      \   ---  /
+                       \      /
+                        "####"
+
+
+What is SES ?
+==============
+
+SES (Simple Evolution Strategy) is a parameter optimization program based on
+Evolution Strategies (ES).  It is a more or less traditional ES
+implementation, except for:
+
+	- correlated mutations not implemented
+	- global recombination not implemented
+	- geometric intermediate recombination added for variances sigma[i]
+	- discrete recombination on both parameters and variances is performed
+	  simultaneously, i.e. sigma[i] and x[i] are taken from one parent
+	  at each position i.
+
+This program was written to compare a modified algorithm to traditional ES.
+In this variant, the so called Linear Neighborhood ES (LNES), a local
+selection scheme is used to prevent premature stagnation and allow parallel
+implementation. A sequential implementation of LNES called LICE (LInear
+Cellular Es) is available at the same site you SES from.
+
+
+How can I use SES ?
+====================
+
+Your optimization problem should look like this:
+
+	Find x* from R^n, such that f(x) >= f(x*) for all x from R^n.
+
+In sphere.dir you can find an example objective function implementation for
+f(x) = SUM(x_i**2). Just make a copy of this directory, say, foo.dir, and
+copy sphere.dir/sphere.[c|h|in] to foo.dir/foo.[c|h|in]. Edit the function
+eval() in foo.c. This is your objective function. It returns a structure of
+type Fitness containing two components named valid and value. If the valid
+flag is true (1 in C), the value part is interpreted as the objective
+function value of the vector x. If your function is constrained and x is not
+in the feasible region, set valid to false (0 in C). The value part is now
+taken as the degree of violence of the restrictions. If you cannot determine
+such a value, set it to a constant, e.g. 0.
+
+When you have completed foo.c, change to the SES-1.0 directory and type
+
+	make f=foo
+
+If compilation was successful, go back to foo.dir, edit foo.in and type
+
+	foo foo
+
+If you want to change a SES parameter temporarily, just append its new 
+setting to the command line, e.g.:
+
+	foo foo mu=10 lambda=100 pixmon=yes
+
+This will create a least two new files: foo.log and foo.bst. foo.log contains
+one line for each generation with
+
+	- the generation number,
+	- the number of function evaluations,
+	- the valid flag of the best individual in this generation,
+	- the function value of the best individual in this generation,
+	- the valid flag of the worst individual in this generation, and
+	- the function value of the worst individual in this generation.
+
+foo.bst contains one line for each improvement during the optimization 
+process. The first three columns are the generation number, the valid flag
+and the function value of the best individual so far, followed by its 
+x coordinates.
+
+
+Visualization
+=============
+
+If you have gnuplot installed, you can watch the optimization process. Just set
+showxs and/or showy to yes.
+
+You can also use PixMon to visualize the fitness distribution in the 
+population.
+
+
+Tk/Tcl user interface
+=====================
+
+If you don't like cryptic parameter files and if you have have Tk/Tcl 
+installed, try
+
+	tkjoe foo.dir/foo
+

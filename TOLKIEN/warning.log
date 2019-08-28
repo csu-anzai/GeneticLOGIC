@@ -1,0 +1,58 @@
+The file documents the warning messages while compiling TOLKIEN :
+
+1.  Redefinition of some constants
+----------------------------------
+Example :
+    g++ -c -I/uac/gds/tang028/TOLKIEN/include -I/uac/gds/tang028/TOLKIEN/gnu/include -DUSE_LIBGXX_INLINES -O /uac/gds/tang028/TOLKIEN/src/dpldbin.cc
+    In file included from /uac/gds/tang028/TOLKIEN/include/tobject.h:15,
+                     from /uac/gds/tang028/TOLKIEN/include/tritstr.h:11,
+                     from /uac/gds/tang028/TOLKIEN/include/dpldbin.h:11,
+                     from /uac/gds/tang028/TOLKIEN/src/dpldbin.cc:8:
+    /usr/local/gcc-2.5.7/lib/gcc-lib/sparc-sun-sunos4.1.2/2.5.7/include/values.h:23: warning: `MAXSHORT' redefined
+    /uac/gds/tang028/TOLKIEN/include/tvalues.h:47: warning: this is the location of the previous definition
+    /usr/local/gcc-2.5.7/lib/gcc-lib/sparc-sun-sunos4.1.2/2.5.7/include/values.h:24: warning: `MAXINT' redefined
+    /uac/gds/tang028/TOLKIEN/include/tvalues.h:54: warning: this is the location of the previous definition
+    /usr/local/gcc-2.5.7/lib/gcc-lib/sparc-sun-sunos4.1.2/2.5.7/include/values.h:25: warning: `MAXLONG' redefined
+    /uac/gds/tang028/TOLKIEN/include/tvalues.h:61: warning: this is the location of the previous definition
+    /usr/local/gcc-2.5.7/lib/gcc-lib/sparc-sun-sunos4.1.2/2.5.7/include/values.h:53: warning: `MAXDOUBLE' redefined
+    /uac/gds/tang028/TOLKIEN/include/tvalues.h:33: warning: this is the location of the previous definition
+
+Some constants such as MAXSHORT, MAXLONG are required by libg++ classes such
+as BitString.  In order to make the code compilable under BC++, these constants
+are defined in the header file "tvalues.h".
+
+2.  #pragma once
+----------------
+Example :
+    In file included from /uac/gds/tang028/TOLKIEN/include/trand.h:15,
+                     from /uac/gds/tang028/TOLKIEN/include/tobject.h:16,
+                     from /uac/gds/tang028/TOLKIEN/include/tritstr.h:11,
+                     from /uac/gds/tang028/TOLKIEN/include/dpldbin.h:11,
+                     from /uac/gds/tang028/TOLKIEN/src/dpldbin.cc:8:
+    /uac/gds/tang028/TOLKIEN/gnu/include/RNG.h:26: warning: `#pragma once' is obsolete
+
+3.  cast from float to integer
+------------------------------
+Example :
+    In file included from /uac/gds/tang028/TOLKIEN/include/dpldbin.h:11,
+                     from /uac/gds/tang028/TOLKIEN/src/dpldbin.cc:8:
+    /uac/gds/tang028/TOLKIEN/include/tritstr.h:288: warning: float or double assigned to integer data type
+
+4.  delete [n] ptr
+------------------
+Example :
+    In file included from /uac/gds/tang028/TOLKIEN/include/xover.h:14,
+                     from /uac/gds/tang028/TOLKIEN/src/dpldbin.cc:10:
+    /uac/gds/tang028/TOLKIEN/gnu/include/IntVec.h:132: warning: ANSI C++ forbids array size in vector delete
+
+Old of C++ requires the size of the array for delete[].
+
+5.  DblVec(DblVec&)
+-------------------
+Example :
+    In file included from /uac/gds/tang028/TOLKIEN/src/slctrw.cc:8:
+    /uac/gds/tang028/TOLKIEN/include/slctrw.h:57: warning: conversion to reference of read-only member `class DblVec RW_Select::cumSlots'
+    /uac/gds/tang028/TOLKIEN/include/slctrw.h:57: warning: conversion to reference of read-only member `class IntVec RW_Select::ndx'
+
+The warning is because DblVec(const DblVec&) is not defined.
+

@@ -1,0 +1,46 @@
+/* declare.scs: 
+	declaration for scs */
+
+#include <stdio.h>
+
+typedef int boolean;
+#define TRUE		1
+#define FALSE		0
+
+typedef char bit;	/* binary digit 0,1 */
+
+#define WILDCARD	'#'
+typedef char trit;	/* ternary digit 0,1,# */
+typedef bit action;
+
+#define MAXPOSITION	(50+1)	/* maxposition + 1*/
+typedef trit condition[MAXPOSITION];
+typedef bit message[MAXPOSITION];
+
+typedef struct{
+		condition c;
+		action a;
+		float strength,bid,ebid;
+		boolean matchflag;
+		int specificity;
+	      } classtype;
+
+#define MAXCLASS	(100+1)	
+typedef classtype classarray[MAXCLASS];
+
+typedef struct{
+		int clist[MAXCLASS];
+		int nactive;
+	      } classlist;
+
+typedef struct{
+		classarray classifier;
+		int nclassifier,nposition;
+		float pgeneral,cbid,bidsigma,bidtax,lifetax,bid1,bid2,ebid1,
+		      ebid2,sumstrength,maxstrength,avgstrength,minstrength;
+	      } poptype;	
+
+poptype population;	/* population of classifiers */
+classlist matchlist;	/* who matched */
+message envmessage;	/* environmental message */
+FILE *rep;		/* report device/file */

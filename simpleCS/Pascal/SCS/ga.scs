@@ -1,0 +1,243 @@
+{ ga.scs: genetic algorithm code for SCS }
+
+{ data declarations }
+const maxmating = 10;
+
+type  mrecord = record
+                  mate1, mate2, mort1, mort2, sitecross:integer
+                end;
+      marray = array[1..maxmating] of mrecord;
+      grecord = record
+                  proportionselect, pmutation, pcrossover:real;
+                  ncrossover, nmutation, crowdingfactor, crowdingsubpop,
+                   nselect:integer;
+                  mating:marray; { mating records for ga report}
+                end;
+
+var   garec:grecord;
+      gfile:text;
+
+procedure initga(var gfile:text; var garec:grecord; var population:poptype);
+{ initialize ga parameters }
+begin with garec do with population do begin
+  readln(gfile, proportionselect);
+  readln(gfile, pmutation);
+  readln(gfile, pcrossover);
+  readln(gfile, crowdingfactor);
+  readln(gfile, crowdingsubpop);
+  nselect := round(proportionselect * nclassifier * 0.5);
+                                     { number of mate pairs to select }
+  nmutation := 0; ncrossover := 0;
+end end;
+
+procedure initrepga(var rep:text; var garec:grecord);
+{ initial report }
+begin with garec do begin
+  writeln(rep);
+  writeln(rep, 'Genetic Algorithm Parameters');
+  writeln(rep, '----------------------------');
+  writeln(rep, 'Proportion to select/gen = ', proportionselect:8:4);
+  writeln(rep, 'Number to select         = ', nselect:8);
+  writeln(rep, 'Mutation probability     = ', pmutation:8:4);
+  writeln(rep, 'Crossover probability    = ', pcrossover:8:4);
+  writeln(rep, 'Crowding factor          = ', crowdingfactor:8);
+  writeln(rep, 'Crowding subpopulation   = ', crowdingsubpop:8);
+end end;
+
+function select(var population:poptype):integer;
+{ select a single individual according to strength }
+var rand, partsum:real;
+    j:integer;
+begin with population do begin
+  partsum := 0.0; j := 0;
+  rand := random * sumstrength;
+  repeat
+    j := j + 1;
+    partsum := partsum + classifier[j].strength
+  until (partsum >= rand) or (j = nclassifier);
+  select := j;
+end end;
+
+function mutation(positionvalue:trit; pmutation:real;
+                                  var nmutation:integer):trit;
+{ mutate a single position with specified probability }
+var tempmutation:integer;
+begin
+  if flip(pmutation) then begin
+       tempmutation := (positionvalue + rnd(1,2) + 1) mod 3 - 1;
+       nmutation := nmutation + 1;
+      end
+    else tempmutation := positionvalue;
+  mutation := tempmutation
+end;
+
+function bmutation(positionvalue:bit; pmutation:real;
+                                  var nmutation:integer):bit;
+{ mutate a single bit with specified probability }
+var tempmutation:integer;
+begin
+  if flip(pmutation) then begin
+       tempmutation := (positionvalue + 1) mod 2;
+       nmutation := nmutation + 1;
+      end
+    else tempmutation := positionvalue;
+  bmutation := tempmutation
+end;
+
+procedure crossover(var parent1, parent2, child1, child2:classtype;
+                        pcrossover, pmutation:real;
+                        var sitecross, nposition, ncrossover,
+                        nmutation:integer);
+{ cross a pair at a given site with mutation on the trit transfer }
+var inheritance:real; j:integer;
+begin
+  if flip(pcrossover) then begin
+       sitecross := rnd(1, nposition);
+       ncrossover := ncrossover + 1;
+      end
+    else sitecross := nposition + 1  { transfer, but no cross };
+{ transfer action part regardless of sitecross }
+  child1.a := bmutation(parent1.a, pmutation, nmutation);
+  child2.a := bmutation(parent2.a, pmutation, nmutation);
+{ transfer and cross above cross site }
+  j := sitecross;
+  while (j <= nposition) do begin
+    child2.c[j] := mutation(parent1.c[j], pmutation, nmutation);
+    child1.c[j] := mutation(parent2.c[j], pmutation, nmutation);
+    j := j + 1
+   end;
+  j := 1;
+{ transfer only below cross site }
+  while (j < sitecross) do begin
+    child1.c[j] := mutation(parent1.c[j], pmutation, nmutation);
+    child2.c[j] := mutation(parent2.c[j], pmutation, nmutation);
+    j := j + 1
+   end;
+{ children inherit average of parental strength values }
+  inheritance := avg(parent1.strength, parent2.strength);
+  with child1 do begin
+    strength := inheritance; matchflag := false;
+    ebid := 0.0; bid := 0.0;
+    specificity := countspecificity(c, nposition);
+   end;
+  with child2 do begin
+    strength := inheritance; matchflag := false;
+    ebid := 0.0; bid := 0.0;
+    specificity := countspecificity(c, nposition);
+   end;
+end;
+
+function worstofn(var population:poptype; n:integer):integer;
+{ select worst individual from random subpopulation of size n }
+var j, worst, candidate:integer; worststrength:real;
+begin with population do begin
+ { initialize with random selection }
+  worst := rnd(1, nclassifier);
+  worststrength := classifier[worst].strength;
+ { select and compare from remaining subpopulation }
+  if (n > 1) then for j := 2 to n do begin
+    candidate := rnd(1, nclassifier);
+    if worststrength > classifier[candidate].strength then begin
+      worst := candidate;
+      worststrength := classifier[worst].strength;
+     end;
+   end;
+ { return worst }
+  worstofn := worst;
+end end;
+
+function matchcount(var classifier1, classifier2:classtype;
+                        nposition:integer):integer;
+{ count number of positions of similarity }
+var tempcount, j:integer;
+begin
+  if (classifier1.a = classifier2.a) then tempcount := 1
+     else tempcount := 0;
+  for j := 1 to nposition do
+   if (classifier1.c[j] = classifier2.c[j]) then tempcount := tempcount + 1;
+  matchcount := tempcount;
+end;
+
+function crowding(var child:classtype; var population:poptype;
+                      crowdingfactor, crowdingsubpop:integer):integer;
+{ replacement using modified De Jong crowding }
+var popmember, j, match, matchmax, mostsimilar:integer;
+begin with population do begin
+  matchmax := -1; mostsimilar := 0;
+  if (crowdingfactor < 1) then crowdingfactor := 1;
+  for j := 1 to crowdingfactor do begin
+    popmember := worstofn(population, crowdingsubpop); { pick worst of n }
+    match := matchcount(child, classifier[popmember], nposition);
+    if match > matchmax then begin
+        matchmax := match;
+        mostsimilar := popmember;
+       end;
+   end;
+  crowding := mostsimilar;
+end end;
+
+procedure statistics(var population:poptype);
+{ population statistics - max, avg, min, sum of strength }
+var j:integer;
+begin with population do begin
+  with classifier[1] do begin
+    maxstrength := strength;
+    minstrength := strength;
+    sumstrength := strength;
+   end;
+  j := 2;
+  while (j <= nclassifier) do with classifier[j] do begin
+    maxstrength := max(maxstrength, strength);
+    minstrength := min(minstrength, strength);
+    sumstrength := sumstrength + strength;
+    j := j + 1;
+   end;
+  avgstrength := sumstrength / nclassifier;
+end end;
+
+procedure ga(var garec:grecord; var population:poptype);
+{ coordinate selection, mating, crossover, mutation, & replacement }
+var j:integer; child1, child2:classtype;
+begin with garec do with population do begin
+  statistics(population);               { get average, max, min, sumstrength }
+  for j := 1 to nselect do with mating[j] do begin
+    mate1 := select(population);                                { pick mates }
+    mate2 := select(population);
+    crossover(classifier[mate1], classifier[mate2], child1, child2,
+              pcrossover, pmutation, sitecross, nposition,
+              ncrossover, nmutation);                       { cross & mutate }
+    mort1 := crowding(child1, population, crowdingfactor, crowdingsubpop);
+    sumstrength := sumstrength - classifier[mort1].strength
+                               + child1.strength;           { update sumstrength }
+    classifier[mort1] := child1; { insert child in mort1's place }
+    mort2 := crowding(child2, population, crowdingfactor, crowdingsubpop);
+    sumstrength := sumstrength - classifier[mort2].strength
+                               + child2.strength;           { update sumstrength }
+    classifier[mort2] := child2;
+   end;
+end end;
+
+procedure reportga(var rep:text; var garec:grecord; var population:poptype);
+{ report on mating, crossover, and replacement }
+var j:integer;
+begin with garec do with population do begin
+  page(rep);
+  writeln(rep,'Genetic Algorithm Report');
+  writeln(rep,'------------------------');
+  writeln(rep);
+  writeln(rep,'Pair  Mate1  Mate2  SiteCross  Mort1  Mort2');
+  writeln(rep,'-------------------------------------------');
+  for j := 1 to nselect do with mating[j] do
+    writeln(rep,j:3,'    ',mate1:3,'    ',mate2:3,'     ',sitecross:3,
+                '       ',mort1:3,'    ',mort2:3);
+  writeln(rep);
+  writeln(rep,'Statistics Report');
+  writeln(rep,'-----------------');
+  writeln(rep,' Average    strength = ',avgstrength:8:2);
+  writeln(rep,' Maximum    strength = ',maxstrength:8:2);
+  writeln(rep,' Minimum    strength = ',minstrength:8:2);
+  writeln(rep,' Sum   of   strength = ',sumstrength:8:2);
+  writeln(rep,' Number of crossings = ',ncrossover:8);
+  writeln(rep,' Number of mutations = ',nmutation:8);
+end end;
+

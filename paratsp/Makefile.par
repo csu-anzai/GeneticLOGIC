@@ -1,0 +1,169 @@
+# $Id: Makefile.par,v 1.21 1994/05/01 10:38:48 holger Exp holger $
+
+# PARATSP 1.0 - PARIX
+
+include $(PARIX)/include/make/parix.mk
+
+# -DUSE_PROTO
+# -DTRACE_1 -DTRACE_2 -DTRACE_3
+# -DUSE_CURSES
+# -DDEBUG
+# -DLINUX -DSUN_UNIX -DAIX -DPARIX -DPARIX_HOST
+DEFINES=-DUSE_PROTO -DTRACE_1 -DPARIX #-DDEBUG
+
+# Makros fuer C-Compiler
+CC=/soft/parix/bin/ancc.px
+CFLAGS=-OI -Wt,-Xlimit=400 $(DEFINES)
+LIBS=-lm
+SALIBS=-lm
+MFLAGS=#-s
+MAKE=make $(MFLAGS)
+
+# ausfuehrbare Programme
+EXECFLAG=-o
+PARATSP=paratsp.px
+SATSP=satsp.px
+MAKEHOST=Makefile.hst
+
+# Kommandos
+RM=rm -f
+CP=cp
+MV=mv
+
+# Verzeichnisse
+SRCDIR=.
+BAKDIR=./BAK
+
+# Object-Files
+OBJS=	best.o\
+	bit.o\
+	boltzman.o\
+	brselect.o\
+	chkpoint.o\
+	chrom.o\
+	commpop.o\
+	control.o\
+	converge.o\
+	cross.o\
+	dbuff.o\
+	done.o\
+	dump.o\
+	elite.o\
+	error.o\
+	eval.o\
+	filtwins.o\
+	fitscale.o\
+	fopen.o\
+	generate.o\
+	getopt.o\
+	global.o\
+	graphics.o\
+	init.o\
+	input.o\
+	interfac.o\
+	logit.o\
+	maselect.o\
+	mate.o\
+	measure.o\
+	mutation.o\
+	normal.o\
+	optlocal.o\
+	other.o\
+	parallel.o\
+	popinit.o\
+	random.o\
+	readfile.o\
+	readpars.o\
+	readscan.o\
+	replace.o\
+	schema.o\
+	trace.o
+
+POBJS=	main.o\
+	$(OBJS)
+
+SAOBJS= satsp.o\
+	best.o\
+	error.o\
+	eval.o\
+	fitscale.o\
+	fopen.o\
+	getopt.o\
+	global.o\
+	interfac.o\
+	logit.o\
+	other.o\
+	parallel.o\
+	random.o\
+	readfile.o\
+	readpars.o\
+	readscan.o\
+	trace.o
+
+# Aktionen
+all: progs
+
+super: links parser all
+
+progs: paratsp satsp
+	$(MAKE) -f $(MAKEHOST)
+
+paratsp: $(POBJS)
+	$(CC) $(CFLAGS) $(POBJS) $(EXECFLAG) $(PARATSP) $(LIBS)
+
+satsp: $(SAOBJS)
+	$(CC) $(CFLAGS) $(SAOBJS) $(EXECFLAG) $(SATSP) $(SALIBS)
+
+parser: cleanpars
+	$(CP) readpars.c.new readpars.c
+	$(CP) readpars.h.new readpars.h
+	$(CP) readscan.c.new readscan.c
+
+links: cleanlinks
+	ln -s error.c h_error.c
+	ln -s fopen.c h_fopen.c
+	ln -s getopt.c h_getopt.c
+	ln -s global.c h_global.c
+	ln -s graphics.c h_graphics.c
+	ln -s interfac.c h_interfac.c
+	ln -s trace.c h_trace.c
+
+cleanlinks:
+	$(RM) h_*.c
+
+clean:
+	$(RM) $(POBJS) $(SAOBJS)
+	$(RM) $(PARATSP) $(SATSP)
+
+cleanall: clean
+	$(RM) $(YACC_OUT).c $(YACC_OUT).h $(LEX_OUT).c
+	$(MAKE) -f $(MAKEHOST) cleanall
+
+cleanpars:
+	$(RM) readpars.[ch] readscan.c
+
+cleansuper: cleanall cleanpars cleanlinks
+
+new: clean progs
+
+newall: cleanall all
+	$(MAKE) -f $(MAKEHOST) newall
+
+bak: cleanbak
+	$(CP) $(SRCDIR)/*.[chly] $(BAKDIR)
+	$(CP) $(SRCDIR)/*.new $(BAKDIR)
+	$(CP) $(SRCDIR)/[Mm]akefile* $(BAKDIR)
+	$(CP) $(SRCDIR)/.depend $(BAKDIR)
+	cd $(BAKDIR); $(MAKE) tar
+
+tar:
+	tar cvf paratsp.tar * .depend
+
+cleanbak:
+	$(RM) $(BAKDIR)/*
+	$(RM) $(BAKDIR)/.depend
+
+# Abhaengigkeiten
+
+include .depend
+

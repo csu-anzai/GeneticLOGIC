@@ -1,0 +1,89 @@
+# $Id: Makefile.hst,v 1.21 1994/05/01 10:38:48 holger Exp holger $
+
+# PARATSP 1.0 - PARIX Host
+
+# -DUSE_PROTO
+# -DTRACE_1 -DTRACE_2 -DTRACE_3
+# -DUSE_CURSES
+# -DDEBUG
+# -DLINUX -DSUN_UNIX -DAIX -DPARIX -DPARIX_HOST
+DEFINES=-DTRACE_1 -DPARIX_HOST
+
+# Makros fuer C-Compiler
+CC=/usr/bin/cc
+CFLAGS=-O -I/usr/local/X11R5/include -L/usr/local/X11R5/lib $(DEFINES)
+SLIBS=
+RLIBS=
+XLIBS=-lX11
+
+# ausfuehrbare Programme
+EXECFLAG=-o
+SETUP=setup
+REPORT=report
+XTSP=xtsp
+
+# Kommandos
+RM=rm -f
+CP=cp
+MV=mv
+STRIP=strip
+
+# Verzeichnisse
+SRCDIR=.
+BAKDIR=./BAK
+
+# Object-Files
+SOBJS=	setup.o\
+	h_fopen.o\
+	h_getopt.o\
+	h_global.o\
+	h_interfac.o\
+	h_trace.o
+
+ROBJS=	report.o\
+	h_error.o\
+	h_fopen.o\
+	h_getopt.o\
+	h_global.o\
+	h_interfac.o\
+	h_trace.o
+
+XOBJS=	xtsp.o\
+	h_fopen.o\
+	h_global.o\
+	h_graphics.o\
+	h_trace.o
+
+# Aktionen
+all: progs
+
+progs: setup report xtsp
+
+setup: $(SOBJS)
+	$(CC) $(CFLAGS) $(SOBJS) $(EXECFLAG) $(SETUP) $(SLIBS)
+
+report: $(ROBJS)
+	$(CC) $(CFLAGS) $(ROBJS) $(EXECFLAG) $(REPORT) $(RLIBS)
+
+xtsp: $(XOBJS)
+	$(CC) $(CFLAGS) $(XOBJS) $(EXECFLAG) $(XTSP) $(XLIBS)
+
+clean:
+	$(RM) $(SOBJS) $(ROBJS) $(XOBJS)
+	$(RM) $(SETUP) $(REPORT) $(XTSP)
+
+cleanall: clean
+
+strip:
+	$(STRIP) $(SETUP)
+	$(STRIP) $(REPORT)
+	$(STRIP) $(XTSP)
+
+new: clean progs
+
+newall: cleanall all
+
+# Abhaengigkeiten
+
+include .depend
+

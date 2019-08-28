@@ -1,0 +1,87 @@
+/* reinforcement.scs: 
+	reinforcement and criterion procedures */
+
+/* reinforcement data declarations */
+
+typedef struct{		/* reinforcement record type */
+		float reward,rewardcount,totalcount,count50,rewardcount50,
+		  proportionreward,proportionreward50;
+		int lastwinner;
+		} rrecord;
+
+rrecord reinforcementrec;
+FILE *rfile;
+
+initreinforcement()	/* initialize reinforcement parameters */
+{
+	fscanf(rfile,"%f%*s",&reinforcementrec.reward);
+	reinforcementrec.rewardcount=0.0;
+	reinforcementrec.rewardcount50=0.0;
+	reinforcementrec.totalcount=0.0;
+	reinforcementrec.count50=0.0;
+	reinforcementrec.proportionreward=0.0;
+	reinforcementrec.proportionreward50=0.0;
+	reinforcementrec.lastwinner=0;
+}
+
+initrepreinforcement()	/* initial reinforcement report */
+{
+	fprintf(rep,"\nReinforcement Parameters\n");
+	fprintf(rep,"------------------------\n");
+	fprintf(rep,"Reinforcement reward  = %f\n",reinforcementrec.reward);
+}
+
+boolean criterion()		/* return true if criterion achieved */
+{
+	boolean tempflag;
+	
+	tempflag = (environrec.output == environrec.classifieroutput);
+	++reinforcementrec.totalcount;
+	++reinforcementrec.count50;
+	
+	/* increment reward counters */
+	if(tempflag)
+	{
+		++reinforcementrec.rewardcount;
+		++reinforcementrec.rewardcount50;
+	}
+
+	/* calculate reward proportions: running and last 50 */
+	reinforcementrec.proportionreward = reinforcementrec.rewardcount
+		/reinforcementrec.totalcount;
+
+	if((reinforcementrec.count50-50.0)>=0.0)
+	{
+		reinforcementrec.proportionreward50 =
+		  reinforcementrec.rewardcount50 / 50.0;
+		reinforcementrec.rewardcount50 = 0.0;	/* reset */	
+		reinforcementrec.count50 = 0.0;			
+	}
+
+	return(tempflag);
+}
+
+
+payreward()		/* pay reward to appropiate individual */
+{
+	population.classifier[clearingrec.winner].strength +=
+		 reinforcementrec.reward;
+	reinforcementrec.lastwinner = clearingrec.winner;
+}
+
+reportreinforcement()	/* report award */
+{
+	fprintf(rep,"\nReinforcement Report\n");
+	fprintf(rep,"--------------------\n");
+	fprintf(rep,"Proportion Correct (from start) = %f\n",
+		reinforcementrec.proportionreward);
+	fprintf(rep,"Proportion Correct (last fifty) = %f\n",
+		reinforcementrec.proportionreward50);
+	fprintf(rep,"Last winning classifier number  = %d\n",
+		reinforcementrec.lastwinner);
+}
+
+reinforcement()	/* make payment if criterion satisfied */
+{
+	if(criterion()) payreward();
+}

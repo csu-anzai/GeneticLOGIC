@@ -1,0 +1,28 @@
+program simple3;
+{ simple3: a program to flip 20 coins and keep track of heads and tails }
+{          use for-do construct                                         }
+
+const ncoins = 20;         { number of coin flips }
+      probability = 0.5;   { probability of heads turning up }
+
+var   heads_or_tails:array[1..2] of integer; { heads/tails count }
+      j:integer;                             { loop counter }
+      toss:boolean;                          { toss: true=heads, false=false }
+
+{ Include random number generator and flip routine }
+{$I random.apb}
+
+begin { Main program }
+ heads_or_tails[1] := 0;        { Counters to zero }
+ heads_or_tails[2] := 0;
+ randomize;                     { Seed and warm up random number generator }
+ for j := 1 to ncoins do begin  { Coin toss loop }
+   toss := flip(probability);
+   if toss then heads_or_tails[1] := heads_or_tails[1] + 1
+     else heads_or_tails[2] := heads_or_tails[2] + 1
+  end; { coin toss loop }
+ writeln(' In ', ncoins, ' coin tosses there were ',
+           heads_or_tails[1], ' heads and ', heads_or_tails[2],
+           ' tails')
+end. { Main program }
+
