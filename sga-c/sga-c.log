@@ -1,0 +1,50 @@
+This is TeX, C Version 2.93 (preloaded format=lplain 88.9.14)  29 MAY 1991 11:52
+**sga-c
+(sga-c.tex
+LaTeX Version 2.09 <26 Apr 1988>
+(/usr/users/lib/tex/inputs/article.sty
+Document Style `article' <16 Mar 88>.
+(/usr/users/lib/tex/inputs/art10.sty)
+\c@part=\count78
+\c@section=\count79
+\c@subsection=\count80
+\c@subsubsection=\count81
+\c@paragraph=\count82
+\c@subparagraph=\count83
+\c@figure=\count84
+\c@table=\count85
+) (/usr/users/lib/tex/inputs/times.sty
+(/usr/users/lib/tex/inputs/psfonts.sty
+\@cmrfam=\fam11
+\@cmrscale=\count86
+)) (/usr/users/lib/tex/inputs/apaua.sty
+BiBTeX Style `APAUA'. Experimental release 0.1 <M. Valenzuela>
+\bibhang=\skip41
+) (sga-c.aux) [0
+
+]
+Overfull \hbox (5.90001pt too wide) in paragraph at lines 93--101
+\\prm10 printed out-put, and \\ptt10 BITS[]PER[]BYTE\\prm10 , which spec-i-fies
+ the num-ber of bits per byte on the ma-chine hard-ware. \\ptt10 LINELENGTH
+
+\hbox(6.87567+2.17813)x480.89, glue set - 1.0
+.\\prm10 p
+.\\prm10 r
+.\\prm10 i
+.\\prm10 n
+.\\prm10 t
+.etc.
+
+[1] [2] [3] (sga-c.bbl) [4] (sga-c.aux)
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+ 
+Here is how much of TeX's memory you used:
+ 249 strings out of 1511
+ 2149 string characters out of 9009
+ 34406 words of memory out of 65531
+ 2152 multiletter control sequences out of 3000
+ 25492 words of font info for 95 fonts, out of 36000 for 120
+ 14 hyphenation exceptions out of 307
+ 12i,6n,25p,170b,317s stack positions out of 200i,40n,60p,2000b,2000s
+
+Output written on sga-c.dvi (5 pages, 17996 bytes).

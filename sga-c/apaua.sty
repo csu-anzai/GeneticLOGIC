@@ -1,0 +1,67 @@
+
+%m apaua.sty (apalike.sty file renamed and modified)
+
+\typeout{BiBTeX Style `APAUA'.  Experimental release 0.1 <M. Valenzuela>}
+
+\def\@cite#1#2{(#1\if@tempswa , #2\fi)}
+\def\@biblabel#1{}
+
+\newlength{\bibhang}
+\setlength{\bibhang}{3em}
+
+\@ifundefined{chapter}{\def\thebibliography#1{\section*{References}\list
+  {\relax}{\setlength{\labelsep}{0em}
+    \setlength{\itemindent}{-\bibhang}
+    \setlength{\leftmargin}{\bibhang}}
+    \def\newblock{\hskip .11em plus .33em minus .07em}
+    \sloppy\clubpenalty4000\widowpenalty4000
+    \sfcode`\.=1000\relax}}%
+{\def\thebibliography#1{\chapter*{Bibliography\@mkboth
+  {BIBLIOGRAPHY}{BIBLIOGRAPHY}}\list
+  {\relax}{\setlength{\labelsep}{0em}
+    \setlength{\itemindent}{-\bibhang}
+    \setlength{\leftmargin}{\bibhang}}
+    \def\newblock{\hskip .11em plus .33em minus .07em}
+    \sloppy\clubpenalty4000\widowpenalty4000
+    \sfcode`\.=1000\relax}}
+
+\def\@citex[#1]#2{\if@filesw\immediate\write\@auxout{\string\citation{#2}}\fi
+  \def\@citea{}\@cite{\@for\@citeb:=#2\do
+    {\@citea\def\@citea{; }\@ifundefined
+       {b@\@citeb}{{\bf ?}\@warning
+       {Citation `\@citeb' on page \thepage \space undefined}}%
+{\csname b@\@citeb\endcsname}}}{#1}}
+
+%------------------------------------------------------------------------
+%m The following defines the command citeyear that acts just like cite
+%m except it only outputs the year (plus its label if there is) in the
+%m text
+
+\def\citeyear{\@ifnextchar [{\@tempswatrue\@citey}
+             {\@tempswafalse\@citey[]}}
+
+\def\@citay#1, #2,\@nil{#2}
+
+\def\@ifrloop #1,#2,#3\@@ #4{\def #4{#2}\ifx #4\@nnil\let\@nxtwhile
+=\@fornoop\@citay,#1,\@nil%
+\else{}\relax\let\@nxtwhile =\@ifrloop\fi\@nxtwhile #2,#3\@@ #4{}}
+
+
+\def\@frloop #1,#2,#3\@@ #4{\def #4{#1}\ifx #4\@nnil\else\def
+#4{#2}\ifx #4%
+\@nnil\else\@ifrloop #2,#3\@@ #4\fi\fi}
+
+
+\def\@fr #1:=#2{\edef\@fortmp{#2}\ifx\@fortmp\@empty\else 
+\expandafter%
+ \@frloop #2,\@nil ,\@nil \@@ #1\fi}
+
+\def\ultimo#1{\@fr\unav:=#1}
+
+\def\@citey[#1]#2{\if@filesw\immediate\write\@auxout{\string\citation{#2}}\fi
+  \def\@citea{}\@cite{\@for\@citeb:=#2\do
+    {\@citea\def\@citea{; }\@ifundefined
+       {b@\@citeb}{{\bf ?}\@warning
+       {Citation `\@citeb' on page \thepage \space undefined}}%
+{\expandafter\ultimo\csname b@\@citeb\endcsname}}}{#1}}
+
