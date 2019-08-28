@@ -1,0 +1,64 @@
+.\" $Id$
+.TH SGA-F 1 "24 November 1993" "Version 1.0" "EDUCATIONAL TOOLS"
+
+.SH NAME
+sga \- Goldberg's Simple Genetic Algorithm in Fortran-77
+
+.SH SYNOPSIS
+.LP
+.B sga
+implements the simple genetic algorithm system SGA, including
+some extensions, in a Fortran-77 translation
+of the original Pascal SGA (refer to the
+.SM SEE ALSO
+section below).
+
+.SH DESCRIPTION
+.B sga
+enters an interactive loop on start-up and requests appropriate parameter
+settings.
+
+.SH OPTIONS
+.TP
+There are no options to date.
+
+.SH SEE ALSO
+David E. Goldberg,
+.I Genetic Algorithms in Search, Optimization,
+.I and Machine Learning,
+Addison-Wesley, Reading MA, 1989.
+
+.BR sga-c (1),
+.BR sga-p (1)
+
+.SH AUTHOR
+Copyright 
+.if t \(co 
+.if n (C)
+1993 by
+Ulrich Hermes
+.nf
+Systems Analysis Research Group, LSXI,
+Department of Computer Science, University of Dortmund, Germany.
+.nf
+Send bugs, comments, etc., to <hermes@ls11.informatik.uni-dortmund.de>
+.fi
+
+.SH BUGS
+.LP
+No external documentation, yet. Please refer to the extensively documented
+Fortran source code.
+
+.SH AVAILABILITY
+.LP
+This work is protected by the terms of the
+.SM GNU
+General Public License. Please refer to the
+.SM LICENSE
+file accompanying the sources of this software package for a lengthy, boring,
+but absolute complete description.
+
+SGA-F is available via anonymous ftp from the SyS server
+.B lumpi.informatik.uni-dortmund.de
+(129.217.36.140)
+as file "/pub/GA/src/sga-f.tar.gz".

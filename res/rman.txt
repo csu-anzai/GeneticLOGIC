@@ -1,0 +1,64 @@
+(Message inbox:16)
+Replied: Sat, 11 Feb 89 16:02:58 +0000
+Replied: ai-people@uk.ac.ucl.cs
+Replied: geneticalg@uk.ac.ucl.cs
+Received: from Cs.Ucl.AC.UK by pyr1.cs.Ucl.AC.UK   via List-Channel  id aa06710;
+          10 Feb 89 17:20 GMT
+To: ai-people@uk.ac.ucl.cs
+cc: geneticalg@uk.ac.ucl.cs
+Subject: Distributed Resource Management
+Date: Fri, 10 Feb 89 17:11:34 +0000
+From: Jon Crowcroft <J.Crowcroft@uk.ac.ucl.cs>
+
+
+I have been playing with a notion for some time for a
+distributed resource management system, based round some very simple
+tools, but with the possibility for some serious learning system to be
+built.
+
+We have:
+a number of workstations.
+a number of fileservers.
+a number of users.
+a number of non-trivial processes.
+a number of non-trivial data files.
+
+We want to optimise:
+global utilisation
+user response
+
+We can form a linear combination of the (weighted) load indices for a 
+process-server/fileserver, and decide for each new process/file, its
+optimal initial placement - *in the absence of change*
+
+[Aside - rstat + ruses + rexec are enough to construct this info in an
+afternoons programming - i have one i prepared earlier].
+
+In the presence of change, we would like a system to *evolve* the
+weights and possibly a non-linear function of some of the load indices
+(such as process size/type etc etc).
+
+A genetic alg would suit [such as the one constructed with the use of
+some old clothes hangers and sticky back plastic that always
+seems to lurk at the bottom of the cutlery drawer], with each user 
+literally being a member of
+the poulation - their resource manager would record the
+weights+function (possibly coded as the first few terms in a taylor
+series expansion). 
+
+A global manager would pick these weight/function 
+records up, do the usual GA thing,
+(payoff/reward function is global utilisation + user response weighted
+(possibly to be fed into another GA later)),
+and redistrbute them to the users for the next generation of commands.
+
+[Brings to mind the iterated prisoners dilemma of D. Hoffstadter or
+whathaveyou]
+
+An experiment could be run with the help of undergrads on the
+teaching sun's, a paper written, and a few pints downed in 
+celebration of the joys of C 'n Unix
+
+any contributions (on the back of a postcard please)
+
+jon

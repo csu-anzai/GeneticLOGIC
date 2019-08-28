@@ -1,0 +1,60 @@
+Return-Path: <@edrc.cmu.edu:voigt%mike.fb10.tu-berlin.de@mailgzrz.TU-Berlin.DE>
+Received: from EDRC.CMU.EDU by A.GP.CS.CMU.EDU id aa29259;
+          23 Aug 93 11:43:49 EDT
+Received: from mailgzrz.TU-Berlin.DE by EDRC.CMU.EDU id aa05741;
+          23 Aug 93 11:41:55 EDT
+Received: from mike.fb10.tu-berlin.de            (mike.fb10.TU-Berlin.DE) by mailgzrz.TU-Berlin.DE (5.65c/ZRZ-MX)
+          for <mkant@cs.cmu.edu>
+	  id AA15051; Mon, 23 Aug 1993 17:39:54 +0200
+Received: by mike.fb10.tu-berlin.de            (4.1/ZRZ)
+	  id AA03532; Mon, 23 Aug 93 17:40:03 +0200
+Date: Mon, 23 Aug 93 17:40:03 +0200
+From: H.M.VOIGT <voigt@mike.fb10.tu-berlin.de>
+Message-Id: <9308231540.AA03532@mike.fb10.tu-berlin.de           >
+To: mkant@cs.cmu.edu
+Subject: Evolutionary Algorithms (Evolution Machine)
+
+Hi Mark,
+
+included are two publications available from the server of the
+International Computer Science Institute (ICSI) at Berkeley which might be of interest to you.
+
+Hans-Michael Voigt: Fuzzy Evolutionary Algorithms. Technical Report TR-92-038. 
+ICSI Berkeley, June 1992.
+
+Hans-Michael Voigt, Joachim Born & Ivan Santibanez-Koref: A Multivalued Evolutionary Algorithm. Technical Report TR-93-022. ICSI Berkeley, April 1993
+
+You can get the corresponding files
+
+tr-92-038.ps.Z
+tr-93-022.ps.Z
+
+ via anonymous ftp from
+
+>ftp icsi.berkeley.edu
+
+They are in the directory
+
+>cd /pub/techreports
+
+I wish you good progress in gathering the software. Please let me or Joachim Born know any response to our software.
+
+Best regards
+
+Hans-Michael
+
+**********************************************
+*                                            *
+*  Dr. Hans-Michael Voigt                    *
+*  Technical University Berlin               *
+*  Bionics and Evolution Techniques Lab.     *  
+*  Bio- and Neuroinformatics Research Group  *
+*  Ackerstr. 71-76 (ACK1)                    *
+*  D-13355 Berlin                            *
+*  GERMANY                                   *
+*                                            *
+*  Phone: +49-30-314-72677                   *
+*  Fax  : +49-30-541-9872                    * 
+*  E-mail: voigt@fb10-tu-berlin.de           *
+*                                            *
+**********************************************

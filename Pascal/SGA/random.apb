@@ -1,0 +1,86 @@
+{ random.apb: contains random number generator and related utilities
+              including advance_random, warmup_random, random, randomize,
+              flip, rnd }
+
+{ Global variables - Don't use these names in other code }
+var   oldrand:array[1..55] of real; { Array of 55 random numbers }
+      jrand:integer;                { current random }
+
+procedure advance_random;
+{ Create next batch of 55 random numbers }
+var j1:integer;
+    new_random:real;
+begin
+ for j1:= 1 to 24 do
+  begin
+   new_random := oldrand[j1] - oldrand[j1+31];
+   if (new_random < 0.0) then new_random := new_random + 1.0;
+   oldrand[j1] := new_random;
+  end;
+ for j1:= 25 to 55 do
+  begin
+   new_random := oldrand[j1] - oldrand[j1-24];
+   if (new_random < 0.0) then new_random := new_random + 1.0;
+   oldrand[j1] := new_random;
+  end;
+end;
+
+procedure warmup_random(random_seed:real);
+{ Get random off and runnin }
+var j1,ii:integer;
+    new_random,prev_random:real;
+begin
+ oldrand[55] := random_seed;
+ new_random := 1.0e-9;
+ prev_random := random_seed;
+ for j1:=1 to 54 do
+  begin
+   ii := 21*j1 mod 55;
+   oldrand[ii] := new_random;
+   new_random := prev_random - new_random;
+   if (new_random < 0.0) then new_random:=new_random+1.0;
+   prev_random:=oldrand[ii]
+  end;
+  advance_random;  advance_random; advance_random;
+  jrand:=0;
+end;
+
+function random:real;
+{ Fetch a single random number between 0.0 and 1.0 - Subtractive Method }
+{ See Knuth, D. (1969), v. 2 for details                                }
+begin
+ jrand := jrand + 1;
+ if (jrand > 55) then
+  begin jrand:=1; advance_random end;
+ random := oldrand[jrand];
+end;
+
+function flip(probability:real):boolean;
+{ Flip a biased coin - true if heads }
+begin
+ if probability = 1.0 then flip := true
+    else flip := (random <= probability);
+end;
+
+function rnd(low,high:integer):integer;
+{ Pick a random integer between low and high }
+ var i:integer;
+ begin
+  if low >= high then i := low
+    else begin
+     i := trunc( random * (high-low+1) + low);
+     if i > high then i := high;
+    end;
+ rnd := i;
+end;
+
+procedure randomize;
+{ Get seed number for random and start it up }
+var randomseed:real;
+begin
+ repeat
+  write('Enter seed random number (0.0..1.0) > '); readln(randomseed);
+ until (randomseed>0) and (randomseed<1.0);
+ warmup_random(randomseed);
+end;
+

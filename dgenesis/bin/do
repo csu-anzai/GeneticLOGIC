@@ -1,0 +1,16 @@
+#
+# csh script for building DGENESIS
+#
+
+clear
+echo ' '
+echo "        DGENESIS 1.0"
+echo ' '
+echo making executables ...
+echo ' '
+
+make -f $DGENESIS/src/Makefile GAeval=$1 
+if ($status != 0) then 
+	echo Error in make !!
+endif
+

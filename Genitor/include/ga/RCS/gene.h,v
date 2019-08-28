@@ -1,0 +1,157 @@
+head     1.3;
+branch   ;
+access   ;
+symbols  ;
+locks    ; strict;
+comment  @ * @;
+
+
+1.3
+date     91.02.01.13.39.22;  author whitley;  state Exp;
+branches ;
+next     1.2;
+
+1.2
+date     90.08.17.09.48.02;  author whitley;  state Exp;
+branches ;
+next     1.1;
+
+1.1
+date     90.07.23.16.16.41;  author whitley;  state Exp;
+branches ;
+next     ;
+
+
+desc
+@@
+
+
+1.3
+log
+@copyright notice added.
+@
+text
+@
+/*************************************************************/
+/*                                                           */
+/*  Copyright (c) 1990                                       */
+/*  Darrell L. Whitley                                       */
+/*  Computer Science Department                              */
+/*  Colorado State University                                */
+/*                                                           */
+/*  Permission is hereby granted to copy all or any part of  */
+/*  this program for free distribution.   The author's name  */
+/*  and this copyright notice must be included in any copy.  */
+/*                                                           */
+/*************************************************************/
+/****************
+ *  BINARY DATA *
+ ****************/
+
+#ifdef BIN
+typedef
+char GENE_DATA, *GENE_DATAPTR;
+
+
+#define INIT(string, len) {int z; \
+						 for (z=0; z<len; z++) \
+							 /* Generates a '1' or a '0' */ \
+						     string[z]=bitgenc(); \
+					    }	
+
+#define MUTATE(x)  ((x=='1') ? '0' : '1')
+
+#define XDR_DATA  xdr_char
+
+#define GENE_DATA_IN_FORMAT     "%c"
+#define GENE_DATA_OUT_FORMAT(x) "%c",x
+
+#else
+
+
+/***********************
+ * FLOATING POINT DATA *
+ ***********************/
+
+#ifdef FLOAT
+typedef
+float GENE_DATA, *GENE_DATAPTR;
+
+
+#define INIT(string, len) {int z; \
+					     for (z=0; z<len; z++) \
+                              /* Generates number between -1 and +1 */ \
+						      string[z]=(fracrand()-.5)*2; \
+					    }	
+#define MUTATE
+
+#define XDR_DATA  xdr_float
+
+#define GENE_DATA_IN_FORMAT     "%f"
+#define GENE_DATA_OUT_FORMAT(x) "%f ",x
+
+#else
+
+
+/****************
+ * INTEGER DATA *
+ ****************/
+#ifdef INT
+typedef
+int GENE_DATA, *GENE_DATAPTR;
+
+
+#define INIT(string, len)  maketour(string, len);
+#define MUTATE
+
+#define XDR_DATA  xdr_int
+
+#define GENE_DATA_IN_FORMAT     "%d"
+#define GENE_DATA_OUT_FORMAT(x) "%d ",x
+
+#endif
+#endif
+#endif
+
+
+
+/****************************
+ * independent of data type *
+ ****************************/
+
+typedef 
+struct gene
+	   {
+        GENE_DATAPTR string;
+        float worth;
+       }GENE, *GENEPTR;
+
+typedef
+struct pool
+	   {
+		GENEPTR  data;
+		int      size;
+		int      string_length;
+	   }POOL, *POOLPTR;
+@
+
+
+1.2
+log
+@fixed MUTATE so that it works with ascii 0s and 1s,
+instead of real 0s and 1s. (Tim Starkweather)
+@
+text
+@d1 13
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d16 1
+a16 1
+#define MUTATE(x)  ((x==1) ? 0 : 1)
+@

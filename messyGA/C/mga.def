@@ -1,0 +1,56 @@
+/*=====================================================
+       file : mga.def
+ 
+    purpose : global definitions for mGAs
+ 
+  developed : 1991
+   
+     author : Kalyanmoy Deb
+=======================================================*/
+
+/* define constants */
+
+#define NIL NULL
+#define UNSINTSIZE (8 * sizeof(unsigned)) /* bitsize of an integer */
+#define MAX_SIZE 500                      /* maximum problem_length */
+#define MAX_BYTE (1 + MAX_SIZE / UNSINTSIZE) /* maximum bytes reqd. */ 
+#define MAX_ORDER 10                      /* max size of a subfunction */
+#define MAX_PARTITIONS 100                /* max partitions for report */
+#define MAX_PARTITIONSIZE 10              /* max partition size */
+#define PAGEWIDTH 80                      /* allowable page width */
+
+
+#define TRACE(s) if (traceflag) {printf(s); printf("\n");}
+
+/* reading format-1 */
+#define FORMAT_1 "\
+Maximization (1) = %d\n\
+Level wise mGA (1) = %d\n\
+Problem size (15) = %d\n\
+Maximum era (3) = %d\n\
+Probability of cut (0.02) = %lf\n\
+Probability of splice (1.0) = %lf\n\
+Probability of allelic mutation (0.0) = %lf\n\
+Probability of genic mutation (0.0) = %lf\n\
+Thresholding (0) = %d\n\
+Tiebreaking (0) = %d\n\
+Reduced initial population (1) = %d\n\
+Extra population members (0) = %d\n\
+Stopping criteria factor (1.0) = %f\n\
+Partition file (0) = %d\n\
+Plotting file (0) = %d\n\
+Population record file (0) = %d\n\
+Trace (1) = %d\n"
+
+#define VARS_1 &maximizationflag, &levelmgaflag, &problem_length, &max_era,\
+	       &cut_prob, &splice_prob, &allelic_mut_prob,\
+	       &genic_mut_prob, &thresholdingflag, &tiebreakingflag,\
+	       &r_initpop_flag, &extrapopflag, &stopfactor, &partitionflag,\
+	       &plotstatflag, &popprintflag, &traceflag
+
+/* reading format-2 */
+#define FORMAT_2 "\
+Total generations (20) = %d\n\
+Juxtapositional popsize (100) = %d\n"
+
+#define VARS_2 &maxgen, &juxtpopsize

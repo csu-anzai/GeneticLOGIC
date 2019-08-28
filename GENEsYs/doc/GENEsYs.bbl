@@ -1,0 +1,184 @@
+\begin{thebibliography}{dGWH89}
+
+\bibitem[Ack87]{Ack87}
+David~H. Ackley.
+\newblock {\em A connectionist machine for genetic hillclimbing}.
+\newblock Kluwer Academic Publishers, Boston, 1987.
+
+\bibitem[AK89]{AK89}
+Emile H.~L. Aarts and Jan Korst.
+\newblock {\em {Simulated Annealing and Boltzmann Machines}}.
+\newblock Wiley, Chichester, 1989.
+
+\bibitem[B{\"a}c91]{Bae91b}
+Thomas B{\"a}ck.
+\newblock {Self-Adaptation in Genetic Algorithms}.
+\newblock In {\em Proceedings of the First European Conference on Artificial
+  Life, December 11-13}, Paris, France, 1991. The MIT Press.
+\newblock In print.
+
+\bibitem[Bak85]{Bak85}
+James~Edward Baker.
+\newblock Adaptive selection methods for genetic algorithms.
+\newblock In J.~J. Grefenstette, editor, {\em Proceedings of the First
+  International Conference on Genetic Algorithm and Their Applications}, pages
+  101--111, Hillsdale, New Jersey, 1985. Lawrence Erlbaum Associates.
+
+\bibitem[Bak87]{Bak87}
+James~Edward Baker.
+\newblock Reducing bias and inefficiency in the selection algorithm.
+\newblock In J.~J. Grefenstette, editor, {\em Proceedings of the Second
+  International Conference on Genetic Algorithm and Their Applications}, pages
+  14--21, Hillsdale, New Jersey, 1987. Lawrence Erlbaum Associates.
+
+\bibitem[BH91]{BH91c}
+Thomas B{\"a}ck and Frank Hoffmeister.
+\newblock Extended selection mechanisms in genetic algorithms.
+\newblock In Richard~K. Belew and Lashon~B. Booker, editors, {\em Proceedings
+  of the Fourth International Conference on Genetic Algorithms and their
+  Applications}, pages 92--99, University of California, San Diego, USA, 1991.
+  Morgan Kaufmann Publishers.
+
+\bibitem[BHS91]{BHS91}
+Thomas B{\"a}ck, Frank Hoffmeister, and Hans-Paul Schwefel.
+\newblock A survey of evolution strategies.
+\newblock In Richard~K. Belew and Lashon~B. Booker, editors, {\em Proceedings
+  of the Fourth International Conference on Genetic Algorithms and their
+  Applications}, pages 2--9, University of California, San Diego, USA, 1991.
+  Morgan Kaufmann Publishers.
+
+\bibitem[BL80]{BL80}
+M.~V. Berry and Z.~V. Lewis.
+\newblock On the weierstrass-mandelbrot fractal function.
+\newblock {\em Proceedings Royal Society of London}, A(370):459--484, 1980.
+
+\bibitem[dGWH89]{GWH89}
+Claas de~Groot, Diethelm W\"urtz, and Karl~Heinz Hoffman.
+\newblock Low autocorrelation binary sequences: exact enumeration and
+  optimization by evolution strategies.
+\newblock Technical Report 89--09, {Eidgen\"ossische Technische Hochschule
+  Z\"urich}, November 1989.
+
+\bibitem[Gal91]{Gal91}
+Roman Galar.
+\newblock Simulation of local evolutionary dynamics of small populations.
+\newblock {\em Biological Cybernetics}, 65:37--45, 1991.
+
+\bibitem[Gol89]{Gol89b}
+David~E. Goldberg.
+\newblock Sizing populations for serial and parallel genetic algorithms.
+\newblock In J.~David Schaffer, editor, {\em Proceedings of the Third
+  International Conference on Genetic Algorithms and Their Applications}, pages
+  70--79, San Mateo, California, 1989. Morgan Kaufmann Publishers.
+
+\bibitem[Gol90]{Gol90c}
+David~E. Goldberg.
+\newblock A note on boltzmann tournament selection for genetic algorithms and
+  population--oriented simulated annealing.
+\newblock {\em Complex Systems}, pages 445--460, 1990.
+
+\bibitem[Gre87]{Gre87c}
+John~J. Grefenstette.
+\newblock {\em A User's Guide to GENESIS}.
+\newblock Navy Center for Applied Research in Artificial Intelligence,
+  Washington, D.~C., 1987.
+
+\bibitem[HB91a]{HB91}
+Frank Hoffmeister and Thomas B{\"a}ck.
+\newblock Genetic algorithms and evolution strategies: Similarities and
+  differences.
+\newblock In H.-P. Schwefel and R.~M\"anner, editors, {\em Proceedings of the
+  First International Conference on Parallel Problem Solving from Nature,
+  Dortmund, Germany, 1990}, pages 447--461. Springer, Berlin, 1991.
+
+\bibitem[HB91b]{HB91b}
+Frank Hoffmeister and Thomas B{\"a}ck.
+\newblock Genetic self--learning.
+\newblock In {\em Proceedings of the First European Conference on Artificial
+  Life, December 11-13}, Paris, France, 1991. The MIT Press.
+\newblock In print.
+
+\bibitem[Hol75]{Hol75}
+John~H. Holland.
+\newblock {\em Adaptation in natural and artificial systems}.
+\newblock The University of Michigan Press, Ann Arbor, 1975.
+
+\bibitem[Jon75]{Jon75}
+Kenneth~De Jong.
+\newblock {\em An analysis of the behaviour of a class of genetic adaptive
+  systems}.
+\newblock PhD thesis, University of Michigan, 1975.
+\newblock Diss. Abstr. Int. 36(10), 5140B, University Microfilms No. 76--9381.
+
+\bibitem[Jon80]{Jon80a}
+Kenneth~De Jong.
+\newblock Adaptive system design.
+\newblock {\em IEEE Transactions on Systems, Man and Cybernetics}, pages
+  566--574, 1980.
+
+\bibitem[KFM71]{KFM71}
+Patrick Krolak, Wayne Felts, and George Marble.
+\newblock A man-machine approach towards solving the traveling salesman
+  problem.
+\newblock {\em Communications of the ACM}, 14(5):327--334, 1971.
+
+\bibitem[LV91]{LV91a}
+Gunar~E. Liepins and Michael~D. Vose.
+\newblock Deceptiveness and genetic algorithm dynamics.
+\newblock In Gregory J.~E. Rawlins, editor, {\em Foundations of Genetic
+  Algorithms}, pages 36--50. Morgan Kuafmann Publishers, 1991.
+
+\bibitem[Mah91]{Mah91}
+Samir Mahfoud.
+\newblock An analysis of boltzmann tournament selection.
+\newblock IlliGAL Report 91007, University of Illinois at Urbana-Champaign,
+  October 1991.
+
+\bibitem[Rec73]{Rec73}
+Ingo Rechenberg.
+\newblock {\em {Evolutionsstrategie: Optimierung technischer Systeme nach
+  Prinzipien der biologischen Evolution}}.
+\newblock Frommann--Holzboog Verlag, Stuttgart, 1973.
+
+\bibitem[Sch77]{Schw77}
+Hans-Paul Schwefel.
+\newblock {\em {Numerische Optimierung von Computer-Modellen mittels der
+  Evolutionsstrategie}}, volume~26 of {\em Interdisciplinary systems research}.
+\newblock Birkh\"auser, Basel, 1977.
+
+\bibitem[Sch81]{Schw81}
+Hans-Paul Schwefel.
+\newblock {\em Numerical Optimization of Computer Models}.
+\newblock Wiley, Chichester, 1981.
+
+\bibitem[Sch88]{Schw88}
+Hans-Paul Schwefel.
+\newblock Evolutionary learning optimum--seeking on parallel computer
+  architectures.
+\newblock In A.~Sydow, S.~G. Tzafestas, and R.~Vichnevetsky, editors, {\em
+  Proceedings of the International Symposium on Systems Analysis and Simulation
+  1988, I: Theory and Foundations}, pages 217--225. Akademie der Wissenschaften
+  der DDR, Akademie-Verlag, Berlin, September 1988.
+
+\bibitem[Sys89]{Sys89}
+Gilbert Syswerda.
+\newblock Uniform crossover in genetic algorithms.
+\newblock In J.~David Schaffer, editor, {\em Proceedings of the Third
+  International Conference on Genetic Algorithms and Their Applications}, pages
+  2--9, San Mateo, California, 1989. Morgan Kaufmann Publishers.
+
+\bibitem[T{\v Z}89]{TZ89}
+Aimo T\"orn and Antanas {\v Z}ilinskas.
+\newblock {\em Global Optimization}, volume 350 of {\em Lecture Notes in
+  Computer Science}.
+\newblock Springer, Berlin, 1989.
+
+\bibitem[Whi89]{Whi89}
+Darrell Whitley.
+\newblock The {\sc genitor} algorithm and selection pressure: Why rank--based
+  allocation of reproductive trials is best.
+\newblock In J.~David Schaffer, editor, {\em Proceedings of the Third
+  International Conference on Genetic Algorithms and Their Applications}, pages
+  116--121, San Mateo, California, 1989. Morgan Kaufmann Publishers.
+
+\end{thebibliography}

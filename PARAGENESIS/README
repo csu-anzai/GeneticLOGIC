@@ -1,0 +1,142 @@
+Included are the files needed to run PARAGENESIS, a parallel GA implementation
+for the CM-200.  Using PARAGENESIS should be fairly straightforward if you have
+used serial Genesis.  Otherwise it will probably be worth your while to get a
+copy of Genesis and play around with it a little before you try PARAGENESIS.
+
+ga.doc - a plain text version of the user's guide for serial Genesis.  Much of
+         the information in here will also apply to PARAGENESIS.
+
+users-guide.tex - a LaTeX version of the user's guide to PARAGENESIS.  This
+                  assumes that you are comfortable using standard serial 
+                  Genesis.
+users-guide.ps - a postscript version of the user' guide.
+
+makefile - the make file for use with PARAGENESIS and the C* compiler.
+
+Included in the test.fns directory are a couple of sample fitness function
+implementations.  
+
+Notes:
+
+I haven't been able to carefully check to see if PARAGENESIS works on a CM-5.
+When the new version of the CM-5 C* compiler comes out in Dec. or Jan. I plan
+on giving it a try.  If anyone does try it and has any success I'd be 
+interested in hearing about it.
+
+There are some differences between serial Genesis and PARAGENESIS which I hope
+are explained in the PARAGENESIS user's guide.  The upshot is that you will
+have to compile PARAGENESIS more often and there are some additional options.
+
+I hope to fix some of the awkward parts of PARAGENESIS this summer.  Please
+feel free to write me with suggestions and bug reports.
+
+To use PARAGENESIS with the fitness function f6.cs(which corresponds to 
+f6.c in serial genesis) do the following
+
+vanlent.cmsun% cp test.fns/f6.cs .
+vanlent.cmsun% make setup
+cc -o setup setup.c
+vanlent.cmsun% make report
+cc -o report report.c error.c
+report.c:
+error.c:
+Linking:
+vanlent.cmsun% setup
+File suffix []: 
+Floating point representation [y]: n
+
+Experiments [1]: 
+Total Trials [1000]: 50000
+Population Size [50]: 8192
+Structure Length [30]: 
+Crossover Rate [0.6]: 
+Mutation Rate [0.001]: 
+Generation Gap [1.0]: 
+Scaling Window [5]: 
+Report Interval [100]: 
+Structures Saved [10]: 
+Max Gens w/o Eval [2]: 
+Dump Interval [0]: 
+Dumps Saved [0]: 
+Options [acegl]: 
+Random Seed [123456789]: 
+Rank Min [0.75]: 
+       Experiments = 1
+      Total Trials = 50000
+   Population Size = 8192
+  Structure Length = 30
+    Crossover Rate = 0.6
+     Mutation Rate = 0.001
+    Generation Gap = 1.0
+    Scaling Window = 5
+   Report Interval = 100
+  Structures Saved = 10
+ Max Gens w/o Eval = 2
+     Dump Interval = 0
+       Dumps Saved = 0
+           Options = acegl
+       Random Seed = 123456789
+          Rank Min = 0.75
+Setup Done
+vanlent.cmsun% make f=f6 ga.f6
+cc -O  -target sun4 -c  display.c
+cc -O  -target sun4 -c  done.c
+cc -O  -target sun4 -c  serial-convert.c
+cc -O  -target sun4 -c  restart.c
+cc -O  -target sun4 -c  time.c
+cs -O -c convert.cs
+cs -O -c evaluate.cs
+cs -O -c best.cs
+cs -O -c communication.cs
+cs -O -c measure.cs
+cs -O -c main.cs
+cs -O -c input.cs
+cs -O -c checkpnt.cs
+cs -O -c schema.cs
+cs -O -c elitist.cs
+cs -O -c generate.cs
+cs -O -c init.cs
+cs -O -c select.cs
+cs -O -c cross.cs
+cs -O -c mutate.cs
+cs -O -c uni-cross.cs
+cs -O -c prob-select.cs
+cs -O -c local-select.cs
+cs -O -c f6.cs
+"f6.cs", line 1: warning: vect not required in function Peval
+"f6.cs", line 1: warning: genes not required in function Peval
+cs -O -o ga.f6 f6.o display.o error.o done.o serial-convert.o restart.o  time.o convert.o evaluate.o best.o communication.o measure.o main.o  input.o checkpnt.o schema.o elitist.o generate.o  init.o select.o cross.o mutate.o uni-cross.o prob-select.o  local-select.o -lm -lcurses -ltermlib
+
+All the is left is to attach to your connection machine and run the 
+executable ga.f6*.  Note that the population size parameter must match the
+number of processors in the CM-200 being used.
+
+After ga.f6 is done a call to report should look something like this.
+
+vanlent.cmsun% report
+      Experiments = 1
+     Total Trials = 50000
+  Population Size = 8192
+ Structure Length = 30
+   Crossover Rate = 0.600
+    Mutation Rate = 0.001
+   Generation Gap = 1.000
+   Scaling Window = 5
+  Report Interval = 100
+ Structures Saved = 10
+Max Gens w/o Eval = 2
+    Dump Interval = 0
+      Dumps Saved = 0
+          Options = acegl
+      Random Seed = 123456789
+         Rank Min = 0.750
+
+MEAN
+Gens  Trials  Lost  Conv   Bias    Online    Offline      Best     Average
+   0    8192     0     0  0.501  1.500e+01  6.000e+00  6.000e+00  1.500e+01
+   1   16384     0     0  0.526  1.461e+01  5.500e+00  5.000e+00  1.422e+01
+   2   24576     0     0  0.549  1.425e+01  5.333e+00  5.000e+00  1.353e+01
+   3   32768     0     0  0.568  1.393e+01  4.750e+00  3.000e+00  1.295e+01
+   4   40960     0     0  0.586  1.362e+01  4.400e+00  3.000e+00  1.242e+01
+   5   49152     0     0  0.605  1.333e+01  4.167e+00  3.000e+00  1.184e+01
+   6   57344     0     0  0.626  1.303e+01  4.000e+00  3.000e+00  1.123e+01

@@ -1,0 +1,59 @@
+/*								LETSEQ1.DEF 
+
+This file, LETSEQ1.DEF, defines data structures for the LETSEQ1 environment
+(LETSEQ1 program and documentation, Copyright 1988 Rick L. Riolo).
+
+This file should be #include-d in the LETSEQ1.C file.
+*/
+
+#include "letseq1.h"
+
+struct  EnvNode
+{   int			 EnvLet;
+	struct EnvNode *NxtEnvNd;
+}; 
+struct EnvNode *CurLet = NULL; /* Pointer to letter last read in */
+struct EnvNode *OldLet = NULL; /* Pointer to oldest 'remembered' letter (LETMEMSZ-1 before CurLet) */ 
+
+int GuessLet;				  /* System guess for next letter */   
+int GuessAtt;				  /* binary attribute form of guess */
+
+int STMemSz = LETMEMSZ;		/* Variables that control how many letters in LetMem array are */
+int STMemMx = LETMEMMX;		/* actually used to generate detector messages. */
+
+float SameLRew = 400;		  /* Reward if system guesses correctly */	
+float SameTRew = -0.01;		/* Reward if system guess 'type' */
+float WrongRew = -0.01;		/* Reward if system guess is completely wrong */
+
+short DftBehFlg = 1;		   /* Default behevior is turned on */
+short NulGsMFlg = 0;		   /* Null-guess message is turned on */
+
+unsigned int TotNmGsL = 0;	 /* Total number of times guessed correct letter for whole run */
+unsigned int TotNmGsT = 0;	 /* Total number of times guessed correct type */
+unsigned int TotNmGsW = 0;	 /* Total number of times guessed wrong */
+unsigned int TotNmDft = 0;	 /* Total number of time Default Guess made */
+
+   /* Valid letters for input and guessing -- store as three types. */
+
+int Vowels[]   = { ' ', 'a', 'e', 'i', 'o', 'u', 'y', '\0' };
+
+int Consonts[] = { ' ', 'b', 'c', 'd', 'f', 'g',  'h', 'j', 'k', 'l', 'm',
+				   'n', 'p', 'q', 'r', 's', 't', 'v', 'w', 'x', 'z',  '\0' };
+
+int Punct[]  = { ' ', ',', '.', ';', '\0' };
+
+#define  VOWSZ   ( sizeof( Vowels ) / sizeof( int ) )
+#define  VOWMX   ( VOWSZ - 1 )
+
+#define  CONSSZ   ( sizeof( Consonts ) / sizeof( int ) )
+#define  CONSMX   ( CONSSZ - 1 )
+
+#define  PUNCSZ   ( sizeof( Punct ) / sizeof( int ) )
+#define  PUNCMX   ( PUNCSZ - 1 )
+
+int   Symbols[SYMSUPSZ];
+int   NxtSym;
+float SymSup[SYMSUPSZ];
+float TotSymSu, HiSup;
+int HiSupSym;
+int EfRslMch = EFRPRSUM;		/* Effector resolution mechanism setting */

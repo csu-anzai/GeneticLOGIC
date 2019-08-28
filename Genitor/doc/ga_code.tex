@@ -1,0 +1,661 @@
+\documentstyle [12pt]{article}
+
+\setlength{\textwidth}{7.25in}
+\setlength{\textheight}{9.25in}
+\setlength{\oddsidemargin}{-.2in}
+\setlength{\evensidemargin}{-.2in}
+\setlength{\topmargin}{-.5in}
+
+\begin{document}
+
+\begin{center}
+{\huge Genitor Code Structure}
+\end{center}
+
+\section{Introduction}
+
+Genetic algorithms have been applied to a wide variety of optimization
+problems.  However, it is possible to utilize many of the basic steps
+of the algorithm with little or no change, regardless of the application.
+With this in mind, the Genitor code has been software engineered to 
+maximize code reuse across applications.  Thus the developer of applications
+which are optimized by a genetic algorithm can concentrate more effort on
+application specific concerns.
+
+\subsection{Fundamental Functional Modules}
+
+The Genitor code is broken apart into functional modules. The following
+lists Genitor's Fundamental Functional Modules. Section 2 describes
+the function calls available to utilize each fundamental functional
+module.
+
+\begin{itemize}
+
+ \item Execution Parameter Manipulation
+  \begin{itemize}
+   \item Process command line arguments.
+   \item Set execution parameters.
+  \end{itemize}
+ \item Genetic Pool Management
+  \begin{itemize}
+   \item Allocate data structures for the genetic pool.
+   \item Initialize the genetic pool.
+   \item Sort the genetic pool by fitness.
+   \item Insert offspring into the sorted genetic pool.
+  \end{itemize}
+ \item Selection
+  \begin{itemize}
+   \item Select two parents for genetic recombination.
+   \item Bias functions for use in selection.
+  \end{itemize}
+ \item Search Status
+  \begin{itemize}
+   \item Compute average population fitness.
+   \item Output status information.
+   \item Save current status.
+  \end{itemize}
+ \item Signal Handling
+  \begin{itemize}
+   \item Recieve and process user-generated interrupts/signals.
+  \end{itemize}
+ \item Utilities
+  \begin{itemize}
+   \item Copy one gene to another.
+  \end{itemize}
+ 
+\end{itemize}
+
+\subsection{Data Type Independence}
+
+The genetic algorithm may be applied to a number of applications;
+this inherently means that the algorithm must be able to manipulate
+a number of different data types.  Therefore, the software engineering
+of the Genitor code includes methodologies for using the fundamental
+functional modules such that they are virtually data type independent.
+Section 3 describes these methodologies in detail.
+
+
+\subsection{Genetic Operators}
+
+Additionally, code modules for several genetic {\it operators} are
+included with the Genitor package.  The basic crossover operator
+provided is {\bf Reduced Surrogate Crossover} [ref].  
+At this point, this operator is standard within the genetic algorthim
+research community.  
+
+The choice of operator can be a very problem specific issue, and thus
+the development of new genetic operators is a significant research issue.
+A special {\bf Adaptive Mutation} operator [ref] is included with the Genitor
+package.  Also included with this package is the {\bf Edge 
+Recombination Operator} [ref] developed at Colorado State University 
+for use with the classic Traveling Salesman Problem.
+
+The genetic operator modules provided are discussed in detail in Section 4.
+
+
+\subsection{Examples Provided}
+Finally, several example main() driver functions are included with
+the Genitor package.  These main() functions iteratively invoke the
+{\bf fundamental functionalities} of a genetic algorithm and provide
+examples of {\bf usage protocols}.  Section 5 presents the sample
+problems included with the Genitor package.
+
+\newpage
+
+
+\section{Fundamental Functional Modules}
+
+\subsection{Execution Parameter Manipulation}
+
+ga\_params.c, ga\_params.h
+\\
+The file `ga\_params.c' respresents the functional module for manipulating
+genetic algorithm execution parameters.  These subroutines can directly set
+the values of Genitor's global variables, as are defined and declared in
+ga\_global.h, ga\_global\_extern.h
+
+There is a global variable for each essential execution parameter 
+of the genetic algorithm.  The `ga\_global.h' file contains the
+definition of Genitor's global variables.  It should be \#included in
+Genitor's main() driver procedure file, which you will write yourself
+\footnote{ Your driver procedure must set the values of those global variables
+which are not set in this module.  See section 5 {\bf Examples Provided} for
+sample implementations}.  
+
+The header file `ga\_global\_extern.h' contains extern declarations
+for these variables is available for inclusion in other files which
+require access.
+
+By default, access to these global variables is restricted to the
+{\bf Execution Parameter Manipulation} functional module (which
+initializes most of the global variables) and to the {\bf Signal Handling}
+functional module (since calls to signal handling routines are invoked
+automatically and cannot be passed parameters directly).  
+\footnote {In fact, the Execution Parameter Manipulation and Signal
+Handling modules depend on the naming of these globals and thus changing
+the names is NOT recommended.} 
+All other functional modules are passed values via subroutine calls.
+The intent is to encourage modular programming and reduce dependence on
+global variables.
+
+Genitor execution parameters may be manipulated with the following
+functions:
+
+\begin{itemize}
+\item Parse a Genitor command line.\footnote{See the {\bf Genitor Command Line
+Options} section for detailed requirements about command line format.}
+\begin{verbatim}
+  parse_command_line (argc, argv)
+  int                 argc;   /*number command line args*/
+  char               *argv[]; /*command line tags and values*/
+
+\end{verbatim}
+\item Parse a Genitor configuration file.\footnote{See the {\bf Genitor Command
+Line Options} section for detailed requirements about configuration file format.}
+\begin{verbatim}
+ int
+ parse_config_file (filename)
+ char               filename[];
+\end{verbatim}
+\item Set a Genitor execution parameter.
+\begin{verbatim}
+ int
+ set_parameter (tag, value)
+ char           tag;     /*each param has associated one char tag*/
+ char           value[];
+\end{verbatim}
+\item Print the Genitor execution parameters.
+\begin{verbatim}
+ void
+ print_params (fileptr)
+ FILE         *fileptr;  /*direct output to this file pointer*/
+\end{verbatim}
+\item Display a command line usage message.
+\begin{verbatim}
+ void
+ usage();
+\end{verbatim}
+\end{itemize}
+\subsection{Genetic Pool Management}
+
+ga\_pool.c, ga\_pool.h
+\\
+A genetic pool structure (POOL, POOLPTR) has three basic components: 
+
+\begin{enumerate}
+ \item a {\bf size} variable (int) indicating the number of genes in the pool.
+ \item a {\bf string\_length} variable (int) indicating the number of
+	   chromosomes (i.e. bits of data) per gene.
+ \item a {\bf data} pointer (GENEPTR) indicating the location of current
+	   population of genes.  Each gene (GENE) has two components:
+	   \begin{enumerate}
+		\item a {\bf worth} variable (float) indicating the relative ``fitness''
+			  or ``goodness'' of an individual gene. 
+		\item a {\bf string} of data (GENE\_DATA, GENE\_DATAPTR).
+       \end{enumerate}
+\end{enumerate}
+
+This functional module provides methods for manipulating and managing
+the genetic pool.  
+
+
+\begin{itemize}
+\item Manage memory for genetic pool.
+
+\begin{verbatim}
+ GENEPTR
+ get_gene(string_length)
+ int      string_length;
+
+ POOLPTR
+ get_pool(string_length, pool_size)
+ int      string_length, pool_size;
+
+ void
+ free_gene(gene)
+ GENEPTR   gene;
+
+ void
+ free_pool(pool, start_pt)
+ POOLPTR   pool;
+ int       start_pt;
+\end{verbatim}
+
+Note that free\_pool() includes a start\_pt parameter which allows you to
+specify the location in the genetic pool at which to begin freeing genes.
+Specifying a 0 will free all genes and deallocate the pool structure 
+itself.  Specifying a non-zero number N will free all genes from N to
+the pool size and set the pool\_size variable of the pool structure
+to N.  This feature is included to assist in dynamic population sizing;
+it allows you to decrease the population size with little effort.  However,
+if you wish to increase the population size, you should do the following:
+
+\begin{enumerate}
+\item allocate a new, larger pool of size M
+\item copy the existing, smaller pool of size N into the first N slots
+	  of the new pool
+\item free the smaller pool
+\item initialize slots N through M in the new pool (see below). 
+\end{enumerate}
+
+
+\item Initialize the genetic pool.  
+
+The genes may be randomly generated or input from a disk file, or some 
+combination of both.  The start\_pt and stop\_pt variables of each 
+initialization routine allow you to directly control the contents of 
+genetic pool data structure during initialization.  Regardless, after 
+initialization, the pool data array must be continguously initialized
+from 0 to the population size(-1).  
+
+The init\_pool() function provides the simplest form of pool initialization.
+If seed\_file is NULL, random\_init\_pool() is called to randomly initialize
+the genetic pool from start\_pt to stop\_pt.  Thus, to randomly initialize
+the entire genetic pool, set start\_pt to 0 and stop\_pt to the population size.
+If seed\_file has a value, seed\_pool() is called to read initialization
+data from the indicated disk file.  If the seed\_file does not contain 
+enough data to fill the genetic pool from start\_pt to stop\_pt, 
+init\_pool() calls random\_init\_pool() to complete the initialization.
+
+All three initialization functions return the number of genes initialized.
+random\_init\_pool() and seed\_pool() may also be called directly if desired.
+\begin{verbatim}
+ int
+ init_pool (seed_file, pool, start_pt, stop_pt, eval_fun)
+ char      *seed_file;
+ POOLPTR    pool;
+ int        start_pt, stop_pt;
+ float     (*eval_fun)();
+
+ int
+ random_init_pool(pool, start_pt, stop_pt, eval_fun)
+ POOLPTR          pool;
+ int              start_pt, stop_pt;
+ float           (*eval_fun)();
+
+ int
+ seed_pool(fp, pool, start_pt, stop_pt, eval_fun)
+ FILE     *fp
+ POOLPTR   pool;
+ int       start_pt, stop_pt;
+ float    (*eval_fun)();
+\end{verbatim}
+
+\item Sort genetic pool according to fitness.  The sort routine
+assumes a minimization problem, thus the most fit individuals have
+the lowest worth value.  If your application requires the opposite
+sorting procedure (i.e. you want high values to be considered good
+and low values bad), the suggested method is to have the evaluation
+function negate its value before return.
+\begin{verbatim}
+ void
+ sort_pool(pool)
+ POOLPTR   pool;
+\end{verbatim}
+
+\item Insert individuals into sorted genetic pool.
+\begin{verbatim}
+ void
+ insert_gene(gene, pool)
+ GENE        gene;
+ POOLPTR     pool;
+\end{verbatim}
+\end{itemize}
+
+\subsection{Selection}
+
+ga\_selection.c, ga\_selection.h
+\\
+This functional module provides the capability to choose individuals
+from the genetic pool for reproduction.
+
+\begin{itemize}
+\item Selection functions.
+\begin{verbatim}
+ void 
+ get_parents (mom, dad, pool, bias_fun, bias_num);
+ GENEPTR      mom, dad;
+ POOLPTR      pool;
+ int         (*bias_fun)();
+ float        bias;
+\end{verbatim}
+\item Bias functions.
+\begin{verbatim}
+ int
+ linear (max, bias_num);
+\end{verbatim}
+\end{itemize}
+
+
+\subsection{Search Status}
+
+ga\_status.c, ga\_status.h
+\\
+The file `ga\_status.c' contains the functional module which manages
+displaying genetic algorithm execution status.  There are subroutines
+to perform the following services:
+
+\begin{itemize}
+
+\item Compute average fitness of genetic pool.
+\begin{verbatim}
+ float
+ avg_pool(pool)
+ POOLPTR  pool; 
+\end{verbatim}
+
+\item Print the best, worst, average, and mean individuals in the population.
+\begin{verbatim}
+ void
+ show_progress (fileptr, pool, current_generation)
+ FILE          *fileptr; /*direct output to this fileptr*/
+ POOLPTR        pool;
+ int            current_generation;
+\end{verbatim}
+
+\item Print the contents of genetic pool, beginning at start\_pt for count.
+\begin{verbatim}
+ void
+ print_pool(fp, pool, start_pt, count)
+ FILE      *fp;
+ POOLPTR    pool;
+ int        start_pt,
+			count;
+\end{verbatim}
+
+\item Save the current state of an experiment for later restart.  Two
+files will be created: a configuration file (.config) with the current
+settings of Genitor's execution parameters and a pool file (.pool) with the 
+population data.
+\begin{verbatim}
+ void
+ dump_status (pool, basename)
+ POOLPTR      pool;
+ char         basename[]; /*basename of files in which to save state*/
+\end{verbatim}
+
+\end{itemize}
+
+Additionally, the Search Status module contains the following convenience
+routines:
+
+\begin{itemize}
+
+\item Pause execution (until input is received).
+\begin{verbatim}
+ void
+ pause_it();
+\end{verbatim}
+
+\item Print a warning message to stderr. 
+\begin{verbatim}
+ void
+ warning(message)
+ char    message[];
+\end{verbatim}
+
+\item Print an (optional) message to stderr and exit the program with
+a -1.  If the input message is non-NULL it is printed to stderr.  
+The standard message ``FATAL ERROR: Exiting.'' is always printed
+immediately before exit.
+\begin{verbatim}
+ void
+ fatal_error(message)
+ char       *message;
+\end{verbatim}
+
+\end{itemize}
+
+
+ga\_xdr.c, ga\_xdr.h\\
+Finally, Genitor provides a binary data format for population data
+disk files using the ``External Data Representation'' (XDR) standard. 
+The XDR standard is most frequently used in conjunction with the RPC
+utility, but need not be and, indeed, is useful outside the domain of RPC
+procedures.  XDR was designed to work across different languages, operating
+systems, and machine architectures.  Thus, an XDR format binary file may be
+written on one machine, say a VAX running VMS, and read on another machine,
+say a SUN Sparc running Unix. Even when machine portability is not an issue,
+XDR is still a good choice because its protocols are standardized and
+reliable.
+
+In practice, you will probably only want to use the XDR format when
+your application is dealing with floating point data.  When you use
+floating point data, XDR can provide significant disk space savings.
+However, for other data types (character or integer) you are better
+off remaining with the normal ascii file format, as the overhead of
+XDR's machine independent format actually makes files of this type
+larger than their ascii counterparts.
+\begin{verbatim}
+int
+print_xdr (fp, pool)
+FILE      *fp;
+POOLPTR    pool;
+
+int 
+read_xdr (fp, pool)
+FILE     *fp;
+POOLPTR   pool;
+\end{verbatim}
+
+
+\subsection{Signal Handling}
+
+ga\_signals.c, ga\_signals.h
+\\
+This functional module module provides signal handling capabilites
+during algorithm execution.  The subroutine `setup\_signal' may be
+called at the beginning of the main() driver routine to install
+signal handlers as appropriate.  The file `ga\_signals.c' is
+the suggested location for signal handling subroutines as well.
+The following signal handling routine is already provided:
+
+\begin{itemize}
+\item ga\_dump\_interrupt()\\
+This subroutine will print the current execution status to the
+screen and dump the current state of the genetic algorithm
+execution to file(s). \footnote {See {\it show\_progress} and
+{\it dump\_status} subroutines in {\bf Search Status} section above.} 
+\end{itemize}
+
+
+\subsection{Utilities}
+
+ga\_copy.c, ga\_copy.h
+\\
+This functional module provides a data translation and copying
+utility independent of data type.
+\begin{verbatim}
+ void
+ gene_copy (gene1, gene2, string_length)
+ GENEPTR    gene1, gene2;
+ int        string_length;
+\end{verbatim}
+
+
+\newpage
+
+\section{Different Data Types}
+
+gene.h
+\\
+The Genitor algorithm may be applied to a number of problems, which
+inherently means that the algorithm must be able to manipulate a
+number of different data types.  The Genitor code is designed to
+manipulated genes of various data types:
+
+\begin{itemize}
+\item {\bf Character} This is generally used for the traditional
+binary encodings.
+\item {\bf Integer} This might be used for a problem requiring a
+symbolic encoding, such as the Traveling Salesman Problem.
+\item {\bf Floating point} This can be used for symbolic problems
+as well. For example this data reprensentation is well-suited to
+neural network weight optimization problems.
+\end{itemize}
+
+You may use essentially the same code and the same function calls 
+regardless of the data type due to the centralization of type-specific
+information found in the header file `gene.h'.  All references to
+Genitor's population data type are made using the typedefs contained
+in `gene.h'.  Thus, you should include `gene.h' in any file which 
+will reference Genitor's population data and use the standard
+typedefs to do so.  In other words, to refer to:
+\begin{itemize}
+ \item the data type to be manipulated: use GENE\_DATA and GENE\_DATAPTR.
+ \item a gene structure containing a string of data and a worth:
+	   use GENE and GENEPTR.
+ \item a pool structure containing a population of genes, a population
+	   size, and a data string length: use POOL and POOLPTR.
+\end{itemize}
+
+The file `gene.h' has three sections, one for each of the three data
+types enumerated above.  Each section typedefs GENE\_DATA to the
+desired data type.  Additionally, each section contains a few macros
+to insert data type specific methods and syntaxes at compile time.
+In particular, the INIT() macro is used to call the appropriate random
+initialization routines for each data type.\footnote{ INIT() is used
+by random\_init\_pool() in the file ga\_pool.c.}  Additionally, the
+input and output of data must be data type specific, and so three macros
+(GENE\_DATA\_IN\_FORMAT, GENE\_DATA\_OUT\_FORMAT(), and XDR\_DATA)
+\footnote{GENE\_DATA\_IN\_FORMAT is used by seed\_pool() in the file
+ga\_pool.c.  GENE\_DATA\_OUT\_FORMAT() is used by print\_pool() in the
+file ga\_status.c. XDR\_DATA is used by xdr\_GENE() in the file ga\_xdr.c.}
+are defined for this purpose.
+
+Since only one data type is active at a given time, the sections of
+the gene.h file are bracked by \#ifdefs.  The appropriate constant
+(BIN\_DATA, CHAR\_DATA, or FLOAT\_DATA) should be defined on the 
+command line at compilation time (i.e. cc file.c -DCHAR\_DATA)
+
+\newpage
+
+\section{Genetic Operators:}
+
+\subsection{Reduce Surrogate Crossover}
+
+ga\_red\_surrog.c, ga\_red\_surrog.h
+\\
+Reduced Surrogate Crossover is a refined form of simple crossover.  Simple
+crossover begins with choosing two points at which to {\it break} each of
+two genetic strings.  Next, fragments from each string are used to build
+a third string, thus forming a new string (a child) which contains
+information from each of the initial two (parent) strings.  Reduced
+Surrogate crossover uses this same idea, but enhances the simple
+algorithm by insuring that the exchanged information is unique to each
+parent (exchanging identical information is a waste of time).  The
+Reduced Surrogate operator implementation provided with the Genitor package
+returns the number of (bit positions) differences between the two parent
+strings as the function value.  This return value can be useful in triggering 
+mutation based on population diversity.  
+
+\begin{verbatim}
+  int
+  red_surrogate_cross (mom_string, dad_string, string_length);
+  GENE_DATA            mom_string[], dad_string[];
+  int                  string_length;
+
+\end{verbatim}
+
+\subsection{Adaptive Mutation}
+
+ga\_mutate.c, ga\_mutate.h
+\\
+Adaptive mutation bases the amount of disruption to a given string
+on two factors: the relative similarity of its two parent strings,
+and a {\it mutation rate}.  The more similar the two parent strings,
+the more likely mutation is to occur.  The actual mutation which
+occurs is the product of this similarity and a fractional mutation
+rate.  Thus, if the mutation rate is .20 and the parents of a particular
+string where identical, approximately 20\% of the string will be mutated.
+Or, if the parents contained 50\% unique information, only about 10\% of
+the string will be mutated.
+\begin{verbatim}
+  void
+  adaptive_mutate (gene_string, string_length, diffs, mutate_rate);
+  GENE_DATA        gene_string[];
+  int              string_length;
+  int              diffs;
+  float            mutate_rate;
+
+\end{verbatim}
+
+\subsection{Edge Recombination}
+
+ga\_tsp.c, ga\_tsp.h
+\\
+The Traveling Salesman Problem (TSP) is defined as follows: given a finite
+list of points and information about the distances between each possible
+pair of points, find the shortest circuit which visits every point exactly once.
+The TSP is a classic schedule optimization exercise, and methodologies which
+can be successfully applied to it are often of use in many types of scheduling
+problems.  
+
+The {\bf Edge Recombination} operator invented at Colorado State University
+has had significant success in solving TSPs.  The novelty and success of CSU's
+operator is due to the fact that the operator focuses on manipulating the
+{\it edges} between points rather than the points themselves.  Classically,
+genetic algorithms have worked by recombining the explicit data string
+representations of individual genes.  For example, in function optimization,
+genetic recombination involves exchanging parameter settings which are
+positionally, explicitly encoded in the gene data strings.  However, in a TSP,
+every string encodes the same explicit data (the list of cities to be visited).
+Further, the real information lies in the position of each data element in
+the string {\it relative} to other data elements (as opposed to the absolute
+positioning of the function optimization example, in which relative position
+is of little or no importance.)
+
+The foundation of the Edge Recombination operator's implementation is an 
+{\it edge table}.  Every time recombination takes place, an edge table
+representing the edges of two parent genes is created.  A new gene is 
+generated by selecting edges from this edge table, such that the new gene
+is constructed of interspersed edges from each parent. 
+
+The following section lists the functions which implement the Edge
+Recombination operator.  These functions assume that each point in the
+circuit is represented symbolically by an integer.  Thus, a 30 ``city'' tour
+will have city number 1, number 2, and so on.  This integer naming scheme
+lends itself easily to an implementation based on array indexing.  Before
+examining the Edge Recombination functions provided, a brief description
+of the edge table data structure is in order:
+
+The edge table is an array of EDGE\_NODE structures.  The array is
+indexed by city; for example the EDGE\_NODE for city 3 is found at
+edge\_table[3].  Each EDGE\_NODE enumerates the cities to which it
+has edges.  Thus, if parent A is 52314 parent B is 41253, the EDGE\_NODE
+at edge\_table[3] will have references \footnote{Actually, each EDGE\_NODE
+has an array of 4 elements to store connecting cities.  Also, note that
+all 4 elements may not be used: often parents {\it share}
+edges and thus a particular EDGE\_NODE may only reference 2 or 3 other
+cities.} to cities 2, 1, 5, and 4 since the edges containing 3 in the parents
+are 23, 31, 53, and 34.  Likewise, the EDGE\_NODEs at edge\_table[2], [1],
+[5], and [4] will include a reference to city 3.  A new gene is constructed
+by moving through the connections represented in the edge\_table, removing
+cities from the edge\_table as they are visited.
+
+\begin{verbatim}
+ EDGE_NODE *
+ get_edge_table (num_points)
+ int             num_points;
+
+ free_edge_table (edge_table);
+ EDGE_NODE        edge_table[];
+
+ float
+ build_edge_table (mom_string, dad_string, num_points, edge_table)
+ GENE_DATA         mom_string[], dad_string[];
+ int               num_points;
+ EDGE_NODE         edge_table[];
+
+ GENEPTR
+ build_tour (edge_table, child_string, num_points)
+ EDGE_NODE   edge_table[];
+ GENE_DATA   child_string[];
+ int         num_points;
+\end{verbatim}
+
+\newpage
+
+\section{Examples}
+\end{document}
+\end{article}

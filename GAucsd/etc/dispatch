@@ -1,0 +1,64 @@
+
+###############################################################
+#                                                             #
+#   Copyright (c) 1989 Nicol N. Schraudolph                   #
+#   Computer Science & Engineering, C-014                     #
+#   University of California, San Diego                       #
+#   La Jolla, CA 92093-0114                                   #
+#                                                             #
+#   Permission is hereby granted to copy all or any part of   #
+#   this program for free distribution.   The author's name   #
+#   and this copyright notice must be included in any copy.   #
+#                                                             #
+###############################################################
+
+#
+#  file:    dispatch
+#
+#  author:  Nicol N. Schraudolph
+#
+#  created: August 1989
+#
+#  purpose: awk script for dispatching GENESIS simulation queues
+#
+
+BEGIN \
+{
+	i = 0;
+	j = 0;
+}
+
+# skip comment lines
+/^[	 ]*#/ \
+{
+	next;
+}
+
+# read lines from GAhosts
+/^[	 ]*[1-9]/ \
+{
+	cap[i] = $1;
+	host[i] = $2;
+	login[i] = $3;
+	dir[i] = $4;
+	i++;
+}
+ 
+# read execution queue
+/^[	 ]*ga[ 	]+/ \
+{
+	for (k = 0; k < i; k++)
+	{
+		if (j >= i) j = 0;
+		if (cap[j])
+		{
+			printf "\tga ";
+			print $2, $3, host[j], login[j], dir[j], $4;
+			cap[j++]--;
+			next;
+		}
+		else j++;
+	}
+	print $0;
+}
+

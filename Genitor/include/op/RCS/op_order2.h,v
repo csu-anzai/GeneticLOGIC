@@ -1,0 +1,67 @@
+head     1.2;
+branch   ;
+access   ;
+symbols  ;
+locks    whitley:1.2; strict;
+comment  @ * @;
+
+
+1.2
+date     91.02.01.13.41.39;  author whitley;  state Exp;
+branches ;
+next     1.1;
+
+1.1
+date     91.02.01.11.24.23;  author whitley;  state Exp;
+branches ;
+next     ;
+
+
+desc
+@syswerda's order operator's declarations..
+@
+
+
+1.2
+log
+@copyright notice added
+@
+text
+@
+/*************************************************************/
+/*                                                           */
+/*  Copyright (c) 1990                                       */
+/*  Darrell L. Whitley                                       */
+/*  Computer Science Department                              */
+/*  Colorado State University                                */
+/*                                                           */
+/*  Permission is hereby granted to copy all or any part of  */
+/*  this program for free distribution.   The author's name  */
+/*  and this copyright notice must be included in any copy.  */
+/*                                                           */
+/*************************************************************/
+/* syzwerda's order operator */
+
+typedef struct citydata
+{  int mom_position;		/* mom and dad position are not used by */
+   int dad_position;		/* this order operator  */
+   int used;
+   int select_list;
+} CITY_DATA;
+
+extern CITY_DATA * get_city_table (/* int length */);
+
+extern void order( /* GENE_DATA mom[], pop[], kid[];
+			int length; CITY_DATA *city_table */ );
+
+extern void maketour( /* GENE_DATA gene[]; int num_points */ );
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d1 13
+@

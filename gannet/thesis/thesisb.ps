@@ -1,0 +1,842 @@
+%!PS-Adobe
+/wpdict	120 dict def
+wpdict	begin
+/bdef	{bind def} bind def
+
+/bflg	false def
+/Bfont	0 def
+/bon	false def
+
+/psz	0 def
+/_S	/show load def
+/_t	{0 rmoveto} bdef
+
+/_pixelsnap
+	{transform .25 sub round .25 add
+	 exch .25 sub round .25 add exch itransform
+	} bdef
+/_pixeldsnap
+	{ dtransform round exch round exch idtransform } bdef
+
+/_lt	{_pixelsnap lineto} bdef
+/_rlt	{_pixeldsnap rlineto} bdef
+/_mt	{_pixelsnap moveto} bdef
+/_rmt	{_pixeldsnap rmoveto} bdef
+
+/bshow	{gsave psz 30 div 0 _rmt dup show grestore show} bdef
+
+/DUx	0 def
+/DUy	0 def
+/hscl	0 def
+
+/M	{_mt
+	 2 mul -2 2
+	 { -2 roll 0 _rmt _S } for
+	} bdef
+
+/makeoutl
+	{ dup /OutlineFlag known not
+	  { dup dup length 2 add dict begin
+	    {1 index /FID ne { def }{ pop pop } ifelse } forall
+	    /UniqueID known {/UniqueID UniqueID 10000 add def} if
+	    /PaintType PaintType 0 eq { 2 }{ PaintType } ifelse def
+	    /StrokeWidth 15 def
+	    /OutlineFlag true def
+	    /OutlineFont currentdict end definefont
+	  } if
+	} bdef
+
+/nbuff	32 string def
+/orntsv	0 def
+/plen	0 def
+/pwid	0 def
+/picstr	1 string def
+
+/reencode
+	{ dup FontDirectory exch known
+	  { findfont }
+	  {  dup nbuff cvs dup length 1 sub get 82 eq
+	     {	dup nbuff cvs dup length 1 sub 0 exch getinterval
+		findfont begin
+		currentdict dup length dict begin
+		{ 1 index /FID ne {def} {pop pop} ifelse } forall
+		/FontName exch def
+		/Encoding WPencoding def
+		currentdict dup end end
+		/FontName get exch definefont
+	     }
+	     { findfont } ifelse
+	  } ifelse
+	} bdef
+
+/ron	false def
+/sflg	false def
+/slan	0 def
+/sp	32 def
+
+/sshow
+	{ save exch
+	   gsave
+	    psz 20 div dup neg _rmt dup show
+	   grestore
+	   dup
+	   save exch
+	    Bfont setfont
+	    1 setgray show
+	   restore
+	   currentfont makeoutl setfont show
+	   currentpoint 3 -1 roll
+	  restore _mt
+	} bdef
+
+/Sx	0 def
+/Sy	0 def
+/Ux	0 def
+/Uy	0 def
+/W	/widthshow load def
+
+/WPencoding StandardEncoding 256 array copy def 0
+[ 127	/Aacute/Acircumflex/Adieresis/Agrave/Aring/Atilde/Ccedilla
+	/Delta/Eacute/Ecircumflex/Edieresis/Egrave/Eth/Gamma/Iacute
+	/Icircumflex/Idieresis/Igrave/Lambda/Ntilde/Oacute
+	/Ocircumflex/Odieresis/Ograve/Omega/Otilde/Phi/Pi/Psi
+	/Scaron/Sigma/TeXtext32/Theta/Thorn
+  209	/Uacute/Ucircumflex/Udieresis/Ugrave/Upsilon/Xi/Yacute
+	/Ydieresis/Zcaron/aacute/acircumflex/adieresis/agrave
+	/aring/atilde/brokenbar
+  228	/ccedilla/copyright/degree/divide
+  236	/dotlessj/eacute/ecircumflex/edieresis/egrave
+  242	/eth/ff/ffi
+  246	/ffl/iacute
+  252	/icircumflex/idieresis/igrave/logicalnot
+  1	/minus/mu/multiply/ntilde/oacute/ocircumflex/odieresis
+  	/ograve/onehalf/onequarter/onesuperior/otilde/plusminus
+  	/registered/scaron/thorn/threequarters/threesuperior
+  	/trademark/twosuperior/uacute/ucircumflex/udieresis
+  	/ugrave/yacute/ydieresis/zcaron
+]
+{ dup type /nametype eq
+  { WPencoding 2 index 2 index put pop 1 add }
+  { exch pop } ifelse
+} forall pop
+
+/_B	{/bflg true def
+	 sflg not {/_S /bshow load def /bon true def} if
+	} bdef
+/_b	{/bflg false def
+	 bon {/_S /show load def /bon false def} if
+	} bdef
+/_bd	{save} bdef
+/_bp	{save 2 setmiterlimit .06 .06 scale 0 0 _mt} bdef
+/_ccprocs
+	{/proc2 exch cvlit def
+	 /proc1 exch cvlit def
+	 /newproc proc1 length proc2 length add
+	 array def
+	 newproc 0 proc1 putinterval
+	 newproc proc1 length proc2 putinterval
+	 newproc cvx
+	} def
+/_clr	{3 {255 div 3 1 roll} repeat
+	 ron {6 3 roll pop pop pop} {setrgbcolor} ifelse
+	} bdef
+/_cp	/closepath load def
+/_cw	{stroke initclip _mt 0 2 index
+	 _rlt 0 _rlt 0 exch neg
+	 _rlt clip newpath
+	} bdef
+/_d	/setdash load def
+/_DU	{currentpoint /DUy exch def /DUx exch def} bdef
+/_du	{gsave
+	  save
+	   8 setlinewidth
+	   currentpoint -30 add _mt
+	   DUx DUy -30 add _lt stroke
+	  restore
+	  8 setlinewidth
+	  currentpoint -50 add _mt
+	  DUx DUy -50 add _lt stroke
+	 grestore
+	} bdef
+/_ed	{restore} bdef
+/_ep	{showpage restore 0 0 _mt} bdef
+/_f	/eofill load def
+/_ff	{ exch reencode exch
+	  3 div dup /psz exch def
+	  scalefont dup /Bfont exch def setfont
+	} bdef
+/_ffs	{ /slan exch 10 div def /hscl exch 1000 div def
+	  /psz exch 3 div def
+	  [ psz hscl mul 0 slan dup sin exch cos div psz mul psz 0 0 ]
+	  exch reencode exch makefont dup /Bfont exch def setfont
+	} bdef
+/_g	/setgray load def
+/_gs	{neg 100 add 100 div setgray} bdef
+/_i	{gsave
+	  dup /picstr exch 7 add 8 idiv string def
+	  3 1 roll translate dup 1 scale
+	  dup 1 1 [5 -1 roll 0 0 1 0 0]
+	  {currentfile picstr readhexstring pop} image
+         grestore
+        } bdef
+/_is	{save 4 1 roll
+	  dup /picstr exch 7 add 8 idiv string def
+	  3 1 roll translate dup 1 scale
+	  dup 1 1 [5 -1 roll 0 0 1 0 0]
+	  {currentfile picstr readhexstring pop} image
+	 restore
+	} bdef
+/_ie	{1 eq { {1 exch sub} currenttransfer _ccprocs settransfer} if
+	 /_isx exch def /_isy exch def
+	 _isx mul exch _isy mul translate
+	 add 2 div /_txc exch def
+	 add 2 div /_tyc exch def
+	 _txc _isx mul _tyc _isy mul translate
+	 360 exch sub rotate
+	 1 eq { _isx neg _isy scale }
+	 { _isx _isy scale }
+	 ifelse _txc neg _tyc neg translate
+	} bdef
+/_irms	{save
+	  12 1 roll
+	  1 eq {{1 exch sub} currenttransfer _ccprocs settransfer} if
+	  /picstr exch string def translate
+	  2 index 6 index sub 2 div 2 index 6 index sub 2 div neg
+	  translate
+	  5 index 5 index 2 div neg exch 2 div exch
+	  2 copy neg exch neg exch 5 2 roll translate
+	  360 exch sub rotate
+	  3 index 3 index 7 index div exch 8 index div exch scale
+	  translate pop pop 2 index 2 index scale
+	  3 index 0 eq
+	  { [ 3 index 0 0 5 index neg 0 0 ] }
+	  { 3 index 1 eq
+	    { [ 3 index 0 0 5 index 0 7 index ] }
+	    { 3 index 128 eq
+	      { [ 3 index neg 0 0 5 index neg 7 index 0 ] }
+	      { [ 3 index neg 0 0 5 index 7 index 7 index ] } ifelse
+	    } ifelse
+	  } ifelse
+          {currentfile picstr readhexstring pop} image
+          pop
+	 restore
+	} bdef
+
+/_l	{_lt} bdef
+/_lr	{_rlt} bdef
+/_m	{_mt} bdef
+/_O	{currentfont makeoutl setfont} bdef
+/_o	{Bfont setfont} bdef
+/_ornt	{/pwid exch def /plen exch def
+	 orntsv 1 eq {0 pwid translate -90 rotate} if
+	 orntsv 2 eq {pwid plen translate 180 rotate} if
+	 orntsv 3 eq {plen 0 translate 90 rotate} if
+	 dup 1 eq {pwid 0 translate 90 rotate} if
+	 dup 2 eq {pwid plen translate 180 rotate} if
+	 dup 3 eq {0 plen translate -90 rotate} if
+	 /orntsv exch def
+	} bdef
+/_lod1	{currentpoint orntsv plen pwid 6 -1 roll restore save} bdef
+/_lod2	{_bp 7 2 roll _ornt _mt} bdef
+/_unlod	{currentpoint orntsv plen pwid 7 -2 roll restore restore
+	 _bp 6 1 roll _ornt _mt
+	} bdef
+/_p	{2 copy _mt 1 0 _rlt _mt} bdef
+/_pl	{{_lt} repeat} bdef
+/_R	{/ron true def currentrgbcolor 1 .25 .25 setrgbcolor} bdef
+/_r	{/ron false def setrgbcolor} bdef /_rm  {0 _rmt} bdef
+/_rmxy	{_rmt} bdef
+/_s	/stroke load def
+/_SH	{bon {/bon false def} if
+	 /_S /sshow load def /sflg true def
+	} bdef
+/_sh	{/_S /show load def /sflg false def bflg {_B} if} bdef
+/_sp	{ gsave stroke grestore } bdef
+/_ST	{currentpoint /Sy exch def /Sx exch def} bdef
+/_st	{gsave
+	  currentpoint pop
+	  Sx dup Sy _mt sub
+	  (\320) stringwidth pop div
+	  dup floor cvi dup
+	  {(\320) show} repeat sub
+	  dup 0 gt {1 scale (\320) show}{pop} ifelse
+	 grestore
+	} bdef
+/_U	{currentpoint /Uy exch def /Ux exch def} bdef
+/_u	{gsave
+	  currentpoint
+	  -30 add _mt
+	  Ux Uy -30 add _lt
+	  12 setlinewidth
+	  stroke
+	 grestore
+	} bdef
+/_w	/setlinewidth load def
+end
+/#copies 1 def /wpdict2 100 dict def
+wpdict begin wpdict2 begin
+_bd
+/_rhs{readhexstring}bdef/_tr{translate}bdef
+/_ix{index}bdef/_mx{matrix}bdef
+/ife{ifelse}bdef/_x{exch}bdef
+/_is{save 4 1 roll
+dup/picstr _x 7 add 8 idiv string def
+3 1 roll _tr dup 1 scale
+dup 1 1[5 -1 roll 0 0 1 0 0]
+{currentfile picstr _rhs pop}image restore}bdef
+/_epsi{1 eq{{1 _x sub}currenttransfer _ccprocs settransfer}if
+/yp _x def/xp _x def/dhgt _x def/dwid _x def
+4 copy sub/swid _x def
+sub/shgt _x def
+add 2 div/icx _x def add 2 div/icy _x def
+xp dwid 2 div add icx sub yp dhgt 2 div sub
+icy sub _tr icx icy _tr
+360 _x sub rotate
+dwid swid div/xsc _x def _x
+dhgt shgt div/ysc _x def _x
+dup 1 eq{xsc neg/xsc _x def pop}
+{dup 2 eq{ysc neg /ysc _x def pop}
+{3 eq{ysc neg/ysc _x def xsc neg/xsc _x def}
+{}ife}ife}ife
+xsc ysc scale
+100 div _x 100 div _x scale
+icx neg icy neg _tr}bdef
+/_c{3{255 div 3 1 roll}repeat setrgbcolor}bdef
+/eq3{3 copy 2 _ix eq{eq{true}{false}ife}{pop
+pop false}ife}bdef
+/g{255 div setgray}bdef
+/_clr{ron{6 3 roll pop pop pop}{eq3{pop
+pop g}{_c}ife}ife}bdef
+/_r{/ron false def eq3{1 sub neg g pop
+pop}{setrgbcolor}ife}bdef
+/_ircms{save 15 1 roll
+1 eq{{1 exch sub}currenttransfer _ccprocs settransfer}if
+/pstr _x string def _tr
+/Cli _x def/USy _x def/USx _x def/Rot _x def/HTd _x def
+/WDd _x def/Bdep _x def/HTs _x def/WDs _x def/MIR _x def
+USx 100 div USy 100 div scale
+WDd WDs sub 2 div HTd HTs sub 2 div neg _tr
+WDs HTs 2 div neg _x 2 div _x _tr
+Rot 360 _x sub rotate WDd HTd HTs div _x WDs div _x scale
+WDs 2 div neg HTs 2 div _tr
+WDs HTs scale WDs HTs Bdep MIR 0
+eq{[WDs 0 0 HTs neg 0 0]}{MIR 1 eq{[WDs 0 0 HTs 0 HTs]}
+{MIR 128 eq{[WDs neg 0 0 HTs neg WDs 0]}
+{[WDs neg 0 0 HTs WDs HTs]}ife}ife}ife
+{currentfile pstr _rhs pop}Cli
+0 eq{image}{false 3 colorimage}ife
+restore}bdef
+/_bp{save 2 setlinecap 2 setmiterlimit
+.06 .06 scale 0 0 moveto}bdef
+/tctm _mx def/trot _mx def/tscale _mx def/rmtx _mx def
+/fr{72 0 rmtx defaultmatrix dtransform
+/yres _x def/xres _x def
+xres dup mul yres dup mul add sqrt}bdef
+/sus{/spotf _x def/sang _x def/csz _x def
+/m tctm currentmatrix def/rm sang trot rotate def
+/sm csz dup tscale scale def
+sm rm m m concatmatrix m concatmatrix pop
+1 0 m dtransform /y1 _x def/x1 _x def
+/veclength x1 dup mul y1 dup mul add sqrt def
+/frcy fr veclength div def /nsang y1 x1 atan def
+frcy nsang/spotf load setscreen}bdef
+/bitis{/ybit _x def /xbit _x def
+/bval bstring ybit bwidth mul xbit 8 idiv add get def
+/mask 1 7 xbit 8 mod sub bitshift def
+bval mask and 0 ne}bdef
+/bps{/y _x def /x _x def
+/xndx x 1 add 2 div bpside mul cvi def
+/yndx y 1 add 2 div bpside mul cvi def
+xndx yndx bitis
+{/onb onb 1 add def 1}{/ofb ofb 1 add def 0}ife}bdef
+/stpatt{/csz _x def /angle _x def /bwidth _x def
+/bpside _x def /bstring _x def
+/onb 0 def /ofb 0 def
+csz angle /bps load
+sus{}settransfer
+ofb ofb onb add div _g}bdef
+/_fp{8 1 0 cpi stpatt}bdef
+/_pf{gsave eofill grestore}bdef
+/_np{newpath}bdef/_lc{setlinecap}bdef
+/_sr{/cpi _x def}bdef
+/nbuff 50 string def
+letter usertime 5000 add {dup usertime lt {pop exit} if} loop statusdict /manualfeed true put usertime 5000 add {dup usertime lt {pop exit} if} loop _bp 0 12000 9000 _ornt /CourierR 600 _ff
+0 12000 9000 _ornt 1200 1200 translate 3840 11503 _m
+(APPENDIX)_S 120 _t(B:)_S 3360 11303 _m
+(GANNET)_S 120 _t(INSTRUCTIONS)_S 1200 10703 _m
+(GANNET.doc)_S 1200 10503 _m
+(VERSION)_S 120 _t(.91)_S 1200 10303 _m
+(Sept)_S 120 _t(5,)_S 120 _t(1990)_S 1200 9903 _m
+_U (Purpose:)_S _u 1560 9303 _m
+120 _t(GANNET)_S 200 _t(\(Genetic)_S 200 _t(Algorithm)_S 200 _t(Neural)_S 200 _t(NETwork\))_S 200 _t(is)_S 200 _t(an)_S 1200 9103 _m
+(experimental)_S 120 _t(program)_S 120 _t(designed)_S 120 _t(to)_S 120 _t(evolve)_S 120 _t(neural)_S 120 _t(networks)_S 1200 8903 _m
+(to)_S 180 _t(solve)_S 180 _t(pattern)_S 180 _t(recognition)_S 180 _t(problems.)_S 180 _t(This)_S 180 _t(document)_S 1200 8703 _m
+(explains)_S 174 _t(how)_S 173 _t(the)_S 173 _t(program)_S 174 _t(is)_S 173 _t(put)_S 173 _t(together)_S 174 _t(and)_S 173 _t(how)_S 173 _t(it)_S 1200 8503 _m
+(should)_S 144 _t(be)_S 144 _t(used.)_S 288 _t(GANNET)_S 144 _t(can)_S 144 _t(be)_S 144 _t(adapted)_S 144 _t(to)_S 144 _t(solve)_S 144 _t(other)_S 1200 8303 _m
+(types)_S 120 _t(of)_S 120 _t(problems.)_S 240 _t(Neural)_S 120 _t(networks)_S 120 _t(are)_S 120 _t(evolved)_S 120 _t(using)_S 120 _t(a)_S 1200 8103 _m
+(genetic)_S 120 _t(algorithm.)_S 240 _t1200 7903 _m
+(Written)_S 120 _t(by:)_S 240 _t(Captain)_S 120 _t(Jason)_S 120 _t(J.)_S 120 _t(Spofford,)_S 120 _t(USAF)_S 120 _t1560 7703 _m
+(ECE)_S 120 _t(Graduate)_S 120 _t(Student,)_S 120 _t(George)_S 120 _t(Mason)_S 120 _t(University)_S 120 _t1560 7503 _m
+(7th)_S 120 _t(Communications)_S 120 _t(Group/)_S 120 _t(LGNO)_S 120 _t1560 7303 _m
+(Pentagon,)_S 120 _t(Wash)_S 120 _t(D.C.)_S 120 _t(20330)_S 120 _t1560 7103 _m
+(\(202\))_S 120 _t(695-0264)_S 120 _t1560 6703 _m
+(email:)_S 120 _t(spoffojj@lgn.hq.af.mil)_S 120 _t1200 6303 _m
+(Copyright)_S 120 _t(\(C\))_S 120 _t(1990)_S 240 _t(Jason)_S 120 _t(J.)_S 120 _t(Spofford)_S 120 _t1200 5903 _m
+(This)_S 135 _t(program)_S 135 _t(is)_S 135 _t(free)_S 135 _t(software;)_S 135 _t(you)_S 135 _t(can)_S 135 _t(redistribute)_S 135 _t(it)_S 1200 5703 _m
+(and/or)_S 174 _t(modify)_S 173 _t(it)_S 173 _t(under)_S 174 _t(the)_S 173 _t(terms)_S 173 _t(of)_S 174 _t(the)_S 173 _t(GNU)_S 173 _t(General)_S 1200 5503 _m
+(Public)_S 240 _t(License)_S 240 _t(as)_S 240 _t(published)_S 240 _t(by)_S 240 _t(the)_S 240 _t(Free)_S 240 _t(Software)_S 1200 5303 _m
+(Foundation;)_S 120 _t(either)_S 120 _t(version)_S 120 _t(1,)_S 120 _t(or)_S 120 _t(any)_S 120 _t(later)_S 120 _t(version.)_S 240 _t1200 5103 _m
+(This)_S 120 _t(program)_S 120 _t(is)_S 120 _t(distributed)_S 120 _t(in)_S 120 _t(the)_S 120 _t(hope)_S 120 _t(that)_S 120 _t(it)_S 120 _t(will)_S 120 _t(be)_S 1200 4903 _m
+(useful,)_S 120 _t1200 4703 _m
+(but)_S 205 _t(WITHOUT)_S 206 _t(ANY)_S 206 _t(WARRANTY;)_S 205 _t(without)_S 206 _t(even)_S 206 _t(the)_S 206 _t(implied)_S 1200 4503 _m
+(warranty)_S 120 _t(of)_S 120 _t(MERCHANTABILITY)_S 120 _t(or)_S 120 _t(FITNESS)_S 120 _t(FOR)_S 120 _t(A)_S 120 _t(PARTICULAR)_S 1200 4303 _m
+(PURPOSE.)_S 240 _t(See)_S 120 _t(the)_S 120 _t1200 3903 _m
+(GNU)_S 120 _t(General)_S 120 _t(Public)_S 120 _t(License)_S 120 _t(for)_S 120 _t(more)_S 120 _t(details.)_S 240 _t1200 3703 _m
+_U (Organization:)_S _u 1560 3103 _m
+120 _t120 _t120 _t(GANNET)_S 120 _t(is)_S 120 _t(written)_S 120 _t(in)_S 120 _t(ANSI)_S 120 _t(C)_S 120 _t(and)_S 120 _t(has)_S 120 _t(been)_S 120 _t(compiled)_S 1200 2903 _m
+(successfully)_S 154 _t(on)_S 155 _t(SUN)_S 154 _t(and)_S 154 _t(VAX)_S 155 _t(platforms)_S 154 _t(operating)_S 154 _t(under)_S 1200 2703 _m
+(UNIX.)_S 240 _t(The)_S 120 _t(program)_S 120 _t(consists)_S 120 _t(of)_S 120 _t(13)_S 120 _t(files.)_S 240 _t(These)_S 120 _t(are:)_S 240 _t1200 2303 _m
+(Makefile)_S 120 _t(-)_S 120 _t(contains)_S 120 _t(compiling)_S 120 _t(instructions)_S 120 _t(for)_S 120 _t(creating)_S 1200 2103 _m
+(the)_S 94 _t(GANNET)_S 93 _t(executable.)_S 93 _t(On)_S 94 _t(a)_S 93 _t(UNIX)_S 93 _t(platform,)_S 94 _t(type)_S 93 _t('make)_S 93 _t(-k')_S 1200 1903 _m
+(to)_S 120 _t(compile.)_S 240 _t1200 1503 _m
+(comdef.h)_S 103 _t(-)_S 103 _t(contains)_S 103 _t(common)_S 103 _t(definitions)_S 103 _t(of)_S 103 _t(variable)_S 102 _t(types)_S 1200 1303 _m
+(and)_S 120 _t(constants.)_S 240 _t1200 903 _m
+(GANNET.c)_S 150 _t(-)_S 150 _t(This)_S 150 _t(is)_S 150 _t(the)_S 150 _t(largest)_S 150 _t(source)_S 150 _t(file)_S 150 _t(containing)_S 1200 703 _m
+(most)_S 120 _t(of)_S 120 _t(the)_S 120 _t(GA)_S 120 _t(process)_S 120 _t(and)_S 120 _t(the)_S 120 _t(main)_S 120 _t(function.)_S 240 _t_ep
+_bp /CourierR 600 _ff
+0 12000 9000 _ornt 1200 1200 translate 1200 11503 _m
+(parinfo.c)_S 90 _t(-)_S 90 _t(works)_S 90 _t(with)_S 90 _t(the)_S 90 _t(parent)_S 90 _t(information)_S 90 _t(file)_S 90 _t(called)_S 1200 11303 _m
+("par_info.experiment.")_S 270 _t(The)_S 270 _t(parent)_S 270 _t(information)_S 270 _t(file)_S 1200 11103 _m
+(contains)_S 137 _t(a)_S 137 _t(parent's)_S 137 _t(fitness,)_S 138 _t(number)_S 137 _t(of)_S 137 _t(neurons,)_S 137 _t(etc...)_S 1200 10903 _m
+(and)_S 120 _t(is)_S 120 _t(stored)_S 120 _t(in)_S 120 _t(binary)_S 120 _t(format.)_S 240 _t1200 10703 _m
+(gen_code.c)_S 135 _t(-)_S 135 _t(works)_S 135 _t(with)_S 135 _t(genetic)_S 135 _t(code)_S 135 _t(information.)_S 270 _t(The)_S 1200 10503 _m
+(genetic)_S 120 _t(code)_S 120 _t(is)_S 120 _t1200 10103 _m
+(stored)_S 135 _t(in)_S 135 _t(binary)_S 135 _t(format.)_S 270 _t(The)_S 135 _t(parent)_S 135 _t(information)_S 135 _t(array)_S 1200 9903 _m
+(contains)_S 300 _t(seek)_S 300 _t(pointers)_S 300 _t(that)_S 300 _t(indicate)_S 300 _t(where)_S 300 _t(one)_S 1200 9703 _m
+(individuals)_S 120 _t(code)_S 120 _t(stops)_S 120 _t(and)_S 120 _t(another)_S 120 _t(begins.)_S 240 _t1200 9303 _m
+(statistic.c)_S 120 _t(-)_S 120 _t(records)_S 120 _t(statistical)_S 120 _t(information)_S 120 _t(about)_S 120 _t(the)_S 1200 9103 _m
+(evolution)_S 133 _t(process)_S 133 _t(and)_S 134 _t(stores)_S 133 _t(it)_S 133 _t(in)_S 134 _t(a)_S 133 _t(flat)_S 133 _t(ASCII)_S 134 _t(format)_S 1200 8903 _m
+(that)_S 135 _t(can)_S 135 _t(be)_S 135 _t(imported)_S 135 _t(into)_S 135 _t(spreadsheets.)_S 135 _t(The)_S 135 _t(format)_S 135 _t(may)_S 1200 8703 _m
+(have)_S 135 _t(to)_S 135 _t(be)_S 135 _t(modified)_S 135 _t(to)_S 135 _t(work)_S 135 _t(with)_S 135 _t(different)_S 135 _t(spreadsheet)_S 1200 8503 _m
+(import)_S 120 _t(facilities.)_S 240 _t1200 8103 _m
+(history.c)_S 105 _t(-)_S 105 _t(records)_S 105 _t(the)_S 105 _t(history)_S 105 _t(of)_S 105 _t(the)_S 105 _t(evolution)_S 105 _t(process)_S 1200 7903 _m
+(in)_S 93 _t(an)_S 93 _t(ASCII)_S 94 _t(file)_S 93 _t(called)_S 93 _t(history.extension.)_S 187 _t(This)_S 93 _t(file)_S 94 _t(can)_S 1200 7703 _m
+(be)_S 93 _t(useful)_S 94 _t(for)_S 93 _t(determining)_S 93 _t(how)_S 94 _t(long)_S 93 _t(a)_S 93 _t(particular)_S 94 _t(job)_S 93 _t(took,)_S 1200 7503 _m
+(for)_S 103 _t(debugging)_S 103 _t(information)_S 103 _t(and)_S 103 _t(for)_S 103 _t(determining)_S 102 _t(the)_S 103 _t(number)_S 1200 7303 _m
+(of)_S 120 _t(times)_S 120 _t(an)_S 120 _t(experiment)_S 120 _t(was)_S 120 _t(conducted.)_S 240 _t1200 6903 _m
+(graycode.c)_S 86 _t(-)_S 85 _t(contains)_S 86 _t(routines)_S 86 _t(for)_S 86 _t(converting)_S 85 _t(integers)_S 86 _t(to)_S 1200 6703 _m
+(and)_S 120 _t(from)_S 120 _t(the)_S 120 _t(graycode)_S 120 _t(scheme.)_S 240 _t1200 6303 _m
+(best.c)_S 90 _t(-)_S 90 _t(records)_S 90 _t(the)_S 90 _t(best)_S 90 _t(phenotype)_S 90 _t(created)_S 90 _t(at)_S 90 _t(particular)_S 1200 6103 _m
+(generation)_S 140 _t(intervals.)_S 140 _t(The)_S 140 _t(file,)_S 140 _t(best.experiment,)_S 140 _t(is)_S 140 _t(in)_S 1200 5903 _m
+(ASCII)_S 120 _t(format.)_S 240 _t1200 5503 _m
+(config.c)_S 103 _t(-)_S 103 _t(loads)_S 103 _t(and)_S 102 _t(saves)_S 103 _t(the)_S 103 _t(configuration)_S 103 _t(information)_S 1200 5303 _m
+(for)_S 120 _t(each)_S 120 _t(experiment.)_S 240 _t1200 4903 _m
+(io_load.c)_S 120 _t(-)_S 120 _t(loads)_S 120 _t(input/)_S 120 _t(output)_S 120 _t(evaluation)_S 120 _t(data.)_S 240 _t1200 4503 _m
+(combo4.data)_S 120 _t(-)_S 120 _t(an)_S 120 _t(ASCII)_S 120 _t(data)_S 120 _t(file)_S 120 _t(that)_S 120 _t(contains)_S 120 _t(specific)_S 1200 4303 _m
+(sets)_S 206 _t(of)_S 205 _t(weights)_S 206 _t(and)_S 206 _t(thresholds)_S 205 _t(that)_S 206 _t(translate)_S 206 _t(into)_S 1200 4103 _m
+(produceable)_S 171 _t(neuron)_S 172 _t(output)_S 171 _t(combinations)_S 172 _t(for)_S 171 _t(a)_S 172 _t(4)_S 171 _t(input)_S 1200 3903 _m
+(neuron.)_S 106 _t(This)_S 107 _t(information)_S 107 _t(is)_S 106 _t(loaded)_S 107 _t(into)_S 107 _t(a)_S 106 _t(large)_S 107 _t(array)_S 107 _t(at)_S 1200 3703 _m
+(the)_S 120 _t(startup)_S 120 _t(of)_S 120 _t(GANNET.)_S 240 _t1200 3303 _m
+(combo2.data.full)_S 188 _t(-)_S 189 _t(an)_S 189 _t(ASCII)_S 188 _t(data)_S 189 _t(file)_S 188 _t(that)_S 189 _t(contains)_S 1200 3103 _m
+(specific)_S 137 _t(sets)_S 137 _t(of)_S 137 _t(weights)_S 138 _t(and)_S 137 _t(thresholds)_S 137 _t(that)_S 137 _t(translate)_S 1200 2903 _m
+(into)_S 90 _t(produceable)_S 90 _t(neuron)_S 90 _t(output)_S 90 _t(combinations)_S 90 _t(for)_S 90 _t(a)_S 90 _t(2)_S 90 _t(input)_S 1200 2703 _m
+(neuron.)_S 107 _t(This)_S 106 _t(information)_S 107 _t(is)_S 107 _t(loaded)_S 106 _t(into)_S 107 _t(a)_S 107 _t(large)_S 106 _t(array)_S 107 _t(at)_S 1200 2503 _m
+(the)_S 120 _t(startup)_S 120 _t(of)_S 120 _t(GANNET.)_S 240 _t1200 2303 _m
+_U (GANNET's)_S 120 _t(Experiment)_S 120 _t(Files:)_S _u 1200 1703 _m
+(GANNET)_S 223 _t(creates)_S 223 _t(several)_S 223 _t(experiment)_S 222 _t(files)_S 223 _t(and)_S 223 _t(it)_S 223 _t(is)_S 1200 1503 _m
+(important)_S 137 _t(to)_S 137 _t(understand)_S 137 _t(what)_S 137 _t(each)_S 137 _t(file)_S 137 _t(represents.)_S 138 _t(The)_S 1200 1303 _m
+(experiment)_S 156 _t(name)_S 156 _t(is)_S 156 _t(used)_S 156 _t(as)_S 156 _t(an)_S 156 _t(extension.)_S 312 _t(In)_S 156 _t(the)_S 156 _t(DOS)_S 1200 1103 _m
+(environment,)_S 135 _t(it)_S 135 _t(might)_S 135 _t(make)_S 135 _t(more)_S 135 _t(sense)_S 135 _t(to)_S 135 _t(reverse)_S 135 _t(that,)_S 1200 903 _m
+(using)_S 120 _t(the)_S 120 _t(type)_S 120 _t(of)_S 120 _t(file)_S 120 _t(as)_S 120 _t(the)_S 120 _t(extension.)_S 240 _t1200 503 _m
+(The)_S 120 _t(following)_S 120 _t(files)_S 120 _t(are)_S 120 _t(created)_S 120 _t(by)_S 120 _t(GANNET:)_S 240 _t_ep
+_bp /CourierR 600 _ff
+0 12000 9000 _ornt 1200 1200 translate 1200 11503 _m
+(best.experiment)_S 105 _t(-)_S 105 _t(This)_S 105 _t(ASCII)_S 105 _t(data)_S 105 _t(file)_S 105 _t(contains)_S 105 _t(the)_S 105 _t(best)_S 1200 11303 _m
+(phenotype)_S 154 _t(of)_S 155 _t(a)_S 154 _t(particular)_S 154 _t(generation.)_S 155 _t(There)_S 154 _t(is)_S 154 _t(enough)_S 1200 11103 _m
+(information)_S 106 _t(in)_S 107 _t(this)_S 107 _t(file)_S 106 _t(to)_S 107 _t(plot)_S 107 _t(a)_S 106 _t(given)_S 107 _t(neural)_S 107 _t(network.)_S 1200 10903 _m
+(Important)_S 100 _t(statistic)_S 100 _t(information)_S 100 _t(about)_S 100 _t(the)_S 100 _t(neural)_S 100 _t(network)_S 1200 10703 _m
+(is)_S 240 _t(recorded)_S 240 _t(first.)_S 240 _t(After)_S 240 _t(which,)_S 240 _t(the)_S 240 _t(phenotype)_S 240 _t(is)_S 1200 10503 _m
+(expressed.)_S 240 _t1560 10103 _m
+120 _t120 _t120 _t(The)_S 120 _t(phenotype)_S 120 _t(values)_S 120 _t(must)_S 120 _t(be)_S 120 _t(understood)_S 120 _t(before)_S 120 _t(an)_S 1200 9903 _m
+(accurate)_S 171 _t(neural)_S 172 _t(network)_S 171 _t(can)_S 171 _t(be)_S 172 _t(constructed.)_S 171 _t(Each)_S 172 _t(row)_S 1200 9703 _m
+(represents)_S 257 _t(a)_S 257 _t(neuron.)_S 515 _t(The)_S 257 _t(first)_S 257 _t(number)_S 257 _t(uniquely)_S 1200 9503 _m
+(identifies)_S 133 _t(a)_S 134 _t(neuron.)_S 266 _t(The)_S 134 _t(next)_S 133 _t(number)_S 133 _t(is)_S 134 _t(the)_S 133 _t(threshold)_S 1200 9303 _m
+(level.)_S 120 _t(The)_S 120 _t(next)_S 120 _t(4)_S 120 _t(numbers)_S 120 _t(are)_S 120 _t(the)_S 120 _t(input)_S 120 _t(weights)_S 120 _t(to)_S 120 _t(that)_S 1200 9103 _m
+(neuron,)_S 141 _t(starting)_S 142 _t(at)_S 142 _t(1)_S 142 _t(and)_S 142 _t(ending)_S 141 _t(at)_S 142 _t(4.)_S 284 _t(The)_S 142 _t(last)_S 142 _t(four)_S 1200 8903 _m
+(numbers)_S 172 _t(represent)_S 171 _t(where)_S 171 _t(that)_S 172 _t(neuron)_S 171 _t(is)_S 172 _t(receiving)_S 171 _t(its)_S 1200 8703 _m
+(inputs)_S 132 _t(from,)_S 132 _t(again,)_S 132 _t(1)_S 132 _t(through)_S 132 _t(4.)_S 264 _t(A)_S 132 _t(neuron)_S 132 _t(can)_S 132 _t(receive)_S 1200 8503 _m
+(input)_S 93 _t(from)_S 93 _t(another)_S 94 _t(neuron)_S 93 _t(or)_S 93 _t(from)_S 94 _t(the)_S 93 _t(environment.)_S 93 _t(If)_S 94 _t(the)_S 1200 8303 _m
+(number)_S 120 _t(is)_S 120 _t(less)_S 120 _t(than)_S 120 _t(the)_S 120 _t(number)_S 120 _t(of)_S 120 _t(environmental)_S 120 _t(inputs,)_S 1200 8103 _m
+(that)_S 120 _t(neuron)_S 120 _t(is)_S 120 _t(connected)_S 120 _t(to)_S 120 _t(an)_S 120 _t(environmental)_S 120 _t(input.)_S 120 _t(Use)_S 1200 7903 _m
+(the)_S 109 _t(number)_S 109 _t(as)_S 109 _t(it)_S 109 _t(appears.)_S 218 _t(If)_S 109 _t(the)_S 109 _t(number)_S 109 _t(is)_S 110 _t(greater)_S 109 _t(than)_S 1200 7703 _m
+(or)_S 105 _t(equal)_S 105 _t(to)_S 105 _t(the)_S 105 _t(number)_S 105 _t(of)_S 105 _t(environmental)_S 105 _t(inputs,)_S 105 _t(subtract)_S 1200 7503 _m
+(off)_S 120 _t(the)_S 120 _t(number)_S 120 _t(of)_S 120 _t(environmental)_S 120 _t(inputs)_S 120 _t(and)_S 120 _t(you)_S 120 _t(are)_S 120 _t(left)_S 1200 7303 _m
+(with)_S 132 _t(the)_S 132 _t(neuron)_S 132 _t(number)_S 132 _t(its)_S 132 _t(receives)_S 132 _t(input)_S 132 _t(from.)_S 264 _t(For)_S 132 _t(a)_S 1200 7103 _m
+(two)_S 105 _t(input)_S 105 _t(neuron)_S 105 _t(model,)_S 105 _t(ignore)_S 105 _t(weights)_S 105 _t(and)_S 105 _t(connections)_S 105 _t(3)_S 1200 6903 _m
+(and)_S 99 _t(4.)_S 196 _t(Also,)_S 98 _t(there)_S 98 _t(is)_S 99 _t(an)_S 98 _t(additional)_S 98 _t(number)_S 98 _t(tacked)_S 98 _t(on)_S 98 _t(the)_S 1200 6703 _m
+(end)_S 132 _t(of)_S 132 _t(the)_S 132 _t(row.)_S 132 _t(This)_S 132 _t(is)_S 132 _t(the)_S 132 _t(second)_S 132 _t(threshold)_S 132 _t(value)_S 132 _t(for)_S 1200 6503 _m
+(this)_S 120 _t(different)_S 120 _t(neuron)_S 120 _t(model.)_S 240 _t1200 6103 _m
+(input.experiment)_S 103 _t(-)_S 103 _t(This)_S 103 _t(file)_S 103 _t(contains)_S 103 _t(input)_S 102 _t(patterns)_S 103 _t(for)_S 1200 5903 _m
+(neural)_S 154 _t(networks)_S 155 _t(to)_S 154 _t(recognize.)_S 154 _t(Never)_S 154 _t(make)_S 155 _t(any)_S 154 _t(comments)_S 1200 5703 _m
+(containing)_S 100 _t(a)_S 100 _t(1)_S 100 _t(or)_S 100 _t(a)_S 100 _t(0,)_S 100 _t(or)_S 100 _t(it)_S 100 _t(will)_S 100 _t(be)_S 100 _t(interpreted)_S 100 _t(as)_S 100 _t(data.)_S 1200 5503 _m
+(The)_S 120 _t(loader)_S 120 _t(ignores)_S 120 _t(everything)_S 120 _t(except)_S 120 _t(1's)_S 120 _t(and)_S 120 _t(0's)_S 120 _t(so)_S 120 _t(you)_S 1200 5303 _m
+(are)_S 120 _t(free)_S 120 _t(to)_S 120 _t(arrange)_S 120 _t(your)_S 120 _t(input)_S 120 _t(data)_S 120 _t(however)_S 120 _t(you)_S 120 _t(please.)_S 1200 5103 _m
+(At)_S 156 _t(the)_S 156 _t(top)_S 156 _t(of)_S 156 _t(the)_S 156 _t(file,)_S 156 _t(you)_S 156 _t(should)_S 156 _t(indicate)_S 156 _t(how)_S 156 _t(many)_S 1200 4903 _m
+(input/)_S 120 _t(output)_S 120 _t(sets)_S 120 _t(there)_S 120 _t(are)_S 120 _t(and)_S 120 _t(how)_S 120 _t(many)_S 120 _t(environmental)_S 1200 4703 _m
+(inputs)_S 120 _t(there)_S 120 _t(are.)_S 120 _t(This)_S 120 _t(is)_S 120 _t(not)_S 120 _t(required,)_S 120 _t(however.)_S 240 _t1200 4303 _m
+(output.experiment)_S 135 _t(-)_S 135 _t(The)_S 135 _t(same)_S 135 _t(things)_S 135 _t(that)_S 135 _t(hold)_S 135 _t(true)_S 135 _t(for)_S 1200 4103 _m
+(input.experiment)_S 165 _t(hold)_S 165 _t(true)_S 165 _t(for)_S 165 _t(this)_S 165 _t(file.)_S 330 _t(This)_S 165 _t(file)_S 1200 3903 _m
+(tells)_S 165 _t(the)_S 165 _t(GA)_S 165 _t(what)_S 165 _t(patterns)_S 165 _t(the)_S 165 _t(neural)_S 165 _t(network)_S 165 _t(should)_S 1200 3703 _m
+(recognize)_S 240 _t(as)_S 240 _t(being)_S 240 _t(the)_S 240 _t(same,)_S 240 _t(and)_S 240 _t(what)_S 240 _t(should)_S 240 _t(be)_S 1200 3503 _m
+(recognized)_S 120 _t(distinctly.)_S 240 _t1200 3103 _m
+(par_info.experiment)_S 160 _t(-)_S 160 _t(The)_S 160 _t(parent)_S 160 _t(information)_S 160 _t(for)_S 160 _t(each)_S 1200 2903 _m
+(parent)_S 120 _t(in)_S 120 _t(the)_S 120 _t(population)_S 120 _t(is)_S 120 _t(stored)_S 120 _t(in)_S 120 _t(this)_S 120 _t(binary)_S 120 _t(file.)_S 1200 2703 _m
+(Information)_S 171 _t(such)_S 172 _t(as)_S 171 _t(fitness,)_S 172 _t(number)_S 171 _t(of)_S 172 _t(neurons,)_S 171 _t(age,)_S 1200 2503 _m
+(etc...)_S 120 _t(is)_S 120 _t(stored)_S 120 _t(here.)_S 240 _t1200 2103 _m
+(par_code.experiment)_S 86 _t(-)_S 86 _t(Parent)_S 86 _t(genetic)_S 85 _t(code)_S 86 _t(is)_S 86 _t(stored)_S 85 _t(here.)_S 1200 1903 _m
+(The)_S 137 _t(parent)_S 137 _t(information)_S 137 _t(file)_S 137 _t(contains)_S 137 _t(seek)_S 138 _t(pointers)_S 137 _t(for)_S 1200 1703 _m
+(identifying)_S 107 _t(where)_S 106 _t(genetic)_S 107 _t(code)_S 107 _t(strings)_S 106 _t(start)_S 107 _t(and)_S 107 _t(stop.)_S 213 _t1200 1303 _m
+(stats.experiment)_S 86 _t(-)_S 85 _t(A)_S 86 _t(summary)_S 86 _t(of)_S 86 _t(statistics)_S 85 _t(per)_S 86 _t(generation)_S 1200 1103 _m
+(is)_S 168 _t(recorded)_S 168 _t(in)_S 168 _t(ASCII)_S 168 _t(format.)_S 336 _t(Each)_S 168 _t(line)_S 168 _t(in)_S 168 _t(the)_S 168 _t(file)_S 1200 903 _m
+(contains)_S 120 _t(a)_S 120 _t(description)_S 120 _t(of)_S 120 _t(a)_S 120 _t(generation.)_S 120 _t(Each)_S 120 _t(value)_S 120 _t(in)_S 120 _t(a)_S 1200 703 _m
+(statistics)_S 120 _t(file)_S 120 _t(is)_S 120 _t(separated)_S 120 _t(with)_S 120 _t(a)_S 120 _t(single)_S 120 _t(space.)_S 240 _t_ep
+_bp /CourierR 600 _ff
+0 12000 9000 _ornt 1200 1200 translate 1200 11503 _m
+(Here)_S 93 _t(is)_S 93 _t(a)_S 94 _t(description)_S 93 _t(of)_S 93 _t(the)_S 94 _t(statistics)_S 93 _t(recorded)_S 93 _t(for)_S 94 _t(each)_S 1200 11303 _m
+(generation:)_S 240 _t1200 11103 _m
+(Field)_S 120 _t1200 10903 _m
+(-----)_S 120 _t1560 10703 _m
+(1)_S 120 _t2160 10703 _m
+(The)_S 120 _t(generation)_S 120 _t(number.)_S 240 _t1560 10503 _m
+(2)_S 120 _t2160 10503 _m
+(The)_S 106 _t(number)_S 107 _t(of)_S 107 _t(times)_S 106 _t(a)_S 107 _t(parent)_S 107 _t(replaces)_S 106 _t(one)_S 107 _t(of)_S 107 _t(its)_S 2160 10303 _m
+(children.)_S 240 _t1560 10103 _m
+(3)_S 120 _t2160 10103 _m
+(%)_S 312 _t(of)_S 312 _t(parents)_S 312 _t(assigned)_S 312 _t(ZERO)_S 312 _t(reproductive)_S 2160 9903 _m
+(allocations.)_S 240 _t1560 9703 _m
+(4)_S 120 _t2160 9703 _m
+(Fitness)_S 120 _t(of)_S 120 _t(the)_S 120 _t(best)_S 120 _t(overall)_S 120 _t(parent.)_S 240 _t1560 9503 _m
+(5)_S 120 _t2160 9503 _m
+(Average)_S 360 _t(overall)_S 360 _t(fitness)_S 360 _t(of)_S 360 _t(the)_S 360 _t(parent)_S 2160 9303 _m
+(population.)_S 240 _t1560 9103 _m
+(6)_S 120 _t2160 9103 _m
+(Fitness)_S 120 _t(of)_S 120 _t(the)_S 120 _t(worst)_S 120 _t(overall)_S 120 _t(parent.)_S 240 _t1560 8903 _m
+(7)_S 120 _t2160 8903 _m
+(Fitness)_S 216 _t(of)_S 216 _t(the)_S 216 _t(best)_S 216 _t(input/output)_S 216 _t(performing)_S 2160 8703 _m
+(parent.)_S 240 _t1560 8503 _m
+(8)_S 120 _t2160 8503 _m
+(Average)_S 240 _t(input/output)_S 240 _t(fitness)_S 240 _t(of)_S 240 _t(the)_S 240 _t(parent)_S 2160 8303 _m
+(population.)_S 240 _t1560 8103 _m
+(9)_S 120 _t2160 8103 _m
+(Fitness)_S 192 _t(of)_S 192 _t(the)_S 192 _t(worst)_S 192 _t(input/output)_S 192 _t(performing)_S 2160 7903 _m
+(parent.)_S 240 _t1200 7703 _m
+(10)_S 120 _t2160 7703 _m
+(Fitness)_S 240 _t(of)_S 240 _t(the)_S 240 _t(best)_S 240 _t(cycle)_S 240 _t(time)_S 240 _t(performing)_S 2160 7503 _m
+(parent.)_S 240 _t1200 7303 _m
+(11)_S 120 _t2160 7303 _m
+(Average)_S 260 _t(cycle)_S 260 _t(time)_S 260 _t(fitness)_S 260 _t(of)_S 260 _t(the)_S 260 _t(parent)_S 2160 7103 _m
+(population.)_S 240 _t1200 6903 _m
+(12)_S 120 _t2160 6903 _m
+(Fitness)_S 220 _t(of)_S 220 _t(the)_S 220 _t(worst)_S 220 _t(cycle)_S 220 _t(time)_S 220 _t(performing)_S 2160 6703 _m
+(parent.)_S 240 _t1200 6503 _m
+(13)_S 120 _t2160 6503 _m
+(Fitness)_S 200 _t(of)_S 200 _t(the)_S 200 _t(smallest)_S 200 _t(neural)_S 200 _t(network)_S 200 _t(size)_S 2160 6303 _m
+(parent.)_S 240 _t1200 6103 _m
+(14)_S 120 _t2160 6103 _m
+(Average)_S 220 _t(neural)_S 220 _t(network)_S 220 _t(size)_S 220 _t(fitness)_S 220 _t(of)_S 220 _t(the)_S 2160 5903 _m
+(parent)_S 120 _t(population.)_S 240 _t1200 5703 _m
+(15)_S 120 _t2160 5703 _m
+(Fitness)_S 220 _t(of)_S 220 _t(the)_S 220 _t(largest)_S 220 _t(neural)_S 220 _t(network)_S 220 _t(size)_S 2160 5503 _m
+(parent.)_S 240 _t1200 5303 _m
+(16)_S 120 _t2160 5303 _m
+(Number)_S 120 _t(of)_S 120 _t(neurons)_S 120 _t(in)_S 120 _t(the)_S 120 _t(largest)_S 120 _t(network.)_S 240 _t1200 5103 _m
+(17)_S 120 _t2160 5103 _m
+(Average)_S 280 _t(number)_S 280 _t(of)_S 280 _t(neurons)_S 280 _t(in)_S 280 _t(the)_S 280 _t(parent)_S 2160 4903 _m
+(population.)_S 240 _t1200 4503 _m
+(18)_S 120 _t2160 4503 _m
+(Number)_S 120 _t(of)_S 120 _t(neurons)_S 120 _t(in)_S 120 _t(the)_S 120 _t(smallest)_S 120 _t(network.)_S 240 _t1560 4103 _m
+(When)_S 86 _t(networks)_S 85 _t(use)_S 86 _t(there)_S 86 _t(own)_S 86 _t(featural)_S 85 _t(representation)_S 86 _t(of)_S 1560 3903 _m
+(input)_S 102 _t(stimuli,)_S 103 _t(these)_S 103 _t(fields)_S 103 _t(measure)_S 103 _t(how)_S 103 _t(different)_S 103 _t(one)_S 1560 3703 _m
+(representation)_S 144 _t(is)_S 144 _t(from)_S 144 _t(other)_S 144 _t(representations.)_S 144 _t(\(when)_S 1560 3503 _m
+(they)_S 120 _t(are)_S 120 _t(supposed)_S 120 _t(to)_S 120 _t(be)_S 120 _t(different\))_S 120 _t1200 3303 _m
+(19)_S 120 _t2160 3303 _m
+(The)_S 120 _t(largest)_S 120 _t(difference)_S 120 _t(score.)_S 240 _t1200 3103 _m
+(20)_S 120 _t2160 3103 _m
+(The)_S 120 _t(average)_S 120 _t(difference)_S 120 _t(score.)_S 240 _t1200 2703 _m
+(21)_S 120 _t2160 2703 _m
+(The)_S 120 _t(smallest)_S 120 _t(difference)_S 120 _t(score.)_S 240 _t1560 2303 _m
+(Now)_S 137 _t(instead)_S 137 _t(of)_S 137 _t(measuring)_S 137 _t(the)_S 138 _t(difference)_S 137 _t(of)_S 137 _t(featural)_S 1560 2103 _m
+(representations,)_S 192 _t(these)_S 192 _t(fields)_S 192 _t(measure)_S 192 _t(how)_S 192 _t(similar)_S 1560 1903 _m
+(featural)_S 100 _t(representations)_S 100 _t(are)_S 100 _t(when)_S 100 _t(neural)_S 100 _t(networks)_S 100 _t(are)_S 1560 1703 _m
+(given)_S 107 _t(input)_S 106 _t(stimuli)_S 107 _t(that)_S 107 _t(should)_S 106 _t(be)_S 107 _t(mapped)_S 107 _t(to)_S 106 _t(the)_S 107 _t(same)_S 1560 1503 _m
+(representation.)_S 240 _t1200 1303 _m
+(22)_S 120 _t2160 1303 _m
+(The)_S 120 _t(largest)_S 120 _t(similarity)_S 120 _t(score.)_S 240 _t1200 1103 _m
+(23)_S 120 _t2160 1103 _m
+(The)_S 120 _t(average)_S 120 _t(similarity)_S 120 _t(score.)_S 240 _t1200 703 _m
+(24)_S 120 _t2160 703 _m
+(The)_S 120 _t(smallest)_S 120 _t(similarity)_S 120 _t(score.)_S 240 _t_ep
+_bp /CourierR 600 _ff
+0 12000 9000 _ornt 1200 1200 translate 1560 11503 _m
+(Finally,)_S 107 _t(a)_S 107 _t(long)_S 106 _t(list)_S 107 _t(provides)_S 107 _t(the)_S 106 _t(number)_S 107 _t(of)_S 107 _t(times,)_S 106 _t(in)_S 1560 11303 _m
+(the)_S 120 _t(entire)_S 120 _t(parent)_S 120 _t(population,)_S 120 _t(a)_S 120 _t(particular)_S 120 _t(neuron)_S 120 _t(is)_S 1560 11103 _m
+(used)_S 134 _t(as)_S 133 _t(an)_S 133 _t(output)_S 134 _t(neuron.)_S 266 _t(Fitness)_S 134 _t(is)_S 133 _t(measured)_S 133 _t(from)_S 1560 10903 _m
+(the)_S 120 _t(output)_S 120 _t(neurons.)_S 240 _t1200 10703 _m
+(25)_S 120 _t2160 10703 _m
+(The)_S 120 _t(neuron)_S 120 _t(number.)_S 240 _t1200 10303 _m
+(26)_S 120 _t2160 10303 _m
+(The)_S 173 _t(number)_S 173 _t(of)_S 174 _t(times)_S 173 _t(it)_S 173 _t(is)_S 174 _t(used)_S 173 _t(as)_S 173 _t(an)_S 174 _t(output)_S 2160 10103 _m
+(neuron.)_S 240 _t1200 9903 _m
+(27)_S 120 _t2160 9903 _m
+(Continued)_S 120 _t(for)_S 120 _t(all)_S 120 _t(neuron)_S 120 _t(numbers)_S 120 _t(...)_S 240 _t1200 9303 _m
+(28)_S 120 _t2160 9303 _m
+(...)_S 240 _t1200 8903 _m
+(conf.experiment)_S 140 _t(-)_S 140 _t(This)_S 140 _t(configuration)_S 140 _t(file)_S 140 _t(contains)_S 140 _t(the)_S 1200 8703 _m
+(parameters)_S 96 _t(of)_S 96 _t(the)_S 96 _t(experiment.)_S 192 _t(Here)_S 96 _t(are)_S 96 _t(some)_S 96 _t(notes)_S 96 _t(on)_S 96 _t(the)_S 1200 8503 _m
+(various)_S 120 _t(fields.)_S 120 _t(This)_S 120 _t(file)_S 120 _t(is)_S 120 _t(stored)_S 120 _t(in)_S 120 _t(ASCII.)_S 240 _t1200 8103 _m
+(Experiment)_S 120 _t2880 8103 _m
+(-)_S 120 _t(The)_S 120 _t(experiment)_S 120 _t(name.)_S 240 _t1200 7703 _m
+(Population)_S 225 _t(Size)_S 225 _t(-)_S 225 _t(The)_S 225 _t(number)_S 225 _t(of)_S 225 _t(individuals)_S 225 _t(in)_S 225 _t(a)_S 1200 7503 _m
+(population)_S 200 _t(per)_S 200 _t(generation.)_S 200 _t(The)_S 200 _t(population)_S 200 _t(size)_S 200 _t(must)_S 1200 7303 _m
+(always)_S 120 _t(be)_S 120 _t(an)_S 120 _t(even)_S 120 _t(number.)_S 240 _t1200 6903 _m
+(Max)_S 120 _t(Generations)_S 120 _t(-)_S 120 _t(The)_S 120 _t(maximum)_S 120 _t(number)_S 120 _t(of)_S 120 _t(generations)_S 120 _t(you)_S 1200 6703 _m
+(would)_S 108 _t(like)_S 108 _t(the)_S 108 _t(experiment)_S 108 _t(to)_S 108 _t(run.)_S 216 _t(Note,)_S 108 _t(you)_S 108 _t(can)_S 108 _t(restart)_S 1200 6503 _m
+(an)_S 132 _t(experiment)_S 132 _t(after)_S 132 _t(it)_S 132 _t(is)_S 132 _t(done.)_S 132 _t(If)_S 132 _t(you)_S 132 _t(indicate)_S 132 _t(0,)_S 132 _t(the)_S 1200 6303 _m
+(experiment)_S 103 _t(will)_S 102 _t(continue)_S 103 _t(until)_S 103 _t(fitness)_S 103 _t(reaches)_S 103 _t(a)_S 103 _t(certain)_S 1200 6103 _m
+("Minimum)_S 120 _t(Fitness.")_S 120 _t1200 5703 _m
+(Curr)_S 206 _t(Generation)_S 205 _t(-)_S 206 _t(When)_S 206 _t(starting)_S 205 _t(an)_S 206 _t(experiment,)_S 206 _t(the)_S 1200 5503 _m
+(current)_S 195 _t(generation)_S 195 _t(field)_S 195 _t(should)_S 195 _t(be)_S 195 _t(one.)_S 195 _t(If)_S 195 _t(you)_S 195 _t(are)_S 1200 5303 _m
+(continuing)_S 80 _t(the)_S 80 _t(experiment,)_S 80 _t(this)_S 80 _t(number)_S 80 _t(will)_S 80 _t(automatically)_S 1200 5103 _m
+(be)_S 106 _t(maintained)_S 107 _t(so)_S 107 _t(all)_S 106 _t(generation)_S 107 _t(numbers)_S 107 _t(remain)_S 106 _t(unique.)_S 214 _t1200 4703 _m
+(Random)_S 99 _t(Seed)_S 98 _t(1)_S 98 _t(-)_S 98 _t(This)_S 98 _t(is)_S 99 _t(the)_S 98 _t(random)_S 98 _t(seed)_S 98 _t(value)_S 98 _t(given)_S 98 _t(prior)_S 1200 4503 _m
+(to)_S 120 _t(creating)_S 120 _t(the)_S 120 _t(initial)_S 120 _t(random)_S 120 _t(population.)_S 240 _t1200 4103 _m
+(Random)_S 99 _t(Seed)_S 98 _t(2)_S 98 _t(-)_S 98 _t(This)_S 98 _t(is)_S 98 _t(the)_S 99 _t(random)_S 98 _t(seed)_S 98 _t(for)_S 98 _t(the)_S 98 _t(evolution)_S 1200 3903 _m
+(process)_S 120 _t(itself.)_S 240 _t1200 3503 _m
+(Max)_S 109 _t(#)_S 109 _t(of)_S 109 _t(Neurons)_S 109 _t(-)_S 109 _t(This)_S 109 _t(is)_S 109 _t(the)_S 109 _t(maximum)_S 109 _t(number)_S 110 _t(of)_S 109 _t(neurons)_S 1200 3303 _m
+(per)_S 186 _t(net)_S 187 _t(EVER)_S 187 _t(allowed)_S 186 _t(in)_S 187 _t(the)_S 187 _t(experiment.)_S 373 _t(Memory)_S 187 _t(is)_S 1200 3103 _m
+(allocated)_S 96 _t(based)_S 96 _t(on)_S 96 _t(this)_S 96 _t(value)_S 96 _t(so)_S 96 _t(don't)_S 96 _t(make)_S 96 _t(it)_S 96 _t(too)_S 96 _t(large.)_S 1200 2503 _m
+(Mean)_S 108 _t(#)_S 108 _t(of)_S 108 _t(Neurons)_S 108 _t(-)_S 108 _t(This)_S 108 _t(number)_S 108 _t(represents)_S 108 _t(what)_S 108 _t(the)_S 108 _t(mean)_S 1200 2303 _m
+(number)_S 165 _t(of)_S 165 _t(neurons)_S 165 _t(should)_S 165 _t(be)_S 165 _t(in)_S 165 _t(the)_S 165 _t(initial,)_S 165 _t(randomly)_S 1200 2103 _m
+(generated,)_S 120 _t(population.)_S 240 _t1200 1703 _m
+(+/-)_S 120 _t(Deviation)_S 120 _t(-)_S 120 _t(This)_S 120 _t(value)_S 120 _t(provides)_S 120 _t(a)_S 120 _t(uniform)_S 120 _t(spread)_S 120 _t(of)_S 1200 1503 _m
+(neural)_S 96 _t(network)_S 96 _t(sizes)_S 96 _t(from)_S 96 _t(the)_S 96 _t(given)_S 96 _t(Mean)_S 96 _t(#)_S 96 _t(of)_S 96 _t(Neurons.)_S 96 _t(If)_S 1200 1303 _m
+(its)_S 96 _t(value)_S 96 _t(is)_S 96 _t(zero,)_S 96 _t(all)_S 96 _t(networks)_S 96 _t(will)_S 96 _t(have)_S 96 _t(the)_S 96 _t(same)_S 96 _t(number)_S 1200 1103 _m
+(of)_S 120 _t(neurons.)_S 240 _t1200 703 _m
+(Environ.)_S 150 _t(Outputs)_S 150 _t(-)_S 150 _t(Every)_S 150 _t(neural)_S 150 _t(network)_S 150 _t(has)_S 150 _t(a)_S 150 _t(certain)_S 1200 503 _m
+(number)_S 107 _t(of)_S 106 _t(outputs.)_S 107 _t(These)_S 107 _t(outputs)_S 106 _t(are)_S 107 _t(used)_S 107 _t(to)_S 106 _t(determine)_S 107 _t(a)_S _ep
+_bp /CourierR 600 _ff
+0 12000 9000 _ornt 1200 1200 translate 1200 11503 _m
+(NN's)_S 96 _t(fitness.)_S 96 _t(If)_S 96 _t(you)_S 96 _t(change)_S 96 _t(this)_S 96 _t(value,)_S 96 _t(be)_S 96 _t(sure)_S 96 _t(to)_S 96 _t(change)_S 1200 11303 _m
+(the)_S 105 _t(number)_S 105 _t(of)_S 105 _t(output)_S 105 _t(bits)_S 105 _t(in)_S 105 _t(the)_S 105 _t(output.experiment)_S 105 _t(file.)_S 1200 10703 _m
+(Environ.)_S 150 _t(Inputs)_S 150 _t(-)_S 150 _t(This)_S 150 _t(field)_S 150 _t(represents)_S 150 _t(the)_S 150 _t(number)_S 150 _t(of)_S 1200 10503 _m
+(environmental)_S 150 _t(inputs)_S 150 _t(to)_S 150 _t(each)_S 150 _t(NN.)_S 150 _t(If)_S 150 _t(you)_S 150 _t(should)_S 150 _t(change)_S 1200 10303 _m
+(this)_S 144 _t(number,)_S 144 _t(than)_S 144 _t(adjust)_S 144 _t(input.experiment)_S 144 _t(accordingly.)_S 1200 10103 _m
+(All)_S 108 _t(inputs)_S 108 _t(are)_S 108 _t(binary,)_S 108 _t(1)_S 108 _t(or)_S 108 _t(0.)_S 108 _t(GANNET)_S 108 _t(will)_S 108 _t(translate)_S 108 _t(all)_S 1200 9903 _m
+(zero)_S 108 _t(entries)_S 108 _t(to)_S 108 _t(-1)_S 108 _t(before)_S 108 _t(presenting)_S 108 _t(data)_S 108 _t(to)_S 108 _t(the)_S 108 _t(NNs)_S 108 _t(for)_S 1200 9703 _m
+(evaluation.)_S 240 _t1200 9303 _m
+(#)_S 100 _t(of)_S 100 _t(I/O)_S 100 _t(Sets)_S 100 _t(-)_S 100 _t(For)_S 100 _t(every)_S 100 _t(input,)_S 100 _t(there)_S 100 _t(is)_S 100 _t(an)_S 100 _t(output.)_S 100 _t(This)_S 1200 9103 _m
+(parameter)_S 86 _t(indicates)_S 86 _t(how)_S 86 _t(many)_S 85 _t(input/output)_S 86 _t(sets)_S 86 _t(there)_S 85 _t(are.)_S 1200 8903 _m
+(If)_S 156 _t(you)_S 156 _t(want)_S 156 _t(a)_S 156 _t(NN)_S 156 _t(to)_S 156 _t(recognize)_S 156 _t(the)_S 156 _t(alphabet,)_S 156 _t(than)_S 156 _t(the)_S 1200 8703 _m
+(number)_S 120 _t(should)_S 120 _t(be)_S 120 _t(26.)_S 120 _t(Be)_S 120 _t(sure)_S 120 _t(to)_S 120 _t(have)_S 120 _t(the)_S 120 _t(correct)_S 120 _t(number)_S 1200 8503 _m
+(of)_S 120 _t(entries)_S 120 _t(in)_S 120 _t(the)_S 120 _t(input)_S 120 _t(and)_S 120 _t(output)_S 120 _t(experiment)_S 120 _t(files.)_S 240 _t1200 8103 _m
+(Stats)_S 120 _t(Interval)_S 120 _t(-)_S 120 _t(For)_S 120 _t(long)_S 120 _t(experiments,)_S 120 _t(you)_S 120 _t(may)_S 120 _t(not)_S 120 _t(want)_S 1200 7903 _m
+(to)_S 86 _t(record)_S 86 _t(statistics)_S 85 _t(every)_S 86 _t(generation.)_S 86 _t(Statistics)_S 86 _t(will)_S 85 _t(be)_S 1200 7703 _m
+(recorded)_S 180 _t(every)_S 180 _t(Stats)_S 180 _t(Interval)_S 180 _t(number)_S 180 _t(of)_S 180 _t(generations.)_S 1200 7503 _m
+(Minimum)_S 120 _t(value)_S 120 _t(is)_S 120 _t(1.)_S 240 _t1200 7103 _m
+(Best)_S 120 _t(Net)_S 120 _t(Interval)_S 120 _t(-)_S 120 _t(You)_S 120 _t(may)_S 120 _t(not)_S 120 _t(want)_S 120 _t(to)_S 120 _t(record)_S 120 _t(the)_S 120 _t(best)_S 1200 6903 _m
+(phenotype)_S 120 _t(for)_S 120 _t(every)_S 120 _t(generation.)_S 120 _t(Depending)_S 120 _t(on)_S 120 _t(the)_S 120 _t(number)_S 1200 6703 _m
+(of)_S 96 _t(neurons,)_S 96 _t(this)_S 96 _t(file)_S 96 _t(can)_S 96 _t(grow)_S 96 _t(quickly.)_S 96 _t(The)_S 96 _t(best)_S 96 _t(net)_S 96 _t(will)_S 1200 6503 _m
+(be)_S 291 _t(recorded)_S 291 _t(every)_S 292 _t(Best)_S 291 _t(Net)_S 292 _t(Interval)_S 291 _t(number)_S 292 _t(of)_S 1200 6303 _m
+(generations.)_S 120 _t(Minimum)_S 120 _t(value)_S 120 _t(is)_S 120 _t(1.)_S 240 _t1200 5903 _m
+(Maximum)_S 98 _t(Age)_S 98 _t(-)_S 98 _t(A)_S 98 _t(parent)_S 99 _t(can)_S 98 _t(replace)_S 98 _t(one)_S 98 _t(of)_S 98 _t(its)_S 98 _t(children)_S 99 _t(if)_S 1200 5703 _m
+(it)_S 120 _t(is)_S 120 _t(better)_S 120 _t(in)_S 120 _t(fitness)_S 120 _t(then)_S 120 _t(the)_S 120 _t(child.)_S 120 _t(If)_S 120 _t(you)_S 120 _t(indicate)_S 1200 5503 _m
+(an)_S 110 _t(age)_S 109 _t(of)_S 109 _t(1,)_S 109 _t(the)_S 109 _t(parent)_S 109 _t(will)_S 109 _t(never)_S 109 _t(replace)_S 109 _t(its)_S 109 _t(child.)_S 109 _t(If)_S 1200 5303 _m
+(you)_S 120 _t(indicate)_S 120 _t(an)_S 120 _t(age)_S 120 _t(of)_S 120 _t(0,)_S 120 _t(a)_S 120 _t(parent)_S 120 _t(will)_S 120 _t(survive)_S 120 _t(as)_S 120 _t(long)_S 1200 5103 _m
+(as)_S 110 _t(it)_S 110 _t(is)_S 110 _t(better)_S 110 _t(in)_S 110 _t(fitness)_S 110 _t(than)_S 110 _t(its)_S 110 _t(child.)_S 110 _t(If)_S 110 _t(you)_S 110 _t(pick)_S 110 _t(a)_S 1200 4903 _m
+(number)_S 93 _t(greater)_S 93 _t(than)_S 94 _t(one,)_S 93 _t(than)_S 93 _t(the)_S 94 _t(parent)_S 93 _t(will)_S 93 _t(continue)_S 94 _t(to)_S 1200 4703 _m
+(exist)_S 173 _t(for)_S 174 _t(that)_S 173 _t(number)_S 173 _t(of)_S 174 _t(generations,)_S 173 _t(as)_S 173 _t(long)_S 174 _t(as)_S 173 _t(it)_S 1200 4503 _m
+(continues)_S 120 _t(to)_S 120 _t(be)_S 120 _t(better)_S 120 _t(fit)_S 120 _t(than)_S 120 _t(its)_S 120 _t(children.)_S 240 _t1200 4103 _m
+(Top)_S 111 _t(Heavy)_S 111 _t(-)_S 110 _t(This)_S 111 _t(parameter)_S 111 _t(can)_S 111 _t(be)_S 111 _t(set)_S 110 _t(to)_S 111 _t(1)_S 111 _t(or)_S 111 _t(0)_S 110 _t(only.)_S 111 _t(If)_S 1200 3903 _m
+(it)_S 101 _t(is)_S 102 _t(set)_S 101 _t(to)_S 102 _t(1,)_S 101 _t(then)_S 102 _t(the)_S 101 _t(best)_S 102 _t(fit)_S 101 _t(parent)_S 102 _t(to)_S 102 _t(date)_S 101 _t(will)_S 102 _t(get)_S 1200 3703 _m
+(special)_S 135 _t(treatment.)_S 135 _t(The)_S 135 _t(first)_S 135 _t(time)_S 135 _t(a)_S 135 _t(parent)_S 135 _t(reaches)_S 135 _t(the)_S 1200 3503 _m
+(best)_S 120 _t(fitness)_S 120 _t(for)_S 120 _t(the)_S 120 _t(entire)_S 120 _t(population,)_S 120 _t(it)_S 120 _t(will)_S 120 _t(replace)_S 1200 3303 _m
+(its)_S 144 _t(less)_S 144 _t(fit)_S 144 _t(children.)_S 288 _t(This)_S 144 _t(parameter)_S 144 _t(has)_S 144 _t(less)_S 144 _t(of)_S 144 _t(an)_S 1200 3103 _m
+(affect)_S 160 _t(than)_S 160 _t(Maximum)_S 160 _t(Age)_S 160 _t(but)_S 160 _t(still)_S 160 _t(serves)_S 160 _t(to)_S 160 _t(bias)_S 160 _t(the)_S 1200 2903 _m
+(population)_S 120 _t(towards)_S 120 _t(the)_S 120 _t(best)_S 120 _t(performers.)_S 240 _t1200 2503 _m
+(Neuron)_S 133 _t(Model)_S 133 _t(-)_S 134 _t(Since)_S 133 _t(GANNET)_S 133 _t(only)_S 134 _t(allows)_S 133 _t(each)_S 133 _t(neuron)_S 134 _t(to)_S 1200 2303 _m
+(have)_S 107 _t(a)_S 106 _t(fixed)_S 107 _t(number)_S 107 _t(of)_S 106 _t(inputs,)_S 107 _t(this)_S 107 _t(parameter)_S 106 _t(allows)_S 107 _t(you)_S 1200 2103 _m
+(to)_S 100 _t(pick)_S 100 _t(either)_S 100 _t(a)_S 100 _t(2)_S 100 _t(input)_S 100 _t(neuron)_S 100 _t(model)_S 100 _t(or)_S 100 _t(a)_S 100 _t(4)_S 100 _t(input)_S 100 _t(neuron)_S 1200 1903 _m
+(model.)_S 107 _t(Don't)_S 107 _t(indicate)_S 106 _t(any)_S 107 _t(other)_S 107 _t(values,)_S 106 _t(I)_S 107 _t(assure)_S 107 _t(you,)_S 106 _t(it)_S 1200 1703 _m
+(won't)_S 120 _t(work.)_S 240 _t1200 1503 _m
+(Biased)_S 120 _t(Model)_S 120 _t(-)_S 120 _t(The)_S 120 _t(output)_S 120 _t(combinations)_S 120 _t(generatable)_S 120 _t(by)_S 120 _t(a)_S 1200 1303 _m
+(neuron)_S 108 _t(turn)_S 108 _t(out)_S 108 _t(to)_S 108 _t(be)_S 108 _t(biased,)_S 108 _t(if)_S 108 _t(one)_S 108 _t(chooses)_S 108 _t(weights)_S 108 _t(and)_S 1200 1103 _m
+(thresholds)_S 120 _t(uniformly.)_S 240 _t(If)_S 120 _t(this)_S 120 _t(parameter)_S 120 _t(is)_S 120 _t(set)_S 120 _t(to)_S 120 _t(1,)_S 120 _t(a)_S 1200 903 _m
+(bias)_S 120 _t(is)_S 120 _t(ensured.)_S 120 _t(If)_S 120 _t(set)_S 120 _t(to)_S 120 _t(0,)_S 120 _t1200 503 _m
+(each)_S 165 _t(output)_S 165 _t(combination)_S 165 _t(will)_S 165 _t(have)_S 165 _t(an)_S 165 _t(equal)_S 165 _t(chance)_S 165 _t(of)_S _ep
+_bp /CourierR 600 _ff
+0 12000 9000 _ornt 1200 1200 translate 1200 11503 _m
+(occurring.)_S 240 _t1200 11103 _m
+(Clear)_S 132 _t(Net)_S 132 _t(State)_S 132 _t(-)_S 132 _t(Before)_S 132 _t(any)_S 132 _t(inputs)_S 132 _t(are)_S 132 _t(presented)_S 132 _t(to)_S 132 _t(a)_S 1200 10903 _m
+(NN,)_S 100 _t(the)_S 100 _t(NN)_S 100 _t(is)_S 100 _t(set)_S 100 _t(to)_S 100 _t(a)_S 100 _t(special)_S 100 _t(dead)_S 100 _t(state.)_S 100 _t(Each)_S 100 _t(output)_S 100 _t(of)_S 1200 10703 _m
+(every)_S 111 _t(neuron)_S 111 _t(is)_S 110 _t(set)_S 111 _t(to)_S 111 _t(0.)_S 221 _t(If)_S 111 _t(you)_S 111 _t(don't)_S 111 _t(want)_S 111 _t(to)_S 110 _t(do)_S 111 _t(that,)_S 1200 10503 _m
+(set)_S 142 _t(the)_S 142 _t(Clear)_S 141 _t(Net)_S 142 _t(State)_S 142 _t(parameter)_S 142 _t(to)_S 142 _t(0.)_S 283 _t(If)_S 142 _t(you)_S 142 _t(don't)_S 1200 10303 _m
+(clear)_S 93 _t(the)_S 93 _t(state,)_S 94 _t(the)_S 93 _t(NN's)_S 93 _t(may)_S 94 _t(generate)_S 93 _t(solutions)_S 93 _t(that)_S 94 _t(are)_S 1200 10103 _m
+(based)_S 120 _t(on)_S 120 _t(internal)_S 120 _t(memory)_S 120 _t(rather)_S 120 _t(than)_S 120 _t(the)_S 120 _t(inputs.)_S 240 _t1200 9703 _m
+(Net)_S 240 _t(Free)_S 240 _t(Repr.)_S 240 _t(-)_S 240 _t(The)_S 240 _t(Network)_S 240 _t(Free)_S 240 _t(Representation)_S 1200 9503 _m
+(parameter)_S 100 _t(is)_S 100 _t(not)_S 100 _t(easy)_S 100 _t(to)_S 100 _t(describe.)_S 100 _t(If)_S 100 _t(it)_S 100 _t(is)_S 100 _t(set)_S 100 _t(to)_S 100 _t(0,)_S 100 _t(for)_S 1200 9303 _m
+(every)_S 120 _t(input)_S 120 _t(pattern)_S 120 _t(presented)_S 120 _t(to)_S 120 _t(a)_S 120 _t(NN,)_S 120 _t(the)_S 120 _t(NN)_S 120 _t(will)_S 120 _t(have)_S 1200 9103 _m
+(to)_S 90 _t(generate)_S 90 _t(an)_S 90 _t(output)_S 90 _t(binary)_S 90 _t(pattern)_S 90 _t(exactly)_S 90 _t(matching)_S 90 _t(the)_S 1200 8903 _m
+(pattern)_S 120 _t(described)_S 120 _t(in)_S 120 _t(the)_S 120 _t(output.experiment)_S 120 _t(file.)_S 240 _t(If)_S 120 _t(it)_S 1200 8703 _m
+(is)_S 120 _t(set)_S 120 _t(to)_S 120 _t(1,)_S 120 _t(the)_S 120 _t(NN)_S 120 _t(can)_S 120 _t(choose)_S 120 _t(whatever)_S 120 _t(representations)_S 1200 8503 _m
+(it)_S 120 _t(naturally)_S 120 _t(falls)_S 120 _t(into.)_S 240 _t(If)_S 120 _t(the)_S 120 _t(output.experiment)_S 120 _t(file)_S 1200 8303 _m
+(indicates)_S 93 _t(two)_S 94 _t(input)_S 93 _t(patterns)_S 93 _t(should)_S 94 _t(be)_S 93 _t(mapped)_S 93 _t(to)_S 94 _t(the)_S 93 _t(same)_S 1200 8103 _m
+(output,)_S 120 _t(points)_S 120 _t(are)_S 120 _t(awarded)_S 120 _t(based)_S 120 _t(on)_S 120 _t(how)_S 120 _t(similar)_S 120 _t(the)_S 120 _t(two)_S 1200 7903 _m
+(output)_S 150 _t(values)_S 150 _t(actually)_S 150 _t(are.)_S 150 _t(If)_S 150 _t(two)_S 150 _t(input)_S 150 _t(patterns)_S 150 _t(are)_S 1200 7703 _m
+(supposed)_S 93 _t(to)_S 94 _t(be)_S 93 _t(different,)_S 93 _t(points)_S 94 _t(are)_S 93 _t(awarded)_S 93 _t(based)_S 94 _t(on)_S 93 _t(how)_S 1200 7503 _m
+(many)_S 120 _t(other)_S 120 _t(output)_S 120 _t(values)_S 120 _t(they)_S 120 _t(are)_S 120 _t(different)_S 120 _t(from.)_S 240 _t1200 7103 _m
+(Normal)_S 105 _t(Crossover)_S 105 _t(-)_S 105 _t(Two)_S 105 _t(crossover)_S 105 _t(models)_S 105 _t(are)_S 105 _t(provided.)_S 105 _t(If)_S 1200 6903 _m
+(normal)_S 106 _t(crossover)_S 107 _t(is)_S 107 _t(set)_S 106 _t(to)_S 107 _t(1,)_S 107 _t(than)_S 106 _t(for)_S 107 _t(every)_S 107 _t(generation,)_S 1200 6703 _m
+(a)_S 180 _t(random)_S 180 _t(number)_S 180 _t(of)_S 180 _t(crossover)_S 180 _t(points)_S 180 _t(are)_S 180 _t(selected)_S 180 _t(at)_S 1200 6503 _m
+(random)_S 135 _t(locations.)_S 135 _t(If)_S 135 _t(set)_S 135 _t(to)_S 135 _t(0,)_S 135 _t(crossover)_S 135 _t(locations)_S 135 _t(are)_S 1200 6303 _m
+(actually)_S 210 _t(part)_S 210 _t(of)_S 210 _t(the)_S 210 _t(genetic)_S 210 _t(code.)_S 210 _t(In)_S 210 _t(the)_S 210 _t(initial)_S 1200 6103 _m
+(population,)_S 144 _t(crossover)_S 144 _t(locations)_S 144 _t(are)_S 144 _t(selected)_S 144 _t(randomly.)_S 1200 5903 _m
+(After)_S 154 _t(which,)_S 155 _t(crossover)_S 154 _t(locations)_S 154 _t(are)_S 154 _t(subjected)_S 155 _t(to)_S 154 _t(the)_S 1200 5703 _m
+(genetic)_S 105 _t(algorithm.)_S 210 _t(This)_S 105 _t(second)_S 105 _t(method)_S 105 _t(was)_S 105 _t(borrowed)_S 105 _t(from)_S 1200 5503 _m
+(J.)_S 120 _t(David)_S 120 _t(Schaffer's)_S 120 _t("An)_S 120 _t(Adaptive)_S 120 _t(Crossover)_S 120 _t(Distribution)_S 1200 5303 _m
+(Mechanism)_S 260 _t(for)_S 260 _t(Genetic)_S 260 _t(Algorithms,")_S 260 _t(in)_S 260 _t(the)_S 260 _t(Second)_S 1200 5103 _m
+(International)_S 192 _t(Conference)_S 192 _t(on)_S 192 _t(Genetic)_S 192 _t(Algorithms,)_S 192 _t(July)_S 1200 4903 _m
+(1987.)_S 240 _t1200 4503 _m
+(Mutate)_S 225 _t(Bit)_S 225 _t(-)_S 225 _t(Two)_S 225 _t(types)_S 225 _t(of)_S 225 _t(mutation)_S 225 _t(operators)_S 225 _t(are)_S 1200 4303 _m
+(provided.)_S 131 _t(If)_S 130 _t(Mutate)_S 131 _t(Bit)_S 131 _t(is)_S 131 _t(set)_S 131 _t(to)_S 131 _t(1,)_S 131 _t(than)_S 131 _t(every)_S 131 _t(bit)_S 131 _t(in)_S 1200 4103 _m
+(the)_S 120 _t(genetic)_S 120 _t(code)_S 120 _t(is)_S 120 _t(subjected)_S 120 _t(to)_S 120 _t(mutation,)_S 120 _t(one)_S 120 _t(bit)_S 120 _t(at)_S 120 _t(a)_S 1200 3903 _m
+(time.)_S 120 _t(If)_S 120 _t(set)_S 120 _t(to)_S 120 _t(0,)_S 120 _t(a)_S 120 _t(whole)_S 120 _t(parameter)_S 120 _t(is)_S 120 _t(mutated)_S 120 _t(at)_S 120 _t(once)_S 1200 3703 _m
+(\(uniformly\),)_S 120 _t(whether)_S 120 _t(it)_S 120 _t(be)_S 120 _t(a)_S 120 _t(behavior,)_S 120 _t(output)_S 120 _t(selector,)_S 1200 3503 _m
+(or)_S 120 _t(connection.)_S 240 _t1200 3303 _m
+(Fixed)_S 110 _t(Outputs)_S 109 _t(-)_S 109 _t(If)_S 109 _t(Fixed)_S 109 _t(Outputs)_S 109 _t(is)_S 109 _t(set)_S 109 _t(to)_S 109 _t(1,)_S 109 _t(than)_S 109 _t(every)_S 1200 3103 _m
+(NN)_S 154 _t(ignores)_S 155 _t(the)_S 154 _t(output)_S 154 _t(selector)_S 154 _t(genetic)_S 155 _t(code.)_S 154 _t(Instead,)_S 1200 2903 _m
+(outputs)_S 107 _t(are)_S 106 _t(fixed)_S 107 _t(at)_S 107 _t(certain)_S 106 _t(neuron)_S 107 _t(locations.)_S 107 _t(If)_S 106 _t(set)_S 107 _t(to)_S 1200 2703 _m
+(0,)_S 120 _t(outputs)_S 120 _t(are)_S 120 _t(chosen)_S 120 _t(by)_S 120 _t1200 2303 _m
+(the)_S 120 _t(genetic)_S 120 _t(algorithm.)_S 240 _t1200 1903 _m
+(Fitness)_S 210 _t(Scale)_S 210 _t(-)_S 210 _t(This)_S 210 _t(field)_S 210 _t(controls)_S 210 _t(the)_S 210 _t(number)_S 210 _t(of)_S 1200 1703 _m
+(children)_S 133 _t(each)_S 134 _t(parent)_S 133 _t(gets)_S 133 _t(to)_S 134 _t(participate)_S 133 _t(in.)_S 267 _t(A)_S 133 _t(parent)_S 1200 1503 _m
+(can)_S 156 _t(participate)_S 156 _t(in)_S 156 _t(creating)_S 156 _t(0,)_S 156 _t(2)_S 156 _t(or)_S 156 _t(4)_S 156 _t(children.)_S 312 _t(The)_S 1200 1303 _m
+(parameter)_S 98 _t(can)_S 99 _t(vary)_S 98 _t(from)_S 98 _t(0)_S 98 _t(to)_S 98 _t(1.)_S 99 _t(The)_S 98 _t(higher)_S 98 _t(the)_S 98 _t(value,)_S 98 _t(the)_S 1200 1103 _m
+(more)_S 138 _t(parents)_S 137 _t(participate)_S 137 _t(in)_S 137 _t(creating)_S 137 _t(four)_S 137 _t(children)_S 137 _t(and)_S 1200 903 _m
+(the)_S 195 _t(more)_S 195 _t(parents)_S 195 _t(that)_S 195 _t(have)_S 195 _t(no)_S 195 _t(children.)_S 195 _t(The)_S 195 _t(higher)_S 1200 703 _m
+(fitness)_S 108 _t(a)_S 108 _t(parent)_S 108 _t(has,)_S 108 _t(the)_S 108 _t(greater)_S 108 _t(chance)_S 108 _t(a)_S 108 _t(parent)_S 108 _t(has)_S 108 _t(to)_S 1200 503 _m
+(be)_S 93 _t(selected)_S 94 _t(to)_S 93 _t(participate)_S 93 _t(in)_S 94 _t(having)_S 93 _t(four)_S 93 _t(children.)_S 187 _t(This)_S _ep
+_bp /CourierR 600 _ff
+0 12000 9000 _ornt 1200 1200 translate 1200 11503 _m
+(process)_S 171 _t(was)_S 172 _t(borrowed)_S 171 _t(from)_S 172 _t(James)_S 171 _t(Edward)_S 172 _t(Baker's)_S 171 _t(paper)_S 1200 11303 _m
+(entitled,)_S 260 _t("Reducing)_S 260 _t(Bias)_S 260 _t(and)_S 260 _t(Inefficiency)_S 260 _t(in)_S 260 _t(the)_S 1200 11103 _m
+(Selection)_S 264 _t(Algorithm,")_S 264 _t(in)_S 264 _t(the)_S 264 _t(Second)_S 264 _t(International)_S 1200 10903 _m
+(Conference)_S 120 _t(on)_S 120 _t(Genetic)_S 120 _t(Algorithms,)_S 120 _t(July)_S 120 _t(1987.)_S 240 _t(Formally,)_S 1200 10703 _m
+(it)_S 120 _t(is)_S 120 _t(called)_S 120 _t("Stochastic)_S 120 _t(Universal)_S 120 _t(Sampling.")_S 120 _t1200 10303 _m
+(Stable)_S 133 _t(Test)_S 133 _t(Time)_S 134 _t(-)_S 133 _t(For)_S 133 _t(pattern)_S 134 _t(recognition,)_S 133 _t(we)_S 133 _t(need)_S 134 _t(to)_S 1200 10103 _m
+(know)_S 105 _t(when)_S 105 _t(the)_S 105 _t(output)_S 105 _t(results)_S 105 _t(have)_S 105 _t(stabilized.)_S 105 _t(The)_S 105 _t(Stable)_S 1200 9903 _m
+(Test)_S 98 _t(Time)_S 98 _t(parameter)_S 98 _t(is)_S 99 _t(how)_S 98 _t(long)_S 98 _t(we)_S 98 _t(look)_S 98 _t(at)_S 99 _t(the)_S 98 _t(outputs)_S 98 _t(to)_S 1200 9703 _m
+(see)_S 173 _t(if)_S 173 _t(they)_S 174 _t(are)_S 173 _t(actually)_S 173 _t(stable.)_S 174 _t(If)_S 173 _t(an)_S 173 _t(output)_S 174 _t(value)_S 1200 9503 _m
+(changes)_S 90 _t(during)_S 90 _t(this)_S 90 _t(period,)_S 90 _t(it)_S 90 _t(is)_S 90 _t(considered)_S 90 _t(unstable)_S 90 _t(and)_S 1200 9303 _m
+(counts)_S 146 _t(against)_S 147 _t(the)_S 147 _t(fitness)_S 146 _t(of)_S 147 _t(the)_S 147 _t(NN.)_S 146 _t(The)_S 147 _t(Stable)_S 147 _t(Test)_S 1200 9103 _m
+(Time)_S 164 _t(is)_S 163 _t(scaled)_S 164 _t(to)_S 164 _t(the)_S 163 _t(size)_S 164 _t(of)_S 164 _t(the)_S 163 _t(NN)_S 164 _t(in)_S 163 _t(question.)_S 164 _t(A)_S 1200 8903 _m
+(Stable)_S 110 _t(Test)_S 110 _t(Time)_S 110 _t(of)_S 110 _t(.5)_S 110 _t(and)_S 110 _t(a)_S 110 _t(NN)_S 110 _t(with)_S 110 _t(26)_S 110 _t(neurons)_S 110 _t(would)_S 110 _t(be)_S 1200 8703 _m
+(tested)_S 120 _t(for)_S 120 _t(stability)_S 120 _t(for)_S 120 _t(13)_S 120 _t(cycles.)_S 240 _t1200 8303 _m
+(Conver.)_S 168 _t(Test)_S 168 _t(Time)_S 168 _t(-)_S 168 _t(Each)_S 168 _t(NN)_S 168 _t(must)_S 168 _t(be)_S 168 _t(given)_S 168 _t(a)_S 168 _t(certain)_S 1200 8103 _m
+(amount)_S 108 _t(of)_S 108 _t(time)_S 108 _t(to)_S 108 _t(solve)_S 108 _t(a)_S 108 _t(problem.)_S 216 _t(The)_S 108 _t(Convergence)_S 108 _t(Test)_S 1200 7903 _m
+(Time)_S 192 _t(parameter)_S 192 _t(is)_S 192 _t(scaled)_S 192 _t(to)_S 192 _t(the)_S 192 _t(size)_S 192 _t(of)_S 192 _t(the)_S 192 _t(NN)_S 192 _t(in)_S 1200 7703 _m
+(question.)_S 200 _t(A)_S 100 _t(value)_S 100 _t(of)_S 100 _t(1.0)_S 100 _t(will)_S 100 _t(give)_S 100 _t(a)_S 100 _t(NN)_S 100 _t(with)_S 100 _t(26)_S 100 _t(neurons,)_S 1200 7503 _m
+(26)_S 120 _t(cycles)_S 120 _t(to)_S 120 _t(converge)_S 120 _t(to)_S 120 _t(a)_S 120 _t(solution.)_S 240 _t(It)_S 120 _t(is)_S 120 _t(possible)_S 120 _t(to)_S 1200 7303 _m
+(detect)_S 120 _t(convergence)_S 120 _t(before)_S 120 _t(that)_S 120 _t(time,)_S 120 _t(but)_S 120 _t(some)_S 120 _t(NN's)_S 120 _t(have)_S 1200 7103 _m
+(some)_S 120 _t(unstable)_S 120 _t(portions)_S 120 _t(which)_S 120 _t(are)_S 120 _t(never)_S 120 _t(expressed)_S 120 _t(in)_S 120 _t(the)_S 1200 6903 _m
+(output.)_S 240 _t1200 6503 _m
+(Input/)_S 133 _t(Output)_S 134 _t(-)_S 133 _t(The)_S 133 _t(Input/)_S 134 _t(Output)_S 133 _t(parameter)_S 133 _t(is)_S 134 _t(used)_S 133 _t(to)_S 1200 6303 _m
+(calculate)_S 86 _t(overall)_S 86 _t(fitness.)_S 86 _t(This)_S 85 _t(value)_S 86 _t(is)_S 86 _t(multiplied)_S 85 _t(times)_S 1200 6103 _m
+(the)_S 105 _t(Input/)_S 105 _t(Output)_S 105 _t(fitness)_S 105 _t(calculation)_S 105 _t(and)_S 105 _t(added)_S 105 _t(with)_S 105 _t(the)_S 1200 5903 _m
+(two)_S 220 _t(other)_S 220 _t(fitness)_S 220 _t(measurement)_S 220 _t(to)_S 220 _t(determine)_S 220 _t(overall)_S 1200 5703 _m
+(fitness.)_S 108 _t(If)_S 108 _t(the)_S 108 _t(value)_S 108 _t(is)_S 108 _t(1,)_S 108 _t(that)_S 108 _t(means)_S 108 _t(the)_S 108 _t(Input/)_S 108 _t(Output)_S 1200 5503 _m
+(performance)_S 120 _t(is)_S 120 _t(the)_S 120 _t(only)_S 120 _t(important)_S 120 _t(consideration)_S 120 _t(in)_S 120 _t(your)_S 1200 5303 _m
+(experiment.)_S 240 _t1200 4903 _m
+(Reduce)_S 133 _t(Neuron)_S 133 _t(-)_S 134 _t(The)_S 133 _t(Reduce)_S 133 _t(Neuron)_S 134 _t(parameter)_S 133 _t(is)_S 133 _t(used)_S 134 _t(to)_S 1200 4703 _m
+(calculate)_S 120 _t(overall)_S 120 _t(fitness.)_S 120 _t(If)_S 120 _t(you)_S 120 _t(want)_S 120 _t(to)_S 120 _t(penalize)_S 120 _t(a)_S 120 _t(NN)_S 1200 4503 _m
+(for)_S 108 _t(having)_S 108 _t(too)_S 108 _t(many)_S 108 _t(neurons,)_S 108 _t(make)_S 108 _t(this)_S 108 _t(value)_S 108 _t(non-zero.)_S 216 _t1200 4103 _m
+(Reduce)_S 132 _t(Cycles)_S 132 _t(-)_S 132 _t(If)_S 132 _t(the)_S 132 _t(time)_S 132 _t(to)_S 132 _t(calculate)_S 132 _t(a)_S 132 _t(solution)_S 132 _t(is)_S 1200 3903 _m
+(important,)_S 160 _t(make)_S 160 _t(the)_S 160 _t(Reduce)_S 160 _t(Cycles)_S 160 _t(parameter)_S 160 _t(non-zero.)_S 1200 3703 _m
+(Remember,)_S 135 _t(Reduce)_S 135 _t(Cycle)_S 135 _t(+)_S 135 _t(Reduce)_S 135 _t(Neuron)_S 135 _t(+)_S 135 _t(Input/)_S 135 _t(Output)_S 1200 3503 _m
+(must)_S 120 _t(always)_S 120 _t(add)_S 120 _t(to)_S 120 _t(1.0.)_S 240 _t1200 3103 _m
+(Minimum)_S 187 _t(Fitness)_S 187 _t(-)_S 186 _t(If)_S 187 _t(you)_S 187 _t(indicated)_S 186 _t(a)_S 187 _t(0)_S 187 _t(for)_S 186 _t(Maximum)_S 1200 2903 _m
+(Generations,)_S 223 _t(when)_S 223 _t(the)_S 223 _t(best)_S 223 _t(fit)_S 223 _t(NN)_S 223 _t(reaches)_S 222 _t(Minimum)_S 1200 2703 _m
+(Fitness,)_S 150 _t(the)_S 150 _t(experiment)_S 150 _t(will)_S 150 _t(stop.)_S 300 _t(This)_S 150 _t(parameter)_S 150 _t(is)_S 1200 2503 _m
+(used)_S 120 _t(only)_S 120 _t(if)_S 120 _t(Maximum)_S 120 _t(Generations)_S 120 _t(is)_S 120 _t(0.)_S 240 _t1200 2103 _m
+(Crossover)_S 96 _t(Rate)_S 96 _t(-)_S 96 _t(This)_S 96 _t(is)_S 96 _t(the)_S 96 _t(probability)_S 96 _t(each)_S 96 _t(bit)_S 96 _t(will)_S 96 _t(be)_S 1200 1903 _m
+(a)_S 133 _t(crossover)_S 133 _t(site.)_S 134 _t(This)_S 133 _t(term)_S 133 _t(must)_S 134 _t(never)_S 133 _t(equal)_S 133 _t(zero!)_S 134 _t(The)_S 1200 1703 _m
+(lowest)_S 180 _t(allowable)_S 180 _t(value)_S 180 _t(is)_S 180 _t(0.000001!)_S 360 _t(When)_S 180 _t(not)_S 180 _t(using)_S 1200 1503 _m
+(Normal)_S 106 _t(Crossover,)_S 107 _t(than)_S 107 _t(this)_S 106 _t(rate)_S 107 _t(is)_S 107 _t(used)_S 106 _t(to)_S 107 _t(generate)_S 107 _t(the)_S 1200 1303 _m
+(initial)_S 120 _t(crossover)_S 120 _t(points)_S 120 _t(in)_S 120 _t(the)_S 120 _t(population.)_S 240 _t1200 903 _m
+(Behavior)_S 120 _t(Mutation)_S 120 _t(-)_S 120 _t(This)_S 120 _t(is)_S 120 _t(the)_S 120 _t(probability)_S 120 _t(of)_S 120 _t(mutation)_S 1200 703 _m
+(per)_S 180 _t(bit)_S 180 _t(of)_S 180 _t(the)_S 180 _t(genetic)_S 180 _t(code)_S 180 _t(representing)_S 180 _t(a)_S 180 _t(neuron's)_S 1200 503 _m
+(behavior)_S 172 _t(\(its)_S 171 _t(weights)_S 171 _t(and)_S 172 _t(threshold\).)_S 171 _t(This)_S 172 _t(term)_S 171 _t(must)_S _ep
+_bp /CourierR 600 _ff
+0 12000 9000 _ornt 1200 1200 translate 1200 11503 _m
+(never)_S 120 _t(equal)_S 120 _t(zero!)_S 240 _t1200 11103 _m
+(Output)_S 134 _t(Mutation)_S 133 _t(-)_S 133 _t(The)_S 134 _t(probability)_S 133 _t(of)_S 133 _t(a)_S 134 _t(bit)_S 133 _t(mutation)_S 133 _t(in)_S 1200 10903 _m
+(the)_S 135 _t(output)_S 135 _t(selector)_S 135 _t(genetic)_S 135 _t(code.)_S 135 _t(This)_S 135 _t(term)_S 135 _t(must)_S 135 _t(never)_S 1200 10703 _m
+(equal)_S 120 _t(zero!)_S 240 _t1200 10303 _m
+(Connect)_S 120 _t(Mutation)_S 120 _t(-)_S 120 _t(The)_S 120 _t(probability)_S 120 _t(of)_S 120 _t(a)_S 120 _t(bit)_S 120 _t(mutation)_S 120 _t(in)_S 1200 10103 _m
+(the)_S 189 _t(connections)_S 188 _t(between)_S 189 _t(neurons)_S 188 _t(as)_S 189 _t(expressed)_S 188 _t(in)_S 189 _t(the)_S 1200 9903 _m
+(genetic)_S 120 _t(code.)_S 120 _t(This)_S 120 _t(term)_S 120 _t(must)_S 120 _t(never)_S 120 _t(equal)_S 120 _t(zero!)_S 240 _t1200 9503 _m
+(Cross)_S 133 _t(Mutation)_S 134 _t(-)_S 133 _t(If)_S 133 _t(genetic)_S 134 _t(crossover)_S 133 _t(is)_S 133 _t(used,)_S 134 _t(this)_S 133 _t(is)_S 1200 9303 _m
+(the)_S 195 _t(probability)_S 195 _t(of)_S 195 _t(a)_S 195 _t(bit)_S 195 _t(mutation)_S 195 _t(of)_S 195 _t(the)_S 195 _t(crossover)_S 1200 9103 _m
+(genetic)_S 120 _t(code.)_S 120 _t(This)_S 120 _t(term)_S 120 _t(must)_S 120 _t(never)_S 120 _t(equal)_S 120 _t(zero!)_S 240 _t1200 8703 _m
+(Sim/Dif)_S 120 _t(Strength)_S 120 _t(-)_S 120 _t(The)_S 120 _t(Similarity)_S 120 _t(/)_S 120 _t(Difference)_S 120 _t(Strength)_S 1200 8503 _m
+(is)_S 108 _t(used)_S 108 _t(if)_S 108 _t(a)_S 108 _t(free)_S 108 _t(network)_S 108 _t(representation)_S 108 _t(is)_S 108 _t(used.)_S 216 _t(Since)_S 1200 8303 _m
+(points)_S 137 _t(are)_S 137 _t(scored)_S 137 _t(based)_S 138 _t(on)_S 137 _t(similarity)_S 137 _t(and)_S 137 _t(differences,)_S 1200 8103 _m
+(the)_S 260 _t(relative)_S 260 _t(importance)_S 260 _t(of)_S 260 _t(similarity)_S 260 _t(points)_S 260 _t(and)_S 1200 7903 _m
+(difference)_S 171 _t(points)_S 171 _t(must)_S 172 _t(be)_S 171 _t(established.)_S 172 _t(The)_S 171 _t(lower)_S 172 _t(the)_S 1200 7703 _m
+(number,)_S 120 _t(the)_S 120 _t(more)_S 120 _t(important)_S 120 _t(difference)_S 120 _t(points)_S 120 _t(are.)_S 240 _t1200 7303 _m
+(Prob)_S 120 _t(of)_S 120 _t(Resize)_S 120 _t(-)_S 120 _t(This)_S 120 _t(is)_S 120 _t(another)_S 120 _t(mutation)_S 120 _t(operator)_S 120 _t(that)_S 1200 7103 _m
+(attempts)_S 120 _t(to)_S 120 _t(either)_S 120 _t(insert)_S 120 _t(or)_S 120 _t(delete)_S 120 _t(a)_S 120 _t(neuron)_S 120 _t(from)_S 120 _t(a)_S 120 _t(NN.)_S 1200 6903 _m
+(It)_S 195 _t(represents)_S 195 _t(the)_S 195 _t(probability)_S 195 _t(that)_S 195 _t(a)_S 195 _t(child)_S 195 _t(will)_S 195 _t(be)_S 1200 6703 _m
+(subjected)_S 120 _t(to)_S 120 _t(a)_S 120 _t(resize)_S 120 _t(attempt.)_S 240 _t1200 6303 _m
+(Input)_S 133 _t(Noise)_S 134 _t(-)_S 133 _t(This)_S 133 _t(parameter)_S 134 _t(represents)_S 133 _t(the)_S 133 _t(%)_S 134 _t(chance)_S 133 _t(a)_S 1200 6103 _m
+(input)_S 100 _t(data)_S 100 _t(bit)_S 100 _t(will)_S 100 _t(be)_S 100 _t(flipped.)_S 100 _t(It)_S 100 _t(is)_S 100 _t(meant)_S 100 _t(to)_S 100 _t(be)_S 100 _t(used)_S 100 _t(in)_S 1200 5903 _m
+(evolving)_S 171 _t(NNs)_S 172 _t(that)_S 171 _t(require)_S 172 _t(high)_S 171 _t(noise)_S 172 _t(immunity.)_S 171 _t(Every)_S 1200 5703 _m
+(generation)_S 106 _t(is)_S 107 _t(subjected)_S 107 _t(to)_S 106 _t(the)_S 107 _t(same)_S 107 _t(noisy)_S 106 _t(data.)_S 107 _t(Not)_S 107 _t(much)_S 1200 5503 _m
+(experimentation)_S 105 _t(has)_S 105 _t(been)_S 105 _t(conducted)_S 105 _t(with)_S 105 _t(this)_S 105 _t(variable.)_S 210 _t1200 5303 _m
+_U (Using)_S 120 _t(GANNET:)_S _u 1200 4703 _m
+120 _t120 _t120 _t120 _t120 _t(Now)_S 210 _t(that)_S 210 _t(the)_S 210 _t(program)_S 210 _t(and)_S 210 _t(its)_S 210 _t(files)_S 210 _t(have)_S 210 _t(been)_S 1200 4503 _m
+(explained)_S 120 _t(to)_S 120 _t(some)_S 120 _t(extent,)_S 120 _t(and)_S 120 _t(assuming)_S 120 _t(you)_S 120 _t(were)_S 120 _t(able)_S 120 _t(to)_S 1200 4303 _m
+(get)_S 187 _t(it)_S 187 _t(compiled,)_S 186 _t(this)_S 187 _t(section)_S 187 _t(will)_S 186 _t(tell)_S 187 _t(you)_S 187 _t(how)_S 186 _t(to)_S 1200 4103 _m
+(GANNET.)_S 213 _t(First)_S 107 _t(determine)_S 107 _t(what)_S 106 _t(type)_S 107 _t(of)_S 107 _t(problem)_S 106 _t(you'd)_S 107 _t(like)_S 1200 3903 _m
+(to)_S 146 _t(solve)_S 147 _t(and)_S 147 _t(create)_S 146 _t(the)_S 147 _t(required)_S 147 _t(the)_S 146 _t(input)_S 147 _t(and)_S 147 _t(output)_S 1200 3703 _m
+(files)_S 131 _t(using)_S 131 _t(a)_S 131 _t(text)_S 131 _t(editor.)_S 262 _t(Be)_S 131 _t(sure)_S 130 _t(not)_S 131 _t(to)_S 131 _t(include)_S 131 _t(any)_S 1200 3503 _m
+(0's)_S 120 _t(or)_S 120 _t(1's)_S 120 _t(in)_S 120 _t(any)_S 120 _t(comments)_S 120 _t(you)_S 120 _t(make.)_S 1200 3103 _m
+120 _t120 _t120 _t120 _t120 _t(Second,)_S 120 _t(be)_S 120 _t(sure)_S 120 _t(combo4.data)_S 120 _t(and)_S 120 _t(combo2.data)_S 120 _t(are)_S 120 _t(in)_S 1200 2903 _m
+(the)_S 133 _t(same)_S 134 _t(directory)_S 133 _t(as)_S 133 _t(GANNET.)_S 267 _t(Once)_S 133 _t(this)_S 134 _t(is)_S 133 _t(completed,)_S 1200 2703 _m
+(type)_S 107 _t("GANNET)_S 106 _t({exper.)_S 107 _t(name}")_S 107 _t(and)_S 106 _t(hit)_S 107 _t(return.)_S 213 _t(GANNET)_S 107 _t(will)_S 1200 2503 _m
+(first)_S 240 _t(try)_S 240 _t(to)_S 240 _t(find)_S 240 _t(a)_S 240 _t(configuration)_S 240 _t(file)_S 240 _t(for)_S 240 _t(that)_S 1200 2303 _m
+(experiment.)_S 107 _t(If)_S 106 _t(one)_S 107 _t(doesn't)_S 107 _t(exist,)_S 106 _t(it)_S 107 _t(will)_S 107 _t(proceed)_S 106 _t(to)_S 107 _t(ask)_S 1200 2103 _m
+(you)_S 150 _t(to)_S 150 _t(enter)_S 150 _t(in)_S 150 _t(configuration)_S 150 _t(information.)_S 150 _t(Be)_S 150 _t(sure)_S 150 _t(to)_S 1200 1903 _m
+(enter)_S 155 _t(only)_S 154 _t(a)_S 154 _t(few)_S 155 _t(generations)_S 154 _t(for)_S 154 _t(Maximum)_S 154 _t(Generations.)_S 1200 1703 _m
+(Most)_S 240 _t(likely)_S 240 _t(you)_S 240 _t(will)_S 240 _t(want)_S 240 _t(to)_S 240 _t(run)_S 240 _t(GANNET)_S 240 _t(in)_S 240 _t(the)_S 1200 1503 _m
+(background.)_S 288 _t(After)_S 288 _t(your)_S 288 _t(initial)_S 288 _t(Evolve)_S 288 _t(experiment)_S 1200 1303 _m
+(completes,)_S 120 _t(edit)_S 120 _t(the)_S 120 _t(conf.{exper.)_S 120 _t(name})_S 120 _t(file,)_S 120 _t(increasing)_S 1200 1103 _m
+(the)_S 135 _t(Maximum)_S 135 _t(Generations)_S 135 _t(to)_S 135 _t(the)_S 135 _t(length)_S 135 _t(you)_S 135 _t(really)_S 135 _t(want.)_S 1200 903 _m
+(Then)_S 120 _t(type)_S 120 _t("GANNET)_S 120 _t({exper.)_S 240 _t(name})_S 120 _t(&")_S 120 _t(and)_S 120 _t(hit)_S 120 _t(return.)_S 120 _t(Now)_S 1200 703 _m
+(GANNET)_S 120 _t(is)_S 120 _t(running)_S 120 _t(in)_S 120 _t(the)_S 120 _t(background.)_S _ep
+_bp /CourierR 600 _ff
+0 12000 9000 _ornt 1200 1200 translate 1200 11503 _m
+120 _t120 _t120 _t120 _t120 _t(If)_S 156 _t(you)_S 156 _t(run)_S 156 _t(GANNET,)_S 156 _t(and)_S 156 _t(it)_S 156 _t(asks)_S 156 _t(you)_S 156 _t(to)_S 156 _t(check)_S 156 _t(the)_S 1200 11303 _m
+(history)_S 195 _t(file,)_S 195 _t(it)_S 195 _t(means)_S 195 _t(for)_S 195 _t(some)_S 195 _t(reason)_S 195 _t(the)_S 195 _t(program)_S 1200 11103 _m
+(couldn't)_S 120 _t(run)_S 120 _t(properly.)_S 120 _t(By)_S 120 _t(reading)_S 120 _t(the)_S 120 _t(history)_S 120 _t(file,)_S 120 _t(the)_S 1200 10903 _m
+(reason)_S 180 _t(should)_S 180 _t(hopefully)_S 180 _t(become)_S 180 _t(apparent.)_S 180 _t(Correct)_S 180 _t(the)_S 1200 10703 _m
+(problem)_S 165 _t(and)_S 165 _t(try)_S 165 _t(again.)_S 330 _t(Remember,)_S 165 _t(all)_S 165 _t(the)_S 165 _t(experiment)_S 1200 10503 _m
+(files)_S 120 _t(must)_S 120 _t(be)_S 120 _t(in)_S 120 _t(the)_S 120 _t(same)_S 120 _t(directory)_S 120 _t(as)_S 120 _t(GANNET.)_S 240 _t1200 9903 _m
+120 _t120 _t120 _t120 _t120 _t(There)_S 103 _t(are)_S 103 _t(several)_S 103 _t(parameters)_S 103 _t(to)_S 103 _t(vary,)_S 103 _t(experiment)_S 102 _t(to)_S 1200 9703 _m
+(experiment.)_S 165 _t(Play)_S 165 _t(around)_S 165 _t(with)_S 165 _t(these)_S 165 _t(values)_S 165 _t(on)_S 165 _t(a)_S 165 _t(small)_S 1200 9503 _m
+(experiment)_S 96 _t(to)_S 96 _t(get)_S 96 _t(a)_S 96 _t(feel)_S 96 _t(for)_S 96 _t(the)_S 96 _t(program.)_S 96 _t(This)_S 96 _t(program)_S 96 _t(is)_S 1200 9303 _m
+(not)_S 146 _t(without)_S 147 _t(bugs)_S 147 _t(-)_S 146 _t(hopefully)_S 147 _t(most)_S 147 _t(of)_S 146 _t(them)_S 147 _t(are)_S 147 _t(already)_S 1200 9103 _m
+(taken)_S 130 _t(care)_S 130 _t(of.)_S 130 _t(If)_S 130 _t(you)_S 130 _t(find)_S 130 _t(one,)_S 130 _t(let)_S 130 _t(me)_S 130 _t(know)_S 130 _t(and)_S 130 _t(I)_S 130 _t(will)_S 1200 8903 _m
+(try)_S 110 _t(to)_S 110 _t(fix)_S 110 _t(it)_S 110 _t(or)_S 110 _t(better)_S 110 _t(yet,)_S 110 _t(fix)_S 110 _t(it)_S 110 _t(yourself)_S 110 _t(and)_S 110 _t(send)_S 110 _t(me)_S 1200 8703 _m
+(an)_S 120 _t(update.)_S 120 _t(Good)_S 120 _t(Luck!)_S 240 _t_ep
+statusdict /manualfeed false put _ed end end
+

@@ -1,0 +1,34 @@
+/*		CFSIO.EXT  for the CFS-C Classifier System.
+
+Declare variables for control of I/O routines in CFSIO.C .
+Definitions for these are in CFSIO.DEF .  
+    
+*/
+
+#ifndef GOBUFFSZ
+#include	"cfsio.h"
+#endif
+extern FILE		*fopen(); 
+extern FILE		*GetFILE();
+
+extern char		*GOutBuff; 
+extern char		*GInBuff;  
+extern short	LogFlg;
+extern char		*LogFName;
+extern FILE		*LogFILE;
+extern short	GenFlg;
+extern char		*GenFName;
+extern FILE		*GenFILE;         
+extern char		*StdInFN;  
+extern char		*StdOutFN;
+extern FILE		*StdOFILE;
+extern char		*DisOutFN;
+extern FILE		*DisOFILE;
+extern char		*StdErrFN;
+extern char		*MsgInFN; 
+extern char		*CfInFN;  
+extern char		*LoadSyFN;
+extern char		*EnvInFN;  
+extern char		*SaveSyFN;
+extern char		*SaveSyPa;
+extern char		*EnvInFN;

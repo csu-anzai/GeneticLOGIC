@@ -1,0 +1,149 @@
+%
+%	GENEsYs-exm.tex		Ba, 22 feb 91		LaTeX 2.09
+%
+%	A example.
+%{
+
+\section{Example}\label{genesis-exm}
+ 
+            The output given below shows an example of a user--defined  
+	evaluation for the following problem:
+$$ 
+       f(x) = \sum_{i=1}^3 {x_i^2}
+$$
+	where  $-5.12 \leq  x_i \leq  5.11 \quad \forall i=1,2,3$.
+ 
+       Each $x_i$ is represented by $10$ bits,  so  that  the  structure
+       length  is  $30$,  and the precision for each $x_i$ is $0.01$.  The
+       minimum occurs at the origin  (of course, this problem does
+       not  require the full power of genetic algorithms and can be
+       more appropriately solved using classical optimization techniques).
+
+\begin{quote}
+\begin{verbatim}
+% setup
+
+        Eval file name[f1]:
+        cc -O -f68881 -sun3 -c f1.c
+        cc -o ga.f1 f1.o /home/lumpi/ls11a/baeck/opt/genesis/ga.a -lm
+        Object file: ga.f1
+
+        File suffix []: tst1
+        Other files have suffix: tst1
+ 
+        Experiment [1]:
+        Trials [1000]:
+        Pop Size [50]:
+        Length [30]:
+        Crossover Rate [0.6]:
+        Crossover points [2]:
+        Mutation Rate [0.001]:
+        Bits for M_rate [0]:
+        No. best parents [50]:
+        Eta-max (ranking) [1.1]: 
+        Generation Gap [1.0]:
+        Windowsize [5]:
+        Report Interval [100]: 200
+        Structures Saved [10]: 5
+        Max Gens w/o Eval [2]:
+        Dump Interval [0]:
+        Dumps Saved [0]:
+        Options [cel]: aceL
+        Random Seed: [123456789]:
+\end{verbatim}
+\end{quote}
+
+\begin{center}
+\small{Example of a user--defined evaluation}\\
+\end{center}
+ 
+       The input file ``in.tst1'' is created and echoed to the terminal:
+
+\begin{quote}
+\begin{verbatim}
+              Experiments = 1
+             Total Trials = 1000
+          Population Size = 50
+         Structure Length = 30
+           Crossover Rate = 0.6
+         Crossover points = 2
+            Mutation Rate = 0.001
+          Bits for M_rate = 0
+         No. best parents = 50
+        Eta-max (ranking) = 1.1
+           Generation Gap = 1.0
+           Scaling Window = 5
+          Report Interval = 200
+         Structures Saved = 5
+        Max Gens w/o Eval = 2
+            Dump Interval = 0
+              Dumps Saved = 0
+                  Options = aceL
+              Random Seed = 123456789
+ 
+               go [yes]:
+               go command executed
+ 
+               Setup done.
+\end{verbatim}
+\end{quote}
+ 
+       The program ga.f1 executes.  The raw output data is sent  to
+       file  ``out.tst1'',  and  the  values of the global variables,
+       including the final population, are sent to ``ckpt.tst1''. The
+       report generator produces file ``report.tst1'':
+
+\begin{quote}
+\begin{verbatim} 
+ report.tst1 for ga.f1
+ Fri Jul 27 08:54:38 MET DST 1990
+       Experiments = 1
+      Total Trials = 1000
+   Population Size = 50
+  Structure Length = 30
+    Crossover Rate = 0.600
+  Crossover points = 2
+     Mutation Rate = 0.001
+   Bits for M_rate = 0
+  No. best parents = 50
+ Eta-max (ranking) = 1.1
+    Generation Gap = 1.000
+    Scaling Window = 5
+   Report Interval = 200
+  Structures Saved = 5
+ Max Gens w/o Eval = 2
+     Dump Interval = 0
+       Dumps Saved = 0
+           Options = aceL
+       Random Seed = 123456789
+\end{verbatim}
+\end{quote}
+
+
+ 
+       The 5 best structures are saved in file ``min.tst1'':
+
+\begin{verbatim} 
+       % cat min.tst1
+\end{verbatim}
+
+\begin{center}
+\begin{tabular}{rrrr}
+\verb/11000100 10110000 01110100 010110/ &  1.6019e-01  &  14  & 702	\\
+\verb/01000110 01010011 01110100 000110/ &  1.7361e-01  &  16  & 810	\\
+\verb/11000100 10110000 00100100 010110/ &  1.5838e-01  &  17  & 863	\\
+\verb/11000100 10110000 00001100 010110/ &  1.5718e-01  &  16  & 828	\\
+\verb/01000111 01110011 00010100 000110/ &  1.6520e-01  &  18  & 922	\\
+\end{tabular}
+\end{center}
+ 
+       Each line of the minfile displays a  binary  structure,  its
+       evaluation,  and  the  generation and trials counters at the
+       time of the first occurrence of this structure.
+ 
+            If it is desired to continue this experiment, edit  the
+       input  file ``in.tst1'' to increase the total number of trials
+       and to add ``r'' to the options.  Then issue the command:
+ 	\verb/% ga.f1 tst1/.
+
+%}

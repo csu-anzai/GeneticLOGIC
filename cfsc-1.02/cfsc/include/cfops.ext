@@ -1,0 +1,31 @@
+/*		CFOPS.EXT  for the CFS-C Classifier System.
+
+Declare classifier operators -- names, codes, and functions. 
+See CFOPS.DEF for definitions of these objects.
+
+*/
+
+#ifndef OC_PASS
+#include	"cfops.h"
+#endif
+
+VOID COpPASS(); 
+VOID COpAND();  
+VOID COpOR();   
+VOID COpXOR();
+VOID COpADD();
+VOID COpADD1(); 
+VOID COpSUB();
+VOID COpSUB1(); 
+ 
+extern struct  CfOpNode     
+{
+	char			*CfOpName; 
+	unsigned int	CfOpCode; 
+	VOID			(*CfOpfn)(); 
+	float			CfOpCPrb; 
+} 
+	CfOps[];                 
+
+extern struct CfOpNode *COpDflt;
+

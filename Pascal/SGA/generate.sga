@@ -1,0 +1,35 @@
+{ generate.sga }
+
+procedure generation;
+{ Create a new generation through select, crossover, and mutation }
+{ Note: generation assumes an even-numbered popsize               }
+var j, mate1, mate2, jcross:integer;
+begin
+ j := 1;
+ repeat    { select, crossover, and mutation until newpop is filled }
+  mate1 := select(popsize, sumfitness, oldpop); { pick pair of mates }
+  mate2 := select(popsize, sumfitness, oldpop);
+  { Crossover and mutation - mutation embedded within crossover }
+  crossover(oldpop[mate1].chrom, oldpop[mate2].chrom,
+            newpop[j    ].chrom, newpop[j + 1].chrom,
+            lchrom, ncross, nmutation, jcross, pcross, pmutation);
+  { Decode string, evaluate fitness, & record parentage date on both children }
+  with newpop[j  ] do begin
+    x := decode(chrom, lchrom);
+    fitness := objfunc(x);
+    parent1 := mate1;
+    parent2 := mate2;
+    xsite   := jcross;
+   end;
+  with newpop[j+1] do begin
+    x := decode(chrom, lchrom);
+    fitness := objfunc(x);
+    parent1 := mate1;
+    parent2 := mate2;
+    xsite   := jcross;
+   end;
+  { Increment population index }
+  j := j + 2;
+ until j>popsize
+end;
+

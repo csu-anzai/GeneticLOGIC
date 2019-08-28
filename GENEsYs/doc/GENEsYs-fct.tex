@@ -1,0 +1,347 @@
+%
+%	genesis-fct.tex	mkfd, Fri Jul  3 13:22:59 MET DST 1992
+%
+%	LaTeX documentation of the objective functions as currently
+%	implemented in GENEsYs 1.0
+%{
+
+\section{The Set of Objective Functions}\label{genesis-fct}
+
+\begin{Enumerate}
+%
+%
+\item	\Fct{Sphere model}{Jon75} 
+	\Expr{f_1(\vec{x}) = \sum_{i=1}^n x_i^2} 
+	\begin{Cst} 
+	-5.12 \leq x_i \leq 5.12 
+	\end{Cst} 
+	\Min{\min(f_1) = f_1(0,\ldots,0) = 0} 
+%
+%
+\item	\Fct{Generalized Rosenbrock's function}{Jon75} 
+	\Expr{f_2(\vec{x}) = \sum_{i=1}^{n-1} 
+	(100 \cdot (x_{i+1} - x_i^2)^2 + (x_i - 1)^2)} 
+	\begin{Cst} 
+	-5.12 \leq x_i \leq 5.12 
+	\end{Cst} 
+	\Min{\min(f_2) = f_2(1,\ldots,1) = 0} 
+%
+%
+\item	\Fct{Step function}{Jon75} 
+	\Expr{f_3(\vec{x}) = 6 \cdot n + \sum_{i=1}^n \lfloor x_i \rfloor} 
+	\begin{Cst} 
+	-5.12 \leq x_i \leq 5.12 
+	\end{Cst} 
+	\Min{\min(f_3) = f_3([-5.12,-5),\ldots,[-5.12,-5)) = 0} 
+%
+%
+\item	\Fct{Quartic function with noise}{Jon75} 
+	\Expr{f_4(\vec{x}) = \sum_{i=1}^n i x_i^4 + \mbox{gauss}(0,1)} 
+	\begin{Cst} 
+	-1.28 \leq x_i \leq 1.28 
+	\end{Cst} 
+	\Min{\min(f_4) = f_4(0,\ldots,0) = 0} 
+%
+%
+\item	\Fct{Shekel's foxholes}{Jon75} 
+	\Expr{\frac{1}{f_5(\vec{x})} = \frac{1}{K} + \sum_{j=1}^{25} 
+	\frac{1}{c_j + \sum_{i=1}^{2} (x_i - a_{ij})^6}} 
+	\begin{Cst} 
+	(a_{ij}) = \left( 
+	\begin{array}{rrrrr@{\quad}rrrrr} 
+	-32 & -16 & 0 & 16 & 32 & -32 & \cdots & 0 & 16 & 32 \\ 
+	-32 & -32 & -32 & -32 & -32 & -16 & \cdots & 32 & 32 & 32 \\ 
+	\end{array} 
+	\right) \\ 
+	K = 500 \quad \;;\quad 
+	f_5(a_{1j},a_{2j}) \approx c_j = j \\ 
+	-65.536 \leq x_i \leq 65.536 
+	\end{Cst} 
+	\Min{\min(f_5) = f_5(-32,-32) \approx 1} 
+%
+%
+\item	\Fct{Schwefel's function 1.2}{Schw81} 
+	\Expr{f_6(\vec{x}) = \sum_{i=1}^{n} \left( 
+	\sum_{j=1}^{i} x_j 
+	\right)^2 
+	= x^{\rm T} {\rm \bf A} x + b^{\rm T} x} 
+	\begin{Cst} 
+	-65.536 \leq x_i \leq 65.536 
+	\end{Cst} 
+	\Min{\min(f_6) = f_6(0,\ldots,0) = 0} 
+%
+%
+\item	\Fct{Generalized Rastrigin's function}{TZ89} 
+	\Expr{f_7(\vec{x}) = 
+	nA + \sum_{i=1}^{n} x_i^2 - A \cos(\omega x_i)} 
+	\begin{Cst} 
+	A = 10 \quad \;;\quad \omega = 2\pi \\ 
+	-5.12 \leq x_i \leq 5.12 \\ 
+	\end{Cst} 
+	\Min{\min(f_7) = f_7(0,\ldots,0) = 0} 
+%
+%
+\item	\Fct{Sphere model, changing environment}{HB91b} 
+	\Expr{f_8(\vec{x(t)}) = \left\{ 
+	\begin{array}{r@{\quad:\quad}l} 
+	\sum_{i=1}^n x_i^2(t) & 
+	t \; \mbox{mod} \; a \; \mbox{even} \\ 
+	\sum_{i=1}^n (x_i - b)^2 & 
+	t \; \mbox{mod} \; a \; \mbox{odd} 
+	\end{array} \right.} 
+	\begin{Cst} 
+	-5.12 \leq x_i \leq 5.12 \\ 
+	a = 250 \; \mbox{generations} \quad \;; \quad b = 4 \\ 
+	\end{Cst} 
+	\Min{\min(f_8) = \left\{ 
+	\begin{array}{r@{\quad:\quad}l} 
+	f_8(0,\ldots,0) & 
+	t \; \mbox{mod} \; a \; \mbox{even} \\ 
+	f_8(b,\ldots,b) & 
+	t \; \mbox{mod} \; a \; \mbox{odd} 
+	\end{array} \right\} = 0} 
+%
+%
+\item	\Fct{Ackley's function}{Ack87} 
+	\Expr{f_9(\vec{x}) = - a \cdot \exp\left(-b 
+	\sqrt{\frac{1}{n} \cdot \sum_{i=1}^n x_i^2}\right) 
+	- \exp\left(\frac{1}{n} \cdot \sum_{i=1}^n 
+	\cos(c\cdot x_i)\right) +a+e} 
+	\begin{Cst} 
+	a = 20 \quad \;; \quad b = 0.2 \quad \;; \quad c = 2\pi \\ 
+	-32.768 \leq x_i \leq 32.768 \\ 
+	\end{Cst} 
+	\Min{\min(f_9) = f_9(0,\ldots,0) = 0} 
+%
+%
+\item	\Fct{Krolak's~$100$ city TSP}{KFM71} 
+	\Expr{f_{10}(\vec{x}) = \sum_{i=1}^n 
+	d(c_{\pi(i \; {\rm mod} \; n)}, c_{\pi((i+1) \; 
+	{\rm mod} \; n)})} 
+	\begin{Cst} 
+	-5.12 \leq x_i \leq 5.12 
+	\end{Cst} 
+	\Min{\min(f_{10}) = 21285} 
+%
+%
+\item	\Fct{Low autocorrelation binary sequences}{GWH89} 
+	\Expr{f_{11}(\vec{a}) = \sum_{k=1}^{l-1} \left( 
+	\sum_{i=1}^{l-k} \beta_i \beta_{i+k} 
+	\right)^2 \quad ; \quad 
+	\beta_i = \left\{ 
+	\begin{array}{r@{\hspace{0.5em},\hspace{0.5em}}l} 
+	-1 & \alpha_i = 0 \\ 
+	1 & \alpha_i = 1 \\ 
+	\end{array} \right.} 
+%
+%
+\item	\Fct{Hamming distance to~$0^l$}{} 
+	\Expr{f_{12}(\vec{a}) = \sum_{i=1}^l \alpha_i} 
+	\Min{\min(f_{12}) = f_{12}(0,\ldots,0) = 0} 
+%
+%
+\item	\Fct{Weierstrass-Mandelbrot fractal function}{BL80} 
+	\Expr{f_{13}(\vec{x}) = \sum_{i=1}^n \left( 
+	\frac{C(x_i)}{C(1) \cdot {|x_i|}^{2-D}} + x_i^2 - 1 
+	\right)} 
+	\Expr{C(x) = \sum_{j=-\infty}^\infty 
+	\frac{1-\cos\left(b^jx\right)}{b^{(2-D)j}}} 
+	\begin{Cst} 
+	1 \leq D \leq 2 \quad \;; \quad b > 1 \\ 
+	-5.12 \leq x_i \leq 5.12 \\ 
+	\end{Cst} 
+%
+%
+\item	\Fct{Fully deceptive function}{LV91a} 
+	\Expr{f_{14}(\vec{a}) = \left\{ 
+	\begin{array}{c@{\hspace{0.5em},\hspace{0.5em}}l} 
+	2^{-l} & f_{12}(a) = 0 \\ 
+	(1 + o(a))/l & 0 < f_{12}(a) < l \\ 
+	0 & f_{12}(a) = l \\ 
+	\end{array} \right.} 
+%
+%
+\item	\Fct{Weighted sphere model}{Schw88} 
+	\Expr{f_{15}(\vec{x}) = \sum_{i=1}^n i \cdot x_i^2} 
+	\begin{Cst} 
+	-5.12 \leq x_i \leq 5.12 
+	\end{Cst} 
+	\Min{\min(f_{15}) = f_{15}(0,\ldots,0) = 0} 
+%
+%
+\item	\Fct{Fletcher and Powell}{} 
+	\Expr{f_{16}({\vec x}) = \sum_{i=1}^n (A_i - B_i)^2} 
+	\Expr{A_i = \sum_{j=1}^n (a_{ij}\sin \alpha_j + b_{ij}\cos \alpha_j)} 
+	\Expr{B_i = \sum_{j=1}^n (a_{ij}\sin x_j + b_{ij}\cos x_j)} 
+	\begin{Cst} 
+	a_{ij}, b_{ij} \in [-100,100] \\ 
+	\alpha_j \in [-\pi, \pi] \\ 
+	\end{Cst} 
+	$$ 
+	(a_{ij}) = \left( \begin{array}{rrrrr} 
+	-25.5668 & 96.1559 & -15.2661 & -23.247 & 1.15129 \\ 
+	-97.5908 & -82.9516 & 50.3364 & -96.552 & 29.4616 \\ 
+	36.3096 & 54.3934 & 76.9586 & 64.3481 & 0.66188 \\ 
+	-58.7916 & 30.4881 & -22.9354 & 36.1643 & 62.2798 \\ 
+	66.582 & -18.2818 & 2.30184 & -38.6698 & -80.3784 
+	\end{array} \right) \\ 
+	$$ 
+	$$ 
+	(b_{ij}) = \left( \begin{array}{rrrrr} 
+	-38.9994 & -49.1546 & -52.2403 & 66.4195 & -36.6538 \\ 
+	-6.49429 & -97.6865 & 39.6734 & -91.4542 & 17.2329 \\ 
+	-67.1681 & -42.8325 & -42.9307 & 36.9705 & -18.3463 \\ 
+	-53.1271 & -2.74637 & 27.6244 & -72.7537 & 46.1798 \\ 
+	-1.47036 & -95.2547 & 78.6214 & -54.3113 & 84.6737 
+	\end{array} \right) \\ 
+	$$ 
+	$$ 
+	(\alpha_j) = (1.98961, -1.39376, -2.03048, -0.621016, 
+	3.12736) 
+	$$ 
+	
+%
+%
+\item	\Fct{Fletcher and Powell}{} 
+	\Expr{f_{17}({\vec x}) = \sum_{i=1}^n (A_i - B_i)^2} 
+	\Expr{A_i = \sum_{j=1}^n (a_{ij}\sin \alpha_j + b_{ij}\cos \alpha_j)} 
+	\Expr{B_i = \sum_{j=1}^n (a_{ij}\sin x_j + b_{ij}\cos x_j)} 
+	\begin{Cst} 
+	a_{ij}, b_{ij} \in [-100,100] \\ 
+	\alpha_j \in [-\pi, \pi] 
+	\end{Cst} 
+	
+%
+%
+\item	\Fct{Shekel-5}{TZ89} 
+	\Expr{f_{18}(\vec{x}) = 
+	- \sum_{i=1}^m \frac{1}{(x-A(i))(x-A(i))^T + c_i}} 
+	\begin{Cst} 
+	n = 4 \quad \;; \quad m = 5 \\ 
+	0 \leq x_i \leq 10 \\ 
+	\end{Cst} 
+	\begin{center} 
+	\begin{tabular}{|c|c|c|c|c|c|}\hline 
+	$i$ & \multicolumn{4}{|c|}{$A(i)$} & $c_i$ \\ \hline 
+	1 & 4 & 4 & 4 & 4 & 0.1 \\ 
+	2 & 1 & 1 & 1 & 1 & 0.2 \\ 
+	3 & 8 & 8 & 8 & 8 & 0.2 \\ 
+	4 & 6 & 6 & 6 & 6 & 0.4 \\ 
+	5 & 3 & 7 & 3 & 7 & 0.4 \\ \hline 
+	\end{tabular} 
+	\end{center} 
+	\Min{\min(f_{18}) = f_{18}(0,\ldots,0) = 0} 
+%
+%
+\item	\Fct{Shekel-7}{TZ89} 
+	\Expr{f_{19}(\vec{x}) = 
+	- \sum_{i=1}^m \frac{1}{(x-A(i))(x-A(i))^T + c_i}} 
+	\begin{Cst} 
+	n = 4 \quad \;; \quad m = 7 \\ 
+	0 \leq x_i \leq 10 \\ 
+	\end{Cst} 
+	\begin{center} 
+	\begin{tabular}{|c|c|c|c|c|c|}\hline 
+	$i$ & \multicolumn{4}{|c|}{$A(i)$} & $c_i$ \\ \hline 
+	1 & 4 & 4 & 4 & 4 & 0.1 \\ 
+	2 & 1 & 1 & 1 & 1 & 0.2 \\ 
+	3 & 8 & 8 & 8 & 8 & 0.2 \\ 
+	4 & 6 & 6 & 6 & 6 & 0.4 \\ 
+	5 & 3 & 7 & 3 & 7 & 0.4 \\ 
+	6 & 2 & 9 & 2 & 9 & 0.6 \\ 
+	7 & 5 & 5 & 3 & 3 & 0.3 \\ \hline 
+	\end{tabular} 
+	\end{center} 
+	\Min{\min(f_{19}) = f_{19}(0,\ldots,0) = 0} 
+%
+%
+\item	\Fct{Shekel-10}{TZ89} 
+	\Expr{f_{20}(\vec{x}) = 
+	- \sum_{i=1}^m \frac{1}{(x-A(i))(x-A(i))^T + c_i}} 
+	\begin{Cst} 
+	n = 4 \quad \;; \quad m = 10 \\ 
+	0 \leq x_i \leq 10 \\ 
+	\end{Cst} 
+	\begin{center} 
+	\begin{tabular}{|c|c|c|c|c|c|}\hline 
+	$i$ & \multicolumn{4}{|c|}{$A(i)$} & $c_i$ \\ \hline 
+	1 & 4 & 4 & 4 & 4 & 0.1 \\ 
+	2 & 1 & 1 & 1 & 1 & 0.2 \\ 
+	3 & 8 & 8 & 8 & 8 & 0.2 \\ 
+	4 & 6 & 6 & 6 & 6 & 0.4 \\ 
+	5 & 3 & 7 & 3 & 7 & 0.4 \\ 
+	6 & 2 & 9 & 2 & 9 & 0.6 \\ 
+	7 & 5 & 5 & 3 & 3 & 0.3 \\ 
+	8 & 8 & 1 & 8 & 1 & 0.7 \\ 
+	9 & 6 & 2 & 6 & 2 & 0.5 \\ 
+	10 & 7 & 3.6 & 7 & 3.6 & 0.5 \\ \hline 
+	\end{tabular} 
+	\end{center} 
+	\Min{\min(f_{20}) = f_{20}(0,\ldots,0) = 0} 
+%
+%
+\item	\Fct{Griewank}{TZ89} 
+	\Expr{f_{21}(\vec{x}) = 
+	\frac{1}{d} \; \sum_{i=1}^n x_i^2 - 
+	\prod_{i=1}^n \cos \left(\frac{x_i}{\sqrt{i}}\right) 
+	+ 1} 
+	\begin{Cst} 
+	d = 200 \quad \;; \quad n = 2 \\ 
+	-100.0 \leq x_i \leq 100.0 \\ 
+	\end{Cst} 
+	\Min{\min(f_{21}) = f_{21}(0,\ldots,0) = 0} 
+%
+%
+\item	\Fct{Griewank}{TZ89} 
+	\Expr{f_{22}(\vec{x}) = 
+	\frac{1}{d} \; \sum_{i=1}^n x_i^2 - 
+	\prod_{i=1}^n \cos \left(\frac{x_i}{\sqrt{i}}\right) 
+	+ 1} 
+	\begin{Cst} 
+	d = 4000 \quad \;; \quad n = 10 \\ 
+	-600.0 \leq x_i \leq 600.0 \\ 
+	\end{Cst} 
+	\Min{\min(f_{22}) = f_{22}(0,\ldots,0) = 0} 
+%
+%
+\item	\Fct{Galar}{Gal91} 
+	\Expr{f_{23}(\vec{x}) = 
+	(\exp(-5 x_1^2) + 2 \exp(-5 (1-x_1)^2)) \cdot 
+	\exp\left(-5 \sum_{i=2}^n x_i^2 \right)} 
+	\begin{Cst} 
+	-5.0 \leq x_i \leq 5.0 \\ 
+	\end{Cst} 
+%
+%
+\item	\Fct{Kowalik}{Schw77} 
+	\Expr{f_{24}(\vec{x}) = \sum_{i=1}^{11} \left( 
+	a_i - \frac{x_1 (b_i^2 + b_i x_2)}{b_i^2 + b_ix_3 + x_4} 
+	\right)^2} 
+	\begin{Cst} 
+	n = 4 \\ 
+	-5.0 \leq x_i \leq 5.0 \\ 
+	\end{Cst} 
+	\begin{center} 
+	\begin{tabular}{|c|c|c|}\hline 
+	$i$ & $a_i$ & $b_i^{-1}$ \\ \hline 
+	1 & 0.1957 & 0.25 \\ 
+	2 & 0.1947 & 0.5 \\ 
+	3 & 0.1735 & 1 \\ 
+	4 & 0.1600 & 2 \\ 
+	5 & 0.0844 & 4 \\ 
+	6 & 0.0627 & 6 \\ 
+	7 & 0.0456 & 8 \\ 
+	8 & 0.0342 & 10 \\ 
+	9 & 0.0323 & 12 \\ 
+	10 & 0.0235 & 14 \\ 
+	11 & 0.0246 & 16 \\ \hline 
+	\end{tabular} 
+	\end{center} 
+	\Min{\min(f_{24}) \approx f_{24}(0.1928, 0.1908, 0.1231, 0.1358) 
+	\approx 0.0003075} 
+%
+%
+\end{Enumerate}
+
+%}
+

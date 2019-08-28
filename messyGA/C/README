@@ -1,0 +1,18 @@
+
+NOTICE:  This README file was updated on June 23, 1994.  
+
+
+This directory, /pub/src/messyGA/C, contains the messy GA (mGA) in C,
+as documented in the technical report IlliGAL 91008, "mGA in C: A
+Messy Genetic Algorithm in C", by Kalyanmoy Deb and David E. Goldberg,
+September 1991.  For detailed discussion and explanation of the code, 
+see the report, now available on this ftp server, in 
+
+   /pub/papers/IlliGALs/91008.ps.Z 
+ 
+This file is compressed postscript.  See the README file in the above
+directory (/pub/papers/IlliGALs) for printing instructions.  Please obtain 
+the report via ftp (or the world wide web (WWW) using the IlliGAL home page
+http://GAL4.GE.UIUC.EDU/illigal.home.html), as it is too long to duplicate and 
+distribute as hardcopy.  
+

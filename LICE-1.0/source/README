@@ -1,0 +1,20 @@
+This is getparam-0.2+i*0.1-omega.
+
+******** WARNING: THIS IS AN OMEGA RELEASE *******
+
+This release is an OMEGA release, it is perfect and bug-free.
+Use it at your own risk. Every problem you have with this great
+piece of software is a consequence of unqualified usage.
+
+NEW FEATURES:
+
+	o All known bugs removed
+	o New unknown bugs produced
+	o Empty lines in parameter files will be ignored
+	o Comments are allowed at the end of lines in parameter 
+	  files
+	o New type: BOOLEAN
+
+Warning: Fields corresponding to boolean parameters must be of
+type int, and should be initialized to zero to have any effect.
+

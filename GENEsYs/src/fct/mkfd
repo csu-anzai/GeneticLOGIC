@@ -1,0 +1,67 @@
+#!/bin/sh 
+#
+#	Thomas Baeck,	apr 19, 1991 		GENESIS 5.0
+#	
+#	Extract the documentation for implemented objective functions from
+#	the objective functions' code
+#
+
+	SELF=`basename $0`
+	FCTS=`ls f_*.c`
+
+	FCT=fct	
+	TMP1=/tmp/mawk.$$
+	TMP2=/tmp/mtex.$$
+
+	cat <<EOAWK >$TMP1
+BEGIN					{start = 0; stop = 0; }
+
+((start == 1) && (stop == 0))	{ 
+					if (\$1 == "**TeX")
+						stop = 1;
+			  	  	else {
+						printf "\t";
+						for (i=2; i<=NF; i++)
+							printf "%s ", \$i;
+						printf "\n";
+					}
+				}
+
+((\$1 == "**TeX") \
+	&& (stop == 0)) 	{ 	start = 1;
+				}
+EOAWK
+
+	for FILE in $FCTS ; do
+
+		echo %			>> $TMP2
+		echo -n \\item		>> $TMP2
+
+		awk -f $TMP1 $FILE	>> $TMP2
+
+		echo %			>> $TMP2
+	done
+
+	cat <<*EOF* > GENEsYs-$FCT.tex
+%
+%	GENEsYs-$FCT.tex	$SELF, `date`
+%
+%	LaTeX documentation of the objective functions as currently
+%	implemented in GENEsYs 1.0
+%{
+
+\section{The Set of Objective Functions}\label{genesis-fct}
+
+\begin{Enumerate}
+%
+`cat $TMP2`
+%
+\end{Enumerate}
+
+%}
+
+*EOF*
+
+	rm $TMP1
+	rm $TMP2
+	mv GENEsYs-$FCT.tex ../../doc/

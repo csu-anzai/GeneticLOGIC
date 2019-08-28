@@ -1,0 +1,232 @@
+\documentstyle [12pt]{article}
+
+\setlength{\textwidth}{7.25in}
+\setlength{\textheight}{9.25in}
+\setlength{\oddsidemargin}{-.2in}
+\setlength{\evensidemargin}{-.2in}
+\setlength{\topmargin}{-.5in}
+
+\begin{document}
+
+\begin{center}
+{\huge Getting Started with Genitor}
+\end{center}
+
+\section{Introduction}
+
+The purpose of this document is to get you started using the Genitor package
+as quickly as possible.  The Genitor package can be useful in three ways:
+
+\begin{enumerate}
+ \item You can learn about genetic algorithm technology by running the
+	   simple examples provided.  You can change the values of the 
+	   basic parameters controlling the genetic algorithm execution
+	   and note their effect.
+ \item You can use the genetic algorithm to solve one of your own
+	   optimization problems.  To do this, you will need to write 
+	   write a few C functions specific to your optimization problem.
+	   You will use them in conjunction with the libraries provided with
+	   the Genitor package to create an optimization algorithm 
+	   customized for your problem. 
+ \item You can pursue genetic algorithm research.  The Genitor package
+       is designed to allow you to concentrate efforts on research worthy
+	   issues and leave the basic mechanics of a genetic algorithm up to
+	   the Genitor library functions.  For example, you might write a 
+	   new genetic reproduction operator; the integration of new operators
+	   is relatively simple with the Genitor package.	
+\end{enumerate}
+
+\section{Examples}
+
+\subsection{Creating an Executable Program}
+
+When the Genitor package is properly installed you should have a Genitor
+directory containing five subdirectories: Examples, doc, include, lib,
+and src. In order to create and run the Examples, the lib directory must
+contain the Genitor libraries. Make sure that lib/ga contains three .a 
+files before trying to use the Examples.  \footnote{See the
+{\bf Genitor Installation Instructions} document for details about creating
+these libraries.}  If everything is installed correctly, you will only need
+to concern yourself with the Examples directory in order to run the sample
+problems.
+
+The Examples directory contains three subdirectories: Traditional,
+TSP, and NeuralNet. The Traditional subdirectory contains the code
+required to perform a basic function minimization by manipulating the
+traditional data type of genetic algorithms, binary strings.  The TSP
+subdirectory contains the code required to solve Traveling Salesman
+Problems. The NeuralNet subdirectory contains the genetic algorithm
+code to solve a two-bit adder problem.
+
+Everything should be essentially ready to go, with one exception:
+each subdirectory contains a ``Makefile''.  Before you can create
+the example programs, you must change 1 line in each makefile.
+
+\begin{verbatim}
+The line which reads
+
+GaRoot = 
+
+must be altered to read
+
+GaRoot = /home/you/Genitor
+
+where `/home/you/Genitor' is the location of the Genitor directory.
+\end{verbatim}
+
+All other pathnames in the Genitor package makefiles are relative to
+GaRoot. 
+
+Once you have updated each makefile appropriately, you are ready to
+run the examples.  The following two steps are the same for each example:
+
+\begin{enumerate}
+ \item Change to the Example subdirectory desired (Traditional, TSP, or
+	   Neural Net). 
+ \item type `make' to create an executable Genitor program.
+\end{enumerate}
+
+\subsection{Running a Genitor Program}
+
+Parameters for Genitor program execution may be specified via the
+command line, a configuration file, or a combination of both.  For
+complete details on the available command line options and using/writing a
+configuration file, refer to the {\bf Genitor Command Line Options}
+documentation.
+
+Each example includes one (or more) configuration file(s) containing
+a reasonable default set of parameter values for the particular
+genetic experiment.  Configuration files are found in the SampleConfigs
+subdirectory of each Example subdirectory.  To use these default values,
+you will type
+
+Genitor{\it example} -c {\it config.file}
+
+The algorithm will print to the console (stdout) the parameter values
+used for the experiment and periodically print a population summary.
+At completion, the `best solution' string will be printed.
+
+\subsection{Traditional Function Optimization}
+\subsection{Traveling Salesman Problem}
+
+The Traveling Salesman Problem (TSP) is a classic schedule optimization
+problem defined as follows:  given a fixed set of cities, in what relative
+sequence must the cities be visited such that the shortest route is taken
+AND such that each city is visited once and only once? The
+methodologies which can be successfully applied to the TSP are often of use in
+many types of scheduling problems.  The {\bf Edge Recombination} genetic
+operator invented at Colorado State University has had significant success in
+solving TSPs.  This example allows you to run a genetic algorithm using the
+{\bf Edge Recombination} operator to solve two common benchmark TSP
+problems: a 15 city problem and a 30 city problem.
+
+Each sample problem has an associated configuration file, (tsp15.config and
+tsp30.config).  Additionally, the x,y coordinates of the cities for each
+problem are included (node15.tsp and node30.tsp).  The coordinates in these
+files will correspond to a unique integer representing each city.  The integer
+to be associated with each set of coordinates is relative to the ordering of
+the coordinate file.  Therefore, the first two numbers in the file node15.tsp
+represent the x and y coordinates of city 1.  The second two coordinates in
+the file represent city 2, and so on.  It is important that you understand
+this scheme because when the TSP program is executed and the final result is
+printed to the screen (stdout), it will appear as a string of integers
+separated by spaces (i.e. 3 7 8 9 ... 1 15 ) and you may wish to map this
+result back to the original coordinates.
+
+Once you understand a bit about the problem and interpreting its data,
+perform the following steps to execute the algorithm:
+\begin{enumerate}
+ \item Make sure that an executable program named GenitorINT exists in
+	   the TSP directory.  Details on making this executable program
+	   can be found in the {\bf Creating an Executable Program} section above.
+ \item Change to the SampleConfig directory for the 30 city problem.
+ \item Type {\bf ../../GenitorINT -c tsp30.config}.
+ \item Watch the screen messages to see the algorithm progress and converge.
+	   The best known solution for this 30 city problem is 420.0.  
+\end{enumerate}
+
+NOTE:\\
+When the Genitor package tests were run prior to shipment, the tsp30.config
+file was filled with the parameter settings that always suceeded in
+finding the correct solution within 30,000 genetic recombinations on our
+test machines.  However, machines vary and it is possible that your machine
+will find the solution much sooner (actually, our average was about
+25000 recombinations), take longer, or fail.  The genetic algorithm is
+very dependent upon {\it good} random number generators and this 
+varies from platform to platform.  Let us know if you find a significant
+variation!
+
+\subsection{Neural Net}
+
+\section{Solving Your Problem}
+
+Perhaps you have a particular problem, say a tricky function that needs
+optimizing, that you would like to try solving with the Genitor algorithm.
+Basically, you will need to do the following things:
+
+\begin{itemize}
+ \item Determine a way to encode the critical data of your problem into
+	   a {\it string}.  
+	   
+	   For example, if your problem is function optimization,
+	   perhaps you can represent each parameter setting using 8 bits.
+	   If you interpret the first 8 bits of a {\it string}
+	   as parameter setting one, the second 8 bits as parameter setting
+	   two, etc., you have described the mapping of your problem data into
+	   a string manipulable by the genetic algorithm.
+
+ \item Determine the data type of the string.  
+
+	   For example, if you chose the {\it binary} representation 
+	   described above, your data type will be {\bf BIN}.  Alternatively,
+	   if you decided that your string would be composed of floating
+	   point numbers, each representing a function parameter, your
+	   data type will be {\bf FLOAT}.  The final data type supported
+	   by the Genitor code package is {\bf INT}, such as is used with
+	   the Traveling Salesman Problem.
+
+	   The choice of data type determines which Genitor library 
+	   you will later link in with your application.  
+
+	   The only other consideration with data type is that any code
+	   you write should {\bf always} refer to the data type as
+	   {\bf GENE\_DATA} (never char, int, or float).  A string should
+	   {\bf always} be referred to as an array of GENE\_DATA.
+
+ \item Write an evaluation function which takes as input a {\it string}
+	   and a string length.  The evaluation function then returns a
+	   floating point number representing the {\it goodness} or
+	   {\it badness} of the input string.  
+	   
+	   The more accurate the evaluation function, the better the results
+	   of the genetic algorithm usually are.  However, the evaluation 
+	   function is often the most costly aspect of genetic optimization
+	   methods, so take care to implement this function efficiently.
+
+ \item Write a main() program which utilizes the basic Genitor library
+	   routines to perform the mechanics of the genetic algorithm.  Your
+	   main program will also rely on the genetic operator code modules
+	   shipped with Genitor.  However, your main() program will 
+	   call your evaluation function and uses status reporting mechanisms
+	   to your taste.  {\bf You should read the Genitor Code Structure
+	   document before attempting to code your own main function.}
+
+	   Actually, the Example programs shipped with Genitor should provide
+	   an excellent starting point.  You may wish to copy a main program
+	   file from one of the Genitor Example subdirectories and use this
+	   as a starting point which you can edit for your own purposes.
+
+ \item Compile your evaluation function and main program and link it with
+	   the Genitor libraries (appropriate for your data type) and the operator
+	   module(s) you have chosen.
+
+	   Again, the Example programs shipped with Genitor will be of considerable
+	   help to you here.  You may wish to copy a Makefile from one of the
+       Genitor Example subdirectories and use this as a starting point.
+
+\end{itemize}
+
+\section{Research}
+
+\end{document}
+\end{article}

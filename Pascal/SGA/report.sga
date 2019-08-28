@@ -1,0 +1,49 @@
+{ report.sga: contains writechrom, report }
+
+procedure writechrom(var out:text; chrom:chromosome; lchrom:integer);
+{ Write a chromosome as a string of 1's (true's) and 0's (false's) }
+var j:integer;
+begin
+ for j := lchrom downto 1 do
+   if chrom[j] then write(out,'1')
+    else write(out,'0');
+end;
+
+procedure report(gen:integer);
+{ Write the population report }
+const linelength = 132;
+var j:integer;
+begin
+ repchar(lst,'-',linelength); writeln(lst);
+ repchar(lst,' ',50); writeln(lst,'Population Report');
+ repchar(lst,' ',23);   write(lst,'Generation ',gen-1:2);
+ repchar(lst,' ',57); writeln(lst,'Generation ',gen:2);
+ writeln(lst);
+   write(lst,' #                string                 x    fitness');
+   write(lst,'            #  parents xsite');
+ writeln(lst,   '               string                 x    fitness');
+ repchar(lst,'-',linelength); writeln(lst);
+ for j := 1 to popsize do begin
+   write(lst,j:2, ')  ');
+   { Old string }
+   with oldpop[j] do begin
+     writechrom(lst,chrom,lchrom);
+     write(lst,' ', x:10, ' ', fitness:6:4, '      |');
+    end;
+   { New string }
+   with newpop[j] do begin
+     write(lst,'    ', j:2, ') (', parent1:2, ',', parent2:2, ')   ',
+               xsite:2,'   ');
+     writechrom(lst,chrom,lchrom);
+     writeln(lst, ' ',x:10,' ', fitness:6:4);
+    end;
+ end;
+ repchar(lst,'-',linelength); writeln(lst);
+ { Generation statistics and accumulated values }
+ writeln(lst,' Note: Generation ', gen:2, ' & Accumulated Statistics: '
+            ,' max=', max:6:4,',  min=', min:6:4, ',  avg=', avg:6:4, ',  sum='
+            ,sumfitness:6:4, ',  nmutation=', nmutation, ',  ncross= ', ncross);
+ repchar(lst,'-',linelength); writeln(lst);
+ page(lst);
+end;
+

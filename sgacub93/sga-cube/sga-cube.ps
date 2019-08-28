@@ -1,0 +1,1851 @@
+%!
+/TeXDict 200 dict def
+TeXDict begin
+/Mtrx matrix def
+/@start {
+/StartTime usertime def
+vmstatus pop /@VMused exch def pop 
+72 720 translate 
+} def
+/@letter { /letter where { pop letter 72 720 translate } if } def
+/@legal { /legal where { pop legal 72 936 translate } if } def
+/@note { /note where { pop note 72 720 translate } if } def
+/@a4 { /a4 where { pop a4 72 765 translate } if } def
+/@landscape { [ 0 1 -1 0 0 0 ] concat 72 -72 translate } def
+/@manualfeed { /manualfeed where { /manualfeed true put } if } def
+/@duplex { /setduplexmode where { /setduplexmode true put } if } def
+/@copies { /#copies exch def } def
+/@startdoc {
+dup
+72 exch div dup neg scale
+0 0 transform round exch round exch itransform translate
+Mtrx currentmatrix pop
+currentdict /isoddpage known
+{   /SecondMtrx matrix def
+8.5 exch mul 0 translate
+SecondMtrx currentmatrix pop
+}{
+pop
+} ifelse
+/@TeXSave save def
+} def
+/@restore /restore load def
+/restore {
+vmstatus pop
+dup @VMused lt {pop @VMused} if
+exch pop exch @restore /@VMused exch def
+} bind def
+/@pri { ( ) print
+(                                       ) cvs print
+}def
+/@newfont {
+/newname exch def
+newname 7 dict def
+newname load begin
+/FontType 3 def
+dup neg matrix scale /FontMatrix exch def
+/FontBBox [0 0 1 1] def
+/BitMaps 256 array def
+/BuildChar {CharBuilder} def
+/Encoding 256 array def
+0 1 255 {Encoding exch /.undef put} for
+end
+newname newname load definefont pop
+} bind def
+/ch-image  {ch-data 0 get} bind def
+/ch-width  {ch-data 1 get} bind def
+/ch-height {ch-data 2 get} bind def
+/ch-xoff   {ch-data 3 get} bind def
+/ch-yoff   {ch-data 4 get} bind def
+/ch-tfmw   {ch-data 5 get} bind def
+/CharBuilder
+{ exch /BitMaps get exch get /ch-data exch def
+ch-data null ne {
+ch-tfmw    0     ch-xoff neg     ch-yoff neg
+ch-width ch-xoff sub   ch-height ch-yoff sub
+setcachedevice
+ch-width ch-height true [1 0  0 1 ch-xoff ch-yoff] {ch-image}
+imagemask
+} if
+} bind def
+/@dc{
+/ch-code exch def
+dup 0 get
+length 2 lt
+{ pop [ <00> 1 1 0 0 8.00 ] }
+if
+/ch-data exch def
+currentfont /BitMaps get ch-code ch-data put
+currentfont /Encoding get ch-code dup (   ) cvs cvn put
+} bind def
+/@pc {
+pop
+/ch-data exch def
+currentpoint translate
+ch-width ch-height true [1 0 0 -1 ch-xoff ch-yoff ] {ch-image}
+imagemask
+} bind def
+/@sf { setfont } def
+/@flushfonts { @TeXSave restore /@TeXSave save def} def
+/@bop0 { pop } bind def
+/@bop1 { pop Mtrx setmatrix /SaveImage save def } def
+/@eop { showpage SaveImage restore } def
+/p { moveto } bind def
+/r { 0 rmoveto } bind def
+/s { show pop } bind def
+/ks {
+2 1 counttomark 2 sub { -1 roll } for
+counttomark 2 idiv {
+show 0 rmoveto
+} repeat
+show
+pop
+} bind def
+/m { mark } bind def
+/ru {
+/dy exch 1 sub neg def
+/dx exch 1 sub def
+gsave
+currentpoint
+newpath moveto
+dx 0 rlineto
+0 dy rlineto
+dx neg 0 rlineto
+closepath fill
+grestore
+} bind def
+/@end {
+(Time used: ) print usertime StartTime sub @pri
+(VM used: ) print @VMused @pri
+(. Unused: ) print vmstatus @VMused sub @pri pop pop
+(\n) print flush
+end 
+} def
+/DraftFirst { gsave initmatrix newpath
+/Helvetica-Bold findfont setfont
+(Draft) dup stringwidth pop 8.875 exch div dup 72 mul dup scale
+52.3 rotate 2.5 exch div -.35 translate
+0.95 setgray
+0 0 moveto show
+grestore
+} bind def
+/DraftMore { gsave initmatrix newpath
+/Helvetica-Bold findfont 72 scalefont setfont
+0.95 setgray
+576 702 moveto
+(Draft) stringwidth exch neg exch neg rmoveto
+(Draft) show
+grestore 
+} bind def
+/@draft {
+/@bop1 { 1 le {DraftFirst} {DraftMore} ifelse
+Mtrx setmatrix
+/SaveImage save def
+} bind def
+} bind def
+/@twoup {
+initmatrix [ 0 1 -1 0 0 0 ] concat
+36 -87 translate  5.5 8.5 div dup scale
+/isoddpage true def
+/@eop { isoddpage not {showpage} if
+SaveImage restore
+/isoddpage isoddpage not def
+} def
+/@bop1 { pop 
+isoddpage
+{ SecondMtrx setmatrix }
+{ Mtrx setmatrix }
+ifelse
+/SaveImage save def
+} def
+/@end { isoddpage not { showpage } if
+end
+} def
+} def
+/@beginspecial
+{ SpecialDict begin
+gsave /SpecialSave save def
+currentpoint transform initgraphics itransform translate 0 0 moveto
+SpecialDefaults
+IfMacSetUp
+} def
+/@setspecial
+{
+hof vof translate setclipper
+hsc vsc scale
+angl rotate
+} def
+/@endspecial
+{ SpecialSave restore
+grestore end
+} def
+/@beginfullpage {
+gsave /SpecialSave save def
+SpecialDict begin
+/showpage {} def
+initgraphics
+} def
+/@endfullpage {
+clear end SpecialSave restore grestore showpage
+} def
+/SpecialDict 50 dict def
+SpecialDict begin
+/Inch { 72 mul} bind def
+/SpecialDefaults
+{ /hsi 8.5 Inch def
+/vsi 11 Inch def
+/hof 0 def
+/vof 0 def
+/hsc 1 def
+/vsc 1 def
+/angl 0 def
+/CLIP false def
+} def
+/@hsize {/hsi exch def /CLIP true def} def
+/@vsize {/vsi exch def /CLIP true def} def
+/@hoffset {/hof exch def} def
+/@voffset {/vof exch def} def
+/@hscale {/hsc exch def} def
+/@vscale {/vsc exch def} def
+/@rotate {/angl exch def} def
+/setclipper
+{
+CLIP
+{ newpath 0 0 moveto hsi 0 rlineto 0 vsi rlineto hsi neg 0 rlineto 
+closepath clip }
+if
+} def
+end
+/IfMacSetUp
+{ userdict /md known
+{ userdict /md get type /dicttype eq
+{ md begin
+/txpose{
+1 -1 scale
+} bind def
+/cp {pop pop} bind def
+end }
+if }
+if    
+} def
+end
+/TeXDict where
+{/TeXDict get begin}
+{ (Need to load basic TeXDict first\n) print
+currentfile flushfile} 
+ifelse
+/@texmakefont {
+/TeXsize exch def
+[ TeXsize 0 0 TeXsize neg 0 0 ] makefont
+def
+} bind def
+/@ps2texfont {
+dup FontDirectory exch known
+{ exch pop findfont }
+{ ReEncodeForTeX }
+ifelse
+exch @texmakefont
+} bind def
+/ReEncodeForTeX
+{ /newfontname exch def
+/basefontname exch def
+/TeXstr 30 string def
+/basefontdict basefontname findfont def
+/newfont basefontdict maxlength dict def
+basefontdict
+{ exch dup /FID ne
+{ dup /Encoding eq
+{ exch dup length array copy
+newfont 3 1 roll put }
+{ exch newfont 3 1 roll put }
+ifelse
+}
+{ pop pop }
+ifelse
+} forall
+basefontdict /MathFontName known not
+{
+/TeXvec 
+basefontname TeXstr cvs (Courier) search
+{ pop pop pop TeXcourvec }
+{ pop TeXnormalvec }
+ifelse 
+def
+TeXvec aload pop
+TeXvec length 2 idiv
+{ newfont /Encoding get 3 1 roll put }
+repeat
+}
+if
+newfontname newfont definefont
+} bind def
+/TeXnormalvec
+[ 8#014 /fi 8#015 /fl 8#020 /dotlessi 8#022 /grave 8#023 /acute
+8#024 /caron 8#025 /breve 8#026 /macron 8#027 /ring 8#030 /cedilla
+8#031 /germandbls 8#032 /ae 8#033 /oe 8#034 /oslash 8#035 /AE
+8#036 /OE 8#037 /Oslash 8#042 /quotedblright 8#074 /exclamdown
+8#076 /questiondown 8#134 /quotedblleft 8#136 /circumflex
+8#137 /dotaccent 8#173 /endash 8#174 /emdash 8#175 /hungarumlat
+8#176 /tilde 8#177 /dieresis ] def
+/TeXcourvec
+[ 8#016 /exclamdown 8#017 /questiondown 8#020 /dotlessi 8#022 /grave
+8#023 /acute 8#024 /caron 8#025 /breve 8#026 /macron 8#027 /ring
+8#030 /cedilla 8#031 /germandbls 8#032 /ae 8#033 /oe 8#034 /oslash
+8#035 /AE 8#036 /OE 8#037 /Oslash 8#074 /less 8#076 /greater
+8#134 /backslash 8#136 /circumflex 8#137 /underscore 8#173 /braceleft
+8#174 /bar 8#175 /braceright 8#177 /dieresis ] def
+/ObliqueFont {
+/ObliqueAngle exch def
+/ObliqueBaseName exch def
+/ObliqueFontName exch def
+/ObliqueTransform [1 0 ObliqueAngle sin ObliqueAngle cos div 1 0 0] def
+/basefontdict ObliqueBaseName findfont ObliqueTransform makefont def
+/newfont basefontdict maxlength dict def
+basefontdict
+{ exch dup /FID ne
+{ dup /Encoding eq
+{ exch dup length array copy
+newfont 3 1 roll put }
+{ exch newfont 3 1 roll put }
+ifelse
+}
+{ pop pop }
+ifelse
+} forall
+newfont /FontName ObliqueFontName put
+ObliqueFontName newfont definefont pop
+} bind def
+/SmallCapsFont {
+/SmallCapsBaseName exch def
+/SmallCapsFontName exch def
+/basefontdict SmallCapsBaseName findfont def
+/newfont basefontdict maxlength 10 add dict def
+newfont begin
+/FontName SmallCapsFontName def
+/FontBaseDict basefontdict 1000 scalefont def
+/FontSCDict FontBaseDict .8 scalefont def
+/FontType 3 def
+/BuildChar {SmallCapChar} def
+/FontMatrix dup basefontdict exch get def
+/FontBBox dup basefontdict exch get def
+/Encoding dup basefontdict exch get def
+end
+SmallCapsFontName newfont definefont pop
+} bind def
+/SmallCapChar {
+/achar (A) def
+achar exch 0 exch put
+begin
+achar 0 get dup 97 ge exch 122 le and {
+achar 0 achar 0 get 32 sub put
+FontSCDict
+} {
+FontBaseDict
+} ifelse
+setfont achar stringwidth FontBBox setcachedevice
+newpath 0 0 moveto achar show
+end
+} bind def
+/MathEncodingVec [
+/Gamma /Delta /Theta /Lambda /Xi /Pi /Sigma /Upsilon1
+/Phi /Psi /Omega /alpha /beta /gamma /delta /epsilon
+/zeta /nu /theta /iota /kappa /lambda /mu /nu
+/xi /pi /rho /sigma /tau /upsilon /phi /chi
+/psi /omega /epsilon /theta1 /omega1 /rho /sigma /phi1
+/arrowleft /arrowleft /arrowright /arrowright
+/suchthat /congruent /proportional /angle
+/zero /one /two /three /four /five /six /seven
+/eight /nine /period /comma /less /slash /greater /asteriskmath
+/partialdiff /A /B /C /D /E /F /G
+/H /I /J /K /L /M /N /O
+/P /Q /R /S /T /U /V /W
+/X /Y /Z /registerserif /copyrightserif /trademarkserif /logicalor /logicaland
+/section /a /b /c /d /e /f /g
+/h /i /j /k /l /m /n /o
+/p /q /r /s /t /u /v /w
+/x /y /z /dotlessi /j /weierstrass /macron /breve
+] def
+/MathCharVec [
+71	68	81	76	88	80	83	161
+70	89	87	97	98	103	100	101
+122	110	113	105	107	108	109	110
+120	112	114	115	116	117	102	99
+121	119	101	74	118	114	115	106
+172	172	174	174	39	64	181	208
+48	49	50	51	52	53	54	55
+56	57	46	44	60	47	62	42
+182	65	66	67	68	69	70	71
+72	73	74	75	76	77	78	79
+80	81	82	83	84	85	86	87
+88	89	90	210	211	212	218	217
+167	97	98	99	100	101	102	103
+104	105	106	107	108	109	110	111
+112	113	114	115	116	117	118	119
+120	121	122	245	106	195	197	198
+] def
+/MathDictVec [
+1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1
+1 1 1 1 1 1 1 1
+2 2 2 2 2 2 2 2
+0 0 0 0 0 0 0 0
+0 0 0 0 2 2 2 2
+2 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0
+0 0 0 2 2 2 2 2
+2 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0
+0 0 0 0 0 2 0 0
+] def
+/MathOblique {
+3 copy ObliqueFont
+pop pop MathFont
+} bind def  
+/MathFont {
+/MathSymName exch def
+/MathBaseName exch def
+/MathFontName exch def
+/basefontdict MathBaseName findfont def
+/newfont basefontdict maxlength 10 add dict def
+newfont begin
+/FontName MathFontName def
+/FontDictArray [
+basefontdict 1000 scalefont
+MathSymName findfont 950 scalefont
+/Symbol findfont 950 scalefont
+] def
+/FontType 3 def
+/BuildChar {MathFontChar} def
+/FontMatrix dup basefontdict exch get def
+/FontBBox dup basefontdict exch get def
+/Encoding dup basefontdict exch get dup length array copy def
+/WhichFont MathDictVec def
+/WhichChar MathCharVec def
+MathEncodingVec Encoding copy pop
+/achar (A) def
+end
+MathFontName newfont definefont pop
+} bind def
+/MathFontChar {
+exch begin
+achar exch 0 exch put
+FontDictArray WhichFont achar 0 get get get setfont
+achar dup 0 get WhichChar exch get 0 exch put
+achar stringwidth FontBBox setcachedevice
+newpath 0 0 moveto achar show
+end
+} bind def
+end
+/psf$TeXscale { 65536 div } def
+/DocumentInitState [ matrix currentmatrix currentlinewidth currentlinecap
+currentlinejoin currentdash currentgray currentmiterlimit ] cvx def
+/startTexFig {
+/psf$SavedState save def
+userdict maxlength dict begin
+currentpoint transform
+DocumentInitState setmiterlimit setgray setdash setlinejoin setlinecap
+setlinewidth setmatrix
+itransform moveto
+/psf$ury exch psf$TeXscale def
+/psf$urx exch psf$TeXscale def
+/psf$lly exch psf$TeXscale def
+/psf$llx exch psf$TeXscale def
+/psf$y exch psf$TeXscale def
+/psf$x exch psf$TeXscale def
+currentpoint /psf$cy exch def /psf$cx exch def
+/psf$sx psf$x psf$urx psf$llx sub div def
+/psf$sy psf$y psf$ury psf$lly sub div def
+psf$sx psf$sy scale
+psf$cx psf$sx div psf$llx sub
+psf$cy psf$sy div psf$ury sub translate
+/DefFigCTM matrix currentmatrix def
+/initmatrix {
+DefFigCTM setmatrix
+} def
+/defaultmatrix {
+DefFigCTM exch copy
+} def
+/initgraphics {
+DocumentInitState setmiterlimit setgray setdash 
+setlinejoin setlinecap setlinewidth setmatrix
+DefFigCTM setmatrix
+} def
+/showpage {
+initgraphics
+} def
+/erasepage {
+} def
+/copypage {
+initgraphics
+} def
+} bind def
+/clipFig {
+currentpoint 6 2 roll
+newpath 4 copy
+4 2 roll moveto
+6 -1 roll exch lineto
+exch lineto
+exch lineto
+closepath clip
+newpath
+moveto
+} bind def
+/doclip { psf$llx psf$lly psf$urx psf$ury clipFig } def
+/endTexFig { end psf$SavedState restore } def
+%%Title: sga-cube.dvi
+%%Creator: dvi2ps 3.1
+%%EndProlog
+TeXDict begin @start
+300 @startdoc
+6 @bop0
+/t-rom.300 41.666630 /Times-Roman /t-rom @ps2texfont
+/t-ita.300 41.666630 /Times-Italic /t-ita @ps2texfont
+6 @bop1
+t-rom.300 @sf
+-111 -70 p m (Smith,) 11 (R.) 13 (E.,) 14 (Goldber) 0 (g,) 12 
+(D.) 13 (E.,) 14 (&) 12 (Earickson,) 14 (J.) 13 (\(1991\).)  ks 
+t-ita.300 @sf
+22 r m (SGA-C:) 12 (A) 13 (C-language) 11 (implementation) 10 (of) 12 
+(a) 12 (simple) 12 (genetic) 13 (algorithm)  ks 
+t-rom.300 @sf
+12 -20 p m (\(TCGA) 11 (Report) 10 (No.) 10 (91002\).) 10 (T) 0 
+(uscaloosa:) 14 (The) 11 (University) 9 (of) 10 (Alabama,) 13 (The) 11 
+(Clearinghouse) 10 (for) 10 (Genetic) 11 (Algorithms.)  ks 
+@eop
+5 @bop0
+/c-med.300 41.666630 /Courier /c-med @ps2texfont
+/t-rom.210 29.166582 /Times-Roman /t-rom @ps2texfont
+/t-bol.420 58.333229 /Times-Bold /t-bol @ps2texfont
+1.000000 /cmmi10.300 @newfont
+cmmi10.300 @sf
+[<78780084C600E58100F38100F3808063808001C00001C00001C00001C00000E00000E00040E180
+  20E3C020F1E010F0C008C840078780> 19 18 -2 0 24] 120 @dc
+/t-bol.300 41.666630 /Times-Bold /t-bol @ps2texfont
+[<1C003200710070803880388038001C001C001C000E000E00870087004700470027001C00000000
+  000000000000000000018003C003C001C0> 10 28 -2 0 14] 105 @dc
+[<7C00E600F300F18061C001C000E000E000E000E000700070007000700038003800380038001C00
+  1C041C021C020C010C009C00700000000000000000000000000006000F000F0007> 16 36 0 8 17] 106 @dc
+/t-bol.360 49.999928 /Times-Bold /t-bol @ps2texfont
+5 @bop1
+t-rom.300 @sf
+-60 -70 p m (4.)  s
+-8 -70 p m (Every) 10 (node) 11 (then) 10 (replaces) 12 (its)  ks 
+c-med.300 @sf
+9 r m (nexchange)  s
+t-rom.300 @sf
+11 r m (weakest) 12 (individu) -1 (als) 9 (with) 10 (the) 10 
+(individuals) 9 (received) 11 (from) 11 (the) 10 (neighbor) -1 (.)  ks 
+-111 7 p m (After) 10 (these) 10 (events,) 11 (each) 12 (node) 10 
+(re-begins) 11 (its) 10 (own) 10 (GA) 10 (algorithm) 10 (independently) -2 
+(.)  ks 
+-49 57 p m (The) 10 (SGA-Cube) 11 (code) 12 (is) 10 (fully) 10 
+(parallel) 10 (and) 11 (scales) 13 (to) 10 (any) 11 (hypercube) 11 
+(dimension.) 15 (Speci\014cation) 11 (of) 11 (the) 11 (hypercube) 11 (dimension) 10 
+(at)  ks 
+-111 107 p m (execution) 7 (time) 9 (should) 8 (be) 9 (done) 8 
+(with) 8 (the)  ks 
+c-med.300 @sf
+9 r m (xnc)  s
+t-rom.300 @sf
+8 r m (command;) 11 (for) 8 (instance)  ks 
+c-med.300 @sf
+9 r m (xnc) 21 (-d7) 21 (sga)  ks 
+t-rom.300 @sf
+21 r m (.) 7 (.) 7 (.)  ks 
+1360 107 p m (would) 8 (execute) 10 (the) 9 (parallel) 8 (SGA-Cube)  ks 
+-111 157 p m (program) 9 (on) 10 (2)  ks 
+t-rom.210 @sf
+112 143 p m (7)  s
+t-rom.300 @sf
+139 157 p m (or) 10 (128) 10 (nodes.)  ks 
+t-bol.420 @sf
+-111 296 p m (4)  s
+-24 296 p m (Implementing) 15 (Application) 17 (Speci\014c) 16 (Routines)  ks 
+t-rom.300 @sf
+-111 388 p m (T) -2 (o) 7 (implement) 8 (a) 9 (speci\014c) 10 
+(application,) 9 (you) 8 (should) 8 (only) 7 (have) 10 (to) 8 
+(change) 9 (the) 9 (\014le)  ks 
+c-med.300 @sf
+9 r m (app.c)  s
+t-rom.300 @sf
+m (.) 13 (Section) 9 (2) 8 (describes) 10 (the) 9 
+(routines) 7 (in)  ks 
+c-med.300 @sf
+8 r m (app.c)  s
+t-rom.300 @sf
+-111 438 p m (in) 7 (detail.) 12 (If) 7 (you) 7 (use) 9 
+(additional) 6 (variables) 8 (for) 8 (your) 7 (speci\014c) 9 (problem,) 8 
+(the) 8 (easiest) 9 (method) 7 (of) 8 (making) 8 (them) 8 
+(available) 8 (to) 7 (other) 7 (program)  ks 
+-111 488 p m (units) 9 (is) 9 (to) 10 (declare) 12 (them) 10 
+(in)  ks 
+c-med.300 @sf
+10 r m (sga.h)  s
+t-rom.300 @sf
+11 r m (and)  s
+c-med.300 @sf
+10 r m (external.h)  s
+t-rom.300 @sf
+m (.) 15 (However) -1 (,) 10 (take) 11 (care) 12 
+(that) 10 (you) 10 (do) 10 (not) 10 (redeclare) 12 (existing) 9 
+(variables.)  ks 
+-49 538 p m (T) -2 (wo) 8 (example) 12 (applications) 9 (\014les) 11 
+(are) 11 (included) 9 (in) 10 (the) 10 (SGA-Cube) 10 (distributi) -1 
+(on.) 12 (The) 11 (\014le)  ks 
+c-med.300 @sf
+10 r m (app1.c)  s
+t-rom.300 @sf
+11 r m (performs) 10 (the) 10 (simple) 10 (example)  ks 
+-111 588 p m (problem) 9 (included) 10 (with) 9 (the) 11 (Pascal) 11 
+(version;) 10 (\014nding) 10 (the) 10 (maximum) 11 (of)  ks 
+cmmi10.300 @sf
+10 r m (x)  s
+t-rom.210 @sf
+1036 574 p m (10)  s
+t-rom.300 @sf
+1067 588 p m (,) 11 (where)  ks 
+cmmi10.300 @sf
+11 r m (x)  s
+t-rom.300 @sf
+11 r m (is) 10 (an) 11 (integer) 10 (interpretation) 9 (of) 10 
+(a) 11 (chromosome.)  ks 
+-49 637 p m (A) 11 (slight) -1 (ly) 9 (more) 11 (complex) 12 
+(application) 10 (is) 10 (include) 11 (in)  ks 
+c-med.300 @sf
+10 r m (app2.c)  s
+t-rom.300 @sf
+m (.) 16 (This) 11 (application) 10 (illustrates) 10 (two) 11 
+(features) 11 (that) 11 (have) 11 (been) 12 (added)  ks 
+-111 687 p m (to) 9 (SGA-Cube.) 13 (The) 11 (\014rst) 10 (of) 10 
+(these) 10 (is) 10 (the)  ks 
+t-bol.300 @sf
+10 r m (ithruj2int)  s
+t-rom.300 @sf
+9 r m (function,) 10 (which) 10 (converts) 10 (bits)  ks 
+cmmi10.300 @sf
+9 r m (i)  s
+t-rom.300 @sf
+10 r m (through)  s
+cmmi10.300 @sf
+9 r m (j)  s
+t-rom.300 @sf
+12 r m (in) 10 (a) 10 (chromosome) 11 (to) 10 (an) 10 
+(integer) -1 (.) 13 (The)  ks 
+-111 737 p m (second) 10 (new) 10 (feature) 12 (is) 10 (the)  ks 
+t-bol.300 @sf
+10 r m (utility)  s
+t-rom.300 @sf
+9 r m (pointer) 9 (that) 10 (is) 11 (associated) 11 (with) 10 
+(each) 11 (population) 9 (member) -1 (.)  ks 
+-49 787 p m (The) 14 (example) 16 (application) 14 (interprets) 14 (each) 17 
+(chromosome) 16 (as) 15 (a) 15 (set) 16 (of) 14 (concatenated) 16 
+(integers) 15 (in) 14 (binary) 15 (form.) 27 (The) 16 (lengths) 14 
+(of)  ks 
+-111 837 p m (these) 10 (integer) 9 (\014elds) 11 (is) 10 (determined) 11 
+(by) 9 (the) 11 (user) 0 (-speci\014ed) 10 (value) 11 (of)  ks 
+t-bol.300 @sf
+10 r m (\014eld)  s
+2 r 13 2 ru
+1036 837 p m (size)  s
+t-rom.300 @sf
+m (,) 12 (which) 10 (is) 10 (read) 11 (in) 9 
+(by) 10 (the) 10 (function)  ks 
+c-med.300 @sf
+9 r m (app)  s
+2 r 13 2 ru
+1748 837 p m (data\(\))  s
+t-rom.300 @sf
+m (.) 15 (The)  ks 
+-111 886 p m (\014eld) 11 (size) 11 (must) 11 (be) 11 (less) 12 
+(than) 11 (the) 11 (smallest) 11 (of) 11 (the) 11 (chromosome) 13 
+(length) 10 (and) 11 (the) 11 (length) 11 (of) 10 (an) 12 
+(unsigned) 10 (integer) -1 (.) 15 (An) 11 (integer) 11 (array) 12 
+(for)  ks 
+-111 936 p m (storing) 10 (the) 13 (interpreted) 12 (form) 13 (of) 13 
+(each) 14 (chromosome) 14 (is) 13 (dynamically) 13 (allocated) 13 (and) 13 
+(assigned) 14 (to) 12 (the) 13 (chromosome') -1 (s)  ks 
+t-bol.300 @sf
+13 r m (utility)  s
+t-rom.300 @sf
+11 r m (pointer)  s
+-111 986 p m (in)  s
+c-med.300 @sf
+11 r m (app)  s
+2 r 13 2 ru
+22 986 p m (malloc\(\))  s
+t-rom.300 @sf
+m (.) 18 (The)  ks 
+c-med.300 @sf
+13 r m (ithruj2int)  s
+t-rom.300 @sf
+12 r m (routine) 11 (\(see)  ks 
+c-med.300 @sf
+12 r m (utility.c)  s
+t-rom.300 @sf
+m (\)) 12 (is) 12 (used) 12 (to) 11 (translate) 12 
+(each) 13 (chromosome) 13 (into) 11 (its) 11 (associated)  ks 
+-111 1036 p m (vector) -1 (.) 21 (The) 14 (\014tness) 14 (for) 13 
+(each) 15 (chromosome) 15 (is) 13 (simply) 13 (the) 14 (sum) 14 
+(of) 13 (the) 13 (squares) 15 (of) 13 (these) 14 (integers.) 24 
+(This) 13 (example) 15 (application) 13 (will)  ks 
+-111 1086 p m (function) 8 (for) 10 (any) 10 (chromosome) 12 (length.)  ks 
+t-bol.420 @sf
+-111 1225 p m (5)  s
+-24 1225 p m (Final) 14 (Comments)  ks 
+t-rom.300 @sf
+-111 1317 p m (SGA-Cube) 8 (is) 9 (intended) 8 (to) 8 (be) 10 
+(a) 9 (simple) 9 (code) 10 (for) 9 (\014rst-time) 9 (experimentation) 8 
+(with) 9 (parallel) 8 (GAs.) 15 (It) 8 (is) 9 (not) 8 
+(intended) 9 (to) 8 (be) 10 (de\014nitive) 8 (in)  ks 
+-111 1367 p m (terms) 8 (of) 7 (its) 8 (ef) 0 (\014ciency) 9 
+(or) 8 (the) 8 (grace) 10 (of) 8 (its) 7 (implementation.) 13 
+(The) 10 (authors) 8 (are) 9 (interested) 8 (in) 8 (the) 8 
+(comments,) 10 (criticisms,) 9 (and) 9 (bug) 8 (reports)  ks 
+-111 1417 p m (from) 12 (SGA-Cube) 11 (users,) 13 (so) 12 (that) 12 
+(the) 12 (code) 13 (can) 13 (be) 12 (re\014ned) 13 (for) 11 
+(easier) 14 (use) 12 (in) 12 (subsequent) 12 (versions.) 19 (Please) 14 
+(email) 12 (your) 12 (comments) 13 (to)  ks 
+t-bol.300 @sf
+-111 1467 p m (r) 0 (ob@gal) -1 (ab2.mh.ua.edu)  ks 
+t-rom.300 @sf
+m (,) 11 (or) 10 (write) 10 (to) 10 (TCGA:)  ks 
+580 1545 p m (The) 11 (Clearinghouse) 10 (for) 10 (Genetic) 11 (Algorithms)  ks 
+709 1595 p m (The) 11 (University) 9 (of) 11 (Alabama)  ks 
+614 1645 p m (Department) 11 (of) 10 (Engineering) 10 (Mechanics)  ks 
+795 1695 p m (P) -4 (.O.) 11 (Box) 10 (870278)  ks 
+702 1744 p m (T) 0 (uscaloosa,) 10 (Alabama) 12 (35487)  ks 
+t-bol.360 @sf
+-111 1862 p m (Acknowledgments)  s
+t-rom.300 @sf
+-111 1940 p m (The) 14 (authors) 12 (gratefully) 13 (acknowledge) 14 (support) 13 
+(provided) 13 (by) 13 (NASA) 14 (under) 13 (Grant) 14 (NGT) -3 
+({50224) 12 (and) 14 (support) 12 (provided) 13 (by) 13 (the) 14 
+(Na-)  ks 
+-111 1990 p m (tional) 11 (Science) 13 (Foundation) 11 (under) 13 (Grant) 12 
+(CTS{8451610.) 20 (W) -2 (e) 12 (also) 13 (thank) 12 (Hillol) 11 
+(Kar) 0 (gupta) 11 (for) 12 (donating) 12 (his) 12 (tournament) 12 
+(selection)  ks 
+-111 2039 p m (implementation.)  s
+t-bol.420 @sf
+-111 2178 p m (Refer) 0 (ences)  ks 
+t-rom.300 @sf
+-111 2271 p m (Booker) -2 (,) 8 (L.) 9 (B.) 9 (\(1982\).) 11 
+(Intelligent) 7 (behavior) 8 (as) 9 (an) 9 (adaptation) 8 (to) 8 
+(the) 9 (task) 8 (environment) 9 (\(Doctoral) 8 (dissertation,) 8 (T) -2 
+(echnical) 9 (Report) 8 (No.)  ks 
+12 2321 p m (243.) 13 (Ann) 12 (Arbor:) 18 (University) 11 (of) 13 
+(Michigan,) 13 (Logic) 13 (of) 12 (Computers) 13 (Group\).)  ks 
+t-ita.300 @sf
+23 r m (Dissertations) 12 (Abstracts) 13 (International)  ks 
+t-rom.300 @sf
+m (,)  s
+t-ita.300 @sf
+12 r m (43\(2\))  s
+t-rom.300 @sf
+m (,)  s
+12 2371 p m (469B.) 15 (\(University) 9 (Micro\014lms) 11 (No.) 10 (8214966\))  ks 
+-111 2451 p m (Brindle) -1 (,) 12 (A.) 14 (\(1981\).)  ks 
+t-ita.300 @sf
+23 r m (Genetic) 14 (algorithms) 11 (for) 12 (function) 12 (optimizatio) -1 
+(n)  ks 
+t-rom.300 @sf
+m (.) 23 (Unpublished) 11 (doctoral) 13 (dissertation,) 13 (University) 12 
+(of) 12 (Alberta,)  ks 
+12 2501 p m (Edmonton,) 10 (Canada.)  ks 
+-111 2582 p m (Goldber) -1 (g,) 9 (D.) 11 (E.) 11 (\(1989\).)  ks 
+t-ita.300 @sf
+15 r m (Genetic) 11 (algorithms) 9 (in) 9 (sear) -1 (ch,) 12 
+(optimizatio) -1 (n,) 9 (and) 10 (machine) 11 (learning)  ks 
+t-rom.300 @sf
+m (.) 14 (Reading,) 11 (MA:) 10 (Addison{W) -2 (esley) -2 
+(.)  ks 
+-111 2662 p m (Knuth,) 8 (D.) 11 (E.) 12 (\(1981\).)  ks 
+t-ita.300 @sf
+14 r m (The) 11 (Art) 11 (of) 10 (Computer) 10 (Pr) -1 
+(ogramming)  ks 
+t-rom.300 @sf
+9 r m (\(2nd,) 11 (vol.) 10 (2) 10 (ed.\).) 16 (Reading,) 11 
+(MA:) 10 (Addison{W) -2 (esley) -2 (.)  ks 
+@eop
+4 @bop0
+1.000000 /cmsy10.300 @newfont
+cmsy10.300 @sf
+[<03C00FF01FF83FFC7FFE7FFEFFFFFFFFFFFFFFFF7FFE7FFE3FFC1FF80FF003C0> 16 16 -2 -2 21] 15 @dc
+1.000000 /cmmi7.300 @newfont
+cmmi7.300 @sf
+[<601C60323031303130193018180C180C980C9C0C4E0C590C30F8> 16 13 -1 0 21] 110 @dc
+cmmi10.300 @sf
+[<300380700640380E20380E103807103807101C07001C03801C03801C03800E01C00E01C08E01C0
+  8F01C04701C04681C04E6180381F00> 20 18 -2 0 25] 110 @dc
+4 @bop1
+t-bol.360 @sf
+-111 -70 p m (3.1)  s
+0 -70 p m (Input-Output)  s
+t-rom.300 @sf
+-111 7 p m (SGA-Cube) 8 (allows) 8 (for) 9 (multiple) 7 (GA) 9 
+(runs.) 14 (When) 9 (the) 9 (program) 9 (is) 9 (executed,) 10 
+(the) 9 (user) 10 (is) 8 (\014rst) 9 (prompted) 8 (for) 9 
+(the) 9 (number) 9 (of) 8 (GA) 9 (runs) 9 (to)  ks 
+-111 57 p m (be) 8 (performed.) 14 (After) 8 (this,) 9 (the) 8 
+(quantity) 7 (of) 8 (input) 8 (needed) 9 (depends) 9 (on) 9 
+(the) 8 (selection) 9 (routine) 7 (chosen) 10 (at) 8 (compile-time,) 10 
+(any) 8 (application-)  ks 
+-111 106 p m (speci\014c) 10 (information) 10 (required,) 11 (and) 10 (whether) 11 
+(the) 10 (code) 12 (is) 10 (being) 10 (executed) 12 (on) 10 
+(the) 11 (nCUBE) 10 (or) 10 (on) 11 (a) 11 (serial) 10 
+(computer) -1 (.) 14 (When) 11 (compiled)  ks 
+-111 156 p m (with) 9 (roulette) 9 (wheel) 11 (selection,) 11 (the) 10 
+(input) 9 (requested) 11 (from) 10 (the) 11 (user) 11 (is) 10 
+(as) 11 (follows:)  ks 
+cmsy10.300 @sf
+-49 238 p m (\017)  s
+t-rom.300 @sf
+-8 238 p m (The) 10 (number) 11 (of) 10 (GA) 11 (runs) 10 
+(to) 10 (be) 11 (performed) 11 (\()  ks 
+c-med.300 @sf
+m (int)  s
+t-rom.300 @sf
+m (\).)  s
+cmsy10.300 @sf
+-49 321 p m (\017)  s
+t-rom.300 @sf
+-8 321 p m (The) 10 (population) 9 (size) 11 (for) 10 (UNIX) 11 
+(versions,)  ks 
+t-ita.300 @sf
+11 r m (or)  s
+t-rom.300 @sf
+10 r m (the) 10 (population) 9 (size)  ks 
+t-ita.300 @sf
+11 r m (per) 11 (node)  ks 
+t-rom.300 @sf
+11 r m (for) 10 (the) 10 (nCUBE) 10 (version) 10 (\()  ks 
+c-med.300 @sf
+m (int)  s
+t-rom.300 @sf
+m (\).)  s
+cmsy10.300 @sf
+-49 403 p m (\017)  s
+t-rom.300 @sf
+-8 403 p m (The) 10 (chromosome) 12 (length) 10 (\()  ks 
+c-med.300 @sf
+m (int)  s
+t-rom.300 @sf
+m (\).)  s
+cmsy10.300 @sf
+-49 486 p m (\017)  s
+t-rom.300 @sf
+-8 486 p m (Print) 9 (the) 10 (chromosome) 12 (strings) 9 (each) 12 
+(generation) 10 (\()  ks 
+c-med.300 @sf
+m (y/n)  s
+t-rom.300 @sf
+m (\)?)  s
+cmsy10.300 @sf
+-49 568 p m (\017)  s
+t-rom.300 @sf
+-8 568 p m (The) 10 (maximum) 12 (number) 11 (of) 10 (generations) 10 
+(for) 10 (the) 11 (run) 10 (\()  ks 
+c-med.300 @sf
+m (int)  s
+t-rom.300 @sf
+m (\).)  s
+-111 650 p m (If) 10 (the) 10 (nCUBE) 9 (version) 10 (is) 11 
+(run,) 10 (the) 10 (following) 9 (information) 9 (is) 10 (requested:)  ks 
+cmsy10.300 @sf
+-49 732 p m (\017)  s
+t-rom.300 @sf
+-8 732 p m (The) 13 (percent) 13 (of) 12 (the) 12 (population) 11 
+(per) 13 (node) 12 (to) 12 (exchange) 14 (with) 12 (nearest) 13 
+(neighbor) 12 (nodes\()  ks 
+c-med.300 @sf
+m (float)  s
+t-rom.300 @sf
+m (\).) 20 (A) 13 (integer) 12 (number) 13 (of) 12 
+(\014ttest)  ks 
+-8 782 p m (individ) -1 (uals) 10 (will) 10 (be) 12 (sent) 12 
+(to) 11 (a) 12 (node,) 12 (where) 13 (the) 11 (integer) 11 
+(is)  ks 
+c-med.300 @sf
+12 r m (\(population) 27 (size) 28 (per) 28 (node) 27 (*) 28 
+(percent\)/100.0)  ks 
+t-rom.300 @sf
+m (.)  s
+-8 832 p m (Percentages) 12 (greater) 11 (than) 10 (50%) 10 (are) 11 
+(not) 10 (recommended,) 13 (and) 10 (percentages) 12 (greater) 11 (than) 10 
+(100%) 10 (cause) 12 (a) 11 (fatal) 10 (error) -1 (.)  ks 
+cmsy10.300 @sf
+-49 914 p m (\017)  s
+t-rom.300 @sf
+-8 914 p m (The) 10 (number) 11 (of) 10 (generations) 11 (between) 11 
+(node) 10 (population) 9 (exchanges) 12 (\()  ks 
+c-med.300 @sf
+m (int)  s
+t-rom.300 @sf
+m (\).)  s
+-111 996 p m (For) 10 (all) 9 (versions) 10 (of) 10 (SGA-Cube,) 11 
+(the) 11 (following) 8 (input) 9 (is) 10 (also) 11 (requested) 11 
+(from) 10 (the) 11 (user:)  ks 
+cmsy10.300 @sf
+-49 1078 p m (\017)  s
+t-rom.300 @sf
+-8 1078 p m (The) 10 (probability) 9 (of) 10 (crossover) 11 (\()  ks 
+c-med.300 @sf
+m (float)  s
+t-rom.300 @sf
+m (\).)  s
+cmsy10.300 @sf
+-49 1160 p m (\017)  s
+t-rom.300 @sf
+-8 1160 p m (The) 10 (probability) 9 (of) 10 (mutation) 9 (\()  ks 
+c-med.300 @sf
+m (float)  s
+t-rom.300 @sf
+m (\).)  s
+cmsy10.300 @sf
+-49 1243 p m (\017)  s
+t-rom.300 @sf
+-8 1243 p m (Application-speci\014c) 10 (input,) 9 (if) 10 (any) -2 (.)  ks 
+cmsy10.300 @sf
+-49 1325 p m (\017)  s
+t-rom.300 @sf
+-8 1325 p m (The) 10 (seed) 12 (for) 10 (the) 10 (random) 11 
+(number) 11 (generator) 10 (\()  ks 
+c-med.300 @sf
+m (float)  s
+t-rom.300 @sf
+m (\).)  s
+t-bol.360 @sf
+-111 1444 p m (3.2)  s
+0 1444 p m (Chr) 0 (omosome) 12 (Repr) 0 (esentation) 11 (and) 12 
+(Memory) 13 (Utilization)  ks 
+t-rom.300 @sf
+-111 1522 p m (SGA-Cube) 13 (uses) 15 (a) 15 (machine) 15 (level) 14 
+(representation) 15 (of) 13 (bit) 14 (strings) 13 (to) 14 (increase) 15 
+(ef) 0 (\014ciency) -2 (.) 26 (This) 14 (allows) 14 (crossover) 15 
+(and) 15 (mutation) 13 (to)  ks 
+-111 1572 p m (be) 14 (implemented) 13 (as) 15 (binary) 13 (masking) 15 
+(operations) 13 (\(see)  ks 
+c-med.300 @sf
+15 r m (operators.c)  s
+t-rom.300 @sf
+m (\).) 25 (Every) 14 (chromosome) 16 (\(as) 14 (well) 14 
+(as) 15 (the) 13 (population) 13 (arrays)  ks 
+-111 1621 p m (and) 12 (some) 12 (auxiliary) 11 (memory) 13 (space\)) 13 
+(are) 13 (allocated) 12 (dynamically) 12 (at) 12 (run) 12 (time.) 19 
+(The) 13 (dynamic) 12 (memory) 13 (allocation) 12 (scheme) 14 (allocates)  ks 
+-111 1671 p m (a) 12 (suf) 0 (\014cient) 11 (number) 13 (of) 12 
+(unsigned) 11 (integers) 13 (for) 12 (each) 13 (population) 11 (member) 14 
+(to) 11 (store) 13 (bits) 11 (for) 12 (the) 12 (user) 0 
+(-speci\014ed) 13 (chromosome) 14 (length.)  ks 
+-111 1721 p m (Because) 13 (of) 13 (this) 12 (feature,) 15 (it) 12 
+(is) 13 (extremely) 14 (important) 12 (that)  ks 
+c-med.300 @sf
+12 r m (BITS)  s
+2 r 13 2 ru
+922 1721 p m (PER)  s
+2 r 13 2 ru
+1012 1721 p m (BYTE)  s
+t-rom.300 @sf
+13 r m (be) 14 (properly) 12 (set) 13 (\(in)  ks 
+c-med.300 @sf
+13 r m (sga.h)  s
+t-rom.300 @sf
+13 r m (and)  s
+c-med.300 @sf
+13 r m (external.h)  s
+t-rom.300 @sf
+m (\)) 13 (for)  ks 
+-111 1771 p m (your) 9 (machine') -1 (s) 10 (hardware) 11 (and) 11 
+(C) 10 (compiler) -1 (.)  ks 
+t-bol.360 @sf
+-111 1889 p m (3.3)  s
+0 1889 p m (Parallel) 12 (Hyper) 0 (cube) 12 (Algorithm)  ks 
+t-rom.300 @sf
+-111 1967 p m (The) 8 (parallel) 8 (implementation) 7 (of) 8 (the) 8 
+(SGA) 9 (algorithm) 7 (contained) 8 (in) 8 (SGA-Cube) 8 (is) 8 
+(a) 8 (straight-forward) 7 (extension) 8 (of) 8 (the) 8 (algorithm) 7 
+(for) 8 (a)  ks 
+-111 2017 p m (single) 7 (processor) -1 (.) 12 (On) 8 (an) 9 
+(n-dimensional) 7 (hypercube,) 10 (there) 8 (are) 9 (2)  ks 
+cmmi7.300 @sf
+893 2003 p m (n)  s
+t-rom.300 @sf
+924 2017 p m (processors,) 10 (or) 8 (nodes.) 13 (Every) 9 (node) 8 
+(in) 8 (an) 8 (n-dimensional) 8 (hypercube)  ks 
+-111 2067 p m (has)  s
+cmmi10.300 @sf
+10 r m (n)  s
+t-rom.300 @sf
+10 r m (nearest) 11 (neighbors) 9 (in)  ks 
+cmmi10.300 @sf
+10 r m (n)  s
+t-rom.300 @sf
+10 r m (dif) 0 (ferent) 9 (directions.) 14 (This) 10 (implementation) 10 
+(starts) 10 (with) 9 (a) 11 (dif) 0 (ferent) 9 (random) 11 
+(population) 8 (of) 10 (individuals)  ks 
+-111 2117 p m (on) 11 (each) 12 (node,) 13 (spawned) 13 (by) 11 
+(a) 13 (dif) 0 (ferent) 11 (random) 12 (number) 12 (seed) 13 
+(for) 11 (each) 14 (node.) 19 (For) 11 (each) 14 (generation,) 12 
+(every) 13 (node) 12 (in) 11 (the) 12 (hypercube)  ks 
+-111 2166 p m (employs) 9 (the) 11 (SGA) 11 (algorithm) 10 (independently) -2 
+(,) 9 (using) 10 (crossover) 12 (and) 11 (mutation) 10 (to) 10 
+(improve) 10 (the) 11 (population) 9 (on) 10 (the) 11 (node.) 15 
+(The) 11 (parallel)  ks 
+-111 2216 p m (algorith) -1 (m,) 10 (however) -1 (,) 12 (allows) 11 
+(for) 11 (the) 11 (propagation) 10 (of) 11 (\014ttest) 11 (individu) -1 
+(als) 10 (among) 12 (nodes.) 16 (The) 12 (parallel) 11 (SGA-Cube) 12 
+(code) 12 (requires) 11 (two)  ks 
+-111 2266 p m (additio) -1 (nal) 11 (input) 11 (parameters:)  ks 
+c-med.300 @sf
+21 r m (nexchange)  s
+t-rom.300 @sf
+m (,) 13 (the) 13 (number) 13 (of) 13 (individuals) 11 
+(to) 12 (exchange) 14 (between) 14 (nodes,) 14 (and)  ks 
+c-med.300 @sf
+13 r m (exchangegen)  s
+t-rom.300 @sf
+m (,) 14 (the)  ks 
+-111 2316 p m (number) 8 (of) 9 (generations) 10 (between) 10 (coordinated) 9 
+(exchanges.) 16 (Every)  ks 
+c-med.300 @sf
+10 r m (exchangegen)  s
+t-rom.300 @sf
+9 r m (generations) 10 (the) 9 (following) 8 (events) 10 (happen) 10 
+(in) 9 (the)  ks 
+-111 2366 p m (parallel) 9 (SGA-Cube) 10 (algorithm:)  ks 
+-60 2448 p m (1.)  s
+-8 2448 p m (Each) 11 (node) 10 (quick-sorts) 10 (its) 10 (own) 10 
+(population) 9 (by) 10 (\014tness,) 11 (ranking) 10 (the) 10 (individuals) 9 
+(from) 10 (\014ttest) 10 (to) 10 (weakest.)  ks 
+-60 2530 p m (2.)  s
+-8 2530 p m (A) 10 (random) 10 (number) 11 (in) 10 (the) 10 
+(range) 11 (from) 11 (1) 10 (to)  ks 
+cmmi10.300 @sf
+10 r m (n)  s
+t-rom.300 @sf
+10 r m (is) 10 (picked) 11 (as) 11 (the) 10 (exchange) 12 
+(direction,) 10 (and) 11 (broadcasted) 11 (to) 10 (all) 10 (nodes.)  ks 
+-60 2613 p m (3.)  s
+-8 2613 p m (Every) 14 (node) 14 (sends) 15 (information) 13 (on) 14 
+(its)  ks 
+c-med.300 @sf
+13 r m (nexchange)  s
+t-rom.300 @sf
+15 r m (\014ttest) 13 (individuals) 13 (to) 13 (the) 15 (nearest) 15 
+(node) 14 (in) 14 (the) 14 (chosen) 15 (direction,) 14 (and)  ks 
+-8 2662 p m (receives) 11 (information) 9 (from) 11 (that) 10 (neighbor) 9 
+(about) 10 (the) 11 (neighbor) 2 (') -2 (s) 8 (\014ttest) 10 
+(individuals.)  ks 
+@eop
+3 @bop0
+/t-rom.180 24.999964 /Times-Roman /t-rom @ps2texfont
+/t-rom.240 33.333263 /Times-Roman /t-rom @ps2texfont
+3 @bop1
+c-med.300 @sf
+-8 -70 p m (thebest\(\))  s
+t-rom.300 @sf
+237 -70 p m (is) 12 (for) 12 (use) 13 (with) 11 (the) 12 
+(nCUBE) 13 (version) 12 (only) -2 (.) 18 (This) 12 (routine) 12 
+(queries) 12 (all) 12 (nodes) 13 (for) 12 (their) 11 (best) 13 
+(current) 12 (individual,)  ks 
+83 -20 p m (compares) 12 (each) 11 (of) 11 (them) 10 (to) 10 
+(current) 11 (best) 10 (individual) 8 (found) 10 (so) 11 (far) -1 
+(,) 10 (and) 11 (then) 10 (broadcasts) 11 (the) 10 (global) 10 
+(best) 10 (to) 10 (every) 11 (node.)  ks 
+c-med.300 @sf
+-8 44 p m (writestats\(\))  s
+t-rom.300 @sf
+312 44 p m (is) 10 (for) 10 (use) 11 (with) 10 (the) 10 
+(nCUBE) 10 (version) 10 (only) -2 (.) 13 (This) 11 (routine) 9 
+(writes) 10 (out) 10 (the) 10 (per) 0 (-node) 10 (population) 9 
+(statistics.)  ks 
+-91 127 p m (Three) 11 (selection) 10 (routines) 10 (are) 11 (included) 10 
+(with) 10 (the) 10 (SGA-Cube) 11 (distributi) -1 (on:)  ks 
+c-med.300 @sf
+-8 209 p m (rselect.c)  s
+t-rom.300 @sf
+237 209 p m (contains) 10 (routines) 10 (for) 10 (roulette-wheel) 10 (selection.)  ks 
+c-med.300 @sf
+-8 275 p m (srselect.c)  s
+t-rom.300 @sf
+262 275 p m (contains) 10 (the) 11 (routines) 9 (for) 10 (stochastic-remainder) 12 
+(selection) 10 (\(Booker) -1 (,) 10 (1982\).)  ks 
+c-med.300 @sf
+-8 340 p m (tselect.c)  s
+t-rom.300 @sf
+237 340 p m (contains) 10 (the) 10 (routines) 9 (for) 10 (tournament) 10 
+(selection) 10 (\(Brindle,) 9 (1981\).) 13 (T) -2 (ournaments) 10 (of) 10 
+(any) 10 (size) 11 (up) 10 (to) 9 (the) 10 (popula-)  ks 
+83 390 p m (tion) 9 (size) 11 (can) 11 (be) 11 (held) 10 
+(with) 10 (this) 9 (implementation)  ks 
+t-rom.210 @sf
+850 376 p m (2)  s
+t-rom.300 @sf
+867 390 p m (.)  s
+-8 472 p m (For) 11 (modularity) -2 (,) 11 (each) 13 (selection) 12 
+(method) 11 (is) 12 (made) 13 (available) 12 (as) 12 (a) 13 
+(compile) 12 (time) 12 (option.) 16 (Edit)  ks 
+c-med.300 @sf
+12 r m (Makefile)  s
+t-rom.300 @sf
+11 r m (to) 12 (choose) 12 (a) 12 (selec-)  ks 
+-8 522 p m (tion) 11 (method.) 23 (Each) 14 (of) 13 (the) 13 
+(three) 14 (selection) 13 (\014les) 14 (contains) 13 (the) 13 (routines)  ks 
+c-med.300 @sf
+12 r m (select)  s
+2 r 13 2 ru
+1304 522 p m (memory)  s
+t-rom.300 @sf
+14 r m (and)  s
+c-med.300 @sf
+13 r m (select)  s
+2 r 13 2 ru
+1706 522 p m (free)  s
+t-rom.300 @sf
+13 r m (\(called) 14 (by)  ks 
+c-med.300 @sf
+-8 572 p m (initmalloc)  s
+t-rom.300 @sf
+9 r m (and)  s
+c-med.300 @sf
+10 r m (freeall)  s
+t-rom.300 @sf
+m (,) 10 (respectively\),) 11 (which) 10 (perform) 10 (any) 10 
+(necessary) 12 (auxiliary) 9 (memory) 10 (handling,) 9 (and) 10 (the) 10 
+(routines)  ks 
+c-med.300 @sf
+-8 622 p m (preselect\(\))  s
+t-rom.300 @sf
+10 r m (and)  s
+c-med.300 @sf
+10 r m (select\(\))  s
+t-rom.300 @sf
+m (,) 11 (which) 10 (implement) 11 (the) 10 (particular) 10 
+(selection) 11 (method.)  ks 
+c-med.300 @sf
+-111 704 p m (stats.c)  s
+t-rom.300 @sf
+83 704 p m (contains) 11 (the) 10 (routine)  ks 
+c-med.300 @sf
+9 r m (statistics\(\))  s
+t-rom.300 @sf
+m (,) 11 (which) 10 (calculates) 12 (population) 9 (statistics) 10 
+(for) 10 (each) 11 (generation.)  ks 
+c-med.300 @sf
+-111 786 p m (utility.c)  s
+t-rom.300 @sf
+133 786 p m (contains) 15 (various) 15 (utilit) -1 (y) 13 (routines.) 27 
+(Of) 15 (particular) 15 (interest) 14 (is) 15 (the) 15 (routine)  ks 
+c-med.300 @sf
+14 r m (ithruj2int\(\))  s
+t-rom.300 @sf
+m (,) 17 (which) 14 (returns) 15 (bits)  ks 
+cmmi10.300 @sf
+14 r m (i)  s
+t-rom.300 @sf
+-8 836 p m (through)  s
+cmmi10.300 @sf
+9 r m (j)  s
+t-rom.300 @sf
+13 r m (of) 10 (a) 12 (chromosome) 12 (interpreted) 10 (as) 12 
+(an)  ks 
+c-med.300 @sf
+11 r m (int)  s
+t-rom.300 @sf
+m (.) 15 (This) 11 (\014le) 11 (also) 11 (includes)  ks 
+c-med.300 @sf
+10 r m (fitcompare\(\))  s
+t-rom.300 @sf
+m (,) 12 (a) 11 (comparison) 11 (routine) 10 (used)  ks 
+-8 886 p m (for) 9 (sorting) 9 (populations) 9 (in) 10 (the) 10 
+(nCUBE) 11 (version.)  ks 
+c-med.300 @sf
+-111 968 p m (app.c)  s
+t-rom.300 @sf
+33 968 p m (contains) 12 (application) 10 (dependent) 12 (routines.) 17 (Unless) 12 
+(you) 11 (need) 12 (to) 11 (change) 13 (the) 11 (basic) 12 
+(operation) 11 (of) 12 (the) 11 (GA) 12 (itself,) 11 (you) 11 
+(should)  ks 
+-8 1018 p m (only) 9 (have) 11 (to) 10 (alter) 10 (this) 10 
+(\014le.) 14 (Further) 10 (instructions) 9 (for) 10 (altering) 10 (the) 10 
+(SGA) 11 (application) 10 (are) 11 (included) 10 (in) 10 (section) 10 
+(4.)  ks 
+c-med.300 @sf
+-8 1100 p m (application\(\))  s
+t-rom.300 @sf
+337 1100 p m (should) 10 (contain) 11 (any) 12 (application-speci\014c) 11 (computations) 11 
+(needed) 13 (before) 11 (each) 13 (GA) 11 (cycle.) 18 (It) 11 
+(is) 11 (called) 12 (by)  ks 
+c-med.300 @sf
+83 1150 p m (main\(\))  s
+t-rom.300 @sf
+m (.)  s
+c-med.300 @sf
+-8 1216 p m (app)  s
+2 r 13 2 ru
+81 1216 p m (data\(\))  s
+t-rom.300 @sf
+252 1216 p m (should) 8 (ask) 9 (for) 8 (and) 9 (read) 9 
+(in) 8 (any) 9 (application-speci\014c) 9 (information.) 13 (This) 8 (routine) 8 
+(is) 9 (called) 9 (by)  ks 
+c-med.300 @sf
+8 r m (init)  s
+2 r 13 2 ru
+1827 1216 p m (data\(\))  s
+t-rom.300 @sf
+m (.)  s
+c-med.300 @sf
+-8 1282 p m (app)  s
+2 r 13 2 ru
+81 1282 p m (malloc\(\))  s
+t-rom.300 @sf
+302 1282 p m (should) 12 (perform) 14 (any) 14 (application-speci\014c) 13 (calls) 14 
+(to)  ks 
+c-med.300 @sf
+13 r m (malloc\(\))  s
+t-rom.300 @sf
+13 r m (to) 13 (dynamically) 13 (allocate) 14 (memory) -2 (.) 23 
+(This)  ks 
+83 1331 p m (routine) 9 (is) 10 (called) 11 (by)  ks 
+c-med.300 @sf
+10 r m (initmalloc\(\))  s
+t-rom.300 @sf
+m (.)  s
+c-med.300 @sf
+-8 1397 p m (app)  s
+2 r 13 2 ru
+81 1397 p m (free\(\))  s
+t-rom.300 @sf
+252 1397 p m (should) 10 (perform) 11 (any) 12 (application-speci\014c) 11 (calls) 11 
+(to)  ks 
+c-med.300 @sf
+11 r m (free\(\))  s
+t-rom.300 @sf
+m (,) 11 (for) 11 (release) 13 (of) 10 (dynamically) 11 
+(allocated) 12 (memory) -2 (.)  ks 
+83 1447 p m (This) 10 (routine) 10 (is) 10 (called) 11 (by)  ks 
+c-med.300 @sf
+10 r m (freeall\(\))  s
+t-rom.300 @sf
+m (.)  s
+c-med.300 @sf
+-8 1513 p m (app)  s
+2 r 13 2 ru
+81 1513 p m (init\(\))  s
+t-rom.300 @sf
+252 1513 p m (should) 10 (perform) 10 (any) 11 (application-speci\014c) 11 (initiali) -1 
+(zation) 9 (needed.) 15 (It) 10 (is) 10 (called) 11 (by)  ks 
+c-med.300 @sf
+10 r m (initialize\(\))  s
+t-rom.300 @sf
+m (.)  s
+c-med.300 @sf
+-8 1578 p m (app)  s
+2 r 13 2 ru
+81 1578 p m (initreport\(\))  s
+t-rom.300 @sf
+402 1578 p m (should) 10 (print) 10 (out) 11 (an) 12 (application-speci\014c) 11 
+(initial) 10 (report) 10 (before) 12 (the) 11 (start) 11 (of) 11 
+(generation) 11 (cycles.) 18 (This)  ks 
+83 1628 p m (routine) 9 (is) 10 (called) 11 (by)  ks 
+c-med.300 @sf
+10 r m (initialize\(\))  s
+t-rom.300 @sf
+m (.)  s
+c-med.300 @sf
+-8 1694 p m (app)  s
+2 r 13 2 ru
+81 1694 p m (report\(\))  s
+t-rom.300 @sf
+302 1694 p m (should) 10 (print) 9 (out) 9 (any) 11 (application-speci\014c) 11 
+(output) 9 (after) 10 (each) 12 (GA) 11 (cycle.) 15 (It) 10 
+(is) 10 (called) 11 (by)  ks 
+c-med.300 @sf
+10 r m (report\(\))  s
+t-rom.300 @sf
+m (.)  s
+c-med.300 @sf
+-8 1759 p m (app)  s
+2 r 13 2 ru
+81 1759 p m (stats\(\))  s
+t-rom.300 @sf
+277 1759 p m (should) 10 (perform) 10 (any) 11 (application-speci\014c) 11 (statistical) 9 
+(calculations.) 15 (It) 10 (is) 10 (called) 11 (by)  ks 
+c-med.300 @sf
+10 r m (statistics\(\))  s
+t-rom.300 @sf
+m (.)  s
+c-med.300 @sf
+-8 1825 p m (objfunc\(critter\))  s
+t-rom.300 @sf
+412 1825 p m (is) 11 (the) 11 (objective) 11 (function) 10 (for) 11 
+(the) 11 (speci\014c) 12 (application.) 16 (The) 12 (variable)  ks 
+c-med.300 @sf
+11 r m (critter)  s
+t-rom.300 @sf
+12 r m (is) 11 (a) 11 (pointer) 11 (to) 10 (an)  ks 
+c-med.300 @sf
+83 1875 p m (individual)  s
+t-rom.300 @sf
+13 r m (\(a) 13 (GA) 13 (population) 11 (member\),) 16 (to) 12 
+(which) 13 (this) 12 (routine) 12 (must) 13 (assign) 13 (a) 13 
+(\014tness.) 23 (This) 13 (routine) 12 (is) 12 (called) 14 (by)  ks 
+c-med.300 @sf
+83 1925 p m (generation\(\))  s
+t-rom.300 @sf
+m (.)  s
+c-med.300 @sf
+-111 2007 p m (Makefile)  s
+t-rom.300 @sf
+108 2007 p m (is) 13 (a) 14 (UNIX) 13 (make\014le) 15 (for) 12 
+(SGA-Cube.) 23 (W) -1 (ith) 12 (minor) 12 (modi\014cations) 13 (\(see) 14 
+(the) 13 (comments) 15 (in) 12 (the) 13 (\014le\)) 14 (this) 12 
+(make\014le) 15 (can)  ks 
+-8 2057 p m (be) 14 (used) 15 (on) 15 (most) 14 (UNIX) 15 
+(machines) 16 (and) 15 (the) 15 (nCUBE) 14 (2) 15 (parallel) 14 
+(supercomputer) -1 (.) 27 (This) 15 (make\014le) 16 (relies) 15 (on) 14 
+(C) 15 (preprocessor)  ks 
+c-med.300 @sf
+-8 2107 p m (defines)  s
+t-rom.300 @sf
+10 r m (to) 10 (correctly) 10 (compile) 11 (either) 10 (the) 10 
+(generic) 11 (UNIX) 11 (version) 10 (or) 10 (the) 10 (nCUBE) 11 
+(version) 10 (of) 10 (SGA-Cube.)  ks 
+t-bol.420 @sf
+-111 2246 p m (3)  s
+-24 2246 p m (New) 14 (Featur) 0 (es) 13 (of) 15 (SGA-Cub) 1 
+(e)  ks 
+t-rom.300 @sf
+-111 2339 p m (Like) 9 (SGA-C) 9 (\(Smith) 9 (et) 9 (al.,) 11 
+(1991\),) 9 (SGA-Cube) 10 (has) 10 (several) 10 (features) 10 (that) 9 
+(dif) 0 (fer) 9 (from) 9 (those) 9 (of) 10 (the) 9 
+(Pascal) 11 (version.) 13 (One) 10 (is) 10 (the) 9 (ability)  ks 
+-111 2389 p m (to) 12 (name) 13 (the) 12 (input) 12 (and) 13 
+(output) 11 (\014les) 13 (on) 12 (the) 13 (command) 14 (line,) 13 
+(i.e.)  ks 
+c-med.300 @sf
+22 r m (sga) 31 (my.input) 30 (my.output)  ks 
+t-rom.300 @sf
+m (.) 22 (If) 12 (either) 13 (of) 12 (these) 13 
+(\014les) 14 (is) 12 (not)  ks 
+-111 2439 p m (named) 12 (on) 13 (the) 12 (command) 14 (line,) 13 
+(SGA-Cube) 13 (assumes)  ks 
+c-med.300 @sf
+14 r m (stdin)  s
+t-rom.300 @sf
+13 r m (and)  s
+c-med.300 @sf
+13 r m (stdout)  s
+t-rom.300 @sf
+m (,) 13 (respectively) -2 (.) 21 (Another) 12 (new) 13 
+(feature) 14 (of) 12 (SGA-Cube) 13 (is)  ks 
+-111 2489 p m (its) 12 (method) 12 (of) 13 (representing) 13 (chromosomes) 14 
+(in) 13 (memory) -2 (.) 22 (SGA-Cube) 13 (stores) 13 (its) 13 
+(chromosomes) 14 (in) 13 (bit) 12 (strings) 12 (at) 13 (the) 13 
+(machine) 14 (level.)  ks 
+-111 2538 p m (Another) 10 (new) 12 (feature) 13 (in) 11 (SGA-Cube) 12 
+(is,) 12 (of) 12 (course,) 13 (its) 11 (nCUBE) 12 (capabilities.) 18 
+(Input-output) -1 (,) 11 (chromosome) 13 (storage,) 13 (and) 12 (the) 11 
+(parallel)  ks 
+-111 2588 p m (features) 10 (of) 10 (SGA-Cube) 10 (are) 12 (discussed) 11 
+(in) 10 (the) 10 (following) 9 (sections.)  ks 
+-111 2623 p 840 2 ru
+t-rom.180 @sf
+-66 2651 p m (2)  s
+t-rom.240 @sf
+-51 2662 p m (The) 7 (tournament) 7 (selection) 8 (routine) 7 (included) 8 
+(with) 8 (the) 8 (distribution) 8 (was) 8 (written) 9 (by) 8 
+(Hillol) 9 (Kar) 0 (gupta,) 7 (of) 8 (the) 8 (University) 8 
+(of) 8 (Alabama.)  ks 
+@eop
+2 @bop0
+2 @bop1
+c-med.300 @sf
+-111 -70 p m (exchange.c)  s
+t-rom.300 @sf
+158 -70 p m (contains) 13 (the) 13 (code) 13 (needed) 14 (to) 12 
+(exchange) 14 (individuals) 11 (between) 13 (hypercube) 14 (nodes.) 21 (As) 13 
+(distributed,) 12 (SGA-Cube) 13 (ex-)  ks 
+-8 -20 p m (changes) 7 (the) 7 (\014ttest)  ks 
+c-med.300 @sf
+7 r m (nexchange)  s
+t-rom.300 @sf
+7 r m (individuals) 5 (from) 7 (each) 8 (node) 7 (with) 7 
+(a) 7 (nearest-neighbor) 7 (node.) 13 (For) 7 (a) 8 (more) 7 
+(detailed) 7 (explanation)  ks 
+-8 29 p m (of) 9 (the) 11 (algorithm) 9 (see) 12 (Section) 10 
+(3.3.) 15 (T) -2 (o) 9 (impliment) 10 (another) 11 (exchange) 11 
+(policy) -2 (,) 10 (change) 11 (this) 10 (\014le.)  ks 
+c-med.300 @sf
+-8 111 p m (exchange\(\))  s
+t-rom.300 @sf
+262 111 p m (sends) 11 (the)  ks 
+c-med.300 @sf
+11 r m (nexchange)  s
+t-rom.300 @sf
+11 r m (\014ttest) 10 (individuals) 9 (to) 11 (the) 10 (nearest) 12 
+(neighbor) 10 (in) 10 (the) 11 (speci\014ed) 12 (hypercube) 11 (dimension,)  ks 
+83 161 p m (and) 12 (receives) 15 (the) 12 (neighbor) 2 (') -1 
+(s) 10 (corresponding) 13 (\014ttest) 12 (individuals.) 19 (The) 14 (node') -1 
+(s) 11 (least) 13 (\014t) 13 (individuals) 11 (are) 13 (replaced) 14 
+(by) 13 (the)  ks 
+83 211 p m (received) 11 (individuals.)  ks 
+c-med.300 @sf
+-8 276 p m (nearest\(\))  s
+t-rom.300 @sf
+237 276 p m (determines) 11 (a) 11 (node') -1 (s)  ks 
+c-med.300 @sf
+9 r m (n)  s
+t-rom.300 @sf
+11 r m (nearest) 11 (neighbors) 10 (in) 10 (an) 11 (n-dimensional) 9 
+(hypercube.)  ks 
+c-med.300 @sf
+-111 359 p m (generate.c)  s
+t-rom.300 @sf
+158 359 p m (contains)  s
+c-med.300 @sf
+11 r m (generation\(\))  s
+t-rom.300 @sf
+m (,) 10 (a) 11 (routine) 10 (which) 10 (generates) 12 
+(and) 10 (evaluates) 12 (a) 11 (new) 11 (GA) 10 (population.)  ks 
+c-med.300 @sf
+-111 441 p m (initial.c)  s
+t-rom.300 @sf
+133 441 p m (contains) 11 (routines) 9 (that) 10 (are) 11 (called) 11 
+(at) 11 (the) 10 (beginning) 9 (of) 10 (a) 11 (GA) 11 
+(run.)  ks 
+c-med.300 @sf
+-8 523 p m (initialize\(\))  s
+t-rom.300 @sf
+312 523 p m (is) 10 (the) 11 (central) 10 (initialization) 8 (routine) 10 
+(called) 11 (by)  ks 
+c-med.300 @sf
+10 r m (main\(\))  s
+t-rom.300 @sf
+m (.)  s
+c-med.300 @sf
+-8 589 p m (initdata\(\))  s
+t-rom.300 @sf
+262 589 p m (is) 10 (a) 11 (routine) 10 (to) 9 (prompt) 10 
+(the) 11 (user) 10 (for) 10 (SGA) 11 (parameters.)  ks 
+c-med.300 @sf
+-8 654 p m (initpop\(\))  s
+t-rom.300 @sf
+237 654 p m (is) 8 (a) 9 (routine) 7 (that) 8 (generates) 9 
+(a) 9 (random) 8 (population.) 12 (Currently) -2 (,) 7 (SGA-Cube) 9 
+(includes) 8 (no) 8 (facility) 7 (for) 8 (using) 7 (seeded)  ks 
+83 704 p m (populations.)  s
+c-med.300 @sf
+-8 770 p m (initreport\(\))  s
+t-rom.300 @sf
+312 770 p m (is) 10 (a) 11 (routine) 10 (that) 10 (prints) 9 
+(a) 11 (report) 10 (after) 10 (initialization) 9 (and) 10 (before) 11 
+(the) 10 (\014rst) 10 (GA) 11 (cycle.)  ks 
+c-med.300 @sf
+-111 852 p m (memory.c)  s
+t-rom.300 @sf
+108 852 p m (contains) 11 (routines) 9 (for) 10 (dynamic) 11 (memory) 11 
+(manageme) 1 (nt.)  ks 
+c-med.300 @sf
+-8 934 p m (initmalloc\(\))  s
+t-rom.300 @sf
+312 934 p m (is) 8 (a) 8 (routine) 7 (that) 7 (dynamically) 8 
+(allocates) 8 (space) 10 (for) 7 (the) 8 (GA) 8 (population) 6 
+(and) 8 (other) 7 (necessary) 10 (data) 8 (structures.)  ks 
+c-med.300 @sf
+-8 1000 p m (freeall\(\))  s
+t-rom.300 @sf
+237 1000 p m (frees) 11 (all) 10 (memory) 12 (allocated) 11 (by)  ks 
+c-med.300 @sf
+10 r m (initmalloc\(\))  s
+t-rom.300 @sf
+m (.)  s
+c-med.300 @sf
+-8 1066 p m (nomemory\(\))  s
+t-rom.300 @sf
+262 1066 p m (prints) 9 (out) 10 (a) 11 (warning) 10 (statement) 11 
+(when) 11 (a) 11 (call) 10 (to)  ks 
+c-med.300 @sf
+10 r m (malloc\(\))  s
+t-rom.300 @sf
+10 r m (fails.)  s
+c-med.300 @sf
+-111 1148 p m (operators.c)  s
+t-rom.300 @sf
+183 1148 p m (contains) 11 (the) 10 (routines) 10 (for) 10 (genetic) 10 
+(operators.)  ks 
+c-med.300 @sf
+-8 1230 p m (crossover\(\))  s
+t-rom.300 @sf
+287 1230 p m (performs) 11 (single-point) 8 (crossover) 11 (on) 11 (two) 9 
+(mates,) 12 (producing) 10 (two) 10 (children.)  ks 
+c-med.300 @sf
+-8 1296 p m (mutation\(\))  s
+t-rom.300 @sf
+262 1296 p m (performs) 11 (a) 11 (point) 9 (mutation.)  ks 
+c-med.300 @sf
+-111 1378 p m (random.c)  s
+t-rom.300 @sf
+108 1378 p m (contains) 11 (random) 10 (number) 11 (utility) 8 (programs,) 11 
+(including:)  ks 
+c-med.300 @sf
+-8 1461 p m (randomperc\(\))  s
+t-rom.300 @sf
+312 1461 p m (returns) 12 (a) 13 (single,) 13 (uniformly-distri) -1 (buted,) 12 
+(real,) 13 (pseudo-random) 13 (number) 13 (between) 13 (0) 13 (and) 12 
+(1.) 21 (This) 12 (routine)  ks 
+83 1510 p m (uses) 11 (the) 10 (subtractive) 10 (method) 11 (speci\014ed) 11 
+(by) 10 (Knuth) 10 (\(1981\).)  ks 
+c-med.300 @sf
+-8 1576 p m (rnd\(low,high\))  s
+t-rom.300 @sf
+337 1576 p m (returns) 10 (an) 11 (uniformly-distri) -1 (but) -1 (ed) 9 
+(integer) 10 (between)  ks 
+c-med.300 @sf
+11 r m (low)  s
+t-rom.300 @sf
+11 r m (and)  s
+c-med.300 @sf
+10 r m (high)  s
+t-rom.300 @sf
+m (.)  s
+c-med.300 @sf
+-8 1642 p m (rndreal\(low,high\))  s
+t-rom.300 @sf
+437 1642 p m (returns) 10 (an) 11 (uniformly-distri) -1 (but) -1 (ed) 9 
+(\015oating) 10 (point) 9 (number) 11 (between)  ks 
+c-med.300 @sf
+11 r m (low)  s
+t-rom.300 @sf
+10 r m (and)  s
+c-med.300 @sf
+11 r m (high)  s
+t-rom.300 @sf
+m (.)  s
+c-med.300 @sf
+-8 1708 p m (flip\(p\))  s
+t-rom.300 @sf
+187 1708 p m (\015ips) 10 (a) 11 (biased) 11 (coin,) 11 (returning) 9 
+(1) 10 (with) 10 (probability)  ks 
+c-med.300 @sf
+8 r m (p)  s
+t-rom.300 @sf
+m (,) 11 (and) 10 (0) 10 (with) 10 (probability)  ks 
+c-med.300 @sf
+8 r m (1-p)  s
+t-rom.300 @sf
+m (.)  s
+c-med.300 @sf
+-8 1773 p m (advance)  s
+2 r 13 2 ru
+181 1773 p m (random\(\))  s
+t-rom.300 @sf
+402 1773 p m (generates) 12 (a) 11 (new) 11 (batch) 10 (of) 10 
+(55) 10 (random) 11 (numbers.)  ks 
+c-med.300 @sf
+-8 1839 p m (randomize\(\))  s
+t-rom.300 @sf
+287 1839 p m (asks) 11 (the) 11 (user) 10 (for) 10 (a) 11 
+(random) 11 (number) 11 (seed.)  ks 
+c-med.300 @sf
+-8 1905 p m (warmup)  s
+2 r 13 2 ru
+156 1905 p m (random\(\))  s
+t-rom.300 @sf
+377 1905 p m (primes) 11 (the) 10 (random) 11 (number) 11 (generator) -1 
+(.)  ks 
+c-med.300 @sf
+-8 1970 p m (noise\(mu,) 24 (sigma\))  ks 
+t-rom.300 @sf
+412 1970 p m (generates) 10 (a) 10 (normal) 9 (random) 9 (variable) 10 
+(with) 8 (mean)  ks 
+c-med.300 @sf
+10 r m (mu)  s
+t-rom.300 @sf
+9 r m (and) 9 (standard) 9 (deviation)  ks 
+c-med.300 @sf
+8 r m (sigma)  s
+t-rom.300 @sf
+m (.) 14 (This) 9 (routine)  ks 
+83 2020 p m (is) 10 (not) 9 (currently) 10 (used) 11 (in) 10 
+(SGA-Cube,) 11 (and) 10 (is) 11 (only) 9 (included) 10 (as) 11 
+(a) 11 (general) 11 (utility) -3 (.)  ks 
+c-med.300 @sf
+-8 2086 p m (randomnormaldeviate\(\))  s
+t-rom.300 @sf
+537 2086 p m (is) 10 (a) 11 (utility) 8 (routine) 10 (used) 10 
+(by) 10 (noise.) 15 (It) 10 (computes) 11 (a) 11 (standard) 10 
+(normal) 11 (random) 10 (variable.)  ks 
+c-med.300 @sf
+-8 2151 p m (initrandomnormaldeviate\(\))  s
+t-rom.300 @sf
+637 2151 p m (is) 10 (an) 11 (initialization) 8 (routine) 10 (for)  ks 
+c-med.300 @sf
+10 r m (randomnormaldeviate\(\))  s
+t-rom.300 @sf
+m (.)  s
+c-med.300 @sf
+-111 2234 p m (report.c)  s
+t-rom.300 @sf
+108 2234 p m (contains) 11 (routines) 9 (used) 11 (to) 10 (print) 9 
+(a) 11 (report) 10 (from) 10 (each) 12 (cycle) 11 (of) 10 
+(SGA-C') -1 (s) 10 (operation.)  ks 
+c-med.300 @sf
+-8 2316 p m (report\(\))  s
+t-rom.300 @sf
+212 2316 p m (controls) 10 (overall) 10 (reporting.)  ks 
+c-med.300 @sf
+-8 2382 p m (writepop\(\))  s
+t-rom.300 @sf
+262 2382 p m (writes) 10 (out) 10 (the) 10 (population) 9 (at) 10 
+(every) 11 (generation.)  ks 
+c-med.300 @sf
+-8 2447 p m (writechrom\(\))  s
+t-rom.300 @sf
+312 2447 p m (writes) 12 (out) 12 (the) 13 (chromosome) 14 (as) 13 
+(a) 13 (string) 12 (of) 12 (ones) 13 (and) 13 (zeroes.) 22 
+(In) 13 (the) 12 (current) 13 (implementation,) 13 (the) 12 (most)  ks 
+83 2497 p m (signi\014cant) 10 (bit) 9 (is) 10 (the)  ks 
+t-ita.300 @sf
+11 r m (rightmost)  s
+t-rom.300 @sf
+9 r m (bit.)  s
+c-med.300 @sf
+-8 2563 p m (printnodes\(\))  s
+t-rom.300 @sf
+312 2563 p m (is) 8 (for) 8 (use) 9 (with) 8 (the) 8 
+(nCUBE) 9 (version) 8 (only) -2 (.) 12 (This) 9 (routine) 7 
+(cycles) 10 (sequentially) 8 (through) 7 (all) 8 (hypercube) 9 (nodes,)  ks 
+83 2613 p m (performing) 13 (whatever) 14 (printing) 12 (function) 12 (was) 15 
+(passed) 14 (to) 13 (it.) 23 (Used) 15 (to) 13 (insure) 13 
+(that) 13 (printed) 13 (output) 12 (from) 14 (multiple) 12 (nodes)  ks 
+83 2662 p m (comes) 11 (out) 10 (in) 10 (order) -1 (.)  ks 
+@eop
+1 @bop0
+/t-rom.510 70.833214 /Times-Roman /t-rom @ps2texfont
+/t-rom.360 49.999928 /Times-Roman /t-rom @ps2texfont
+/t-bol.240 33.333263 /Times-Bold /t-bol @ps2texfont
+/c-med.240 33.333263 /Courier /c-med @ps2texfont
+1 @bop1
+t-rom.510 @sf
+298 104 p m (SGA-Cube:) 25 (A) 18 (Simple) 18 (Genetic) 19 (Algorithm) 18 
+(for)  ks 
+353 195 p m (nCUBE) 19 (2) 18 (Hypercub) 1 (e) 20 (Parallel) 18 
+(Computers)  ks 
+t-bol.360 @sf
+295 316 p m (Jeff) 12 (A.) 13 (Earickson)  ks 
+t-rom.360 @sf
+137 374 p m (Alabama) 13 (Supercomputer) 12 (Network)  ks 
+260 432 p m (The) 12 (Boeing) 13 (Company)  ks 
+205 490 p m (Huntsville,) 13 (Alabama) 13 (35806)  ks 
+t-bol.360 @sf
+1175 316 p m (Robert) 13 (E.) 13 (Smith)  ks 
+t-rom.360 @sf
+1075 374 p m (The) 12 (University) 13 (of) 12 (Alabama)  ks 
+961 432 p m (Department) 13 (of) 12 (Engineering) 12 (Mechanics)  ks 
+1066 490 p m (T) -1 (uscaloosa,) 14 (Alabama) 13 (35405)  ks 
+t-bol.360 @sf
+737 573 p m (David) 12 (E.) 13 (Goldberg)  ks 
+t-rom.360 @sf
+683 631 p m (The) 12 (University) 12 (of) 13 (Illinois)  ks 
+579 689 p m (Department) 12 (of) 12 (General) 13 (Engineering)  ks 
+712 747 p m (Urbana,) 13 (Illinois) 12 (61801)  ks 
+798 844 p m (May) 13 (29,) 13 (1991)  ks 
+t-bol.420 @sf
+-111 1026 p m (1)  s
+-24 1026 p m (Intr) 0 (oduction)  ks 
+t-rom.300 @sf
+-111 1119 p m (SGA-Cube)  s
+t-rom.210 @sf
+74 1105 p m (1)  s
+t-rom.300 @sf
+101 1119 p m (is) 11 (a) 13 (C-language) 11 (translation) 11 (of) 11 
+(the) 12 (original) 10 (Pascal) 13 (SGA) 12 (code) 12 (presented) 13 
+(by) 11 (Goldber) 0 (g) 10 (\(1989\)) 11 (with) 11 (modi\014cations) 11 
+(to)  ks 
+-111 1169 p m (allow) 11 (execution) 12 (on) 12 (the) 12 (nCUBE) 12 
+(2) 12 (Hypercube) 14 (Parallel) 12 (Computer) -1 (.) 19 (When) 13 
+(run) 11 (on) 12 (the) 13 (nCUBE) 12 (2,) 13 (SGA-Cube) 13 
+(takes) 12 (advantage) 14 (of)  ks 
+-111 1218 p m (the) 10 (hypercube) 9 (architecture,) 12 (and) 10 (is) 10 
+(scalable) 11 (to) 10 (any) 10 (hypercube) 11 (dimension.) 14 (The) 11 
+(hypercube) 11 (implimentation) 9 (is) 10 (modular) -1 (,) 10 (so) 10 
+(that) 10 (the)  ks 
+-111 1268 p m (algorith) -1 (m) 11 (for) 12 (exploiting) 10 (parallel) 12 
+(processors) 13 (can) 13 (be) 13 (easily) 12 (modi\014ed.) 20 (In) 12 
+(addition) 11 (to) 12 (its) 11 (parallel) 13 (capabilities,) 13 (SGA-Cube) 12 
+(can) 13 (be)  ks 
+-111 1318 p m (compiled) 11 (on) 13 (various) 12 (serial) 14 (computers) 13 
+(via) 13 (compile-time) 13 (options.) 20 (In) 13 (fact,) 14 (when) 13 
+(compiled) 13 (on) 13 (a) 13 (serial) 13 (computer) -1 (,) 14 
+(SGA-Cube) 13 (is)  ks 
+-111 1368 p m (essentially) 11 (identical) 13 (to) 12 (SGA-C) 13 (\(Smith) 13 
+(et) 13 (al.,) 15 (1991\).) 21 (SGA-Cube) 13 (has) 14 (been) 13 
+(nominally) 12 (tested) 14 (on) 12 (a) 14 (Sun) 13 (470) 12 
+(workstation,) 13 (a) 14 (V) -4 (ax)  ks 
+-111 1418 p m (Ultrix) 8 (system,) 11 (a) 11 (Cray) 10 (X-MP/24) 10 
+(running) 9 (UNICOS) 11 (5.1,) 11 (and) 10 (the) 11 (nCUBE) 10 
+(2.)  ks 
+-49 1467 p m (This) 11 (report) 12 (is) 13 (included) 12 (as) 13 
+(a) 13 (concise) 14 (introductio) -1 (n) 11 (to) 12 (the) 12 
+(SGA-Cube) 13 (distributi) -1 (on.) 19 (It) 12 (is) 12 (presented) 13 
+(with) 12 (the) 12 (assumptions) 13 (that)  ks 
+-111 1517 p m (the) 14 (reader) 16 (has) 15 (a) 16 (general) 16 
+(understanding) 14 (of) 14 (Goldber) 0 (g') -1 (s) 13 (original) 14 
+(Pascal) 16 (SGA) 16 (code,) 17 (and) 15 (a) 16 (good) 14 
+(working) 14 (knowledge) 15 (of) 15 (the) 15 (C)  ks 
+-111 1567 p m (programming) 9 (language.) 15 (The) 12 (report) 10 (begins) 10 
+(with) 10 (an) 11 (outline) 9 (of) 11 (the) 10 (\014les) 11 
+(included) 10 (in) 10 (the) 11 (SGA-Cube) 11 (distributi) -1 (on,) 9 
+(and) 11 (the) 10 (routines)  ks 
+-111 1617 p m (they) 12 (contain.) 20 (The) 14 (outline) 11 (is) 13 
+(followed) 12 (by) 12 (a) 14 (discussion) 12 (of) 13 (the) 12 
+(signi\014cant) 13 (features) 14 (of) 12 (SGA-Cube.) 22 (The) 13 (report) 13 
+(concludes) 13 (with) 12 (a)  ks 
+-111 1667 p m (discussion) 9 (of) 10 (routines) 9 (that) 10 (must) 11 
+(be) 10 (altered) 11 (to) 10 (implement) 11 (one') -1 (s) 9 
+(own) 10 (application) 10 (in) 10 (SGA-Cube.)  ks 
+t-bol.420 @sf
+-111 1807 p m (2)  s
+-24 1807 p m (Files) 13 (Distributed) 17 (with) 16 (SGA-Cube)  ks 
+t-rom.300 @sf
+-111 1899 p m (The) 14 (foll) -1 (owing) 11 (is) 13 (an) 14 
+(outline) 12 (of) 13 (the) 13 (\014les) 14 (distribut) -1 (ed) 12 
+(with) 12 (SGA-Cube,) 15 (the) 13 (routines) 13 (contained) 13 (in) 13 
+(those) 13 (\014les,) 15 (and) 13 (the)  ks 
+c-med.300 @sf
+13 r m (include)  s
+t-rom.300 @sf
+-111 1949 p m (structure) 9 (of) 10 (the) 10 (SGA-Cube) 11 (distributi) -1 
+(on.)  ks 
+c-med.300 @sf
+-111 2032 p m (sga.h)  s
+t-rom.300 @sf
+33 2032 p m (contains) 17 (declarations) 16 (of) 16 (global) 16 (variables) 17 
+(and) 16 (structures) 17 (for) 16 (SGA-Cube.) 32 (This) 16 (\014le) 17 
+(is) 16 (included) 16 (by)  ks 
+c-med.300 @sf
+16 r m (main\(\))  s
+t-rom.300 @sf
+m (.) 32 (Both)  ks 
+c-med.300 @sf
+-8 2082 p m (sga.h)  s
+t-rom.300 @sf
+10 r m (and)  s
+c-med.300 @sf
+10 r m (external.h)  s
+t-rom.300 @sf
+11 r m (have) 11 (two)  ks 
+c-med.300 @sf
+10 r m (defines)  s
+t-rom.300 @sf
+10 r m (set) 11 (at) 10 (the) 10 (top) 10 (of) 10 
+(the) 10 (\014les;)  ks 
+c-med.300 @sf
+11 r m (LINELENGTH)  s
+t-rom.300 @sf
+m (,) 11 (which) 10 (determines) 11 (the) 10 (column)  ks 
+-8 2132 p m (width) 11 (of) 12 (printed) 12 (output,) 11 (and)  ks 
+c-med.300 @sf
+13 r m (BITS)  s
+2 r 13 2 ru
+594 2132 p m (PER)  s
+2 r 13 2 ru
+684 2132 p m (BYTE)  s
+t-rom.300 @sf
+m (,) 13 (which) 12 (speci\014es) 14 (the) 13 (number) 13 
+(of) 12 (bits) 12 (per) 12 (byte) 13 (on) 12 (the) 12 
+(machine) 14 (hardware.)  ks 
+c-med.300 @sf
+-8 2182 p m (LINELENGTH)  s
+t-rom.300 @sf
+11 r m (can) 12 (be) 12 (set) 12 (to) 10 (any) 12 
+(desired) 12 (positive) 10 (value,) 13 (but)  ks 
+c-med.300 @sf
+10 r m (BITS)  s
+2 r 13 2 ru
+1113 2182 p m (PER)  s
+2 r 13 2 ru
+1203 2182 p m (BYTE)  s
+t-rom.300 @sf
+12 r m (must) 11 (be) 12 (set) 12 (to) 11 (the) 11 
+(correct) 12 (value) 12 (for) 11 (your)  ks 
+-8 2232 p m (hardware.)  s
+c-med.300 @sf
+-111 2315 p m (external.h)  s
+t-rom.300 @sf
+158 2315 p m (contains) 12 (external) 12 (declarations) 13 (for) 11 (inclusion) 11 
+(in) 11 (all) 12 (source) 12 (code) 13 (\014les) 12 (except)  ks 
+c-med.300 @sf
+13 r m (main\(\))  s
+t-rom.300 @sf
+m (.) 19 (The)  ks 
+t-bol.300 @sf
+13 r m (extern)  s
+t-rom.300 @sf
+13 r m (declarations)  s
+-8 2364 p m (in)  s
+c-med.300 @sf
+9 r m (external.h)  s
+t-rom.300 @sf
+11 r m (should) 9 (match) 11 (the) 11 (declarations) 10 (in)  ks 
+c-med.300 @sf
+10 r m (sga.h)  s
+t-rom.300 @sf
+m (.)  s
+c-med.300 @sf
+-111 2447 p m (main.c)  s
+t-rom.300 @sf
+58 2447 p m (contains) 11 (the) 10 (main) 11 (SGA) 10 (program) 11 
+(loop,)  ks 
+c-med.300 @sf
+10 r m (main\(\))  s
+t-rom.300 @sf
+m (.)  s
+-111 2483 p 840 2 ru
+t-rom.180 @sf
+-66 2511 p m (1)  s
+t-bol.240 @sf
+-51 2522 p m (Disclaimer:)  s
+t-rom.240 @sf
+10 r m (SGA-Cube) 7 (is) 9 (distributed) 8 (under) 7 (the) 8 
+(terms) 9 (described) 7 (in) 8 (the) 8 (\014le)  ks 
+c-med.240 @sf
+8 r m (NOWARRANTY)  s
+t-rom.240 @sf
+m (.) 9 (These) 8 (terms) 8 (are) 8 (taken) 8 
+(from) 8 (the) 8 (GNU) 9 (General) 8 (Public) 7 (License.)  ks 
+-111 2562 p m (This) 8 (means) 7 (that) 8 (SGA-Cube) 7 (has) 8 
+(no) 8 (warranty) 8 (implied) 8 (or) 8 (given,) 8 (and) 7 
+(that) 8 (the) 9 (authors) 7 (assume) 7 (no) 8 (liability) 9 
+(for) 8 (damage) 7 (resulting) 8 (from) 8 (its) 9 (use) 8 
+(or) 8 (misuse.)  ks 
+t-rom.300 @sf
+927 2787 p m (1)  s
+@eop
+0 @bop0
+0 @bop1
+t-rom.300 @sf
+561 684 p m (SGA-Cube:) 14 (A) 10 (Simple) 11 (Genetic) 11 (Algorithm) 9 
+(for)  ks 
+594 734 p m (nCUBE) 10 (2) 10 (Hypercube) 12 (Parallel) 10 (Computers)  ks 
+917 783 p m (by)  s
+793 883 p m (Jef) 0 (f) 10 (A.) 11 (Earickson)  ks 
+652 933 p m (Alabama) 12 (Supercomputer) 10 (Network)  ks 
+803 1032 p m (Robert) 9 (E.) 12 (Smith)  ks 
+709 1082 p m (The) 11 (University) 9 (of) 11 (Alabama)  ks 
+907 1132 p m (and)  s
+780 1182 p m (David) 10 (E.) 11 (Goldber) 0 (g)  ks 
+725 1232 p m (The) 11 (University) 10 (of) 10 (Illinois)  ks 
+724 1492 p m (TCGA) 11 (Report) 10 (No.) 14 (91005)  ks 
+821 1541 p m (May) 11 (29,) 10 (1991)  ks 
+580 2251 p m (The) 11 (Clearinghouse) 10 (for) 10 (Genetic) 11 (Algorithms)  ks 
+709 2301 p m (The) 11 (University) 9 (of) 11 (Alabama)  ks 
+614 2351 p m (Department) 11 (of) 10 (Engineering) 10 (Mechanics)  ks 
+749 2401 p m (T) 0 (uscaloosa,) 11 (AL) 11 (35487)  ks 
+@eop
+@end

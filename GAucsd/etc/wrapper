@@ -1,0 +1,357 @@
+
+###############################################################
+#                                                             #
+#   Copyright (c) 1989 Nicol N. Schraudolph                   #
+#   Computer Science & Engineering, C-014                     #
+#   University of California, San Diego                       #
+#   La Jolla, CA 92093-0114                                   #
+#                                                             #
+#   Permission is hereby granted to copy all or any part of   #
+#   this program for free distribution.   The author's name   #
+#   and this copyright notice must be included in any copy.   #
+#                                                             #
+###############################################################
+
+#
+#  file:    wrapper
+#
+#  author:  Nicol N. Schraudolph
+#
+#  created: August 1989
+#
+#  purpose: awk script for processing GENESIS eval functions
+#
+
+BEGIN \
+{
+printf "\n/* evaluation file for GENESIS 1.4ucsd GA simulator */\n";
+printf "/* produced by \"wrapper\" awk(1) script from \"%s\" */\n", FILENAME;
+printf "\nextern int   GArgc;   /* number of application-specific arguments */";
+printf "\nextern char *GArgv[]; /* vector of application-specific arguments */";
+printf "\nextern double Ctoi(); /* double returned to facilitate 'A' option */";
+printf "\n\n";
+}
+
+# reproduce input file on output:
+#
+{print $0}
+
+# is an _eval() function already present?
+#
+/^[ \t]*_eval[ \t]*\(/ {found = 1}
+/^[ \t]*double[ \t][ \t]*_eval[ \t]*\(/ {found = 1}
+
+# are gene descriptor variables already supplied?
+#
+/GAgenes/ {DPE = 1}
+
+# now look for GAeval entries:
+#
+/^[ \t]*\/\*[ \t][ \t]*GAeval[ \t]/ \
+{
+	if (len > 0 || $3 == "_eval" || NF < 5)
+	{
+		print "/* ^^illegal GAeval entry: ignored */";
+		continue;
+	}
+	found = 1;      # we have a promising GAeval line to look at
+	num_real = 0;
+	for (i = 4; $i != "*/"; i++)    # for each descriptor field:
+	{
+		# read first number: field width in bits
+		#
+		for (j = 1; (c = substr($i, j, 1)) ~ /[0-9]/; j++)
+			width[i-3] = 10*width[i-3] + c;
+		if (!width[i-3])
+		{
+			printf "/* ^^can't find width of field \"%s\" */\n", $i;
+			exit 3;
+		}
+
+		# look for field type description
+		#
+		if ($i ~ /[cC]/) type[i-3] = "char";
+		else if ($i ~ /[sS]/) type[i-3] = "short";
+		else if ($i ~ /[iI]/) type[i-3] = "int";
+		else if ($i ~ /[lL]/) type[i-3] = "long";
+		else if ($i ~ /[fF]/) type[i-3] = "float";
+		else if ($i ~ /[dD]/) type[i-3] = "double";
+		else
+		{
+			printf "/* ^^can't find type of field \"%s\" */\n", $i;
+			exit 2;
+		}
+		if ($i ~ /[uU]/ && $i !~ /[fdFD]/)
+			type[i-3] = "unsigned " type[i-3];
+
+		# read up to first colon: is there a range field?
+		#
+		for (j = 1; j < length($i); j++)
+			if (substr($i, j, 1) == ":") break;
+
+		if (j < length($i))     # yes: read a float into hi[]
+		{
+			hi[i-3] = dot = 0;
+			if ((c = substr($i, ++j, 1)) == "-")
+			{
+				div = -1.0;     # float is negative
+				j++;
+			}
+			else div = 1.0;
+			if (c == "+") j++;  # ignore leading '+'
+
+			for (; (c = substr($i, j, 1)) ~ /[\.0-9]/; j++)
+			{
+				if (c == ".")   # found the decimal point
+				{
+					if (dot)
+					{
+						printf "/* ^^too many '.' in field \"%s\" */\n", $i;
+						exit 4;
+					}
+					else dot = 1;
+				}
+				else            # read one digit
+				{
+					hi[i-3] = 10*hi[i-3] + c;
+					if (dot) div *= 10.0;
+				}
+			}
+			hi[i-3] /= div;     # adjust for decimal point
+
+			# same for second range field, if there is any:
+			#
+			if (substr($i, j, 1) == ":")
+			{
+				lo[i-3] = hi[i-3];
+				hi[i-3] = dot = 0;
+				if ((c = substr($i, ++j, 1)) == "-")
+				{
+					div = -1.0;     # float is negative
+					j++;
+				}
+				else div = 1.0;
+				if (c == "+") j++;  # ignore leading '+'
+
+				for (; (c = substr($i, j, 1)) ~ /[\.0-9]/; j++)
+				{
+					if (c == ".")   # found the decimal point
+					{
+						if (dot)
+						{
+							printf "/* ^^too many '.' in field \"%s\" */\n", $i;
+							exit 4;
+						}
+						else dot = 1;
+					}
+					else            # read one digit
+					{
+						hi[i-3] = 10*hi[i-3] + c;
+						if (dot) div *= 10.0;
+					}
+				}
+				hi[i-3] /= div;     # adjust for decimal point
+			}
+			else if ($i !~ /[uU]/) lo[i-3] = -hi[i-3];
+			#
+			# no second range field: make range symmetric if signed
+		}
+
+		# now read replicator, if any:
+		#
+		k = 1;
+		for (j = length($i); (c = substr($i, j, 1)) ~ /[0-9]/; j--)
+		{
+			num[i-3] += k*c;
+			k *= 10;
+		}
+		if (num[i-3]) any_num = 1;
+
+		# look for 'b' and 'g' switches:
+		#
+		dpe[i-3] = 0;
+		if ($i ~ /[bB]/) gray[i-3] = 0;
+		else
+		{
+			gray[i-3] = 1;
+			if (width[i-3] > maxw) maxw = width[i-3];
+			if ($i !~ /[gG]/ && width[i-3] >= 2) dpe[i-3] = 1;
+		}
+
+		# convert range boundaries into (base,scale) notation:
+		#
+		excess = 1;
+		for (j = 1; j < width[i-3]; j++) excess *= 2;
+		if (hi[i-3] == 0 && lo[i-3] == 0)
+		{
+			hi[i-3] = 1;
+			if ($i !~ /[uU]/) lo[i-3] = -excess;
+		}
+		else hi[i-3] = (hi[i-3] - lo[i-3])/(2*excess);
+
+		# construct gene descriptor variables:
+		#
+		for (j = 0; j < num[i-3] || j == 0; j++)
+		{
+			len += width[i-3];
+			start[num_real] = len;
+			if (!dpe[i-3]) start[num_real] = -start[num_real];
+			scale[num_real] = hi[i-3];
+			base[num_real++] = lo[i-3];
+		}
+	}
+
+	# now let's do some outputting:
+	#
+	if (!DPE)   # print gene descriptor variables, nicely formatted
+	{
+		printf "\nint GAgenes = %d;  /* the number of genes */\n", num_real;
+		print "\n/* locates the end of each gene; negate to inhibit DPE */";
+		printf "int GAposn[%d] = {", num_real;
+		for (i = 1; i < num_real; i++)
+		{
+			printf "%3d, ", start[i-1];
+			if (!(i % 10)) printf "\n                  ";
+		}
+		printf "%3d};\n", start[num_real-1];
+		print "\n/* multiplication factors (see _eval() below) */";
+		printf "double GAfact[%d] = {", num_real;
+		for (i = 1; i < num_real; i++)
+		{
+			printf "%.5e, ", scale[i-1];
+			if (!(i % 4)) printf "\n                     ";
+		}
+		printf "%.5e};\n", scale[num_real-1];
+		print "\n/* displacement terms (see _eval() below) */";
+		printf "double GAbase[%d] = {", num_real;
+		for (i = 1; i < num_real; i++)
+		{
+			printf "%.5e, ", base[i-1];
+			if (!(i % 4)) printf "\n                     ";
+		}
+		printf "%.5e};\n", base[num_real-1];
+		DPE = 1;
+	}
+	else print "\n/* using user-supplied GA globals in good faith */";
+
+	# print the appropriate _eval() function:
+	#
+	print "\n/* user's evaluation function needs unpacking and decoding */";
+	print "double _eval(genome, length)";
+	print "\tchar *genome;";
+	print "\tint length;\n{";
+	for (i = 1; type[i] != ""; i++)
+	{
+		printf "\tstatic %s p%d", type[i], i;   # variables to hold the genes
+		if (num[i] && width[i]) printf "[%d]", num[i];
+		print ";";
+	}
+	if (maxw) printf "\tchar tmp[%d];\n", maxw; # a char buffer for Degray()
+	if (any_num) print "\tregister int i;";     # loop counter for replication
+	print "\textern   char *Buff;";             # global buffer for Unpack()
+	print "\tregister char *buff;";             # a pointer to the above
+	print "\tregister double *f = GAfact;";
+	print "\tregister double *b = GAbase;";     # pointers for fast scaling
+
+	# report last phenotype if length is negative:
+	#
+	print "\n\tif (length < 0)\t/* report previous phenotype */\n\t{";
+	printf "\t\tsprintf(genome, \"\\n";
+	for (i = 1; type[i] != ""; i++)     # construct the formatting string
+		for (j = 0; j == 0 || j < num[i]; j++)
+		{
+			printf "%%%d", width[i];
+			if (type[i] ~ /long/) printf "l";
+			if (type[i] ~ /float/ || type[i] ~ /double/) printf "g ";
+			else if (type[i] ~ /unsigned/) printf "u ";
+			else printf "d ";
+		}
+	printf "\"";
+	j = i;
+	for (i = 1; type[i] != ""; i++)     # print gene vars in nice format
+	{
+		if (num[i])
+			for (j = 0; j < num[i]; j++)
+			{
+				if (j%6 == 0) printf ",\n\t\t\t";
+				else printf ", ";
+				printf "p%d[%d]", i, j;
+			}
+		else
+		{
+			if (j >= 6)
+			{
+				printf ",\n\t\t\t";
+				j = -4;
+			}
+			else printf ", ";
+			printf "p%d", i;
+			j++;
+		}
+	}
+	print ");\n\t\treturn((double) 0.0);\n\t}";
+
+	# back to the decoding business:
+	#
+	printf "\t/*  GAlength %d  */\n", len;
+	printf "\tif (length < %d)\n", len;
+	printf "\t\tError(%clength error in eval%c);\n", 34, 34;
+	print "\n\tUnpack(genome, buff = Buff);";
+
+	for (i = 1; type[i] != ""; i++)     # for each descriptor:
+	{
+		if (num[i])     # start a loop for replication
+		{
+			printf "\tfor (i = 0; i < %d; ", num[i];
+			printf "i++, buff += %d)\n\t", width[i];
+			if (gray[i]) printf "{\n\t";
+		}
+		if (gray[i])    # call Degray() if necessary
+		{
+			printf "\tDegray";
+			printf "(buff, tmp, %d);\n", width[i];
+			if (num[i]) printf "\t";
+		}
+		printf "\tp%d", i;      # now decode the gene
+		if (num[i]) printf "[i]";
+		printf " = (%s) (Ctoi(", type[i];
+		if (gray[i]) printf "tmp";
+		else printf "buff";
+		printf ", %d) * *f++ + *b++);\n", width[i];
+		if (gray[i] && num[i]) print "\t}"
+		if (!num[i] && type[i+1] != "")
+			printf "\tbuff += %d;\n", width[i];
+	}
+
+	# invoke user's eval function with decoded genes:
+	#
+	printf "\treturn((double) %s(", $3;
+	for (i = 1; type[i] != ""; i++)
+	{
+		if (!comma) comma = 1;
+		else printf ", ";
+		printf "p%d", i;
+	}
+	print "));\n}";
+}
+
+END \
+{
+	if (!found)     # must be old-fashioned eval() function:
+	{
+		print "\n/* user's eval() function needs unpacking only */";
+		print "double _eval(genome, length)\n\tchar *genome;";
+		print "\tint length;\n{\n\textern char *Buff;\n";
+		print "\tif (length > 0)\n\t{"; 
+		print "\t\tUnpack(genome, Buff, length);";
+		print "\t\tgenome = Buff;\n\t}"; 
+		print "\treturn(eval(genome, length));\n}";
+	}
+	if (!DPE)       # no data for parameter descriptor variables:
+	{
+		print "\n/* inserting dummy GA globals - DPE won't work */";
+		print "int GAgenes = 0, *GAposn;";
+		print "double  *GAfact, *GAbase;";
+	}
+}
+

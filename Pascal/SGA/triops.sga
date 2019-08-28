@@ -1,0 +1,57 @@
+{ triops.sga }
+{ 3-operators: Reproduction (select), Crossover (crossover),
+               & Mutation (mutation)                        }
+
+function select(popsize:integer; sumfitness:real;
+                var pop:population):integer;
+{ Select a single individual via roulette wheel selection }
+var rand, partsum:real; { Random point on wheel, partial sum }
+    j:integer;          { population index }
+begin
+ partsum := 0.0; j := 0;      { Zero out counter and accumulator }
+ rand := random * sumfitness; { Wheel point calc. uses random number [0,1] }
+ repeat  { Find wheel slot }
+  j := j + 1;
+  partsum := partsum + pop[j].fitness;
+ until (partsum >= rand) or (j = popsize);
+ { Return individual number }
+ select := j;
+end;
+
+function mutation(alleleval:allele; pmutation:real;
+                  var nmutation:integer):allele;
+{ Mutate an allele w/ pmutation, count number of mutations }
+var mutate:boolean;
+begin
+ mutate := flip(pmutation);   { Flip the biased coin }
+ if mutate then begin
+   nmutation := nmutation + 1;
+   mutation := not alleleval; { Change bit value }
+  end else
+   mutation := alleleval;     { No change }
+end;
+
+procedure crossover(var parent1, parent2, child1, child2:chromosome;
+                    var lchrom, ncross, nmutation, jcross:integer;
+                    var pcross, pmutation:real);
+{ Cross 2 parent strings, place in 2 child strings }
+var j:integer;
+begin
+ if flip(pcross) then begin     { Do crossover with p(cross) }
+   jcross := rnd(1,lchrom-1);     { Cross between 1 and l-1 }
+   ncross := ncross + 1;          { Increment crossover counter }
+  end else                      { Otherwise set cross site to force mutation }
+   jcross := lchrom;
+ { 1st exchange, 1 to 1 and 2 to 2 }
+ for j := 1 to jcross do begin
+   child1[j] := mutation(parent1[j], pmutation, nmutation);
+   child2[j] := mutation(parent2[j], pmutation, nmutation);
+  end;
+ { 2nd exchange, 1 to 2 and 2 to 1 ]
+ if jcross<>lchrom then   { Skip if cross site is lchrom--no crossover }
+  for j := jcross+1 to lchrom do begin
+    child1[j] := mutation(parent2[j], pmutation, nmutation);
+    child2[j] := mutation(parent1[j], pmutation, nmutation);
+   end;
+end;
+

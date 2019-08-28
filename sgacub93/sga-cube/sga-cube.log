@@ -1,0 +1,35 @@
+This is TeX, C Version 2.93 (preloaded format=lplain 88.9.14)  29 MAY 1991 11:19
+**sga-cube
+(sga-cube.tex
+LaTeX Version 2.09 <26 Apr 1988>
+(/usr/users/lib/tex/inputs/article.sty
+Document Style `article' <16 Mar 88>.
+(/usr/users/lib/tex/inputs/art10.sty)
+\c@part=\count78
+\c@section=\count79
+\c@subsection=\count80
+\c@subsubsection=\count81
+\c@paragraph=\count82
+\c@subparagraph=\count83
+\c@figure=\count84
+\c@table=\count85
+) (/usr/users/lib/tex/inputs/times.sty
+(/usr/users/lib/tex/inputs/psfonts.sty
+\@cmrfam=\fam11
+\@cmrscale=\count86
+)) (apaua.sty
+BiBTeX Style `APAUA'. Experimental release 0.1 <M. Valenzuela>
+\bibhang=\skip41
+) (sga-cube.aux) [0
+
+] [1] [2] [3] [4] (sga-cube.bbl [5]) [6] (sga-cube.aux) 
+Here is how much of TeX's memory you used:
+ 251 strings out of 1511
+ 2173 string characters out of 9000
+ 34912 words of memory out of 65531
+ 2154 multiletter control sequences out of 3000
+ 25492 words of font info for 95 fonts, out of 36000 for 120
+ 14 hyphenation exceptions out of 307
+ 12i,6n,25p,173b,317s stack positions out of 200i,40n,60p,2000b,2000s
+
+Output written on sga-cube.dvi (7 pages, 24400 bytes).

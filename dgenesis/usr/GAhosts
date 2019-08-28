@@ -1,0 +1,18 @@
+#
+# usr/GAhosts
+# This file contains a list of hosts for DGENESIS
+#
+# format:
+# hostname	number of processes allowed
+#
+# NOTES:
+#    The hostname can't be entered in dotted decimal notation.
+#
+ds2501		2
+ds2504		2
+hollerith	1
+#neumann	5
+#telem110	1
+#lamport	2
+#colossus	6	
+eniac.rhon.itam.mx	6

@@ -1,0 +1,61 @@
+head     1.2;
+branch   ;
+access   ;
+symbols  ;
+locks    ; strict;
+comment  @ * @;
+
+
+1.2
+date     91.02.01.13.39.15;  author whitley;  state Exp;
+branches ;
+next     1.1;
+
+1.1
+date     90.07.23.16.16.35;  author whitley;  state Exp;
+branches ;
+next     ;
+
+
+desc
+@@
+
+
+1.2
+log
+@copyright notice added.
+@
+text
+@
+/*************************************************************/
+/*                                                           */
+/*  Copyright (c) 1990                                       */
+/*  Darrell L. Whitley                                       */
+/*  Computer Science Department                              */
+/*  Colorado State University                                */
+/*                                                           */
+/*  Permission is hereby granted to copy all or any part of  */
+/*  this program for free distribution.   The author's name  */
+/*  and this copyright notice must be included in any copy.  */
+/*                                                           */
+/*************************************************************/
+extern
+int linear(/* int max,
+			  float bias
+			*/);
+extern
+void get_parents (/* GENEPTR mom, dad, 
+					 POOLPTR pool,
+					 int (*bias_fun)(), 
+					 float bias
+				   */);
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d1 13
+@

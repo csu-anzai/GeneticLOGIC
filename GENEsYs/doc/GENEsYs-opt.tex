@@ -1,0 +1,782 @@
+%
+%	GENEsYs-opt.tex		Ba, 22 feb 91		LaTeX 2.09
+%				Ba, 15 jun 92
+%
+%	Informations how to run the GENESIS program
+%{
+
+\section{Options}\label{genesis-opt}
+
+\GEN\ may be run from any directory by using one of two different 
+possible methods.
+The first one is based on a program called ``setup'', which explicitly
+asks for each parameter of the \GA\ to be typed in by the user.
+Default values are announced explicitly during this procedure by
+printing them in square brackets.
+This procedure is suggested for use by the unexperienced user of \GEN;
+it is explained here first.
+
+\subsection{The ``setup''-program}
+
+Run ``setup'' which prompts for the following  parameters
+(a  \Cmd{<cr>} response to any prompt gets the default value shown
+in brackets):
+%
+\begin{description}
+%
+\item[	Objective Function Number {[1]}:]			
+	This defines the objective function is to be used during the
+	optimization.
+	For a list of objective functions, see section~\ref{genesis-fct}.      	
+%
+\item[	Objective Function Dimension {[30]}:]
+	The number of real-valued objective va\-ri\-a\-bles which have to be
+	encoded in one individual.
+	If the dimension specified here is~$0$, a pseudoboolean function is
+	assumed, i.e.~a direct mapping of bitstrings to real values.
+	Then, the meaning of the next parameter becomes different (see there).
+%
+\item[	Length per Object Variable {[32 or -1]}:]
+	\ifUS
+	\mbox{}\\
+	\fi
+	For real-valued object variables, the number of bits per object
+	variable is specified here.
+	For a pseudoboolean function, the total length of the bitstring has
+	to be given.
+%
+\item[	Population Size {[50]}]{}
+%
+\item[ 	Reproduction Mechanism {[P]}:]
+	The selection mechanism (default: proportional selection) is
+	specified by this parameter.
+	For an explanation of the different options, see 
+	subsection~\ref{genesis-subopt}.
+	Depending on different specifications given here by the user,
+	some more information might be necessary. 
+	The different options causing more information requests are explained
+	here briefly:
+	%
+	\begin{Itemize}
+	%
+	\item[R:] {\bf Maximum Expected Value for Ranking {[1.1]}:}
+		This value determines the maximum expected value. 
+		It's default value is set to $\eta_{\max} = 1.1$ 
+		according to Baker's suggestions~\cite{Bak85}. 
+	%
+	\item[B:] {\bf Temperature Control Parameter {[0.99]}:}
+		The temperature control parameter for the cooling schedule
+		in case of Boltzmann selection 
+		(see section~\ref{genesis-pro}).			\\
+		{\bf Constant Temp.~Cooling Interval (Gens) {[5]}:}
+		The number of generations to remain at a constant temparature
+		in case of Boltzmann selection (see section~\ref{genesis-pro}).
+	%
+	\item[W:] {\bf Value of Whitley's Constant 'a' {[1.100]}:}
+		For Whitley's selection scheme (see section~\ref{genesis-pro}),
+		the constant~$a$ is specified here.
+	%
+	\end{Itemize}
+	%
+%
+\item[	Lower Selection Index {[1]}:]
+	This index specifies the index of the first individual which 
+	has to be taken into account by selection, when individuals are sorted
+	by fitness.
+	A default value of~$1$ determines to start at the best individual,
+	$2$ at the second best, and so on.
+	Only individuals having a rank equal to or larger than this parameter
+	are considered during selection.
+	Normally, you should not decide to use another than the default value.
+%
+\item[	Upper Selection Index {[50]}:]
+	This is essentially the value of~$\mu$ as described in 
+	section~\ref{genesis-pro}.
+%
+\item[	Mutation Mechanism {[S]}:]
+	\ifUS
+	\mbox{}\\
+	\fi
+	The mutation mechanism (default: simple mutation).
+	For an explanation of the different options, see 
+	subsection~\ref{genesis-subopt}.
+	Again, different options can cause more information requests as
+	follows:
+	%
+	\begin{Itemize}
+	%
+	\item[A:] {\bf Number of Adaptive Mutation Rates {[30]}:}
+		For mutation according to the {\sc Amim} mechanism, the
+		number of adaptive mutation rates must be given here.
+		This is by default suggested to be identical to the number of
+		object variables.
+		Alternatively, it may take the value~$1$, which is a must
+		in case of a pseudoboolean function to be optimized.	\\
+		{\bf Number of Bits for each Mutation Rate {[20]}:}
+		The number of bits used for encoding each of the adaptive
+		mutation rates has to be given here.
+		In experiments, the default value of $20$ turned out to be
+		a reasonable choice.
+	%
+	\item[X:] {\bf Number of Mutation Rates {[30]}:}
+		The same as for option {\bf A} is true for this option, except
+		that the mutation mechanism is different ({\sc Amem}).
+	%
+	\end{Itemize}
+%
+\item[	Mutation Probability {[0.001]}]{}
+%
+\item[	Recombination Mechanism {[S\_]}:]
+	Both for the object variables and for the adaptive mutation rates,
+	a recombination mechanism must be specified here, resulting in a
+	pair consisting of two letters.
+	The default is standard recombination (two-point crossover) for object
+	variables and no recombination for mutation rates (since by default
+	no adaptive mutation rates are enabled).
+	For a description of available options, see 
+	subsection~\ref{genesis-subopt},
+%
+\item[	Number of Crossover Points {[2]}:]
+	The user may arbitrarily choose the number of cross\-over--points 
+	between the boundaries~$0$ and the length of the individuals.
+	However, typically the number chosen will not exceed~$12$.
+	The default value is~$2$, according to the definition in the 
+	original \Ogen.
+%
+\item[	Crossover Application Rate {[0.60]}]{}
+%
+\item[	Generation Gap {[1.0]}:]
+       	The generation gap indicates the percentage of  the  population 
+	which is replaced in each generation.
+%
+\item[	Scaling Window Size {[5]}:]
+       	When minimizing a numerical function with a GA, it is common
+       	to  define  the  performance  value $u(x)$ of a structure $x$ as
+       	$u(x) = f_{max} - f(x)$, where $f_{max}$ is the maximum  value  that
+       	$f(x)$ can assume in the given search space.  This transformation 
+	guarantees  that  the  performance  $u(x)$  is  positive,
+       	regardless  of the characteristics of $f(x)$.  Often, $f_{max}$ is
+       	not available a priori, in which case we may define  $u(x)  =
+       	f(x_{max})  - f(x)$, where $f(x_{max})$ is the maximum value of any
+       	structure evaluated so far.  Either definition of  $u(x)$  has
+       	the  unfortunate  effect  of making good values of $x$ hard to
+       	distinguish.  For  example,  suppose  $f_{max}  =  100$.   After
+       	several  generations,  the  current population might contain
+       	only structures $x$ for which $5 < f(x) < 10$.  At  this  point,
+      	no structure in the population has a performance which deviates 
+	much from the  average.   This  reduces  the  selection
+       	pressure  toward the better structures, and the search stagnates.  
+	One solution is to define a new parameter $F_{max}$ with
+       	a  value  of,  say, $15$, and rate each structure against this
+       	standard. For example, if $f(x_i) = 5$ and  $f(x_j)  =  10$,  then
+       	$u(x_i)  =  F_{max} - f(x_i) = 10$, and $u(x_j) = F_{max} - f(x_j) = 5$;
+       	the performance of $x_i$ now appears to be twice as good as the
+       	performance  of $x_j$.  The scaling window $W$ allows the user to
+       	control how often the baseline performance is updated.  If $W > 0$
+	then the system sets $F_{max}$ to the greatest value of $f(x)$
+       	which has occurred in the last $W$ generations.  A value of  $W =  0$
+  	indicates  an  infinite  window  (i.e. $u(x) = f(x_{max}) -f(x)$).
+	
+	The scaling mechanism indiciated here is necessary only in case of
+	proportional selection.
+%
+\item[	Number of Experiments to Perform {[1]}:]
+	This parameter defines the number of independent experiments 
+	to perform for the same function.
+%
+\item[	Number of Trials per Experiment {[1000]}]
+%
+\item[	Report Interval, Evaluations {[100]}:]
+	This parameter specifies the number of function evaluations
+	between data collections.
+%
+\item[	Number of Structures to Save {[1]}:]
+	\ifUS
+	\mbox{}\\
+	\fi
+	The number of best structures which should be saved for each 
+	experiment.
+%
+\item[	Maximum No.~of Gens.~w/o Evaluation {[2]}:] 	
+	\ifUS
+	\mbox{}\\
+	\fi
+	The maximum number of generations with\-out any evaluations occurring.
+%
+\item[ 	Interval for Bitmap Dumps (Gens) {[0]}:]
+	When option \verb/b/ is passed to the algorithm, a bitmap dump
+	containing the best structure of the populations is created.
+	This parameter specifies the interval (in generations) for adding
+	a new structure to the dump-file.
+%
+\item[	Interval for Population Dumps (Gens) {[0]}:]
+	Similar to bitmap dumps, when option \verb/d/ is passed to the
+	algorithm, a phenotype (object variable) dump of the whole populations
+	is created.
+	This parameter specifies the interval (in generations) for 
+	creating a new dump of the population.
+	Each population dump is written to a separate file, while all 
+	bitmap dumps (since they create only one new structure each time)
+	are appended to one file.
+%
+\item[	Internal \GA-Options {[an]}:]
+	The special options which are passed to the \GA.
+	These options are described in the section ``Further Options'' 
+	(see \ref{genesis-subsubfurther}).
+%
+\item[	Seed for Random Number Generator {[123456789]}]
+%
+\item[	Suffix for \GA-Data Infile {[1.30.32.P50S0.001S\_2.0.6]}:]
+	The suffix for the directory and the data-file which will be 
+	created by \GEN. 
+	The default looks cryptic, because it includes all necessary
+	information to identify the parameters of the \GA-run; in this case
+	the number of the objective function ($1$), the dimension of the
+	objective function ($30$), the number of bits per object 
+	variable ($32$), the selection scheme (P), the population
+	size ($50$), the mutation mechanism (S), the mutation rate ($0.001$),
+	the recombination mechanism (S\_), the number of crossover 
+	points ($2$), and the crossover rate ($0.6$).
+% 
+\item[	The number of bits which encode the mutation rate {[0]}:]
+	\ifUS
+	\mbox{}\\
+	\fi
+	By this value it is defined, how many bits of any individual specify
+	the mutation rate for that individual.
+	This takes any effect only if the option \O{A} or \O{X} is set.
+%
+\end{description}
+%
+Setup then echoes the input file, and prompts with ``Execute \GA\ ?''.  
+A \Cmd{<cr>}  in  response to this question starts the programs running.  
+Any other response queues the execution  command  in  file  ``\GA-queue''.
+This  is useful if you want to edit the input file.  
+The  programs run in background mode.
+
+\ifUS
+	\newpage
+\else
+\fi 
+\subsection{Command Line Options}\label{genesis-subopt}
+
+All options as described in the previous subsection can be given to the
+algorithm also by specifying them on the command line when calling the 
+program \verb/ga/.
+Furthermore, there are some additional options which can be specified this way.
+Generally, this way of passing options to the \GA\ will be more convenient
+to the user, since the complete setup-procedure during which all possible
+parameter and configuration options have to be passed is a longish way of
+creating a run configuration.
+Using command line options, defaults remain unchanged, and the user must only
+specify whichever option he wants to change.
+The following option description divides into three parts:
+%
+\begin{Itemize}
+%
+\item	\GA-specific options (\ref{genesis-subsubspecific}).
+	This part describes all options necessary for specifying an
+	algorithmic parameterization and configuration setting.
+%
+\item	General options (\ref{genesis-subsubgeneral}).
+	A part which describes all options related to data collection,
+	I/O-facilities, and random number generation, as far as these
+	options require parameters.
+%
+\item	Further options (\ref{genesis-subsubfurther}).
+	A part containing options related to the algorithm and data collection
+	as far as they require no further arguments.
+%
+\item	Function options (\ref{genesis-subsubfunction}).
+	In \GEN, it is possible to pass options directly to an objective
+	function, when the program is called from the UNIX command line level.
+	The general format of such a call is as follows:
+	%
+\ifUS
+	\begin{flushleft}
+     \verb/ga <some_options> -f <No.> { <options_to_function> }/	\\
+     \verb/   <more_options>/
+	\end{flushleft}
+\else
+	\begin{center}
+     \verb/ga <some_options> -f <No.> { <options_to_function> } <more_options>/
+	\end{center}
+\fi
+	%
+	Here, the options in curly brackets are function-specific options.
+	It is important to note that the curly-bracketed function-specific
+	options must directly follow the function number specification,
+	as shown in the example.
+	Blanks are mandatory between the curly brackets and 
+	\verb/<options_to_function>/.
+	In section~\ref{genesis-subsubfunction} the possible options 
+	which may be passed to a function are explained.
+%
+\end{Itemize}
+
+The general outline of the option description is a follows:
+For each option, the default value as well as the range of values allowed
+for the parameter setting are specified in the first line of the description.	
+Then, the option is described informally, as also done in the preceding
+description of the setup-procedure.
+
+\subsubsection{\GA-Specific Options}\label{genesis-subsubspecific}
+
+\begin{Enumerate}
+%
+\item	\Opt{-A}{$n_p$}{$0$}{$n_p \in \{0,1,n\}$}
+	The number of adaptive mutation rates to be added to the genotype.
+	For a pseudoboolean function, this can only be~$0$ or~$1$.
+	Otherwise, it can also attain the value~$n$ (dimension of the objective
+	function).
+%
+\item	\Opt{-B}{$l_m$}{$0$}{$0 \leq l_m \leq I_s$}			
+	The number of bits which are used to encode one adaptive mutation
+	rate. (Note that this default value is different to the default value
+	used in the setup program. 
+	This is due to the fact that in the setup-program this value is
+	only being asked for if adaptive mutations are selected by the user.)
+%
+\item	\Opt{-C}{$p_c$}{$0.6$}{$0 \leq p_c \leq 1.0$}		
+	The {\em crossover rate\/}~$p_c$.
+%
+\item	\Opt{-E}{}{}{}
+	The {\em elitist\/} selection strategy is used in case of 
+	option~\O{E}.
+	The elitist selection strategy stipulates that the best performing
+	structure always survives from one generation to the next.
+	In the absence of this strategy, it is possible that the best
+	structure disappears thanks to crossover or mutation.
+%
+\item	\Opt{-G}{$G$}{$1.0$}{$0 \leq G \leq 1.0$}
+	The {\em generation gap\/}~$G$ indicates the percentage of the
+	population which is replaced in each generation.
+%
+\item	\Opt{-L}{$l$}{$32$}{$0 < l$}
+	The number of bits used for encoding one object variable~$x_i$
+	in case of a continuous optimization problem (total length of the
+	genotype is then~$l \cdot n$).
+	In case of a pseudoboolean function, $l$ denotes the length of the
+	genotype.
+%
+\item	\Opt{-M}{\verb/<MttScm>/}{\verb/S/}{\verb/S,A,X/}
+	This option determines the mutation scheme which is used within
+	the \GA. 
+	The choices implemented in the current version of \GEN\ are
+	(see section~\ref{genesis-pro} for details):			\\
+	%
+	\begin{tabular}{ll}
+		\verb/S/ & Standard mutation mechanism.			\\
+		\verb/A/ & {\sc Amim} adaptive mutation mechanism.	\\
+		\verb/X/ & {\sc Amem} adaptive mutation mechanism.	\\
+	\end{tabular}
+%
+\item	\Opt{-N}{$\eta_{max}$}{$1.1$}{$1.0 \leq \eta_{max} \leq 2.0$}
+	\vspace*{-1.0\baselineskip}
+	\Opt{-N}{$a$}{$1.1$}{$a \neq 1$}
+	\vspace*{-1.0\baselineskip}
+	For the {\em ranking\/} selection scheme according to 
+	Baker~\cite{Bak85} the value of~$\eta_{max}$ is given by this option.
+	This is equivalent to the value of~$a$ in Whitley's selection
+	mechanism~\cite{Whi89}, but the latter provides a greater flexibility
+	concerning the variability of the parameter.
+%
+\item	\Opt{-P}{$\lambda$}{$50$}{$0 < \lambda$}
+	Population size.
+%
+\item	\Opt{-R}{$p_m$}{$0.001$}{$0 \leq p_m \leq 1.0$}
+	The mutation probability is given by~$p_m$.
+%
+\item	\Opt{-S}{\verb/<SltScm>/}{\verb/P/}{\verb/P,B,R,I,W,M,C/}
+	The selection scheme used within the \GA. 
+	Possible choices are (see section~\ref{genesis-pro} for details): \\
+	%
+	\begin{tabular}{ll}
+\ifUS
+		\verb/P/ & 	Proportional selection, i.e.~the standard 
+				selection 				\\
+			 &	scheme~\cite{Hol75}.		\\
+\else
+		\verb/P/ & 	Proportional selection, i.e.~the standard 
+				selection scheme~\cite{Hol75}.		\\
+\fi
+		\verb/B/ & 	Boltzmann selection~\cite{Gol90c}.	\\
+		\verb/R/ & 	Ranking according to Baker~\cite{Bak85}.\\
+		\verb/I/ & 	Inverse ranking.			\\
+		\verb/W/ & 	Ranking according to 
+				Whitley~\cite{Whi89}.			\\
+		\verb/M/ & 	\mlSel. 				\\
+\ifUS
+		\verb/C/ & 	\mlSel, but with copying the 
+				best~$\mu$ individuals			\\
+			 &	completely, i.e.~modeling the		
+			  	deterministic mechanism as used 	\\
+			 &	in \ESs~\cite{Schw81}.			\\
+\else
+		\verb/C/ & 	\mlSel, but with copying the 
+				best~$\mu$ individuals completely,	\\
+			 &	i.e.~modeling the deterministic 
+				mechanism as used in \ESs~\cite{Schw81}.\\
+\fi
+	\end{tabular}
+%
+\item	\Opt{-U}{$\mu$}{$50$}{$0 < \mu < \lambda$}
+	Value of~$\mu$.
+%
+\item	\Opt{-V}{$\rho$}{$1$}{$0 < \rho < \mu$}
+	The lower selection index of the first individual which is taken into
+	account by selection.
+%
+\item	\Opt{-W}{$W$}{$5$}{$0 \leq W$}
+	Windowsize for the special scaling mechanism used by Grefenstette
+	in case of proportional selection.
+%
+\item	\Opt{-X}{$n_c$}{$2$}{$0 \leq n_c < l$}
+	The number of crossover points for the crossover operator.
+%
+\item	\Opt{-Y}{\verb/<RecScm>/}{\verb/S\_/}{\verb/S,A,U,D,I,R,\_/}
+	The recombination operator mechanism actually used. 
+	Possible choices are (see section~\ref{genesis-pro} for details): \\
+	%
+	\begin{tabular}{ll}
+\ifUS
+		\verb/S/ & 	Standard recombination, i.e.~$m$--point 
+				crossover.  				\\
+			 &	Default: $m = 2$.		\\
+\else
+		\verb/S/ & 	Standard recombination, i.e.~$m$--point 
+				crossover.  Default: $m = 2$.		\\
+\fi
+		\verb/U/ &	Uniform Crossover.			\\
+		\verb/D/ & 	Discrete recombination.			\\
+		\verb/I/ & 	Intermediate recombination.		\\
+		\verb/R/ & 	Random intermediate recombination.	\\
+		\verb/_/ & 	No recombination.			\\
+	\end{tabular}
+
+	To indicate the recombination mechanism, two letters {\em must\/} be
+	specified in the command line, i.e.~one recombination scheme for
+	the object variables and one for the mutation rates (which is
+	\verb/_/ if no adaptive mutation rates are used).
+%
+\end{Enumerate}
+
+\subsubsection{General Options}\label{genesis-subsubgeneral}
+		
+\begin{Enumerate}
+%
+\item	\Opt{-b}{\verb/<Bitmap-freq>/}{$0$}{$0 \leq \mbox{\tt<Bitmap-freq>}$}
+	The bitmap dump interval, i.e.~the number of generations between
+	adding the best individual bit pattern to the bitmap dump file.
+%
+\item	\Opt{-d}{\verb/<Dump-freq>/}{$0$}{$0 \leq \mbox{\tt<Dump-freq>}$}
+	The dump interval, i.e.~the number of generations between dumps.
+%
+\item	\Opt{-e}{\verb/<Totalexp>/}{$1$}{$1 \leq \mbox{\tt<Totalexp>}$}
+	The number of independent optimizations of the same function.
+%
+\item	\Opt{-f}{\verb/<F-nbr>/}{$1$}{$1 \leq \mbox{\tt<F-nbr>} \leq \NbrFct$}
+	The index of the actual objective function to optimize.
+	See section~\ref{genesis-fct} for an description of the 
+	functons actually provided, and section~\ref{genesis-mod} 
+	for an explanation of how to implement your own objective functions.
+	Note that the upper bound on the number of objective functions does
+	of course depend on the number of objective functions enclosed
+	in your modified implementation.
+%
+\item	\Opt{-g}{\verb/<Maxspin>/}{$2$}{$0 \leq \mbox{\tt<Maxspin>}$}
+	The number of generations without any evaluations occurring.
+%
+\item	\Opt{-h}{}{}{}
+	The online-help information of the \GEN\ software.
+	Besides a short explanation of all available options, this will
+	also give you an overview of objective functions actually installed
+	in the system as well as the additional options you can submit
+	to the objective functions (see section~\ref{genesis-subsubfunction}).
+%
+\item	\Opt{-i}{\verb/<Infile>/}{\verb/in.<suf>/}{}
+	A filename of the \File{in}-file to be used for this run of the \GA.
+	If the option \O{-i} is set, no other option is allowed due
+	to the fact, that all data is provided by the \File{in}-file.
+	Hence, by a call \Cmd{ga -i in.<suf>} a setup-data file can
+	be used later to start a run.
+%
+\item	\Opt{-n}{$n$}{$30$}{$1 \leq n$}
+	The dimension of the objective function.
+	If the function chosen from the function set is a pseudoboolean one,
+	you may not use this option, because in this case the length of
+	the individuals is determined by the \O{-L} option solely.
+%
+\ifUS
+\item	\Opt{-o}{\verb/<Options>/}{\verb/anc/}{\verb/a,c,e,i,l,m,n,p/}
+	\vspace*{-1.0\baselineskip}
+	\Opt{}{}{}{\verb/s,t,v,z/}
+	\vskip-1.0\baselineskip
+\else
+\item	\Opt{-o}{\verb/<Options>/}{\verb/anc/}{\verb/a,c,e,i,l,m,n,p,s,t,v,z/}
+\fi
+	Additional options for the \GA.
+	These are exactly identical to the options described in 
+	section~\ref{genesis-subsubfurther}, which can be set during 
+	the ``setup'' procedure.
+%
+\item	\Opt{-r}{\verb/<Seed>/}{$123456789$}{$0 < \mbox{\tt<Seed>}$}
+	Seed for the random number generator.
+%
+\item	\Opt{-s}{\verb/<Savesize>/}{$10$}{$0 \leq \mbox{\tt<Savesize>}$}
+	How many of the best structures should be saved.
+%
+\item	\Opt{-t}{\verb/<Totaltrials>/}{$1000$}{$0 < \mbox{\tt<Totaltrials>}$}
+	The total number of function evaluations per experiment.
+%
+\item	\Opt{-v}{\verb/<Interval>/}{$100$}{$1 < \mbox{\tt<Interval>}$}
+	The number of trials between data collections.
+%
+\item	\Opt{-x}{\verb/<Suffix>/}{}{}
+	The suffix for files created by \GEN.	
+%
+\end{Enumerate}
+
+\subsubsection{Further Options}\label{genesis-subsubfurther}
+
+Options described in this section are combined to form a string which is
+passed to the \GA\ by using option \O{-o <options>}, or given to the 
+setup-procedure answering the question for ``Internal \GA-Options''.
+
+\begin{Enumerate}
+%
+\item	\Opt{a}{}{}{} 
+	Evaluate all structures in each generation.   
+	This may  be  useful  when  evaluating a noisy function, since it
+       	allows the GA to sample a given structure several times.  
+	Furthermore, it is sueful for comparison of different runs under
+	consideration of the number of function evaluations.
+	If this option is not selected then structures which are identical 
+	to parents are not evaluated.
+%
+\item	\Opt{c}{}{}{}
+	Collect statistics concerning the  convergence  of
+       	the  algorithm.   
+	These  statistics are written to the \File{out} file, 
+	after every \Vrb{Interval} trials (option \O{-v}).   
+	The  intervals are  approximate, since statistics are 
+	collected only at the end of a generation.  
+%
+\item	\Opt{e}{}{}{}
+	Use the elitist selection strategy.  
+	The elitist strategy  stipulates  that  the  best  
+	performing  structure always survives intact from one 
+	generation to the next.   
+	In the  absence  of this strategy, it is possible that 
+	the best structure disappears, thanks to crossover or mutation.
+%
+\item	\Opt{i}{}{}{}
+	Read structures into the initial population.   
+	The initial  population  will  be read from the \File{init} file.  
+	If the file  contains  fewer  structures  than  the  population
+       	needs,  the  remaining  structures  will be initialized randomly.  
+	Note: it is good practice to  allow  at  least  some
+       	randomness in the initial population.
+%
+\item	\Opt{l}{}{}{}
+	Dump the last generation to the \File{ckpt} file.  
+%
+\item	\Opt{m}{}{}{}
+	Collect data about the mutation rate behaviour in case of adaptive
+	mutations.
+	For each generation and each objective variable, the corresponding
+	average mutation rate, variance, and skewness of the mutation rate
+	are collected in files called \File{mavg}, \File{mvar}, and 
+	\File{mskw}, respectively.
+	Hence, for a long run, a lot of data is collected by using
+	this option.
+%
+\item	\Opt{n}{}{}{}
+	The standard \GEN\ algorithm terminates, if either the
+	given number of trials is reached, the number of converged alleles 
+	reaches the length of the individuals, or the number of 
+	generations since a individual had to be evaluated exceeds a 
+	given maximum. 
+	A futher criterion is a Bias greater than $0.99$. 
+	This latter point may raise some problems, if the option \O{a} is 
+	set, and may cause termination with useless data. 
+	If option \O{N} is set, the algorithm only terminates, 
+	if the given number of trials (i.e.~function evaluations) is reached. 
+	The Bias condition is not respected then.
+%
+\item	\Opt{p}{}{}{}
+	Dump the decoded generation into the file \File{pop}.
+	This is done every \Vrb{Dump-freq} generations.
+%
+\item	\Opt{s}{}{}{}
+	Trace the history of  one  schema.   
+	This  option requires that a file named \File{schema} exist in 
+	which the first line contains a string which has the length of 
+	one structure and  which  contains  only  the characters 
+	$0$, $1$, and $\#$ (and no blanks).  
+	The system will append  one  line  to  the
+       	schema file after each generation describing the performance
+       	characteristics  of  the   indicated   schema   (number   of
+       	representatives, relative fitness, etc.).
+%
+\item	\Opt{t}{}{}{}
+	Trace each major function call  ({\bf for debugging}).
+       	Tracing statements are written to the standard output.
+%
+\item	\Opt{v}{}{}{}
+	Collect data about the object variable behaviour.
+	For each generation and each objective variable, 
+	average value of the object variable, its variance, and its skewness
+	are collected in files called \File{vavg}, \File{vvar}, 
+	and \File{vskw}, respectively.
+	Hence, for a long run, a lot of data is collected by using
+	this option.
+%
+\item	\Opt{z}{}{}{}
+	Using this option, each \Vrb{Interval} (set by option \O{-v}
+	from section~\ref{genesis-subsubgeneral}) function evaluations the
+	complete set of selection probabilities in the population is
+	dumped to a file \File{prb}.
+%
+\end{Enumerate} 
+
+\subsubsection{Function Options}\label{genesis-subsubfunction}
+
+In general, for each objective function up to eight additional option
+settings may be specified.
+For most objective functions, only two options make any sense, and for
+pseudoboolean functions no options are available.
+However, for some more complex user-defined functions continuous as well
+as discrete option settings may be useful in addition.
+In the most complex case, the following options may be used:
+%
+\begin{Itemize}
+%
+\item	\Opt{-L}{$x_{\min}$}{}{}
+	The lower bound of the range of possible values each object variable
+	may attain.
+	Together with the option \O{-H}, these settings may be used to
+	change the default range (see section~\ref{genesis-fct}) to which
+	bitstring segments are mapped by the decoding function.
+%
+\item	\Opt{-H}{$x_{\max}$}{}{}
+	The upper bound of the range of possible values each object 
+	variable may attain.
+%
+\item	\Opt{-p,-q,-r}{}{}{}
+	Three general options expecting real-valued arguments, each.
+	The use of these options is completely due to the implementor of an
+	objective function, who also has to specify a description of 
+	the online-help.
+	See section~\ref{genesis-mod} for further details.
+%
+\item	\Opt{-s,-t,-u}{}{}{}
+	Three general options expecting an integer argument of 0,1 or 2, each.
+	Again, use and documentation of these options is due to the implementor
+	(see section~\ref{genesis-mod}).
+%
+\end{Itemize}
+
+\subsection{Files}\label{genesis-subfiles}
+
+According to the options set by the user, a smaller or larger number of
+files is created in the directory which contains the data collected during
+a run of the \GA.
+The meaning of these files is described in this section.
+
+\begin{enumerate}
+%
+\item	\File{ckpt}: 						\\
+	A checkpoint file containing the current population.  
+	This file is produced if the \O{d} option is set and given a positive
+	argument and additionally option \O{p} is passed to the \GA.
+%
+\item	\File{in.<suffix>}: 					\\
+	Contains input parameters and initial  random  number seeds.  
+	The file suffix is either automatically created or specified by
+	the user.
+	The file is used for remembering all necessary parameterization
+	information for a special run of the \GA.
+%
+\item	\File{init}: 						\\
+	Contains structures which will be  included  in  the
+       	initial  population.   
+	This is useful if you have heuristics for selecting plausible 
+	starting structures.  
+	This  file  is read iff the option \O{i} is set
+	(see also section~\ref{genesis-subsubfurther}).
+%
+\item	\File{log}: 						\\
+	Logs start and finishing  time of a run as well as informations
+	about the best individual contained in the last generation, its
+	function value and the number of experiments performed.
+%
+\item	\File{pgm}:						\\
+	Contains a bitmap dump of the best structure of generations,
+	if option \O{b} is set and given a nonzero argument.
+%
+\item	\File{mavg}:						\\
+	This file contains the associated average mutation rates 
+	of each generation and object variable.
+%
+\item	\File{mskw}:						\\
+	This file contains the skewness of the mutation rate distribution
+	of each generation and object variable.
+%
+\item	\File{mvar}:						\\
+	The variances of the mutation rate distribution of each generation
+	and object variable.
+%
+\item	\File{min}: 						\\
+	Contains the best structures found by the  GA.   
+	The number  of elements in \File{min} is indicated by the response to
+       	the ``save how many'' prompt during setup (option \O{s}).  
+	If the  number  of experiments  is  greater  than  one, 
+	the best structures are stored in \File{min.n} during experiment 
+	number $n$.  
+	This file  is produced if the number of saved structures is positive.
+%
+\item	\File{out}: 						\\
+	Contains data describing the performance of  the  GA over all
+	experiments indicated in the call.
+%
+\item	\File{pop}: 						\\
+	If the option \O{p} is set, this file is created. 
+	Every \Vrb{dump interval} generations the function values of 
+	all members of the population are dumped to this file in a decoded way. 
+	Lines are of the format
+	%
+	\begin{center}
+	\begin{tabular}{rrrcrr}
+		Generation	& $x_1$ & $x_2$ & $\ldots$ 
+				& $x_N$ & $f(x_1,x_2,\ldots,x_N)$ \\
+	\end{tabular}
+	\end{center}
+	%
+	and include the generation number, the decoded object variables, 
+	and the value of the objective function.
+%
+\item	\File{rep}: 						\\
+	Summarizes  the  performance  of  the  algorithm.
+       	This  file  is produced by the report program from the 
+	\File{out} file. 
+%
+\item	\File{schema}: 						\\
+	Logs a history of a single schema.  
+	This file  is required for the \O{s} option.
+%
+\item	\File{vavg}:						\\
+	The average object variable values of each generation and 
+	each object variable.
+%
+\item	\File{vskw}:						\\
+	The skewness of the distribution of object variables at each
+	generation.
+%
+\item	\File{vvar}:						\\
+	The variance of the object variable values at each generation.
+%
+
+\end{enumerate}
+
+%}

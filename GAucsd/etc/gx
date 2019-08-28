@@ -1,0 +1,45 @@
+#!/bin/sh
+
+###############################################################
+#                                                             #
+#   Copyright (c) 1989 Nicol N. Schraudolph                   #
+#   Computer Science & Engineering, C-014                     #
+#   University of California, San Diego                       #
+#   La Jolla, CA 92093-0114                                   #
+#                                                             #
+#   Permission is hereby granted to copy all or any part of   #
+#   this program for free distribution.   The author's name   #
+#   and this copyright notice must be included in any copy.   #
+#                                                             #
+###############################################################
+
+#
+#  file:    gx
+#
+#  author:  Nicol N. Schraudolph
+#
+#  created: August 1989
+#
+#  purpose: Bourne shell script for running simulation queues
+#
+
+qtmp=/tmp/gx$$
+export qtmp
+if test -f GAhosts
+then f="GAhosts $*"
+elif test -f $HOME/GAhosts
+then f="$HOME/GAhosts $*"
+elif test -f $GAUCSD/usr/GAhosts
+then f="$GAUCSD/usr/GAhosts $*"
+else f="$*"
+fi
+echo "# The following GAucsd simulations initiated by you" > $qtmp
+echo "# on" `date` "have terminated:" >> $qtmp
+echo "" >> $qtmp
+cat $f | awk -f $GAUCSD/etc/dispatch >> $qtmp
+echo "" >> $qtmp
+echo "wait  # end of simulations" >> $qtmp
+(nice -5 sh < $qtmp;
+ write $USER < $qtmp || mail -s "your GAucsd simulations" $USER < $qtmp;
+ rm $qtmp) &
+

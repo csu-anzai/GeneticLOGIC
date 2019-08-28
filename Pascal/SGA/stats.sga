@@ -1,0 +1,22 @@
+{ stats.sga }
+
+procedure statistics(popsize:integer;
+                     var max,avg,min,sumfitness:real;
+                     var pop:population);
+{ Calculate population statistics }
+var j:integer;
+begin
+ { Initialize }
+ sumfitness := pop[1].fitness;
+ min        := pop[1].fitness;
+ max        := pop[1].fitness;
+ { Loop for max, min, sumfitness }
+ for j := 2 to popsize do with pop[j] do begin
+   sumfitness := sumfitness + fitness; { Accumulate fitness sum }
+   if fitness>max then max := fitness; { New max }
+   if fitness<min then min := fitness; { New min }
+  end;
+ { Calculate average }
+ avg := sumfitness/popsize;
+end;
+

@@ -1,0 +1,340 @@
+#!/bin/sh
+#
+#	Thomas Baeck,	july 16, 1990		GENEsYs 1.0
+#			sept 17, 1990	
+#			dec  27, 1990   Linespoints option added
+#			May  26, 1991   changed to new data format
+#			Jul  03, 1992
+#	
+#	Plot the data in the GENEsYs 1.0 - created directories into
+#	one graphic either on the screen or to a postscript file instead.
+#		
+#	Usage:	
+#
+#	gapl    [-d <file-desc>] [-e <ps-file>] [-f <cmd-file>] [-l] [-L <dist>]
+#		[-m var|rpt] [-p <ps-file>] [-s samples] [-x ] 
+#		<dir_1> ... <dir_n>
+#
+#	-d	create file extensions according to the given <file-desc>
+#		from the set 
+#		avgm, avrg, best, maxm, minm, offl, onln, wrst
+#		files are generated according to the template
+#		<dir_i>/<file-desc>
+#		If <dir_i> is a pathname of the directory, i.e. of the form
+#		<dir_i>=<d1>/<d2>/.../<dk>/<dir_i'>, the filenames are 
+#		generated to be 
+#		<d1>/<d2>/.../<dk>/<dir_i'>/<file-desc>
+#
+#	-e	generate epsf1 postscript output file
+#
+#	-f	don't start gnuplot; only generate command-file <file>
+#		instead
+#
+#	-l	logarithmic scaling
+#
+#	-m	mode, i.e. table from which to extract the data
+#		var	variance table
+#		rpt	average  table
+#
+#	-L	use linespoints for plotting instead of lines only. The 
+#		distance of these points is given by the value of the argument
+#		<points>
+#
+#	-p	generate postscript output (file <ps-file>.ps)
+#
+#	-s	set samples for gnuplot to a given number
+#
+#	-x	don't leave gnuplot after plotting
+#
+
+	TMP=/tmp/tmpdata.$$			# temporary cmd-file 
+
+	USAGE="USAGE: gapl [-d <file-desc>] [-e <ps-file>] [-f <cmd-file>] 
+		[-l] [-L <distance>] [-m var|rpt] [-p <ps-file>] 
+		[-s <samples>] [-x] <fname_1> ... <fname_n>"
+
+#
+#	programs / scripts used
+#
+	DEV=xgnuplot				# the program
+	CAT=cat					# compressed data format
+	COLS=gacols
+
+#
+#	gnuplot variables
+#
+	SCALE=identity				# scaling function
+	STYLE=lines				# plot with lines
+	DIST=1					# points distance
+	SAMPLES=300				# samples
+	TERMINAL=sun				# terminal specification
+	XLABEL=Generations			# standard x-label
+	STATE=exit				# state variable
+
+#
+#	general variables
+#
+	COL=8					# column to be extracted, default: best
+	MODE=rpt				# search in rpt or var file
+	OUT=normal				# output format
+	DARG=best				# normally no arg specified
+	
+	if [ $# = 0 ]
+	then
+		echo $USAGE
+		exit
+	fi
+
+	set -- `getopt d:e:f:lL:m:p:s:x $*`
+
+	if [ $? != 0 ]
+	then
+		echo $USAGE
+		exit
+	fi
+
+#
+# get options
+#
+
+	for i in $*
+	do
+		case $i in
+
+		-d)	DARG=$2;		# comparison of best perf.
+	    		case $DARG in
+
+				bias)   COL=5;;
+
+				onln)	COL=6;;
+
+				offl)   COL=7;;
+
+				best)   COL=8;;
+				
+			 	avrg)   COL=9;;
+
+				wrst)	COL=10;;
+
+				minm)   COL=11;;
+
+				maxm)	COL=12;;
+
+	      		  	avgm)	COL=13;;
+
+				*)	echo gapl: wrong file-desc $DARG
+					exit
+			esac
+			shift 2;;
+		
+		-e)	EARG=$2;		# postscript epsf1 file
+			if [ ! -z $EARG ]	# filename given ?
+			then
+				OUT=epsf1
+				PSFNAME=$EARG.ps
+			else			# no filename given
+				echo $USAGE	
+				exit
+			fi
+			shift 2;;
+
+		-f)	FARG=$2;		# command file to generate
+			if [ ! -z $FARG ]	# filename given ?
+			then
+				OUT=file
+				CMDFNAME=$FARG.cmd
+			else			# no filename given
+				echo $USAGE	
+				exit
+			fi
+			shift 2;;
+
+		-l)	SCALE=log		# set logscale information
+			shift;;
+
+		-L)	STYLE=lp		# linespoints style
+			DIST=$2
+			if [ -z $DIST ]
+			then
+				echo $USAGE
+				exit
+			fi
+			shift 2;;
+
+		-m)	MODE=$2;		# extraction table mode
+			if [ $MODE != var -a $MODE != rpt ]
+			then
+				echo $USAGE
+				exit
+			fi
+			shift 2;;
+
+		-p)	PARG=$2;		# postscript file to generate
+			if [ ! -z $PARG ]	# filename given ?
+			then
+				OUT=postscript
+				PSFNAME=$PARG.ps
+			else			# no filename given
+				echo $USAGE	
+				exit
+			fi
+			shift 2;;
+
+		-s)	SARG=$2;		# number of samples
+			if [ $SARG > 0 ]	# samples greater 0 ?
+			then
+				SAMPLES=$SARG
+			else
+				echo $USAGE
+				exit
+			fi
+			shift 2;;
+
+		-x)	STATE=stay		# stay in gnuplot
+			shift;;
+
+		--)	shift; 
+			break;;
+		esac
+	done
+
+#
+# generate command file for gnuplot
+#
+
+
+	cat <<PART0 >$TMP
+
+
+	set data style	lines
+	set samples	$SAMPLES
+	set xlabel 	"$XLABEL"
+ 
+PART0
+
+	if [ $TERM = xterm ]			# set terminal
+	then
+		echo "set terminal x11" >> $TMP
+	fi
+
+	if [ $DARG != empty ]			# create ylabel
+	then
+		echo "set ylabel \"$DARG per Generation\"" >> $TMP
+	fi
+
+	if [ $DARG = bias ]
+	then
+		echo "set yrange [0.5:1.0]" >> $TMP
+	fi
+
+	if [ $SCALE = log ]			# logscale
+	then
+		echo "set logscale y" >>$TMP
+	fi
+
+	if [ $DIST -ne 1 ]			# set marker distance
+	then
+		echo "set ma $DIST" >> $TMP
+	fi
+
+	if [ $OUT = postscript ]		# write postscript file
+	then
+		echo "set terminal postscript" >>$TMP
+		echo "set output '$PSFNAME'" >>$TMP
+	fi
+
+	if [ $OUT = epsf1 ]			# write epsf1 postscript file
+	then
+		echo "set terminal epsf1" >>$TMP
+		echo "set output '$PSFNAME'" >>$TMP
+	fi
+
+#
+# create the gnuplot command sequences
+#
+
+	echo plot \\ >> $TMP		# generate plot instruction
+
+	if [ $# = 0 ]
+	then
+		echo $USAGE
+		exit
+	fi
+
+		for i in $* 			
+		do
+			if [ $# != 1 ] 
+			then
+		
+				if [ $DARG != empty ]	# buildt command
+				then
+					echo -n \"\| $CAT $i/$MODE    >> $TMP
+					echo -n \| $COLS 1 $COL\"     >> $TMP
+				else
+					echo -n \"\| $CAT $i          >>$TMP
+					echo -n \| $COLS 1 $COL\"     >> $TMP
+				fi
+				if [ $STYLE = lp ]
+				then
+					echo with linespoints, \\ >> $TMP
+				else
+					echo , \\ >> $TMP
+				fi
+			else
+				if [ $DARG != empty ]
+				then
+					if [ $STYLE = lp ]
+					then
+					echo -n \"\| $CAT $i/$MODE     >> $TMP
+					echo -n \| $COLS 1 $COL\"      >> $TMP
+					echo    with linespoints       >> $TMP
+					else
+					echo -n \"\| $CAT $i/$MODE     >> $TMP
+					echo    \| $COLS 1 $COL\"      >> $TMP
+					fi
+				else
+					if [ $STYLE = lp ]
+					then
+					echo -n \"\| $CAT $i           >> $TMP
+					echo -n \| $COLS 1 $COL\"      >> $TMP
+					echo    with linespoints       >> $TMP
+					else
+					echo -n \"\| $CAT $i 	       >> $TMP
+					echo    \| $COLS 1 $COL\"      >> $TMP
+					fi
+				fi
+			fi
+
+			shift;
+		done
+
+
+	if [ $OUT != postscript -a $STATE = stay ]
+	then
+		echo "pause	-1 'press RETURN to continue'" >>$TMP
+		echo "replot" >> $TMP
+		echo "pause	-1 'press RETURN to continue'" >>$TMP
+	else
+	if [ $OUT != postscript ]
+	then
+		echo "pause	-1 'press RETURN to continue'" >>$TMP
+	fi
+	fi
+	
+	if [ $OUT = postscript -o $OUT = epsf1 ]
+	then
+		echo "set terminal x11" >> $TMP
+		echo "set output" >> $TMP
+		echo "quit" >> $TMP
+	fi	
+
+#
+# now either do the work with gnuplot or only rename the file
+#
+	if [ $OUT = file ]
+	then
+		mv $TMP $CMDFNAME
+	else
+		$DEV $TMP
+		rm $TMP
+	fi

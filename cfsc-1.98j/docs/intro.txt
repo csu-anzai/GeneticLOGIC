@@ -1,0 +1,114 @@
+                 Introduction to CFS-C 1.0
+
+This file, INTRO.TXT, briefly describes:
+
+    A. How to run the system;
+
+    B. How to compile the CFS-C system and link it to
+       a domain like LETSEQ1, FSW1, or one of your own.
+
+
+A. How to Run the CFS-C 1.0 System.
+
+The CFS-C system cannot be run by itself.  It must be linked
+to some domain-dependent subroutines which define the domain
+transitions, the detector and effector interface, the payoffs, and so on.
+
+To run the system, say with the LETSEQ1 domain, in a DOS environment enter:
+
+    letseq1  c:\cfsc\
+
+where letseq1.exe must be in the current directory (or in a
+'active' directory set by the PATH command).
+The parameter c:\cfsc\ is the path to the location of
+the file INIT.CFS, which contains a list of run-time settable 
+variables.  That file can be anywhere--just name the path to
+it on the letseq1 command line.
+
+To run the system under Unix, etc., enter a similar command
+with the path to the INIT.CFS file specified on it.
+ 
+The system will automatically look for and try to read
+from these files:
+
+    INIT.CF     initial classifiers (==>NB this is different from INIT.CFS).
+    INIT.MSG    initial messages
+    INIT.ENV    the environment definition and initial state.
+
+The INIT.MSG file is optional---one need not start
+with initial messages. The INIT.CF file is also optional---classifiers
+can be generated with the GRCFS (generate random classifiers) command,
+or one can use the LC (load classifiers) or APPC (append classifiers)
+commands to load classifiers at any time during a run.
+The INIT.ENV is also optional at run time, but you must
+then use the LE (load environment) command to load an environment
+before a run can start.
+
+Once the program is started, you can enter commands from your
+keyboard one at a time, to SET parameters, LOAD things, DISPLAY things,
+or to CLASSIFY n steps, and of course STOP.
+One can also put a series of commands in a file and have the
+system read and execute those commands all at once. 
+For example, if the file test.cmd contains a series of commands,
+those can be executed by entering:
+
+   < test.cmd
+
+When run under an op/system that allows `re-direction' 
+one can also run the program so that it reads commands only from
+a file, until the STOP command is encountered in that file.
+For example, if the file X001.cm0 file contains a series of commands
+that define a run, the system could be run as follows:
+
+    letseq1 c:\cfsc\  <x001.cm0
+
+Note that the X001.CM0 file can also contain a '<' command, so that
+commands are read from some other file.
+I often put the commands that specify a run (setting parameters,
+loading classifiers, and so on) in one file, say names  x001.cm,
+and then have a series of files x001.cm0, x001.cm2, and so on,
+each of which first sets a unique log file (e.g., x001.lg0, etc.),
+then sets a unique pseudo-random-generator number seed, and
+the use the command `< x001.cm' to read in commands common to all the
+runs in the series, and finally ends with a stop command.
+
+For a complete description of commands, see the CFS-C documentation.
+That document also describes all of the CFS-C parameters.
+The file VARS.TXT gives a brief description of the most
+important parameters.
+
+
+
+B. How to link the CFS-C subroutines to a domain to make a runable program.
+
+In broadest terms, to get a runable CFS-C/domain-X program:
+
+1. Compile all the *.C files in the CFS-C directory.
+   They all #include various *.H, *.DEF, and *.EXT files
+   in the INCLUDE directory, so just make that directory
+   one of the directories to be searched at compile time and
+   all should be well.
+
+2. Compile the domain-X files. For example, for the LETSEQ1 domain, 
+   compile LETSEQ1.C. It #includes a couple of iles
+   from the CFS-C INCLUDE directory on the distribution disk,
+   and of course the LETSEQ1.H and LETSEQ1.DEF files.
+
+3. Link all the object files together.
+
+4. Use commands like those shown in the example ``command'' files (*.CM1 files)
+   described earlier in this file and in the README.TXT file
+   to load an environment, load classifiers, generate random
+   classifiers, and so on.
+
+The object files that result from the CFS-C/*.C files are
+required for all task domains. For example, to create a executable 
+version of the FSW1 system, compile the *.C files in the FSW1 directory
+and link those with the CFS-C/*.OBJ files.
+
+And to implement your own task domain, write code that corresponds
+to the code in LETSEQ1.C,H,DEF files, compile it, and link it to the
+CFS-C/*.C object files. The CFS-C documentation (1988 version) 
+describes in detail what subroutines must be included in the
+domain-specific source, and what they should do.
+

@@ -1,0 +1,96 @@
+%
+%	GENEsYs-int.tex		Ba, 22 feb 91		LaTeX 2.09
+%
+%	The general introduction to GENESIS
+%{
+
+\section{Introduction}\label{genesis-int}
+
+This document describes the Genetic Algorithm test software \GEN, 
+which is an extension of the original \Ogen\ program 
+by John J.~Grefenstette~\cite{Gre87c}.
+The extensions were developed in order to perform some experiments
+with Genetic Algorithms~(GAs), and for testing some features which originally
+stem from Evolution Strategies~\cite{Rec73,Schw81} (ESs) in the framework of
+Genetic Algorithms.
+
+The software described here has evolved over more than two years,
+and the author disclaims any warranties of usefulness and fitness for
+a particular problem. 
+The code is a mixture of the original lines written by John and many
+changes done by me.
+Users who are experienced in working with the original \Ogen\
+will notice similarities and differences quickly.
+The software is written in C and runs under the 
+UNIX\footnote{UNIX is a trademark of Bell Laboratories.} 
+operating system.
+
+In the following it is assumed that the reader is familiar with the
+concept of a Genetic Algorithm or --- more generally --- an Evolutionary
+Algorithm.
+Should this not be the case, you might find it useful to have a look
+at the book of David E.~Goldberg~\cite{Gol89b} or the original documentation
+of \Ogen~\cite{Gre87c}.
+
+Comparing \Ogen\ and \GEN, the following extensions implemented
+in \GEN\ are most remarkably:
+%
+\begin{Itemize}
+%
+\item	Either command line options or the setup program can be used
+	for invoking the GA.
+%
+\item	Enhanced data collection features are provided.
+%
+\item	A function table is used, from which the user choses an
+	objective function when invoking the GA.
+%
+\item	Several extension of the basic GA are implemented, e.g.~$m$-point
+	cross\-over~\cite{Jon75}, uniform crossover~\cite{Sys89},
+	discrete and intermediate recombination \cite{BHS91}, adaptive
+	mutation rates~\cite{Bae91b}, \cSelml-selection (proportional, ranking,
+	linear)~\cite{BH91c}, Boltzmann selection~\cite{Gol90c}.
+%
+\end{Itemize}
+
+The outline of this documentation is as follows:
+In section~\ref{genesis-pro}, the major algorithmic extensions to a standard
+\GA\ are briefly explained, mostly referring to the original 
+publication sources.
+Section~\ref{genesis-ist} describes, how the \GEN\ package is installed 
+on your machine.
+In section~\ref{genesis-opt}, the options of the program are presented.
+Parameterization can either be performed by using the {\tt setup}-program,
+or by specifying command-line options directly.
+Furthermore, the most important information on the data-files created by
+a run of \GEN\ is presented in that section.
+Section~\ref{genesis-rep} describes the structure of the most important
+file containing the extracted data from several runs under identical
+parameter settings,  and in section~\ref{genesis-mod}
+a hint is given how to extend the software by your own objective functions.
+Finally, a list of objective functions actually included in the software
+is presented in section~\ref{genesis-fct}.
+
+\subsection{Warning}
+
+\begin{sc}
+The \GEN\ software was produced during a process of steadily changing and
+extending its predecessor.
+As a result, a reimplementation would have been necessary to concentrate
+on essential parts, to refine implementation, and to add some bells and
+whistles.
+However, there was never time for me to do so, such that this plan 
+was given up.
+Please, be aware of some strangenesses when you are playing with the
+software.
+There is no warranty for this software\,!
+
+Furthermore, the documentation is surely incomplete to cover all features
+of the software sufficiently.
+If something is unclear to you, try the software and don't trust the
+documentation.
+May be, the best way is to play with the software a little bit and look
+what happens, which files are created, and so on.
+\end{sc}
+
+%}

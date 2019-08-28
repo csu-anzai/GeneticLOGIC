@@ -1,0 +1,187 @@
+            CHANGES.TXT --- CFS-C and friends
+
+This file contains a list of changes to existing CFS-C / LETSEQ1 / FSW1 
+code, including bug fixes and new features added to the system,
+since the last time the documentation was updated.
+
+NOTE: Check the Version you have (in CFSC.C, or displayed in banner
+when you run letseq1); your code should have all changes noted in this
+file for version up to and including that version.
+
+APRIL 1993: joke peeks into and starts screaming, ;-)
+
+19 APR 1993: TASK: convince GCC 2.x that this is really "C"
+    UPDATES:
+	* added UN*X Makefiles (Master and Minor)
+	* ran all sources through GNU indent
+	* restructured the whole package conforming to UN*X conventions:
+		./bin, ./lib, ./include, ./docs etc. folders
+	* all ./include files use ANSI-C style prototype macros now
+	* removed all occurences of percent signs "%.." to "%%"
+		(output looked ugly before)
+	* removed bogus "artifacts" until "gcc -Wall" ran smoothly
+	* replaced empty exit () calls with exit (1)
+
+    ./tools/concnt-1.c
+	* unsigned id;
+	*    if (id < 0 || ...	<<< GCC considers this a bogus "artifact"
+
+
+NOVEMBER 1988: Documentation up-to-date!  ==================== (Version 1.0)
+
+
+28 DEC 1988: minor  =================== (Version 1.0)
+
+    UTILITY.C
+        Define URndSd with an initial value of 1 (two places), not 0.
+        (Otherwise if the user doesn't set urndsd, the seed
+        remains 0 forever!)
+    BBLEARN.C
+        At end of UpdCfStr(), test for 
+            if ( NmCfs > 0 )
+        before updating average strength and bidratio.
+        (Otherwise it crashes with empty classifier list.)
+
+
+23 JAN 1989: minor  ===================  (Version now 1.01)
+
+ USERCMD.DEF
+    Change
+        struct RTVarNd   *RTVars;
+    to
+        struct RTVarNd   *RTVars,
+ 
+ USERCMD.C
+    To SetVar(), define a short int si, and pass &si 
+    to the GetSInt() subroutine instead of &i, and use
+    si in the assignment statement for variable type 's'.
+ 
+ CFSC.C
+    In InitVT(), change
+        if ( vflags[2] == 'l' )
+    to
+        if ( vflags[1] == 'l' )
+    and change the comments above to indicate the 'l' flag comes before the 's' flag.
+
+    In EndStep(), change 
+        NmCMsgIn = NmNMsgs; 
+    to 
+        NmCMsgIn = NmNMsgIn;
+ 
+    Near the begining of the file, change the value assigned 
+    to Version to indicated version 1.01 (not 0.95 or 1.00).
+
+
+25 FEB 1989: minor  ===================  (Version now 1.01a)
+
+    INIT.CFS
+        Change the codes assigned to be
+            ADCMInt 4
+            ADCMFmt 5
+
+30 MAR 1989: minor (but important for some) ========== (Version 1.02)
+
+   These are some changes to use Metaware's High C 386 compiler to
+   compiler the system to run under the PharLap Dos extender environment.
+   I think the fix to FindRTVN will also solve a problem encountered
+   with some SUN compilers.
+
+   CFMSGIO.C
+        "Buffer" -> "Buff" in PutMNd().
+        Declare char *GetSInt() in StoreMsg().
+
+   CFSIO.C
+        Put #if !__HIGHC__ around #include <dos.h>
+
+   UTILITY.C
+        Put #if !__HIGHC__ around #include <dos.h> (and the around
+            #defines of SVC_DATE and SVC_TIME that are there).
+        In Str2Char(), change NULL -> '\0'
+        In GetDate() and GetCFSCTime() [and just before these,
+            in the time/date definitions), change:
+            from:            to:
+            #if LATTICEC     #if (LATTICEC && !__HIGHC__)
+            #if CBELLMTS     #if ( CBELLMTS || __HIGHC__ )
+
+   UTILITY.H
+        #if-test for max and min based on max, not on abs.
+            (just search for "abs" and you will see what I mean).
+
+   CFSC.C
+        Version[] is 1.02.
+        Around line 577 (in Init_CFS()), test for LATTICEC && !__HIGHC__ around
+            the banner sprintf that includes a call to memavl().
+        Around line 790 (in InitVT()) change the loading of aliases to look like this:
+
+			strcpy( RTVarNxt->Name, vname ); -- the same here and before
+					
+			alias[16] = '\0';	/* just to be sure */
+			for ( cp = alias; *cp != ' ' && *cp != '\0'; ++cp ) ;	/* find first blank or end */
+    			*cp = '\0';
+			RTVarNxt->Alias = malloc( strlen( alias ) + 1 );
+			if ( RTVarNxt->Alias == NULL )
+   			{	sprintf( GOutBuff, "ERR InitVT: malloc->NULL for Alias (in '%s').", GInBuff );
+   				WriteStd( GOutBuff );
+   				exit( );
+   			}
+            if ( strlen( alias ) > 0 ) {
+   				strcpy( RTVarNxt->Alias, alias );
+   			}
+            else {
+                RTVarNxt->Alias = '\0';
+            }
+
+   			RTVarNxt->Type = vflags[0];  --- the same here and after
+
+        Around line 291 (in Classify()), change initial definitions and
+            processing of StepVar parameter to be:
+
+            Classify( StepsPar )
+          	char StepsPar[];
+            {       --- same here and before
+                int             err;
+               	unsigned int    StopStep, Steps, savesd;
+                char            *GetUInt();
+
+                GetUInt( StepsPar, &Steps, 0, ";", &err );
+              	if ( err || Steps < 1 ) {
+                	sprintf(GOutBuff,"\nERR--illegal count for CLASSIFY: %s", StepsPar );
+            	    WriteStd( GOutBuff );
+               	    return(ERROR);
+               	}
+
+            for ( StopStep=CycleStp ... --- same here and after
+
+   CFSUTIL.C
+        In FindHighLowStrCf(), put
+            if ( NmCfs > 0 ) {
+                ....
+            }
+        around "for (..".
+
+    USERCMD.C
+        In FindRTVN(), change the "for (..." search to:
+
+        	for ( rtv = RTVars, cnt = 0; cnt < RTVarsSz; ++rtv, ++cnt )
+        	{  	if ( strcmp( Var, rtv->Name ) == 0 ) {
+        			break;
+                }
+                else if ( rtv->Alias != '\0' ) {        /* need this for some compilers (eg some SUN's) */
+                    if ( strcmp( Var, rtv->Alias ) == 0 ) {
+    	    	    	break;
+                    }
+                }
+        	} /* endfor */
+
+        This does a separate test for rtv-Alias null; strcmp() on that case
+        bombs code produced by some SUN compilers and the Metaware High C.
+
+    LETSEQ1.DEF
+        Change NULL to '\0' in defintions of Vowels[], Consonts[] and Punct[].
+
+    LETSEQ1.C
+        In WrtEnv(), test for CurLet == NULL and just print a message
+            about no environment loaded in that case.
+
+    FSW1.EXT
+        Add "extern" to defintions of EfSetAsc[] and EffLoci[].

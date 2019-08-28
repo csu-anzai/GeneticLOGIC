@@ -1,0 +1,80 @@
+{ initial.sga: contains initdata, initpop, initreport, initialize }
+
+procedure initdata;
+{ Interactive data inquiry and setup }
+var ch:char; j:integer;
+begin
+ rewrite(lst); { Set up for list device }
+ clrscr;       { Clear screen }
+ skip(con,9);
+ repchar(con,' ',25); writeln('--------------------------------');
+ repchar(con,' ',25); writeln('A Simple Genetic Algorithm - SGA');
+ repchar(con,' ',25); writeln(' (c) David Edward Goldberg 1986');
+ repchar(con,' ',25); writeln('     All Rights Reserved       ');
+ repchar(con,' ',25); writeln('--------------------------------');
+ pause(7); clrscr;
+ writeln('******** SGA Data Entry and Initialization ************');
+ writeln;
+   write('Enter population size ------- > '); readln(popsize);
+   write('Enter chromosome length ----- > '); readln(lchrom);
+   write('Enter max. generations ------ > '); readln(maxgen);
+   write('Enter crossover probability - > '); readln(pcross);
+   write('Enter mutation probability -- > '); readln(pmutation);
+ pause(5); clrscr;
+ { Initialize random number generator }
+ randomize;
+ pause(2); clrscr;
+ { Initialize counters }
+ nmutation := 0;
+ ncross := 0;
+end;
+
+procedure initreport;
+{ Initial report }
+begin
+ writeln(lst,'----------------------------------------------------');
+ writeln(lst,'|     A Simple Genetic Algorithm - SGA - v1.0      |');
+ writeln(lst,'|      (c)    David Edward Goldberg 1986           |');
+ writeln(lst,'|             All Rights Reserved                  |');
+ writeln(lst,'----------------------------------------------------');
+ skip(lst,5);
+ writeln(lst,'     SGA Parameters');
+ writeln(lst,'     --------------');
+ writeln(lst);
+ writeln(lst,'   Population size (popsize)          =   ',popsize);
+ writeln(lst,'   Chromosome length (lchrom)         =   ',lchrom);
+ writeln(lst,'   Maximum # of generation (maxgen)   =   ',maxgen);
+ writeln(lst,'   Crossover probability (pcross)     = ',pcross);
+ writeln(lst,'   Mutation  probability (pmutation)  = ',pmutation);
+ skip(lst,8);
+ writeln(lst,'     Initial Generation Statistics');
+ writeln(lst,'     -----------------------------');
+ writeln(lst);
+ writeln(lst,'   Initial population maximum fitness = ',max);
+ writeln(lst,'   Initial population average fitness = ',avg);
+ writeln(lst,'   Initial population minimum fitness = ',min);
+ writeln(lst,'   Initial population sum of fitness  = ',sumfitness);
+ page(lst); { New page }
+end;
+
+procedure initpop;
+{ Initialize a population at random }
+var j, j1:integer;
+begin
+ for j := 1 to popsize do with oldpop[j] do begin
+   for j1 := 1 to lchrom do chrom[j1] := flip(0.5); { A fair coin toss }
+   x := decode(chrom,lchrom); { Decode the string }
+   fitness := objfunc(x);     { Evaluate inital fitness }
+   parent1 := 0; parent2 := 0; xsite := 0; { Initialize printout vars }
+  end;
+end;
+
+procedure initialize;
+{ Initialization Coordinator }
+begin
+ initdata;
+ initpop;
+ statistics(popsize, max, avg, min, sumfitness, oldpop);
+ initreport;
+end;
+

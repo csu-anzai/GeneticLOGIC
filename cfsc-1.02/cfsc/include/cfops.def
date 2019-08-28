@@ -1,0 +1,49 @@
+/*		CFOPS.DEF for the CFS-C Classifier System.
+ 
+Define the operators allowed in classifiers.
+Define structures to hold them, and in each structure, store the operator 'name',
+internal code, and the function that implements it.
+(The operator functions and the operator-lookup functions are defined in CFOPS.C .) 
+
+NOTE:	Constants used here are #define-d in CFOPS.H, and
+		these structures are declared in CFOPS.EXT .
+		Be sure to change those files if you change this file, and vice versa.
+*/
+
+#include "cfops.h"
+
+VOID COpPASS();		/* pass-through  */
+VOID COpAND();		/* logical AND on ALL loci */
+VOID COpOR();		/* logical OR  on ALL loci */
+VOID COpXOR();
+VOID COpADD();
+VOID COpADD1();		/* Add 1 to right-most ADD1SZ digits */
+VOID COpSUB();
+VOID COpSUB1();		/* Subtract 1 from right-most SUB1SZ digits */
+ 
+struct  CfOpNode     
+{
+	char			*CfOpName;	/* Pointer to operator name string */                  
+	unsigned int	CfOpCode;	/* Unique code number for operator */ 
+	VOID			(*CfOpfn)();	/* Pointer to function that inplements the operation. */
+	float			CfOpCPrb;	/* Cummulative probability of random generation */
+} 
+	CfOps[] =		/* storage for the operator nodes */ 
+
+	{	{  "PASS",	OC_PASS,	COpPASS,	0.90  }, 
+		{  "AND ",	OC_AND,		COpAND,		0.92  }, 
+		{  "OR  ",	OC_OR,		COpOR,		0.94  },
+		{  "XOR ",	OC_XOR,		COpXOR,		0.96  }, 
+ 		{  "ADD ",	OC_ADD,		COpADD,		0.96  },	/* NOT IMPLEMENTED YET */
+		{  "ADD1",	OC_ADD1,	COpADD1,	0.98  }, 
+		{  "SUB ",	OC_SUB,		COpSUB,		0.98  },	/* NOT IMPLEMENTED YET */
+		{  "SUB1",	OC_SUB1,	COpSUB1,	1.00  },
+		{      "",	OC_ENDL  }		/* End of List */
+	};
+
+#define		CFOPSSZ	(sizeof(CfOps) / sizeof(struct CfOpNode))
+#define		CFOPSMX	CFOPSSZ-1
+
+struct	CfOpNode *COpDflt = &CfOps[0];	/* Default operator is pass-through */ 
+
+ 

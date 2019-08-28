@@ -1,0 +1,140 @@
+
+/*************************************************************/
+/*                                                           */
+/*  Copyright (c) 1990                                       */
+/*  Darrell L. Whitley                                       */
+/*  Computer Science Department                              */
+/*  Colorado State University                                */
+/*                                                           */
+/*  Permission is hereby granted to copy all or any part of  */
+/*  this program for free distribution.   The author's name  */
+/*  and this copyright notice must be included in any copy.  */
+/*                                                           */
+/*************************************************************/
+#include <stdio.h>
+#include <malloc.h>
+#include "gene.h"
+#include "ga_random.h"
+
+
+/***************************************************************************
+ * FUNCTION: red_surrogate_cross
+ *
+ * DESCRIBE: Performs a 2 point, reduced surrogate form of crossover
+ *           on two (parent) rules to form two new (child) rules.  
+ *
+ *           Reduced Surrogate crossover first identifies all positions
+ *           in which the parent strings differ. Crossover points are 
+ *           only allowed to occur in these positions.
+ *
+ * INPUT PARAMETERS: Two gene strings;
+ *                   The length of these strings;
+ *
+ * RETURN VALUE: number of bits which differ in 2 input buffers
+ *
+ * RESULT: The two input arrays are filled with the children of
+ *         crossover (if crossover occured)
+ *
+ * CALLS:
+ *	(ga_random.h) randomain
+ ****************************************************************************/
+int
+red_surrogate_cross ( buf1, buf2, length )
+GENE_DATA             buf1[], buf2[];
+int                   length;
+{
+ static char first_time = 1;	/* Flag for first time in this routine */
+ static int *diff;		        /* Array of differing positions */
+ int xpoint1;		            /* Index into diff of 1st crossover point */
+ int xpoint2;		            /* Index into diff of 2nd crossover point */
+ int xtemp;            	        /* Temporary for swap of xpoints */
+ GENE_DATA temp;	            /* Temporary for swap of parent material */
+ int numdiff;		            /* Number of differing positions */
+ int i;                         
+
+ if (first_time) 
+    {
+    diff = (int *) malloc ( length * sizeof(int) );
+    first_time = 0;
+    }
+
+/* Find all differing positions */
+
+ numdiff = 0;
+ for (i=0; i < length; i++) 
+     if (buf1[i] != buf2[i]) 
+        diff[numdiff++] = i;
+
+/*
+ * If there is only one difference between parents,
+ * a cross will only result in a duplicate...
+ * so don't bother
+ */
+
+ if (numdiff <= 1)
+    return (numdiff);
+
+
+/*
+ * Note that after crossover,
+ * buf1 & buf2 will instead contain children 
+ */
+
+#define swap(X)	{   temp  = buf1[X]; \
+		          buf1[X] = buf2[X]; \
+	              buf2[X] = temp; }
+
+
+
+/* Select two crossover indices into diff */
+
+ xpoint1 =  randomain ( numdiff-1, 0 );
+ xpoint2 =  randomain ( numdiff-1, 0 );
+
+
+
+
+ /* make sure xpoint1 is less than xpoint2 */
+
+ if (xpoint2 < xpoint1) 
+    {
+       xtemp = xpoint1;
+     xpoint1 = xpoint2; 
+     xpoint2 = xtemp;
+    }
+
+ /* careful not to alter xpoint out of array bounds */
+ else
+ if (xpoint2 == xpoint1)
+	{ if (xpoint1==0)
+	      xpoint2 = 1;
+      else
+	      xpoint1--;
+    }
+
+ else
+ /* xpoint1 < xpoint2 */
+     ;
+
+
+
+
+/* Crossover; we'll try to exchange the smaller set of chromosomes */
+
+ /* between crossover points, inclusive */
+ if ( numdiff > 2*((xpoint2 - xpoint1)+1) ) 
+	{
+     for (i=xpoint1; i <= xpoint2; i++)
+	     swap(diff[i]);
+    }
+ /* outside of crossover points, inclusive */
+ else 
+    {
+     for (i=0; i <= xpoint1; i++)
+	     swap( diff[i] );
+     for (i=xpoint2; i < numdiff; i++)
+	     swap( diff[i] );
+    }
+
+ return (numdiff); 
+}

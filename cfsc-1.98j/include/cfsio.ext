@@ -1,0 +1,50 @@
+/*		CFSIO.EXT  for the CFS-C Classifier System.
+
+Declare variables for control of I/O routines in CFSIO.C .
+Definitions for these are in CFSIO.DEF .
+
+*/
+
+#ifndef GOBUFFSZ
+#include	"cfsio.h"
+#endif
+
+extern char *GOutBuff;
+extern char *GInBuff;
+extern short LogFlg;
+extern char *LogFName;
+extern FILE *LogFILE;
+extern short GenFlg;
+extern char *GenFName;
+extern FILE *GenFILE;
+extern char *StdInFN;
+extern char *StdOutFN;
+extern FILE *StdOFILE;
+extern char *DisOutFN;
+extern FILE *DisOFILE;
+extern char *StdErrFN;
+extern char *MsgInFN;
+extern char *CfInFN;
+extern char *LoadSyFN;
+extern char *EnvInFN;
+extern char *SaveSyFN;
+extern char *SaveSyPa;
+extern char *EnvInFN;
+
+
+#if defined(__STDC__) || defined(__cplusplus)
+# define PRO(s) s
+#else
+# define PRO(s) ()
+#endif
+
+/* cfsio.c */
+FILE *GetFILE PRO((char *FileName, char *Default, char *How));
+int CloseFILE PRO((char *FileName, char *Default, FILE *FilePtr));
+int ReadS PRO((char LineBuff[], int BufLen, FILE *Source, int *RetLen));
+VOID WriteStd PRO((char *Strng));
+VOID WrtPrompt PRO((char *Strng));
+VOID WriteS PRO((char *Strng, FILE *FilePtr));
+VOID WriteGen PRO((char *Strng));
+
+#undef PRO

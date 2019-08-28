@@ -1,0 +1,69 @@
+	* HOW DOES IT WORK?
+
+   try after compiling "letseq1" (say "make" at the top level) the
+following:
+
+   example% letseq1 <ab-bb.cm1
+
+The results will be logged to a files called "aa-bb.lg1"; from this file
+some statistics can be summarised using the appropriate "data analysis tool"
+from the "~cfsc/tools" folder.
+
+   example% 
+
+	* OTHER RESULTS?
+
+   some files in this directory contain a "286" string in their name,
+this means they contain results produced using a PC with an 80286i
+processor (aka AT).
+
+	* WHAT'S THIS FILE "ab-bb.r"?
+
+   It also contains "r"esults from a previous test run by Riolo; and
+was prduced with the following commands:
+
+   example% ../tools/getperf ab-bb.lg1 g
+
+
+Extracting CFS-C data from from the file ab-bb.lg1 ...
+
+
+LETSEQ Performance (total and recent counts)
+
+ Step | TotGsL,dif | TotGsT,dif | TotGsW,dif | 
+------|------------|------------|------------|--------------|-----------
+    1 |     0    0 |     0    0 |     0    0 |    0.0   0.0 |     0    0
+   50 |    29   29 |     0    0 |    21   21 |   58.0  59.2 |     0    0
+  100 |    53   24 |     0    0 |    47   26 |   53.0  48.0 |     0    0
+  150 |    83   30 |     0    0 |    67   20 |   55.3  60.0 |     0    0
+  200 |   110   27 |     0    0 |    90   23 |   55.0  54.0 |     0    0
+  250 |   139   29 |     0    0 |   111   21 |   55.6  58.0 |     0    0
+  300 |   171   32 |     0    0 |   129   18 |   57.0  64.0 |     0    0
+  350 |   201   30 |     0    0 |   149   20 |   57.4  60.0 |     0    0
+------|------------|------------|------------|--------------|-----------
+  400 |   234   33 |     0    0 |   166   17 |   58.5  66.0 |     0    0
+  450 |   271   37 |     0    0 |   179   13 |   60.2  74.0 |     0    0
+  500 |   308   37 |     0    0 |   192   13 |   61.6  74.0 |     0    0
+  550 |   337   29 |     0    0 |   213   21 |   61.3  58.0 |     0    0
+  600 |   369   32 |     0    0 |   231   18 |   61.5  64.0 |     0    0
+  650 |   406   37 |     0    0 |   244   13 |   62.5  74.0 |     0    0
+  700 |   440   34 |     0    0 |   260   16 |   62.9  68.0 |     0    0
+  750 |   477   37 |     0    0 |   273   13 |   63.6  74.0 |     0    0
+  800 |   514   37 |     0    0 |   286   13 |   64.2  74.0 |     0    0
+  850 |   548   34 |     0    0 |   302   16 |   64.5  68.0 |     0    0
+------|------------|------------|------------|--------------|-----------
+  900 |   577   29 |     0    0 |   323   21 |   64.1  58.0 |     0    0
+  950 |   612   35 |     0    0 |   338   15 |   64.4  70.0 |     0    0
+ 1000 |   641   29 |     0    0 |   359   21 |   64.1  58.0 |     0    0
+
+Overall performance rate:   64.1
+Steps to 10, 20%  performance:    50,  50
+Steps to 30, 40%  performance:    50,  50
+Steps to 50, 60%  performance:    50, 150
+Steps to 70, 80%  performance:   450, ---
+Steps to 90,100%  performance:   ---, ---
+Mean Perf. in Equilibrium:    67.0	   (starting at step 750)
+SD of Mean Equil Perf:	    5.00
+High Perf. in Equil (Step):   74.0 (750)
+Low  Perf. in Equil (Step):   58.0 (1000)
+

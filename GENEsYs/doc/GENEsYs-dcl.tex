@@ -1,0 +1,100 @@
+%
+%	GENEsYs-dcl.tex		Ba, 21 feb 91		LaTeX 2.09
+%				Ba, 24 jun 91
+%
+%	common definitions for genesis documentation
+%{
+
+
+\def\aOffset{-3pt}
+\def\ESml{\mbox{\rm ($\mu$,$\lambda$)--\ES}}
+\def\GAmN{\mbox{\rm ($\mu$,$N$)--\GA}}
+\def\mlSel{\mbox{\rm ($\mu$,$\lambda$)--selection}}
+
+\def\Real{\ifmmode{I\hskip -4.5pt R}
+    \else{\hbox{$I\hskip -4.5pt R$}}\fi} %reelle Zahlen
+
+\def\GEN{\mbox{{\em GENEsYs 1.0\/}}}
+\def\Ogen{\mbox{{\sc Genesis 4.5}}}
+\def\NbrFct{24}
+
+\ifUS
+	\def\DOne{3.0cm}
+	\def\DTwo{3.8cm}
+	\def\DZer{0.7cm}
+\else
+	\def\DOne{3.5cm}
+	\def\DTwo{3.5cm}
+	\def\DZer{1.0cm}
+\fi
+
+\def\Opt#1#2#3#4{%
+	\def\ThdPar{#3}\def\FthPar{#4}\def\EPyPar{}
+	\ifx\ThdPar\EPyPar
+		\ifx\FthPar\EPyPar
+			\begin{tabbing}
+				\hspace*{\DZer}\=\kill
+				\verb/#1/ \> #2 
+			\end{tabbing}
+		\else
+			\begin{tabbing}
+			\hspace*{\DZer}\=\hspace*{\DOne}\=\hspace*{\DTwo}\= \kill
+			\verb/#1/ \> #2 \> \> Range: #4 
+			\end{tabbing}
+		\fi
+	\else
+		\ifx\FthPar\EPyPar
+			\begin{tabbing}
+				\hspace*{\DZer}\=\hspace*{\DOne}\= \kill
+				\verb/#1/ \> #2 \> Default: #3
+			\end{tabbing} 
+		\else
+			\begin{tabbing}
+			\hspace*{\DZer}\=\hspace*{\DOne}\=\hspace*{\DTwo}\= \kill
+			\verb/#1/ \> #2 \> Default: #3 \> Range: #4 
+			\end{tabbing}
+		\fi
+	\fi
+}
+
+
+\def\O#1{\verb/#1/}				% Options
+\def\Cmd#1{\verb/#1/}				% Commands
+\def\Vrb#1{\verb/#1/}				% Variables
+\newcommand{\File}[1]{\verb/#1/}		% File names
+
+%
+%	definitions for the function table environment
+%
+\def\Fct#1#2{\def\SndPar{#2}\def\EpyPar{}
+	 	\ifx\SndPar\EpyPar
+			{\sc #1:}
+		\else 
+			{{\sc #1}~\cite{#2}{\sc :}}
+		\fi}
+
+\def\Expr#1{$$ #1 \nonumber $$}
+\def\Min#1{$$ #1 \nonumber $$}
+\makeatletter\newenvironment{Cst}{$$\begin{array}{c}}{\end{array}$$%
+	\global\@ignoretrue}\makeatother
+
+
+%
+%	C++2LaTeX Macros (Joerg Heitkoetter)
+%
+\makeatletter%
+\def\C@@#1{\leavevmode\hbox{C\hskip-0.1ex\raise0.5ex\hbox{#1++}}}
+\def\@C++{%
+	\ifx\@currsize\Huge	\C@@{\LARGE}%
+\else	\ifx\@currsize\huge	\C@@{\Large}%
+\else	\ifx\@currsize\LARGE	\C@@{\large}%
+\else	\ifx\@currsize\Large	\C@@{\normalsize}%
+\else	\ifx\@currsize\large	\C@@{\small}%
+\else				\C@@{\tiny}%
+\fi\fi\fi\fi\fi
+}
+\def\C++{\protect\@C++}
+\makeatother
+
+
+%}

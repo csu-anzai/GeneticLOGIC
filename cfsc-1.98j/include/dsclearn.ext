@@ -1,0 +1,135 @@
+/*		DSCLEARN.EXT	for the CFS-C Classifier System.
+
+Declare variables for use by "discovery" subtroutines (& friends)--that is,
+the variables defined in DSCLEARN.DEF--by including this file.
+See the file DSCLEARN.H for definitions of constants.
+*/
+
+#ifndef	NEWCFSZ
+#include	"dsclearn.h"
+#endif
+
+extern unsigned int DscDemo;
+extern unsigned int TOTNmOfs;
+extern float MutdSpec;
+
+extern float FrNewCfs;
+extern unsigned int MxNewCfs;
+extern short int PkPrnWOR;
+extern unsigned int BidFit;
+extern unsigned int PrPoolSz;
+extern unsigned int NxtPPool;
+extern unsigned int NmNewCfs;
+extern float TPrtBStr;
+extern float PrntBPow;
+struct NCfNode {
+    unsigned int NewCf_Id;
+    unsigned int NewCnd1B[INTPRSTR];
+    unsigned int NewCnd1D[INTPRSTR];
+    short int NewCnd1T;
+    unsigned int NewCnd2B[INTPRSTR];
+    unsigned int NewCnd2D[INTPRSTR];
+    short int NewCnd2T;
+    short int NewActT;
+    unsigned int NewActB[INTPRSTR];
+    unsigned int NewActD[INTPRSTR];
+    float NewStr;
+    float NewBR;
+};
+extern struct NCfNode NewCfs[];
+extern struct CfNode *Parents[];
+extern unsigned int FitnessCalc;
+extern unsigned int CLSorted;
+extern float NwCfStrF;
+extern unsigned int NwCfStrV;
+
+extern struct CfNode *RPoolCfs[];
+extern unsigned int RCPoolSz;
+extern unsigned int CrowdFac;
+extern unsigned int RandRplc;
+extern float TRplBStr;
+extern float RplcBPow;
+extern unsigned int NmEligRp;
+extern float RplCfUBd;
+extern float RplACUBd;
+extern unsigned int RplACSBd;
+
+extern float BkgGARt;
+extern float BGASCPr;
+extern float BGANCPr;
+extern float BGAFCPr;
+extern float BGABPPr;
+extern unsigned int TotBkgGA;
+extern unsigned int TotBGASC;
+extern unsigned int TotBGAFC;
+extern unsigned int TotBGANC;
+extern unsigned int TotBGABP;
+
+extern float MuPrTot;
+extern float MuPrTab[];
+extern float MuPrCnd1;
+extern float MuPrCnd2;
+extern float MuPrAct;
+extern float MuPrCT2;
+extern float MuPrAT;
+extern float MuFrMC;
+extern float MuFrNSL;
+extern unsigned int TotMu;
+
+extern unsigned int CDMsgs;
+extern float CDMsgsRt;
+extern short int CDMsgAct;
+extern unsigned int TotCDM;
+extern unsigned int TotCDMC;
+extern unsigned int TotCDML;
+
+extern unsigned int CEffs;
+extern float CEffsRt;
+extern short CEffSplz;
+extern unsigned int TotCEf;
+extern unsigned int TotCEfW;
+extern unsigned int TotCEfB;
+
+extern float ACPCRt;
+extern unsigned int TotACPC;
+extern float ACPCt;
+extern float NwCCStrF;
+extern struct ActCfNd {
+    struct CfNode *ActCf;
+    float ChngStr;
+}
+
+ActCfPrv[MSGLSTSZ - 1];
+extern unsigned int ActCfPNm;
+
+extern unsigned int TagLMx, TagRMx;
+extern float CSSRt, CSSFrRf, CSSFrM;
+extern unsigned int TotCSS;
+
+extern float TLBRt, TLBFrE, TLBt;
+extern unsigned int TotTLB;
+
+
+#if defined(__STDC__) || defined(__cplusplus)
+# define PRO(s) s
+#else
+# define PRO(s) ()
+#endif
+
+/* dsclearn.c */
+VOID Discover PRO((void));
+VOID ReCalcFitness PRO((void));
+int PckPrnts PRO((int Number));
+VOID PkPrPool PRO((void));
+int PkBPrnts PRO((int Number, int Max));
+int PkBPPool PRO((int Number));
+unsigned int RplcCfs PRO((void));
+unsigned int PckRPool PRO((void));
+VOID DemoRpl PRO((void));
+VOID PckRndRp PRO((unsigned int NmToPick));
+VOID PckBiaRp PRO((unsigned int NmToPick));
+struct CfNode *PckRCf PRO((struct NCfNode *New));
+float GenTypeM PRO((struct CfNode *Cf, struct NCfNode *NCf));
+VOID WrtNCf PRO((struct NCfNode *NewCf, char Buff[], int Format));
+
+#undef PRO

@@ -1,0 +1,79 @@
+%
+%	GENEsYs-ist.tex		Ba, 21 feb 91		LaTeX 2.09
+%				Ba, 15 jun 92
+%
+%	Informations concerning the system installation and the
+%	directory system.
+%{
+
+\section{Quick Start}\label{genesis-ist}
+
+After obtaining the \GEN\ software as a tar-file from the ftp-server,
+and unpacking the file you have to perform the following steps:
+
+\begin{enumerate}
+%
+\item	In the file ``define.h'', make sure that \Vrb{INTSIZE} properly
+	indicates the length in  bits of an \Vrb{unsigned int}.
+%
+\item	To compile the system, use the \Cmd{make} command in the
+	directory 
+	\ifUS
+		\\ GENEsYs/src.
+	\else
+		GENEsYs/src.
+	\fi
+       	This should compile the  programs  and move the executables to the 
+	directory 
+	\ifUS
+		GENEsYs/bin.
+	\else
+		GENEsYs/ bin.
+	\fi
+%
+\item	Extend your environment-variable \Vrb{PATH} by the path of the
+	directory GENEsYs/bin in order to have the programs available
+	whereever you want to use them.
+%
+\end{enumerate}
+
+Then, you can call the online-help of the program \verb/ga/ by simply
+typing 
+%
+\begin{center}
+	\verb/ga -h | more/
+\end{center}
+%
+where it is suggested to pipe the output to a pager.
+The help-option informs you about the options available for configuring
+the run of the \GA, and additionally it gives you informations about the
+currently installed \NbrFct\ objective functions.
+For an explanation of the available options, see section~\ref{genesis-opt}.
+Typically, a simple call of the standard \GA\ will look like this:
+%
+\begin{center}
+	\verb/ga -P 100 -R 0.01 -C 0.8 -f 17 { -p 444555 } -t 10000 -e 3 &/
+\end{center}
+
+The options in the example call configurate the \GA\ to work with a 
+population size of~$100$ individuals (option \O{P}), mutation rate~$0.01$
+(option \O{R}), crossover probability~$0.8$ (option \O{C}).
+Furthermore, objective function number~$17$ is selected by option \O{f},
+and a special parameter is passed to~$f_{17}$ by the \verb/{ -p 444555 }/
+construction (see~\ref{genesis-subsubfunction}).
+Three independent optimization experiments will be performed (option \O{e}),
+running for~$10.000$ function evaluations, each (option \O{t}).
+
+Other programs in the directory GENEsYs/bin serve the following purposes:
+%
+\begin{center}
+\begin{tabular}{ll}
+	\verb/report/	& Automatic report generation after a \GA-run. 	\\
+	\verb/setup/	& Interactive setup procedure for a \GA-run.	\\
+	\verb/gapl/	& Plot procedure, using \verb/xgnuplot/
+			  (see \File{README}).				\\
+	\verb/gacols/	& Used by \verb/gapl/ for data extraction.	\\
+\end{tabular}
+\end{center}
+
+%}

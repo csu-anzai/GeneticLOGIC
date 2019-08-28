@@ -1,0 +1,471 @@
+%!PS-Adobe-2.0 EPSF-2.0
+%%Title: /tmp_mnt/home/lumpi/ls11h/baeck/opt/genesis/doc/fig-cross.vec
+%%Creator: baeck
+%%CreationDate: Mon May  4 09:44:55 1992
+%%Pages: 1
+%%BoundingBox: 72 72 593.575 151.37
+%%EndComments
+/draw_initial_state save def
+/displaylistdict 80 dict def
+displaylistdict begin
+
+% catch nocurrentpoint error for:
+% pathbbox
+    /ncpoint errordict /nocurrentpoint get def
+    errordict begin
+    /nocurrentpoint
+    {
+	dup /pathbbox load eq
+	{ pop 0 0 1 1 }
+	{ ncpoint }
+	ifelse
+    } bind def
+    end
+
+    /image_raster { % sw sh dw dh xs ys
+	translate scale /sh exch def /sw exch def
+	/imagebuf sw 7 add 8 idiv string def
+	sw sh 1 [sw 0 0 sh 0 0] { currentfile imagebuf readhexstring pop }
+	image
+    } bind def
+    /m {moveto} bind def
+    /l {lineto} bind def
+
+% pattern stuff
+    /BPSIDE 32 def	% pixels per pattern side
+    /PATFREQ 3.0 def	% pattern pixels per mm
+
+    /drawpat_mat [PATFREQ 0 0 PATFREQ 0 0] def
+    /drawpat_pw BPSIDE def	% pattern pixel width
+    /drawpat_ph BPSIDE def	% pattern pixel height
+    /drawpat_w drawpat_pw PATFREQ div def	% pattern mm width
+    /drawpat_h drawpat_ph PATFREQ div def	% pattern mm height
+    /drawpat_bs 1 def		% pattern bits per pixel
+
+    /savemat matrix def
+    /topmat matrix def
+    /patmat matrix def
+
+    /start_display_list
+    {	
+	0	setlinecap
+	10	setmiterlimit
+    } bind def
+
+    /patpath {
+	topmat setmatrix
+	pathbbox	% get lo - hi indecies
+	/hy exch drawpat_h div floor cvi def
+	/hx exch drawpat_w div floor cvi def
+	/ly exch drawpat_h div floor cvi def
+	/lx exch drawpat_w div floor cvi def
+	lx 1 hx {
+	    drawpat_w mul
+	    ly 1 hy {
+		drawpat_h mul
+		exch dup 3 1 roll exch
+		patmat currentmatrix pop
+		translate
+		drawpat_pw drawpat_ph drawpat_bs
+		drawpat_mat drawpat_proc image
+		patmat setmatrix
+	    } for
+	    pop
+	} for
+    } bind def
+%%EndProlog
+
+%%Page: 1 1
+gsave 2.83465 -2.83465 scale
+newpath
+25.4 -25.4 moveto
+0 -28 rlineto
+184 0 rlineto
+0 28 rlineto
+closepath clip
+15.4 -83.4 translate
+topmat currentmatrix pop
+start_display_list
+
+% irpoly2
+0 setlinejoin
+.1 setlinewidth
+.5 setgray
+gsave
+newpath 12 36 m
+92 36 l
+92 40 l
+12 40 l
+closepath
+eofill
+grestore
+0 setgray
+gsave
+newpath 12 36 m
+92 36 l
+92 40 l
+12 40 l
+closepath
+stroke
+grestore
+
+% irpoly2
+.5 setgray
+gsave
+newpath 112 36 m
+120 36 l
+120 40 l
+112 40 l
+closepath
+eofill
+grestore
+0 setgray
+gsave
+newpath 112 36 m
+120 36 l
+120 40 l
+112 40 l
+closepath
+stroke
+grestore
+
+% irpoly2
+.5 setgray
+gsave
+newpath 124 36 m
+148 36 l
+148 40 l
+124 40 l
+closepath
+eofill
+grestore
+0 setgray
+gsave
+newpath 124 36 m
+148 36 l
+148 40 l
+124 40 l
+closepath
+stroke
+grestore
+
+% irpoly2
+.5 setgray
+gsave
+newpath 160 36 m
+168 36 l
+168 40 l
+160 40 l
+closepath
+eofill
+grestore
+0 setgray
+gsave
+newpath 160 36 m
+168 36 l
+168 40 l
+160 40 l
+closepath
+stroke
+grestore
+
+% irpoly2
+.5 setgray
+gsave
+newpath 188 36 m
+192 36 l
+192 40 l
+188 40 l
+closepath
+eofill
+grestore
+0 setgray
+gsave
+newpath 188 36 m
+192 36 l
+192 40 l
+188 40 l
+closepath
+stroke
+grestore
+
+% irpoly2
+.5 setgray
+gsave
+newpath 120 48 m
+124 48 l
+124 52 l
+120 52 l
+closepath
+eofill
+grestore
+0 setgray
+gsave
+newpath 120 48 m
+124 48 l
+124 52 l
+120 52 l
+closepath
+stroke
+grestore
+
+% irpoly2
+.5 setgray
+gsave
+newpath 148 48 m
+160 48 l
+160 52 l
+148 52 l
+closepath
+eofill
+grestore
+0 setgray
+gsave
+newpath 148 48 m
+160 48 l
+160 52 l
+148 52 l
+closepath
+stroke
+grestore
+
+% irpoly2
+.5 setgray
+gsave
+newpath 168 48 m
+188 48 l
+188 52 l
+168 52 l
+closepath
+eofill
+grestore
+0 setgray
+gsave
+newpath 168 48 m
+188 48 l
+188 52 l
+168 52 l
+closepath
+stroke
+grestore
+
+% irpoly2
+1 setgray
+gsave
+newpath 12 48 m
+92 48 l
+92 52 l
+12 52 l
+closepath
+eofill
+grestore
+0 setgray
+gsave
+newpath 12 48 m
+92 48 l
+92 52 l
+12 52 l
+closepath
+stroke
+grestore
+
+% irpoly2
+1 setgray
+gsave
+newpath 112 48 m
+120 48 l
+120 52 l
+112 52 l
+closepath
+eofill
+grestore
+0 setgray
+gsave
+newpath 112 48 m
+120 48 l
+120 52 l
+112 52 l
+closepath
+stroke
+grestore
+
+% irpoly2
+1 setgray
+gsave
+newpath 124 48 m
+148 48 l
+148 52 l
+124 52 l
+closepath
+eofill
+grestore
+0 setgray
+gsave
+newpath 124 48 m
+148 48 l
+148 52 l
+124 52 l
+closepath
+stroke
+grestore
+
+% irpoly2
+1 setgray
+gsave
+newpath 160 48 m
+168 48 l
+168 52 l
+160 52 l
+closepath
+eofill
+grestore
+0 setgray
+gsave
+newpath 160 48 m
+168 48 l
+168 52 l
+160 52 l
+closepath
+stroke
+grestore
+
+% irpoly2
+1 setgray
+gsave
+newpath 188 48 m
+192 48 l
+192 52 l
+188 52 l
+closepath
+eofill
+grestore
+0 setgray
+gsave
+newpath 188 48 m
+192 48 l
+192 52 l
+188 52 l
+closepath
+stroke
+grestore
+
+% irpoly2
+1 setgray
+gsave
+newpath 120 36 m
+124 36 l
+124 40 l
+120 40 l
+closepath
+eofill
+grestore
+0 setgray
+gsave
+newpath 120 36 m
+124 36 l
+124 40 l
+120 40 l
+closepath
+stroke
+grestore
+
+% irpoly2
+1 setgray
+gsave
+newpath 148 36 m
+160 36 l
+160 40 l
+148 40 l
+closepath
+eofill
+grestore
+0 setgray
+gsave
+newpath 148 36 m
+160 36 l
+160 40 l
+148 40 l
+closepath
+stroke
+grestore
+
+% irpoly2
+1 setgray
+gsave
+newpath 168 36 m
+188 36 l
+188 40 l
+168 40 l
+closepath
+eofill
+grestore
+0 setgray
+gsave
+newpath 168 36 m
+188 36 l
+188 40 l
+168 40 l
+closepath
+stroke
+grestore
+
+% polyline2
+gsave
+newpath 20 32 m
+20 56 l
+stroke
+grestore
+
+% polyline2
+gsave
+newpath 24 32 m
+24 56 l
+stroke
+grestore
+
+% polyline2
+gsave
+newpath 48 32 m
+48 56 l
+stroke
+grestore
+
+% polyline2
+gsave
+newpath 60 32 m
+60 56 l
+stroke
+grestore
+
+% polyline2
+gsave
+newpath 68 32 m
+68 56 l
+stroke
+grestore
+
+% polyline2
+gsave
+newpath 88 32 m
+88 56 l
+stroke
+grestore
+
+% polyline2
+% arrow
+gsave
+newpath 108 44 m 105.2 44.9333 l 105.2 43.0667 l closepath
+eofill
+grestore
+gsave
+newpath 96 44 m
+105.2 44 l
+stroke
+grestore
+showpage
+grestore
+
+%%Trailer
+end
+draw_initial_state restore
+

@@ -1,0 +1,82 @@
+%
+%	GENEsYs.tex		Ba, 21 feb 91		LaTeX 2.09
+%
+%	Users guide for GENEsYs
+%{
+
+\parindent=0pt
+\parskip=0.5\baselineskip
+
+\let\ifUS=\iffalse
+\let\ifUS=\iftrue
+
+\ifUS
+\documentstyle[12pt,GENEsYs,draft]{article}
+\else
+\documentstyle[dinA4,12pt,ea,myFigure,myList,myTable]{article}
+\fi
+
+
+\input{GENEsYs-dcl}
+
+\title{	A User's Guide to \GEN}
+\author{Thomas B\"ack\thanks{\tt baeck@ls11.informatik.uni-dortmund.de}}
+
+\date{	\normalsize
+	University of Dortmund					\\
+	Department of Computer Science				\\
+	Systems Analysis Research Group				\\
+	P.O.~Box 50 05 00					\\
+	D--4600 Dortmund 50					\\
+	July 1st, 1992}
+
+\begin{document}
+\bibliographystyle{alpha}
+\maketitle
+
+\vfill
+\input{GENEsYs-abs}		% abstract
+\vfill
+\newpage
+\tableofcontents
+\newpage
+
+\input{GENEsYs-ist}		% system installation
+\ifUS
+\else
+	\newpage
+\fi
+\input{GENEsYs-int}		% introduction
+\ifUS
+	\newpage
+\else
+\fi
+\input{GENEsYs-pro}		% major procedures
+\ifUS
+	\newpage
+\else
+\fi
+\input{GENEsYs-opt}		% options
+\newpage
+\input{GENEsYs-rep}		% report and other files
+\ifUS
+	\newpage
+\else
+\fi
+\input{GENEsYs-mod}		% modifications
+\ifUS
+	\newpage
+\else
+\fi
+\input{GENEsYs-fct}		% Test functions
+\input{GENEsYs-ack}		% Acknowledgements
+
+\ifUS
+\bibliography{GENEsYs}
+\else
+\bibliography{decl,es,ga,math,evol,ea,opt,nn,xref}
+\fi
+
+\end{document}
+
+%}

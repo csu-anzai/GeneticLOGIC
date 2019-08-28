@@ -1,0 +1,18 @@
+; TEST
+set dscflst=b adcfint=1 adcffmt=22 adenvint=1 adcmint=1
+ecmd cs 0
+di env,1
+cl 3
+ecmd cs 1
+di env,1
+cl 3
+ecmd cs 2
+di env,1
+cl 3
+ecmd cs 3
+di env,1
+cl 3
+set dscflst=b adcfint=0 adcffmt=22 adenvint=0 adcmint=0
+;
+; ENDTEST
+

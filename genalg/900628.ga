@@ -1,0 +1,91 @@
+
+
+
+
+Back at the January, 1988 MIND meeting, the topic of genetic algorithms was
+broached.  Several speakers gave tutorials or research reports then, and I
+was charged up as a result.  I set about writing a program that would
+perform an exceedingly simple demonstration of the basics of genetic
+algorithms.
+
+But I wanted it to have some of my own touches, so I put in procedures not
+only for mutation and crossover style effects, but also transcription.  All
+of the relevant parameters could then be fed to the program from the
+command line.  From there, it was relatively easy to set up a batch file
+that would repeatedly call the program with a particular set of parameters.
+Over a period of several days, I can collect results from hundreds of
+simulations.
+
+That's what is presented below.  The simulation operates on a population of
+bit strings, 48 bits long, that are interpreted as floating point numbers
+and compared to a goal value, that is a simple scalar real number.  This
+introduces non-linearity into the evaluation scheme, since there are
+varying amounts of importance attached to a bit in the string depedning
+upon its placement.
+
+The header can be interpreted as follows:
+K is the carrying capacity, that is, how many "organisms" are allowed in
+the population; "Goal" is the goal value, a real number; "E" is the
+reciprocal of the amount of error to tolerate, selected to give a single
+test probability of less than one in a million; "M" is the complement of
+the probability that a particular organism will undergo mutation; "C" is
+the probability that if crossover occurs, it will be straightforwrd
+crossover and not inversion; "T" is the complement of the probability of
+transcription taking place; "FOM" is the "figure of merit", or the factor
+by which to compare the results to the expected random probability of
+success; and "Gen" is the number of generations before the success
+condition was met.  (If the simulation did not beat out the random
+probability, then the message "No better than random search" was printed
+out.  So far, this message has never crossed my screen.)
+
+No further fuss, here is the set of sample statistics for the data:
+
+
+            K    Goal   E     M    C    T    FOM        Gen 
+        
+    Min    40 3.141592 4096  0.8  0.8  0.8   23.469         9
+    Max    40 3.141592 4096  0.8  0.8  0.8 2912.711      1117
+    Count 250      250  250  250  250  250      250       250
+    Avg    40 3.141592 4096  0.8  0.8  0.8 283.5842   208.752
+    sd                                     336.5842  181.5331
+
+    Min    50 3.141592 4096  0.8  0.8  0.8   15.686         5
+    Max    50 3.141592 4096  0.8  0.8  0.8 4194.304      1337
+    Count 476      476  476  476  476  476      476       476
+    Avg.   50 3.141592 4096  0.8  0.8  0.8 347.4443  158.1869
+    sd                                     476.0098  170.9528
+
+    Min   100 3.141592 4096  0.8  0.8  0.8    9.055          3
+    Max   100 3.141592 4096  0.8  0.8  0.8 3495.253       1158
+    Count 231      231  231  231  231  231      231        231
+    Avg   100 3.141592 4096  0.8  0.8  0.8 330.9919   88.46753
+    sd                                     383.8358   118.4062
+
+    Min   200 3.141592 4096  0.8  0.8  0.8   26.887          5
+    Max   200 3.141592 4096  0.8  0.8  0.8 1048.576        195
+    Count 226      226  226  226  226  226      226        226
+    Avg   200 3.141592 4096  0.8  0.8  0.8 261.0660   35.02212
+    sd                                     190.9221   32.58035
+
+
+    Min   400 3.141592 4096  0.8  0.8  0.8   23.617          1
+    Max   400 3.141592 4096  0.8  0.8  0.8  2621.44        111
+    Count 474      474  474  474  474  474      474        474
+    Avg   400 3.141592 4096  0.8  0.8  0.8 250.2303   17.34599
+    sd                                     245.9702   13.05584
+
+
+As one can see, there is a great deal of variability in the speed of
+convergence, but empirically the results are much better than could be
+expected from a random walk type search.  (The simulation used an
+evaluation function which returned a distance measure.  Algorithmic search
+methods would have to take the kind of error measure provided into account,
+which is not necessary when using the genetic algorithm approach.  For
+those of us who are wary of the issue of "programmer omniscience", this
+feature provides one more avenue of approach to otherwise intractable
+problems.)
+
+
+Wesley R. Elsberry
+July, 1990
+

@@ -1,0 +1,839 @@
+%
+%	ea.sty		Ho, 07.Dec.'91			LaTeX 2.09
+%			Ho, 22.June'92	+ \SA
+%			Ho, 01.July'92	+ \input{ep.sty}
+%
+%	EA macros
+%{
+
+\message{= EA macros}
+
+%
+%	abbreviations for the term `Evolutionary Algorithm'
+%
+\def\EA{\mbox{\rm EA}}			% singular
+\def\EAs{\mbox{\rm EAs}}		% plural
+
+
+%
+%	es.sty		Ho, 23.Nov.'90			LaTeX 2.09
+%			Ho, 30.Nov.'90
+%			Ho, 26.Jan.'91
+%			Ho, 19.Feb.'91
+%
+%	ES macros
+
+\message{= ES macros}
+
+%
+%	abbreviations for the term `Evolution Strategy'
+%
+\def\ES{\mbox{\rm ES}}			% singular
+\def\ESs{\mbox{\rm ESs}}		% plural
+
+%
+%	... and miscellaneous idioms
+%
+\def\pESoo{\pES11}
+\def\pESmo{\pES\mu1}
+\def\pESml{\pES\mu\lambda}
+\def\pES#1#2{\mbox{\rm ($#1$+$#2$)--\ES}}
+%
+\def\cESol{\cES1\lambda}
+\def\cESml{\cES\mu\lambda}
+\def\cES#1#2{\mbox{\rm ($#1$,$#2$)--\ES}}
+%
+\def\pESpl{\pES{\tt *}\lambda}
+\def\cESpl{\cES{\tt *}\lambda}
+%
+\def\pESp#1{\cES{\tt *}{#1}}
+\def\cESp#1{\cES{\tt *}{#1}}
+%
+\def\cpESsel{($\mu\mathord{\stackrel{+}{,\vrule height0.5ex width0pt}}\lambda$)}
+\def\cpESml{\cpESsel--\ES}
+\def\cpESfull{\cpESsel\ -- Evolution Strategy}
+%
+%
+\def\cSel#1#2{($#1$,$#2$)}
+\def\pSel#1#2{($#1$+$#2$)}
+%
+\def\cSelml{\cSel\mu\lambda}
+\def\pSelml{\pSel\mu\lambda}
+
+%
+%	ga.sty		Ho, 26.Jan.'91			LaTeX 2.09
+%
+%	GA macros
+
+\message{= GA macros}
+
+
+\def\GENGAIS{{\tt GENGAIS}}		% GENGAIS logo
+
+%
+%	abbreviations for the term `Genetic Algorithms'
+%
+\def\GA{\mbox{\rm GA}}			% singular
+\def\GAs{\mbox{\rm GAs}}		% plural
+
+%
+%	... and miscellaneous idioms
+%
+\def\pGAoo{\pGA11}
+\def\pGAmo{\pGA\mu1}
+\def\pGAml{\pGA\mu\lambda}
+\def\pGA#1#2{\mbox{\rm ($#1$+$#2$)--\GA}}
+%
+\def\cGAol{\cGA1\lambda}
+\def\cGAml{\cGA\mu\lambda}
+\def\cGA#1#2{\mbox{\rm ($#1$,$#2$)--\GA}}
+%
+\def\pGApl{\pGA{\tt *}\lambda}
+\def\cGApl{\cGA{\tt *}\lambda}
+%
+\def\pGAp#1{\cGA{\tt *}{#1}}
+\def\cGAp#1{\cGA{\tt *}{#1}}
+%
+\def\cpGAsel{($\mu\mathord{\stackrel{+}{,\vrule height0.5ex width0pt}}\lambda$)}
+\def\cpGAml{\cpGAsel--\GA}
+\def\cpGAfull{\cpGAsel\ -- Genetic Algorithm}
+%
+\def\cSelml{($\mu$,$\lambda$)}
+\def\pSelml{($\mu$+$\lambda$)}
+
+%
+%	abbreviation for the term `Simulated Annealing'
+%
+\def\SA{\mbox{\rm SA}}			% always singular
+
+%
+%	abbreviation for the term `Neural Network'
+%
+\def\NN{\mbox{\rm NN}}			% singular
+\def\NNs{\mbox{\rm NNs}}		% plural
+
+
+%
+%	myFigure.sty	Ho, 29.May '90				LaTeX 2.09
+%			Ho, 07.June'90
+%			Ho, 09.Aug.'90
+%			Ho, 24.Aug.'90
+%			Ho, 28.Aug.'90
+%			Ho, 04.Sep.'90
+%			Ho, 13.Sep.'90
+%			Ho, 10.Nov.'90
+%			Ho, 11.Feb.'91
+%			Ho, 31.Mar.'91
+%			Ho, 07.Apr.'91
+%			Ho, 03.Jun.'91
+%			Ho, 04.Sep.'91	fixed caption font size
+%			Ho, 02.Oct.'91	changed psCaptionSize determination
+%			Ho, 05.Oct.'91	added optional '*' modifier
+%			Ho, 13.Nov.'91	added \pastedFigure
+%			Ho, 13.Jan.'92	fixed parameter passing to \psfig
+%			Ho, 22.Jan.'92	added \texFigure, \texFramedFigure
+%
+%	LaTeX macro definitions for typesetting of PostScript graphics
+%
+%
+%	$Log: myFigure.sty,v $
+%	Revision 1.5  1992/05/13  19:22:40  iwan
+%	[psfig-options] can be dropped when calling \psFigure et al.
+%
+%	Revision 1.4  1992/05/12  20:26:01  iwan
+%	minor changes
+%
+%	Revision 1.3  1992/05/12  15:21:22  iwan
+%	added \psBox{}[]
+%	changed \@EndFig for use with \begin{if-language}
+%
+%	Revision 1.2  1992/05/11  13:28:14  iwan
+%	latest revision before intro of RCS
+%
+%	Revision 1.1  1992/05/11  13:27:09  iwan
+%	Initial revision
+%
+%	$Id: myFigure.sty,v 1.5 1992/05/13 19:22:40 iwan Exp iwan $
+
+%
+%	load \psfig macros if required
+%
+\long\def\ifundefined#1#2#3{\expandafter
+	\ifx\csname #1\endcsname\relax #2\else #3\fi
+}
+\ifundefined{psfig}{\input{psfig}\catcode`@=11}{\relax}
+
+%
+%	\psBox{file-name}[psfig-options]
+%
+%	produce \hbox containing PostScript graphics,
+%	the square brackets with \psfig-options are optionally
+%
+\def\psBox#1{\@ifnextchar[{\@psBox{#1}}{\@psBox{#1}[]}}
+
+\def\@psBox#1[#2]{%
+	\def\psFigOpt{,#2}\def\psFigOptEmpty{,}
+	\ifx\psFigOpt\psFigOptEmpty
+		\psfig{figure=#1.ps}%
+	\else
+		\psfig{figure=#1.ps,#2}%
+	\fi
+}
+
+
+%
+%	general layout parameters
+%
+
+\def\psHalfWidth{.45\@psTextWidth}	% width of graphics in \psTwinFigure
+\def\psFullWidth{.70\@psTextWidth}	% width of graphics in \psFigure
+\def\psHeight	{.40\@psTextWidth}	% height of psPlot
+
+%
+%	utility macros
+%
+\newdimen\@psTextWidth
+
+\def\@psAction{%
+	\@psTextWidth=\textwidth
+%
+	\gdef\@BgnFig{\begin{figure*}[hbt]}%
+	\gdef\@EndFig{\end{figure*}}%
+	\@ifstar{\if@twocolumn
+			\@psTextWidth=\textwidth
+			\advance\@psTextWidth by -\columnsep
+			\advance\@psTextWidth by -\columnseprule
+			\divide \@psTextWidth by 2
+%
+			\gdef\@BgnFig{\begin{figure}[hbt]}%
+			\gdef\@EndFig{\end{figure}}%
+		\fi \psAction@}{\psAction@}%
+}
+\let\@FigBox=\relax			% utility macro to support \psFramed...
+
+%
+%	caption typesetting
+%
+\def\psCaption#1#2{%
+		\let\@psCaptionSize=\psCaptionSize
+%
+		\begingroup
+		\def\psFigLbl{#2}\def\psFigLblEmpty{}%
+		\ifx\psFigLbl\psFigLblEmpty
+		\else
+			\caption{#2}%
+			\label{#1}%
+		\fi
+		\endgroup
+}
+\def\psCaptionSize{%\footnotesize	% caption font size
+	\ifcase\@ptsize	\small		% with 10pt
+	\or		\small		% with 11pt
+	\else		\footnotesize	% with 12pt
+	\fi
+}
+\let\@psCaptionSize=\relax		% standard size for \listoffigures
+\let\fnum@figure@old=\fnum@figure
+\def\fnum@figure{\@psCaptionSize\fnum@figure@old}
+
+
+
+%
+%	\psFigure{file-name}[psfig-options]{caption}
+%
+%	places a PostScript graphic in <file-name>.ps inside a figure
+%	environment with the help of the \psfig macro.
+%	The figure always spawns the whole page with width \psFullWidth
+%	(if not otherwise stated by \psfig-option `width=...'),
+%	gets the provided <caption>, and may be referenced by its graphics
+%	<file-name>.
+%
+%	\psFigure*{file-name}[psfig-options]{caption}
+%
+%	This variant has effect only if typesetting with two columns, then
+%	instead of using environment `figure*' only `figure' is used to place
+%	a single column figure.
+%
+%	The square brackets with \psfig-options are optionally
+%
+
+\def\psFigure		{\let\psAction@\@psFigure \let\@FigBox\relax \@psAction}
+\def\psFramedFigure	{\let\psAction@\@psFigure \let\@FigBox\fbox  \@psAction}
+
+\def\@psFigure#1{\@ifnextchar[{\@@psFigure{#1}}{\@@psFigure{#1}[]}}
+%
+\def\@@psFigure#1[#2]#3{%
+	\@BgnFig\begin{center}\mbox{}%
+		\def\psFigOpt{,#2}\def\psFigOptEmpty{,}%
+		\ifx\psFigOpt\psFigOptEmpty
+			\@FigBox{\psfig{figure=#1.ps,width=\psFullWidth}}%
+		\else
+			\@FigBox{\psfig{figure=#1.ps,#2}}%
+		\fi
+		\psCaption{#1}{#3}%
+	\end{center}\@EndFig
+}
+
+
+%
+%	\psTwinFigure{file-name1}{file-name2}{caption}
+%
+%	places two graphics referred to by <file-name1>.ps and
+%	<file-name2>.ps side by side inside a figure environment
+%	with the help of the \psfig macro.
+%	The figure gets the provided <caption> and may be referenced by
+%	its graphics <file-name1>.
+%
+
+\def\psTwinFigure	{\let\psAction@\psTwinFigure@
+						\let\@FigBox\relax \@psAction}
+\def\psFramedTwinFigure	{\let\psAction@\psTwinFigure@
+						\let\@FigBox\fbox  \@psAction}
+\def\psTwinFigure@#1#2#3{%
+	\@BgnFig\begin{center}\mbox{}%
+		\@FigBox{\hbox{%
+			\psfig{figure=#1.ps,%
+				height=\psHeight,width=\psHalfWidth}%
+			\hskip 2em minus 1.5em
+			\psfig{figure=#2.ps,%
+				height=\psHeight,width=\psHalfWidth}%
+		}}%
+		\psCaption{#1}{#3}%
+	\end{center}\@EndFig
+}
+
+
+%
+%	\psQuadFigure{file-11}{file-12}{file-21}{file-22}{caption}
+%
+%	places two graphics referred to by <file-11>.ps ... <file-22>.ps
+%	side by side inside a figure environment with the help of the
+%	\psfig macro.
+%	The figure gets the provided <caption> and may be referenced by
+%	its graphics <file-11>.
+%
+
+\def\psQuadFigure	{\let\psAction@\psQuadFigure@
+						\let\@FigBox\relax \@psAction}
+\def\psFramedQuadFigure	{\let\psAction@\psQuadFigure@
+						\let\@FigBox\fbox  \@psAction}
+\def\psQuadFigure@#1#2#3#4#5{%
+	\@BgnFig\begin{center}\mbox{}%
+	\@FigBox{\vbox{
+		\hbox{%
+			\psfig{figure=#1.ps,%
+				height=\psHeight,width=\psHalfWidth}%
+			\hskip 2em minus 1.5em
+			\psfig{figure=#2.ps,%
+				height=\psHeight,width=\psHalfWidth}%
+		}%
+		\hbox{%
+			\psfig{figure=#3.ps,%
+				height=\psHeight,width=\psHalfWidth}%
+			\hskip 2em minus 1.5em
+			\psfig{figure=#4.ps,%
+				height=\psHeight,width=\psHalfWidth}%
+		}%
+	}}
+	\psCaption{#1}{#5}%
+	\end{center}\@EndFig
+}
+
+
+%
+%	\psPlot{file-name}[psFig-options]{caption}
+%
+%	places a GnuPlot PostScript graphic in <file-name>.ps inside
+%	a figure environment with the help of the \psfig macro.
+%	The figure gets the provided <caption> and may be referenced by
+%	its graphics <file-name>.
+%
+%	The square brackets with \psfig-options are optionally
+%
+
+\def\psPlot		{\let\psAction@\@psPlot \let\@FigBox\relax \@psAction}
+\def\psFramedPlot	{\let\psAction@\@psPlot \let\@FigBox\fbox  \@psAction}
+
+\def\@psPlot#1{\@ifnextchar[{\@@psPlot{#1}}{\@@psPlot{#1}[]}}
+%
+\def\@@psPlot#1[#2]#3{%
+	\@BgnFig\begin{center}\mbox{}%
+		\def\psFigOpt{,#2}\def\psFigOptEmpty{,}%
+		\ifx\psFigOpt\psFigOptEmpty
+			\@FigBox{\psfig{figure=#1.ps,%
+				height=\psHeight,width=\psFullWidth}}%
+		\else
+			\@FigBox{\psfig{figure=#1.ps,#2}}%
+		\fi
+		\psCaption{#1}{#3}%
+	\end{center}\@EndFig
+}
+
+
+%
+%	\psTwinPlot{file-name1}{file-name2}{caption}
+%
+%	places two GnuPlot PostScript graphics referred to by <file-name1>.ps
+%	and <file-name2>.ps side by side inside a figure environment
+%	The figure gets the provided <caption> and may be referenced by
+%	its graphics <file-name1>.
+%
+
+\def\psTwinPlot		{\let\psAction@\psTwinPlot@
+						\let\@FigBox\relax \@psAction}
+\def\psFramedTwinPlot	{\let\psAction@\psTwinPlot@
+						\let\@FigBox\fbox  \@psAction}
+\def\psTwinPlot@#1#2#3{%
+	\@BgnFig\begin{center}\mbox{}%
+		\@FigBox{\hbox{%
+			\psfig{figure=#1.ps,%
+				height=\psHeight,width=\psHalfWidth}%
+			\hskip 2em minus 1.5em
+			\psfig{figure=#2.ps,%
+				height=\psHeight,width=\psHalfWidth}%
+		}}%
+		\psCaption{#1}{#3}%
+	\end{center}\@EndFig
+}
+
+
+%
+%	\psSlide{file-name}[psfig-options]{caption}
+%
+%	places a PostScript graphic in <file-name>.ps inside a center
+%	environment with the help of the \psfig macro.
+%	The graphic gets the provided <caption>.
+%
+%	The square brackets with \psfig-options are optionally
+%
+\def\psSlide#1{\@ifnextchar[{\@@psSlide{#1}}{\@@psSlide{#1}[]}}
+%
+\def\@@psSlide#1[#2]#3{%
+	\begin{center}\mbox{}%
+		\ifhmode \newline \fi
+		\def\psTitle{#3\relax}\def\psRef{\relax}%
+		\ifx\psTitle\psRef
+%%			\typeout{no title for #1}%
+		\else
+			{\footnotesize\hfil #3\hfil}\nobreak\bigskip\nobreak
+		\fi
+%
+		\def\psFigOpt{,#2}\def\psFigOptEmpty{,}%
+		\ifx\psFigOpt\psFigOptEmpty
+			\psfig{figure=#1.ps,width=\textwidth}%
+		\else
+			\psfig{figure=#1.ps,#2}%
+		\fi
+		\ifhmode \newline \fi
+	\end{center}
+}
+
+%
+%	\psTwinSlide{file-name1}{file-name2}{caption}
+%
+%	places two graphics referred to by <file-name1>.ps and
+%	<file-name2>.ps side by side inside a figure environment
+%	with the help of the \psfig macro.
+%	The figure gets the provided <caption> and may be referenced by
+%	its graphics <file-name1>.
+%
+\def\psTwinSlide#1#2#3{%
+	\begin{center}\mbox{}%
+		\def\psTitle{#3\relax}\def\psRef{\relax}%
+		\ifx\psTitle\psRef
+%%			\typeout{no title for #1}%
+		\else
+			{\footnotesize\hfil #3\hfil}\bigskip
+		\fi
+		\hbox{%
+			\psfig{figure=#1.ps,%
+				width=\psHalfWidth}%
+			\hfill
+			\psfig{figure=#2.ps,%
+				width=\psHalfWidth}%
+		}%
+	\end{center}
+}
+\def\skipToSlide{\vskip 24pt minus 12pt}
+\def\vfilll{\vskip 0pt plus 1filll}
+
+
+%
+%	\SlidePar{par-title}
+%
+%	typeset header of paragraph for slides
+%
+\newcommand{\SlidePar}[1]{\underline{\bf\strut #1}}
+
+
+%
+%	pastedFigure{label}[height]{caption}
+%
+%	reserve space for a figure,
+%	which will be pasted into the document lateron.
+%
+%	The square brackets with `height' are optionally
+%
+\def\pastedFigure#1{%
+	\@ifnextchar[{\@@pastedFigure{#1}}%
+			{\@@pastedFigure{#1}[\pastedFigureHeight]}%
+}
+\def\pastedFigureHeight{10cm}
+%
+\def\@@pastedFigure#1[#2]#3{%
+	\begin{figure}%
+	\begin{center}\mbox{}%
+		\def\fig@h{#2}\def\fig@fil{\hfill}%
+		\hrule
+		\ifx\fig@h\fig@fil
+			#2
+		\else
+			\vspace{#2}%
+		\fi
+		\hrule
+		\caption{\protect\small #3}%
+		\label{#1}%
+	\end{center}%
+	\end{figure}
+}
+
+
+
+%
+%	\texFigure{file-name}[unitlength]{caption}
+%
+%	places a \LaTeX picture environment definition in <file-name>.tex
+%	inside a figure environment.
+%	Before the picture is loaded the \unitlength will be set to the
+%	provided value.
+%	The figure always gets the provided <caption>, and may be referenced
+%	by its <file-name>.
+%
+%	The square brackets with `unitlength' are optionally
+%
+
+\def\texFigure		{\let\psAction@\@texFigure\let\@FigBox\relax \@psAction}
+\def\texFramedFigure	{\let\psAction@\@texFigure\let\@FigBox\fbox  \@psAction}
+
+\def\@texFigure#1{\@ifnextchar[{\@@texFigure{#1}}{\@@texFigure{#1}[]}}
+%
+\def\@@texFigure#1[#2]#3{%
+	\@BgnFig\begin{center}\mbox{}%
+		\def\uLenOpt{#2}\def\uLenOptEmpty{}%
+		\ifx\uLenOpt\uLenOptEmpty
+		\else
+			\unitlength=#2\relax
+		\fi
+		\input{#1}%
+		\psCaption{#1}{#3}%
+	\end{center}\@EndFig
+}
+
+%
+%	myTable.sty	Ho, 19.Mar.'90				LaTeX 2.09
+%			Ho, 26.Mar.'90
+%			Ho, 30.Mar.'90
+%			Ho, 14.Sep.'90
+%			Ho, 15.Jan.'91
+%			Ho, 16.Jan.'91
+%			Ho, 04.Feb.'91
+%			Ho, 11.Feb.'91
+%			Ho, 18.Feb.'91
+%			Ho, 07.Apr.'91
+%			Ho, 03.Jun.'91
+%			Ho, 04.Sep.'91	fixed caption font size
+%			Ho, 05.Oct.'91	fixed caption font size bug
+%			Ho, 10.Oct.'91	added \begin{MathTable*}
+%			Ho, 08.Dec.'91	removed math symbols now in myMath.sty
+%			Ho, 28.Jan.'92	added \begin{myArray}
+%			Ho, 13.Feb.'92	added \begin{myTABLE}
+%
+%	private table encapsulations
+%{
+
+
+%
+%	\begin{MathTable}
+%		lhs & rel & rhs & qual & comment \\
+%	\end{MathTable}
+%
+%	This environment hides the definition of 5-column array environment.
+%	It should be used to build a table describing one of the GA/ES tupels
+%	or to build even eqnarrays.
+%
+
+\newcount\@MTcnt
+
+\def\myTableStretch{1.2}
+\newenvironment{MathTable*}%
+{%
+	\let\arraystretch=\myTableStretch
+	\begin{MathTable}
+}%
+{%
+	\end{MathTable}
+}
+\newenvironment{MathTable}%
+{%
+	\iffalse 
+		\abovedisplayskip=\parskip
+		\belowdisplayskip=\parskip
+		\abovedisplayshortskip=.5\parskip
+		\belowdisplayshortskip=.5\parskip
+	\fi
+	$$
+	\refstepcounter{equation}
+	\@eqnswtrue			% recycle \eqnarray-utilities
+	\global\@MTcnt\z@\let\\=\@MTcr
+	\vcenter\bgroup\openup2pt
+		\let\par=\relax		% ignore \par
+		\tabskip\@centering
+		\halign to \displaywidth\bgroup
+				$\displaystyle{##}$\hfil\tabskip\z@ &
+			\global\@MTcnt\@ne \hskip 2\arraycolsep
+				\hfil$\displaystyle{##}$\hfil\tabskip\z@ &
+			\global\@MTcnt\tw@ \hskip 2\arraycolsep
+				$\displaystyle{##}$\hfil\tabskip\z@ &
+			\global\@MTcnt 3   \hskip 2\arraycolsep
+				$\displaystyle{##}$\hfil\tabskip\z@ &
+			\global\@MTcnt 4   \hskip 2\arraycolsep
+				$\displaystyle{##}$\hfil\tabskip\@centering
+			\cr
+}%
+{%
+			\ifnum\@MTcnt=\@ne \else \@MTcr \fi
+		\egroup
+	\egroup
+	\if@eqnsw \llap{\@eqnnum}\stepcounter{equation}\fi
+	$$
+	\global\advance\c@equation\m@ne
+	\global\@ignoretrue
+}
+
+\def\@MTcr{%
+	\ifcase\@MTcnt	\def\@tempa{& & & &}
+	\or		\def\@tempa{& & &}
+	\or		\def\@tempa{& &}
+	\or		\def\@tempa{&}
+	\else		\let\@tempa\relax \fi
+	\@tempa\global\@MTcnt\@ne \cr
+}
+
+
+
+%
+%	\begin{myTable}{column-layout}{label}{caption}
+%		table data
+%	\end{myTable}
+%
+%	place a tabular-environment into the current text, let it float
+%	if appropriate.
+%
+\def\@BgnTbl{\if@twocolumn \begin{table*}[hbt]\else \begin{table}[hbt]\fi}
+\def\@EndTbl{\if@twocolumn \end{table*}\else \end{table}\fi}
+
+%
+%	\begin{myTABLE}{label}{caption}
+%		table data
+%	\end{myTable}
+%
+%	open a floating table environment
+%
+\newenvironment{myTABLE}[2]{%
+	\@BgnTbl\begin{center}\mbox{}
+		\def\myTableLabel{#1}
+		\def\myTableCaption{#2}
+}%
+{%
+		\myCaption{\myTableLabel}{\myTableCaption}
+	\end{center}\@EndTbl
+}%
+
+\newenvironment{myTable}[3]{%
+	\begin{myTABLE}{#2}{#3}
+		\begin{tabular}{#1}
+}%
+{%
+		\end{tabular}%
+	\end{myTABLE}
+}%
+
+
+%
+%	\begin{myArray}{column-layout}{label}{caption}
+%		table data
+%	\end{myArray}
+%
+%	place an array-environment into the current text, let it float
+%	if appropriate.
+%
+\newenvironment{myArray}[3]{%
+	\begin{myTABLE}{#2}{#3}
+		\abovedisplayskip=0pt
+		\abovedisplayshortskip=0pt
+		\belowdisplayskip=0pt
+		\abovedisplayshortskip=0pt
+		\belowdisplayshortskip=0pt
+		$$
+		\begin{array}{#1}
+}%
+{%
+		\end{array}%
+		$$
+	\end{myTABLE}
+}%
+
+
+\def\myCaption#1#2{%
+		\let\@psCaptionSize=\psCaptionSize
+%
+		\begingroup
+		\def\psFigLbl{#2}\def\psFigLblEmpty{}%
+		\ifx\psFigLbl\psFigLblEmpty
+		\else
+			\caption{#2}%
+			\label{#1}%
+		\fi
+		\endgroup
+}
+\def\psCaptionSize{%\footnotesize	% caption font size
+	\ifcase\@ptsize	\small		% with 10pt
+	\or		\small		% with 11pt
+	\else		\footnotesize	% with 12pt
+	\fi
+}
+\let\@psCaptionSize=\relax		% standard size for \listoffigures
+\let\fnum@table@old=\fnum@table
+\def\fnum@table{\@psCaptionSize\fnum@table@old}
+
+
+%
+%	myList.sty	Ho, 14.Feb.'91				LaTeX 2.09
+%
+%	private variants of standard LaTeX lists
+%{
+
+
+%
+%	\begin{myList}{listname}{topsep}{parsep}{itemsep}
+%
+%		\item	...
+%
+%	\end{myList}
+%
+%	base construct to realize re-defined standard lists
+%	the seperation measures may be also given as \default.
+%
+\newenvironment{myList}[4]{%
+	\edef\@myList{#1}%
+%
+%%	\def\@myList{itemize}%
+%%	\ifx\@myList\@myList
+%%	\else
+%%		\def\@myList{enumerate}%
+%%		\ifx\@myList\@myList
+%%		\else
+%%			\errhelp{The environment myList redefines the
+%%				standard lists `itemize' and `enumerate' only}
+%%			\errmessage{invalid list name encountered,
+%%				`itemize' assumed}
+%%			\def\@myList{itemize}
+%%		\fi
+%%	\fi
+%
+	\edef\@@myList{#2}%
+	\ifx\@@myList\relax
+	\else
+		\setlength{\topsep}{\@@myList}
+	\fi
+%
+	\edef\@@myList{#3}%
+	\ifx\@@myList\relax
+	\else
+		\setlength{\parsep}{\@@myList}
+	\fi
+%
+	\edef\@@myList{#4}%
+	\ifx\@@myList\relax
+	\else
+		\setlength{\itemsep}{\@@myList}
+	\fi
+%
+	\begin{\@myList}
+}%
+{%
+	\end{\@myList}
+}%
+\newcommand{\default}{}
+
+
+%
+%	\begin{Itemize}
+%
+%		\item	...
+%
+%	\end{Itemize}
+%
+%	single spaced, itemized list
+%
+\newenvironment{Itemize}{%
+	\begin{myList}{itemize}{\parskip}{0pt}{0pt}
+}%
+{%
+	\end{myList}
+}%
+
+
+%
+%	\begin{Enumerate}
+%
+%		\item	...
+%
+%	\end{Enumerate}
+%
+%	single spaced, enumerated list
+%
+\newenvironment{Enumerate}{%
+	\begin{myList}{enumerate}{\parskip}{0pt}{0pt}
+}%
+{%
+	\end{myList}
+}%
+
+
+%
+%	\begin{enumerate}
+%
+%		\item	...
+%
+%	\end{enumerate}
+%
+%	own enumeration style (1) ... (2) ...
+%	which is a modification of LaTeX's enumerate.
+%
+\def\enumerate{%
+	\def\labelEnumi{(\theenumi)}%
+	\def\labelEnumii{(\theenumii)}%
+	\def\labelEnumiii{(\theenumiii)}%
+	\def\labelEnumiv{(\theenumiv)}%
+%
+	\ifnum \@enumdepth > 3
+		\@toodeep
+	\else
+		\advance\@enumdepth \@ne
+		\edef\@enumctr{\romannumeral\the\@enumdepth}%
+		\list{%
+			\csname labelEnum\@enumctr\endcsname
+		}{%
+			\usecounter{enum\@enumctr}%
+			\def\makelabel##1{\hss\llap{##1}}%
+		}%
+	\fi
+}
+\def\endenumerate{%
+	\endlist
+	\@ignoretrue
+}
+
+
+%}

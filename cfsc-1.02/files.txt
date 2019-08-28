@@ -1,0 +1,440 @@
+FILES.TXT: A summary of Subroutines and #include-s in all 14 CFS-C files.
+
+
+******** CFSC.C ********   The Main Entry Point
+
+	main		the main entry for the system.
+	DoCmd		execute a user command.
+	ExecCmds	read and execute commands from a file.
+	Classify	the major-cycle loop.		
+	StartStp,EndStep	initialize and clean-up before/after a major-cycle step.
+	Init_CFS,InitVT 	initialize the system.
+	InitCfLs	initialize the classifier list.
+
+	LoadSys 	load entire system from a file.
+	ReadVars	read in core system variables
+	LinkCMs 	link classifiers and messages after a "re-start" LoadSys().
+	GetMsgAd	get address for message with specified Msg_Id.
+	GetCfAd 	get address for classifier with specified Cf_Id.
+
+	SaveSys 	write entire system state to file for use by LoadSys().
+	WrtCons 	write core system constants
+	ReadEffs	read effector conditions, names, etc, and store in effector nodes (EffNode's).
+	WrtEffs 	write EffNode contents in format ready to be read by ReadEffs().
+
+	InitDate	initialize the RunDate, RunTime and SaveSyFN variables.
+
+#include	"compiler.h"		/* set a switch indicating compiler/machine being used */
+#include <stdio.h>
+#if  ( LATTICEC || CBELLMTS || SUN3 || MPWC )
+#include	<ctype.h>
+#endif
+#if  MACAZTEC
+#include	"QuickDraw.H"			/* For using QuickDraw routines */
+#include	"Font.H"				/* For setting font type and char. size */
+#endif
+#include	"utility.h" 			/* General purpose constants */
+#include	"usercmd.ext"			/* some stuff for processing user commands */
+#include	"cfsio.ext" 			/* some I/O declarations */
+#include	"core.ext"				/* extern's for major data structures */ 
+#include	"dsclearn.ext"			/* Used in StartStp() to reset vars */
+
+
+******** BBLEARN.C ********
+
+	UpdCfStr	Update classifier strength, using Bucket Brigade.
+	ApplyBB 	Apply bucket brigade (called by UpdCfStr).
+    ApplyBB1    Special version of bucket brigade--see comments.
+    GetDMCnt	Get count of detector messages that match classifier.
+	PaySuppl	pay suppliers of input messages used to produce a new message.
+	DemoBB		demo-display bucket-brigade action.
+
+
+#include	"compiler.h"
+#include	<math.h>
+#if ( LATTICEC || CBELLMTS || SUN3 || MPWC )
+#include	<ctype.h>
+#endif
+#include	"utility.h"
+#include	"core.ext"
+#include	"cfops.ext"
+#include	"dsclearn.ext"
+extern	unsigned int DemoLev;
+extern	char			*GOutBuff;
+float	URand01();
+VOID	UpdCfStr(), ApplyBB(), ApplyBB1(), GetDMCnt(), DemoBB();
+float	PaySuppl();
+
+
+********  CFMSGIO.C  ********
+
+LoadMsgs  open file, load messages from it, close file (if closeable).
+ReadMsgs  load messages from opened file.
+StoreMsg  store message from buffer into a given MsgNode structure.
+EmptyML   empty the specified message list.
+GtNxtMNd  get pointer to next available MsgNode in specified list, increment appropriate counts.
+
+DsplMsgs  open file/device, write current messages to it, close file/device (if closeable).
+WrtMsgs   write current messages to an opened file/device.
+PutMNd	  write MsgNode to buffer in specified format.
+
+LoadCfs   open file, load classifiers from it, close file (if closeable).
+ReadCfs   read classifiers from open file and call StoreCf for each one.
+StoreCf   store classifier as specified in buffer in a given CfNode.
+AddCf     Add classifier to classifier list.
+
+DsplCfs   Display classifiers on some file/device
+WrtCfs    write to some opened file/device.
+PutCNd	  write CfNode contents to specified buffer in specified format.
+
+
+#include	"compiler.h"
+#include	<math.h>
+#include	<stdio.h>
+#include	"utility.h"
+#include	"cfsio.ext"
+#include	"core.ext"
+#include	"cfops.ext"
+
+
+******** CFSOPS.C ********
+
+	GetCOpCd	given code for operator, find its node. 
+	GetCOpNa	given name of operator, find its node.
+
+	COpPASS 	the standard pass-through operator.
+	COpAND		logical AND two messages.
+	COpOR		logical OR	two messages.
+	COpXOR		logical exclusive-OR two messages.
+	COpADD		add two messages.			(not implemented yet)
+	COpADD1 	add 1 to a message.
+	COpSUB		subtract two messages.		(not implemented yet)
+	COpSUB1 	subtract 1 from a message.
+
+#include	"compiler.h"
+#if ( LATTICEC || CBELLMTS || SUN3 || MPWC )
+#include	<ctype.h>
+#endif
+#include	"utility.h"
+#include	"core.ext"
+#include	"cfops.def"
+extern	char *GOutBuff;
+
+
+******** CFSIO.C ********
+
+	GetFILE	( FileName, default, How )		return FILE pointer or NULL for error.	
+	CloseFILE ( FileName, default, fileptr )	close the file (NOT stdin,stdout,stderr, or console.)
+	ReadS( buffer, bufflen, source, readlen )	Read a line from 'source' into 'buffer'.
+	WriteStd( String )							write contents of String via printf to stdout.
+												If LogFlg is ON, also write it to the LogFILE device.
+	WrtPrompt( String ) 						write prompt to appropriate field/line.
+	WriteS( String, fileptr )					write contents of String to designated file/device.
+												If LogFlg is ON, also write it to the LogFILE device.
+	WriteGen( String )							Write to 'geneology' file
+
+
+#include	"compiler.h"
+#if MPWC
+#define __SEG__ CFSCREAD
+#endif
+#include	<stdio.h>
+#if ( LATTICEC || CBELLMTS || SUN3	|| MPWC )
+#include	<ctype.h>
+#endif
+#if LATTICEC
+#include	"dos.h"
+extern short _OSERR;
+#endif
+#if MPWC
+#include <Files.h>
+#endif
+#include	"utility.h" 
+#include	"cfsio.def"
+extern short int EchoFlg;
+
+
+
+******** CFSUTIL.C ********
+
+	SetDsCfL	Set DsCfLst control variable.
+	InDsCfL     Test to see if classifier id is in list of ids.
+	InSrtCf 	Insert-sort classifier into strength-sorted classifier list.
+	ReSrtCfs	Resort the classifier list.
+    FindHighLowStrCf() Find Hi/Low strength classifiers
+
+	IsMessage ( String )	-> TRUE if String is all 0's and 1's
+	IsCondAct ( String )	-> TRUE if String is all 0, 1, or #'s.
+
+	AMsgtoB 	Ascii Msg to Binary form
+	BMsgtoA 	Binary Msg to ascii
+	ACndtoB 	Ascii Condition to Binary form
+	BCndtoA 	Binary Condition to ascii
+	AActtoB 	Ascii Action to Binary form
+	BActtoA 	Binary action to ascii
+
+	Loci2Int ( ascii-loci, len )		returns integer form of message-loci
+	Int2Loci ( int, start-loci, len )	convert int to message-string form (ascii).
+
+	CalcSpec	Calculate the Specificity for a classifier.
+
+	Mod_Msg |- modify msgs/cfs -- not implemented.
+	Mod_Cf	|
+
+#include	"compiler.h"
+#include	<math.h>
+#include	<stdio.h>
+#include	"utility.h" 
+#include	"cfsio.ext" 	/* Input/output control variables */
+#include	"core.ext"		/* Declare MsnNode's, CfNode's, etc. */ 
+#include	"cfops.ext" 	/* Declare	classifier operators */
+
+
+******** CORE.C ********
+
+The subroutines in this file carry out all the steps of the
+CFS-C classifier system "major-cycle" with the exception of
+(a) the bucket-brigade	(see the file BBLEARN.C), and
+(b) the discovery algorithm (see the file DSCLEARN.C).
+
+
+This files contains these subroutines:
+	RdDetect	append messages from detectors to current message-list. 
+	GenCands	the 'inner-loop': generates MtchNode's and Candidate classifier list.
+    GenCand     mark one classifier as a candidate.
+	GCndsDem	demo-display of candidate classifiers and match nodes.
+	GenNMsgs	calculate bids, pick winners, generate new messages, link to effectors.
+				(Linking is done by ChkEftrs, a function in ENVIRON.C ).
+	PostCfMs	post classifiers's new messages (after it wins bidding competition).
+	MakeNMsg	make a new message and store in NewMsgs list.
+	CalcBid 	calculate bid for a classifier.
+	GenBehav	Activate 'matched' effectors and change the environment accordingly.
+	ChkEftrs	Link one message to all effectors it matches.
+
+
+#include	"compiler.h"
+#include	<math.h>
+#if ( LATTICEC || CBELLMTS || SUN3 || MPWC )
+#include	<ctype.h>
+#endif
+#include	"utility.h"
+#include	"core.def"
+#include	"cfops.ext"
+extern unsigned int DemoLev;
+extern short int	ClampFlg;
+extern char 		*GInBuff, *GOutBuff;
+
+
+******** DISPLAY.C ********
+
+	Display 	main entry point for DISPLAY command.
+	DsplVar 	display a variable.
+	AuDisplay	main entry for auto-display mechanism.
+	DsplVars	| display selected variables.
+	PrnVars 	|
+	WrtVars 	|
+    DsplSets    Display special settings, constants, etc.
+	Help		The HELP command text.
+
+#include	"compiler.h"
+#include	<math.h>
+#include	<stdio.h>
+#if ( LATTICEC || CBELLMTS || SUN3 || MPWC )
+#include	<ctype.h>
+#endif
+#include	"utility.h"
+#include	"core.ext"
+#include	"cfsio.ext"
+#include	"usercmd.ext"
+extern char *StpTok2(); 	/* UTILITY.C version of a microsoft c library function */
+extern unsigned int ADCycInt;
+
+
+******** DSCLEARN.C ********
+
+	Discover	The main entry point for the CFS-C discovery mechanisms.
+    ReCalcFitness Recalculate ``fitness'' values for use by discovery algorithms.
+	PckPrnts	pick parent classifiers by strength
+	PkPrPool	pick pool of classifiers for strong parents
+	PkBPrnts	pick high bidding cfs for parents
+    PkBPPool	Pick Bidding Parents, i.e., classifier that bid this step.
+
+	RplcCfs 	replace classifiers with new classifiers produced this step
+	PckRPool	pick pool of classifiers from which those to be replaced will be picked.
+	PckRndRp	pick replaceable pool using uniform random distribution
+	PckBiaRp	pick replaceable pool using inverted strength biased distribution
+	DemoRpl 	demonstration display of replacable pool of classifiers
+	PckRCf		pick classifier from pool of replacable classifiers
+	GenTypeM	return similarity measure for genotypes of two classifiers
+	WrtNCf		write NEW classifier in a buffer.
+
+#include	"compiler.h"
+#include	<math.h>
+#include	<stdio.h>
+#if ( LATTICEC || CBELLMTS || SUN3 || MPWC )
+#include	<ctype.h>
+#endif
+#include	"utility.h"
+#include	"core.ext"
+#include	"cfops.ext"
+#include	"dsclearn.def"
+extern	unsigned int	DemoLev;
+extern	short	 int	GenFlg;
+extern	char			*GOutBuff;
+
+
+******** DSCOPS.C ********
+
+	CDMsgs		cover detector messages
+	PkPrntCD	pick parent for CDMsgs
+	CfMtchS 	get 'match-score' for (MATCH only) classifier, message.
+	CndMtchS	get 'match-score' for (MATCH only) condition, classifier
+	GnrlzCf 	generalize (minimally) classifier so it matches message
+    CDMGeo      Modify classifier to cover detector message, George's algorithm.
+				Change condition specific (0,1) bits to make conditions match message.
+
+	DscBkgGA	dicovery background genetic algorithm
+	CrFullCf	single cross in a full classifier.
+	DCrFullCf	"Double" Crossover of classifier considered as one long string.
+	CrCfStrg	Cross one string-part (condition or action) of two classifiers.
+	RCrossSt	randomly cross to strings.
+	ReprodCf	Reproduce (copy) a classifier.
+
+	Mutate      mutate a (new) classifier.
+	MutatCA 	mutate one condition/action string.
+
+#include	"compiler.h"
+#include	<math.h>
+#if ( LATTICEC || CBELLMTS || SUN3 || MPWC )
+#include	<ctype.h>
+#endif
+#include	"utility.h"
+#include	"core.ext"
+#include	"cfops.ext"
+#include	"dsclearn.ext"
+extern	short	int 	GenFlg;
+extern	unsigned int	DemoLev;
+extern	char			*GOutBuff;
+
+
+******** DSCOPS2.C ********
+
+	DscCSS		couple stage setting classifiers
+    PckCC       Pick candidates for coupling
+	DscACPC 	asynchronous coupling of profitable classifiers
+	DscTLB		trigger on Low average Bid operator
+	DscCEff 	"cover effectors" operator.
+    SpclzNCf		Specialize the condition part of a new classifier.
+
+#include	"compiler.h"
+#include	<math.h>
+#if ( LATTICEC || CBELLMTS || SUN3 || MPWC )
+#include	<ctype.h>
+#endif
+#include	"utility.h"
+#include	"core.ext"
+#include	"cfops.ext"
+#include	"dsclearn.ext"
+extern	short	 int	GenFlg;
+extern	unsigned int	DemoLev;
+extern	char			*GOutBuff;
+
+
+******** GRANDCFS.C ********
+
+	GnRndCfs	generate random list of classifiers (process user's GRCFS command).
+	GnRndCf 	generate 1 random cf.
+	GnRndCA 	generate a random condition/action string and type (match or not/cf action-type).
+	GtCOpRnd	generate a random cf operator (action type)
+
+#include	"compiler.h"
+#include	<math.h>
+#if ( LATTICEC || CBELLMTS || SUN3 || MPWC )
+#include	<ctype.h>
+#endif
+#include	"utility.h"
+#include	"core.ext"
+#include	"cfops.ext"
+extern	unsigned int	DemoLev;
+extern	char			*GOutBuff;
+
+
+******** USERCMD.C ********
+
+The subroutines in this file prompt user for commands, check the command
+name against list of valid command names, and return integer
+command code associated with the command (or with illegal command):
+	GUserCmd	prompt user for command, check it out, get parameters into buffer.
+	GetCmdCd	test command name and return code for command (or ERROR)
+This file also subroutines to process SET commands:
+	Set 		entry point for SET command.
+	SetVar		set a specified variable to a specified value.
+	FndRTVar	find node for variable being set in CVTable (see USERCMD.DEF).
+    SetMuPr 	Set MuPrTot variable, and recalculate poisson distribution.
+    SetDMShare  Set DMShare variablie, recalculate DMDscnt value.
+	SetLog		set logging.
+	SetGen		set recording of geneology.
+	SetADInt	set auto-display interval variable.
+	SetMLL		set message-list limit (NmIMsgMx and NmDMsgMx) variables.
+    SetDCfL 	Setup Display Classifier List--list of classifiers to display.
+	InDsCfL     see if cf id is in list of ids.
+
+#include "compiler.h"
+#include <math.h>
+#include <stdio.h>
+#if ( LATTICEC || CBELLMTS || SUN3 || MPWC )
+#include <ctype.h>
+#endif
+#include "utility.h"
+#include "core.ext"
+#include "cfsio.ext"
+#include "usercmd.def"
+#include "dsclearn.h"
+
+
+******** UTILITY.C ********
+
+The subroutines in this file implement general purpose utilities
+that may or may not be included in the various
+C compiler packages available on various machines.
+String manipulation functions:
+	IsInt ( string ) IsUInt ( string ) IsFloat ( string )  check type of ascii forms of values
+	GetUInt ( charptr, &var, default, endchars, &err ) | Get value of type indicated,
+	GetInt	( charptr, &var, default, endchars, &err ) | Search start at charptr until get endchars or	\0
+	GetFloat( charptr, &var, default, endchars, &err ) | Store it in &var (use default if none found or err).
+	GetSInt ( etc )
+    GetLInt ( etc )
+		The above 5 functions all set &err TRUE if string up to endchars is illegal type.
+		Also, they all return char pointer to character just beyond endchar found, or to \0 if that was found.
+	CopyChar( destin, source, maxchar )
+	SpacStrg( destin, source, blocksize ) - copy string and insert spaces.
+	StpTok1 ( ... ) |				
+	StpTok2 ( ... ) |- Two ways to strip a token from a buffer.
+	Str2Char( source-string, dest-char-array, len )
+	EndTok			test for end-of-token character.
+Some math functions for C's that don't provide them:
+	Round() 
+	ceil()
+	floor()
+Some pseudo-Random number generators:
+	Rand01 ( )					return sample from uniform 0..1 random distribution 
+    InitRannd()
+	UNoise( MaxDelta )			return random noise around 0, in specified range.
+See UTILITY.DEF for
+	URandN	( upperbound )		return random draw from 0 to upperbound.
+	URandF	( UpperFloat )		return float between 0 to UpperFloat
+Date routines:
+    GetDate Get it from system
+    GetCFSCTime Get it from system
+
+#include	"compiler.h"
+#include	<math.h>
+#if ( LATTICEC || CBELLMTS || SUN3 || MPWC )
+#include	<ctype.h>
+#endif
+#include    <stdio.h>       /* used by URand01() for opening a test file */
+
+#include	"utility.h" 
+#include	"core.h"
+
+

@@ -1,0 +1,84 @@
+program test2dom;
+
+const maxpop       = 100;
+      maxstring    = 30;
+      version      = 'v1.0';
+      maxploidy    = 2;
+
+type  allele       = -1..1; { triallelic scheme (-1, 0, 1)  }
+      chromosome   = array[1..maxstring] of allele; { trits }
+      chrompack    = array[1..maxploidy] of chromosome;
+      parentid     = record xsite, parent:integer end;
+      idpack       = array[1..maxploidy] of parentid;
+      individual   = record
+                       chrom:chrompack;   { pack of chroms  }
+                       echrom:chromosome; { expressed chrom }
+                       x, objective, fitness:real;
+                       chromid:idpack; { parent info }
+                     end;
+      population   = array[1..maxpop] of individual;
+
+var   oldpop, newpop:population;
+      popsize, lchrom, gen, maxgen:integer; { integer globals }
+      pcross, pmutation, sumfitness:real;   { Real globals    }
+      nmutation, ncross:integer;            { Integer stats   }
+      avg, max, min:real;                   { Real stats      }
+      i,j, j1:integer;
+{$I utility.sga}
+{$I random.apb}
+{$I operator.dom}
+{$I interfac.dom}
+{$I generate.dom}
+
+procedure writechrom(var out:text; chrom:chromosome; lchrom:integer);
+{ Write a chromosome as a string of 1's (true's) and 0's (false's) }
+var j:integer; ch:char;
+begin
+ for j := lchrom downto 1 do
+  begin
+   case chrom[j] of
+    -1: ch := '%';
+     0: ch := '0';
+     1: ch := '1';
+   end;
+   write(out,ch);
+  end;
+end;
+
+begin
+ randomize;
+ write('Enter lchrom> '); readln(lchrom);
+ write('Enter pmutation> '); readln(pmutation);
+ write('Enter pcross> '); readln(pcross);
+ popsize := 2; nmutation := 0; ncross := 0;
+ writeln('First Individual');
+ for j1 := 1 to 2 do for j := 1 to lchrom do begin
+   write('Enter (-1,0,1) > '); readln(oldpop[1].chrom[j1,j]);
+  end;
+ writeln('Second Individual');
+ for j1 := 1 to 2 do for j := 1 to lchrom do begin
+   write('Enter (-1,0,1) > '); readln(oldpop[2].chrom[j1,j]);
+  end;
+ generation;
+  for i := 1 to 2 do begin
+    writeln(con,'Individual ',i);
+      for j := 1 to 2 do begin
+      write(con,'Chrom ',j:2,' : ');
+      writechrom(con, oldpop[i].chrom[j], lchrom);
+      writeln(con);
+     end; end;
+  for i := 1 to 2 do begin
+    writeln(con,'Individual ',i);
+      for j := 1 to 2 do begin
+      write(con,'Chrom ',j:2,' : ');
+      writechrom(con, newpop[i].chrom[j], lchrom);
+      with newpop[i].chromid[j] do write(con,' ',parent,' ',xsite);
+      writeln(con);
+     end;
+    write(con,'Express  : ');
+    writechrom(con, newpop[i].echrom, lchrom);
+    writeln(con); writeln(con);
+  end;
+  writeln('nmutation, ncross: ',nmutation, ncross);
+end.
+

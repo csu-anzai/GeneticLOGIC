@@ -1,0 +1,69 @@
+%
+%	GENEsYs-rep.tex		Ba, 22 feb 91		LaTeX 2.09
+%				Ba, 15 jun 92
+%
+%	The report file and its use as well as the other files.
+%{
+
+\section{The Report}\label{genesis-rep}
+
+A report describing the performance of the \GA\ is automatically
+produced by the ``report'' program after a run of the \GA.
+The report summarizes the mean,  variance and  range of several 
+measurements, including online performance, offline performance, 
+the average performance  of  the current population, and the 
+current best value\footnote{%
+	I.e.~the best value of the actual generation. 
+	In \Ogen\ the all--time best value was reported, 
+	which seems not appropriate, since we are interested in informations 
+	about the actual population.}.  
+Online performance is the mean of all  evaluations.   
+Offline  performance  is  the  mean  of  the current best evaluations  
+(see~\cite{Jon80a}).  
+\Vrb{Conv} indicates the number of positions in which at least  $95\%$  of
+the  population  has  the  same value.  
+\Vrb{Lost} indicates the number of positions in which $100\%$ of the 
+population has  the same  value.  
+\Vrb{Bias} indicates the average percentage of the most prominent value in 
+each position.  
+That is, a  bias  of $0.75$  means that, on average, each position has 
+converged to $75\%\ 0$'s or $75\%\ 1$'s.  
+The minimum bias is $0.50$.
+If adaptive mutation rates have been selected, the file additionally contains
+the average, maximum, and minimum mutation rate contained in the population.
+A typical \File{rpt}-file looks like the following:
+
+\begin{scriptsize}
+\begin{center}
+\begin{tabular}{rrcccrrrrr}
+\ifUS
+	\multicolumn{2}{c}{{\sc Mean}}&&&&&&&&\\
+Gens & Trials &Lost &Conv  &Bias   &Online  & Offline   &  Best  &  Average &  Worst \\
+   0   &  50  &  0  &  0 &0.568 &2.74e+01 &7.28e+00 &2.00e+00 &2.74e+01 &5.64e+01	\\
+   3   & 200  &  0  &  0 &0.607 &2.06e+01 &2.77e+00 &6.93e-01 &1.41e+01 &3.21e+01	\\
+   7   & 400  &  0  &  1 &0.658 &1.51e+01 &1.73e+00 &6.93e-01 &6.79e+00 &1.92e+01	\\
+  11   & 600  &  2  &  3 &0.681 &1.15e+01 &1.35e+00 &1.89e-01 &3.52e+00 &1.75e+01	\\
+  15   & 800  &  2  &  5 &0.701 &9.32e+00 &1.05e+00 &1.60e-01 &2.05e+00 &8.36e+00	\\
+  19   &1000  &  3  &  6 &0.723 &7.77e+00 &8.76e-01 &1.57e-01 &1.18e+00 &3.22e+00	\\
+\else
+ {\sc Mean}&&&&&&&&&\\
+Gens & Trials &Lost &Conv  &Bias   &Online  & Offline   &  Best  &  Average &  Worst \\
+   0   &  50  &  0  &  0 &0.568 &2.746e+01 &7.289e+00 &2.002e+00 &2.746e+01 &5.644e+01	\\
+   3   & 200  &  0  &  0 &0.607 &2.065e+01 &2.771e+00 &6.934e-01 &1.418e+01 &3.217e+01	\\
+   7   & 400  &  0  &  1 &0.658 &1.510e+01 &1.732e+00 &6.934e-01 &6.791e+00 &1.925e+01	\\
+  11   & 600  &  2  &  3 &0.681 &1.156e+01 &1.350e+00 &1.894e-01 &3.525e+00 &1.758e+01	\\
+  15   & 800  &  2  &  5 &0.701 &9.326e+00 &1.056e+00 &1.602e-01 &2.053e+00 &8.365e+00	\\
+  19   &1000  &  3  &  6 &0.723 &7.775e+00 &8.765e-01 &1.572e-01 &1.188e+00 &3.222e+00	\\
+\fi
+\end{tabular}
+\end{center}
+\end{scriptsize}
+
+In this file, only average values over the given number of experiments are
+collected.
+If more than one experiment was performed, the variances of these measures 
+are also calculated and collected in a file named \File{var}.
+The structure of the file is completely identical to the structure of the
+\File{rep}-file.
+
+%}

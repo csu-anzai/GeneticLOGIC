@@ -1,0 +1,122 @@
+head     1.5;
+branch   ;
+access   ;
+symbols  ;
+locks    ; strict;
+comment  @ * @;
+
+
+1.5
+date     91.02.01.13.39.08;  author whitley;  state Exp;
+branches ;
+next     1.4;
+
+1.4
+date     90.07.26.21.53.59;  author whitley;  state Exp;
+branches ;
+next     1.3;
+
+1.3
+date     90.07.26.21.48.03;  author whitley;  state Exp;
+branches ;
+next     1.2;
+
+1.2
+date     90.07.26.07.30.31;  author whitley;  state Exp;
+branches ;
+next     1.1;
+
+1.1
+date     90.07.23.16.16.29;  author whitley;  state Exp;
+branches ;
+next     ;
+
+
+desc
+@@
+
+
+1.5
+log
+@copyright notice added.
+@
+text
+@
+/*************************************************************/
+/*                                                           */
+/*  Copyright (c) 1990                                       */
+/*  Darrell L. Whitley                                       */
+/*  Computer Science Department                              */
+/*  Colorado State University                                */
+/*                                                           */
+/*  Permission is hereby granted to copy all or any part of  */
+/*  this program for free distribution.   The author's name  */
+/*  and this copyright notice must be included in any copy.  */
+/*                                                           */
+/*************************************************************/
+/***************************************************/
+
+ extern int     PoolSize;
+ extern int     StringLength;
+ extern int     NumberTrials;
+ extern char    NodeFile[];
+ extern long    RandomSeed;
+ extern float   SelectionBias;
+ extern float   MutateRate; 
+ extern int     StatusInterval;
+ extern int     DumpInterval;
+ extern char    DumpBase[];
+ extern char    SeedPool[];
+ extern char    FinalPool[];
+ extern int     CurrentGeneration;
+ extern int     NumPop;     
+ extern int     SwapInterval;
+ extern int     SwapNumber;
+ extern int     Experiments;
+ extern float   CutOff;
+ extern int     SequenceFlag;
+
+/***************************************************/
+
+ extern POOLPTR Pool;
+@
+
+
+1.4
+log
+@just some cleanup.  (Tim Starkweather)
+@
+text
+@d1 13
+d34 1
+@
+
+
+1.3
+log
+@added Experiment and Cutoff.  (Tim Starkweather)
+@
+text
+@d19 1
+a19 1
+ extern int     Experiment;
+@
+
+
+1.2
+log
+@Added NumPop, SwapInterval, SwapNumber for option
+involving Subpopulations. (Tim Starkweather)
+@
+text
+@d19 2
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d16 3
+@

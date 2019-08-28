@@ -1,0 +1,25 @@
+
+      Experiments = 5
+     Total Trials = 2000
+  Population Size = 50
+ Structure Length = 30
+   Crossover Rate = 0.500000
+    Mutation Rate = 0.005000
+   Generation Gap = 1.000000
+   Scaling Window = -1
+  Report Interval = 200
+ Structures Saved = 10
+Max Gens w/o Eval = 2
+    Dump Interval = 10
+      Dumps Saved = 1
+          Options = Aclu
+      Random Seed = 3436473682
+     Maximum Bias = 0.990000
+  Max Convergence = 30
+   Conv Threshold = 0.750000
+DPE Time Constant = 20
+    Sigma Scaling = 2.000000
+--
+This is GArgv[0]...
+...and this GArgv[1].
+You can have up to 50 of these.

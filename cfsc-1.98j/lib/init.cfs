@@ -1,0 +1,182 @@
+; CFS-C runtime variable list.
+; First line should be NUM-VARS followed by the number of variables.
+; The rest should each contain a code (1..), and a variable name,
+; 3 flags (type=s,i,u,f,c; load=0,L),
+; and then for numerics (type s,i,u,f), a min and max,
+; or for char, an initial value.
+NUM-VARS 153
+1 AutoDspl / uL/ 0, USINTMAX
+2 ADCycInt / uL/ 0, USINTMAX
+3 ADCycFmt / uL/ 0, USINTMAX
+4 ADCMInt / uL/ 0, USINTMAX
+5 ADCMFmt / uL/ 0, USINTMAX
+6 ADDMInt / uL/ 0, USINTMAX
+7 ADDMFmt / uL/ 0, USINTMAX
+8 ADCfInt / uL/ 0, USINTMAX
+9 ADCfFmt / uL/ 0, USINTMAX
+10 ADEnvInt / uL/ 0, USINTMAX
+11 ADEnvFmt / uL/ 0, USINTMAX
+12 SaveInt   / uL/ 0, USINTMAX
+13 SaveFNum  / uL/ 0, USINTMAX
+14 ADVarInt  /  uL/ 0, USINTMAX
+15 ADVarFmt  / uL/ 0, USINTMAX
+;
+100  URndSd  / uL/ 0, USINTMAX
+101  DemoLev / uL/ 0, USINTMAX
+102  CycleStp / uL/ 0, USINTMAX
+103  ClampFlg / sL/ 0, 1
+104  DsplMsBl / sL/ 0, 1
+105  DsplCfBl / sL/ 0, 1
+106  DsCfLst / sL/ 0, 1
+;
+107  EchoFlg, echo / sL/ 0, 1
+;
+115  NmIMsgMx / uL/ 0, MSGLSTSZ
+116  NmDMsgMx / uL/ 0, MSGLSTSZ
+117  MsgIntDf / fL/ 0, BIGFLOAT
+118  DetMsgMn / uL/ 0, MSGLSTSZ
+119  NmCMsgs / uL/ 0, CFLSTSZ
+120  NmOMsgs / uL/ 0, MSGLSTSZ
+121  NmOMsgIn / uL/ 0, MSGLSTSZ
+122  NmIEMMx / uL/ 0, MSGLSTSZ
+123  NmIIMMx / uL/ 0, MSGLSTSZ
+;
+124  NmCfsMx / uL/ 0, CFLSTSZ
+125  NxtCfId / uL/ 0, CFLSTSZ
+126  NmCfs / uL/ 0, CFLSTSZ
+127  CfStrDf / fL/ 0, BIGFLOAT
+128  CfSuppDf / fL/ 0, BIGFLOAT
+129  CfStrMax / fL/ 0, BIGFLOAT
+130  CfStrMin / fL/ 0, BIGFLOAT
+131  CfBidMin / fL/ 0, BIGFLOAT
+;
+200  BidPow / fL/ 0, BIGFLOAT
+201  OneMPerC / uL/ 0, 1
+202  DelHall / uL/ 0, 1
+203  MxDupMsg / uL/ 0, MSGLSTSZ
+204  TotCfStr / fL/ 0, BIGFLOAT
+205  TotCfBR / fL/ 0, BIGFLOAT
+206  DetectRt / uL/ 0, USINTMAX
+207  EffectRt / uL/ 0, USINTMAX
+208  BBType / uL/ 0, USINTMAX
+;
+241  SysTreas / fL/ 0, BIGFLOAT
+242  SysRew / fL/ 0, BIGFLOAT
+243  FrPayDet / fL/ 0, 1.0
+244  Bid_k / fL/ 0, 1
+245  BRPow / fL/ 0, BIGFLOAT
+246  EBRPow / fL/ 0, BIGFLOAT
+247  BtCSB / fL/ 0, BIGFLOAT
+248  BtCMB  / fL/ 0, BIGFLOAT
+249  ShareRew / sL/ 0, 4
+250  AllPayBd / sL/ 0, 1
+251  SuppBid / sL/ 0, 2
+252  DMShare / fL/ 0, 1.0
+253  FrPayNEC/ fL/ 0, 1.0
+;
+301  HeadTax / fL/ 0, 1.0
+302  AHeadTax/ fL/ 0, 1000
+303  BidTax  / fL/ 0, 1.0
+304  PrdTaxMx / fL/ 0, 1.0
+305  PrdTaxPw / fL/ 0, 100
+306  FBidTax  / fL/ 0, 1.0
+;
+400 TOTDtMsg / uL/ 0, USINTMAX
+401 TOTMtch / uL/ 0, USINTMAX
+402 TOTNmBid / uL/ 0, USINTMAX
+403 TOTNmWin / uL/ 0, USINTMAX
+404 TOTCfPst / uL/ 0, USINTMAX
+405 TOTMsPrd / uL/ 0, USINTMAX
+406 TOTMsPst / uL/ 0, USINTMAX
+407 TOTEMtch / uL/ 0, USINTMAX
+408 TOTEAct / uL/ 0, USINTMAX
+409 TOTEAMsg / uL/ 0, USINTMAX
+410 TOTNmPRw / uL/ 0, USINTMAX
+411 TOTNmNRw / uL/ 0, USINTMAX
+412 TOTSyRwP / uL/ 0, USINTMAX
+413 TOTSyRwN / uL/ 0, USINTMAX
+;
+600 GRCFrMC / fL/ 0, 1.0
+601 GRCFrNSL / fL/ 0, 1.0
+;
+610 DscDemo / uL/ 0, USINTMAX
+;	
+620 TOTNmOfs / uL/ 0, USINTMAX
+621 FrNewCfs / fL/ 0, 0.25
+622 CrowdFac / uL/ 0, USINTMAX
+623 NwCfStrF / fL/ 0, 10
+624 NwCfStrV / uL/ 0, USINTMAX
+625 PkPrnWOR / sL/ 0, 1
+626 PrntBPow / fL/ 0, 1000
+627 RplcBPow / fL/ 0, 1000
+628 RandRplc / uL/ 0, USINTMAX
+629 RplCfUBd / fL/ 0, 1000
+;
+630 RplACSBd / uL/ 0, 1000
+631 MxCfCopy / uL/ 0, USINTMAX
+632 BidFit / uL/ 0, USINTMAX
+633 BkgGARt / fL/ 0, 1.0
+634 BGASCPr / fL/ 0, 1.0
+635 BGAFCPr / fL/ 0, 1.0
+636 BGANCPr / fL/ 0, 1.0
+637 BGABPPr / fL/ 0, 1.0
+638 TotBkgGA / uL/ 0, USINTMAX
+639 TotBGASC / uL/ 0, USINTMAX
+;	
+640 TotBGAFC / uL/ 0, USINTMAX
+641 TotBGANC / uL/ 0, USINTMAX
+642 TotBGABP / uL/ 0, USINTMAX
+643 RplACUBd/ fL/ 0, BIGFLOAT
+;
+700 MuPrTot / fL/ 0, 1.0
+701 MuFrNSL / fL/ 0, 1.0
+702 MuPrCnd1 / fL/ 0, 1.0
+703 MuPrCnd2 / fL/ 0, 1.0
+704 MuPrAct / fL/ 0, 1.0
+705 MuPrCT2 / fL/ 0, 1.0
+706 MuPrAT / fL/ 0, 1.0
+707 TotMu / uL/ 0, USINTMAX
+;
+720 CDMsgs / uL/ 0, USINTMAX
+721 CDMsgsRt / fL/ 0, 1.0
+722 TotCDM / uL/ 0, USINTMAX
+723 TotCDMC / uL/ 0, USINTMAX
+724 TotCDML / uL/ 0, USINTMAX
+725 CDMsgAct / sL/ 0, 1
+;
+800 CEffs / uL/ 0, 2
+801 CEffsRt / fL/ 0, 1.0
+802 CEffSplz / sL/ 0, 4
+803 TotCEf / uL/ 0, USINTMAX
+804 TotCEfW / uL/ 0, USINTMAX
+805 TotCEfB / uL/ 0, USINTMAX
+;
+850 ACPCRt / fL/ 0, 1.0
+851 ACPCt / fL/ -100, 100
+852 TotACPC / uL/ 0, USINTMAX
+853 NwCCStrF / fL/ 0, 1.0
+;	
+900 TagLMx / uL/ 0, USINTMAX
+901 TagRMx / uL/ 0, USINTMAX
+;
+920 CSSRt / fL/ 0, 1.0
+921 TotCSS / uL/ 0, USINTMAX
+922 CSSFrM / fL/ 0, 1.0
+923 CSSFrRf / fL/ 0, 1.0
+;
+940 TLBRt / fL/ 0, 1.0
+941 TotTLB / uL/ 0, USINTMAX
+942 TLBFrE / fL/ 0, 1.0
+943 TLBt / fL/ -100, 100
+;
+;
+1000 SaveSyFN / cL/ cfsc.sav
+1001 SaveSyPa / cL/
+1003 LogFName, log / cL/ cfsc.lg
+1004 StdOutFN / cL/ stdout
+1005 StdInFN / cL/ stdin
+1006 DisOutFN / cL/ stdout
+1007 GenFName / cL/ cfsc.gen
+1008 MsgInFN / cL/ init.msg
+1009 CfInFN / cL/ init.cf
+1010 EnvInFN / cL/ init.env

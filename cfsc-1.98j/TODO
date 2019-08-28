@@ -1,0 +1,446 @@
+--- $Id: TODO,v 1.1 1993/11/05 16:32:26 joke Exp $
+
+	* DATA ANALYSIS TOOLS?
+
+   The analysis tools in ~cfs-c/tools have evolved from single source(s);
+and might better be replaced by awk(1) or perl(1) scripts.
+
+	* WARNINGS ?
+
+   Well folks, this package is not for the light hearted...GCC thinks
+that there are some reasons to issue warnings for this package (as
+shown below); so there's much left to do; but maybe you'd better wait for
+CFS-C++; an all new, completely rewritten, state-of-the-art CFS-C
+implementation...any volunteers?
+
+
+gcc -g -O -Wall -pedantic -ansi -I./include -c -o src/bblearn.o src/bblearn.c
+src/bblearn.c: In function `PaySuppl':
+src/bblearn.c:524: warning: implicit declaration of function `WriteStd'
+src/bblearn.c:526: warning: long int format, pointer arg (arg 4)
+gcc -g -O -Wall -pedantic -ansi -I./include -c -o src/cfmsgio.o src/cfmsgio.c
+src/cfmsgio.c: In function `StoreMsg':
+src/cfmsgio.c:186: warning: implicit declaration of function `IsMessage'
+src/cfmsgio.c:235: warning: implicit declaration of function `AMsgtoB'
+src/cfmsgio.c:179: warning: unused variable `LastCMsg'
+src/cfmsgio.c: In function `WrtMsgs':
+src/cfmsgio.c:454: warning: implicit declaration of function `fprintf'
+src/cfmsgio.c: In function `PutMNd':
+src/cfmsgio.c:496: warning: implicit declaration of function `BMsgtoA'
+src/cfmsgio.c: In function `ReadCfs':
+src/cfmsgio.c:595: warning: implicit declaration of function `InitCfLs'
+src/cfmsgio.c:630: warning: implicit declaration of function `ReSrtCfs'
+src/cfmsgio.c: In function `StoreCf':
+src/cfmsgio.c:680: warning: implicit declaration of function `IsCondAct'
+src/cfmsgio.c: In function `AddCf':
+src/cfmsgio.c:861: warning: implicit declaration of function `ACndtoB'
+src/cfmsgio.c:865: warning: implicit declaration of function `AActtoB'
+src/cfmsgio.c:893: warning: implicit declaration of function `InSrtCf'
+src/cfmsgio.c: In function `WrtCfs':
+src/cfmsgio.c:1026: warning: implicit declaration of function `InDsCfL'
+src/cfmsgio.c:1074: warning: implicit declaration of function `DisCfIE'
+src/cfmsgio.c: In function `PutCNd':
+src/cfmsgio.c:1159: warning: implicit declaration of function `BCndtoA'
+src/cfmsgio.c:1184: warning: implicit declaration of function `BActtoA'
+gcc -g -O -Wall -pedantic -ansi -I./include -c -o src/cfops.o src/cfops.c
+src/cfops.c: In function `COpADD':
+src/cfops.c:227: warning: implicit declaration of function `WriteStd'
+src/cfops.c: In function `COpADD1':
+src/cfops.c:254: warning: implicit declaration of function `BMsgtoA'
+src/cfops.c:264: warning: implicit declaration of function `AMsgtoB'
+gcc -g -O -Wall -pedantic -ansi -I./include -c -o src/cfsc.o src/cfsc.c
+In file included from src/cfsc.c:57:
+./include/usercmd.ext:35: warning: useless keyword or type name in empty declaration
+src/cfsc.c: In function `DoCmd':
+src/cfsc.c:182: warning: implicit declaration of function `LoadCfs'
+src/cfsc.c:185: warning: implicit declaration of function `LoadMsgs'
+src/cfsc.c:188: warning: implicit declaration of function `LoadEnv'
+src/cfsc.c:191: warning: implicit declaration of function `GnRndCfs'
+src/cfsc.c:194: warning: implicit declaration of function `Display'
+src/cfsc.c:209: warning: implicit declaration of function `DoEnvCmd'
+src/cfsc.c:215: warning: implicit declaration of function `Mod_Cf'
+src/cfsc.c:218: warning: implicit declaration of function `Mod_Msg'
+src/cfsc.c:227: warning: implicit declaration of function `Help'
+src/cfsc.c: In function `ExecCmds':
+src/cfsc.c:267: warning: implicit declaration of function `tolower'
+src/cfsc.c: At top level:
+src/cfsc.c:311: warning: return-type defaults to `int'
+src/cfsc.c: In function `Classify':
+src/cfsc.c:340: warning: implicit declaration of function `UpdCfStr'
+src/cfsc.c:347: warning: implicit declaration of function `AuDisplay'
+src/cfsc.c:314: warning: unused variable `savesd'
+src/cfsc.c: At top level:
+src/cfsc.c:372: warning: return-type defaults to `int'
+src/cfsc.c:420: warning: return-type defaults to `int'
+src/cfsc.c:487: warning: return-type defaults to `int'
+src/cfsc.c: In function `Init_CFS':
+src/cfsc.c:597: warning: unsigned int format, pointer arg (arg 7)
+src/cfsc.c:490: warning: unused variable `cp'
+src/cfsc.c:489: warning: unused variable `err1'
+src/cfsc.c:489: warning: unused variable `err'
+src/cfsc.c:489: warning: unused variable `retlen'
+src/cfsc.c:490: warning: `fname' may be used uninitialized in this function
+src/cfsc.c: In function `InitVT':
+src/cfsc.c:646: warning: implicit declaration of function `fflush'
+src/cfsc.c:698: warning: implicit declaration of function `sscanf'
+src/cfsc.c:917: warning: implicit declaration of function `printf'
+src/cfsc.c:638: warning: unused variable `fname'
+src/cfsc.c:637: warning: unused variable `vuint'
+src/cfsc.c:635: warning: unused variable `vint'
+src/cfsc.c:638: warning: `chardft' may be used uninitialized in this function
+src/cfsc.c: In function `LoadSys':
+src/cfsc.c:982: warning: implicit declaration of function `ReadMsgs'
+src/cfsc.c:984: warning: implicit declaration of function `ReadCfs'
+src/cfsc.c:987: warning: implicit declaration of function `ReadEnv'
+src/cfsc.c: In function `GetMsgAd':
+src/cfsc.c:1104: warning: unused variable `NmCMsgs'
+src/cfsc.c:1103: warning: unused variable `CurMsgs'
+src/cfsc.c: In function `SaveSys':
+src/cfsc.c:1177: warning: implicit declaration of function `fprintf'
+src/cfsc.c:1181: warning: implicit declaration of function `WrtMsgs'
+src/cfsc.c:1187: warning: implicit declaration of function `WrtCfs'
+src/cfsc.c:1189: warning: implicit declaration of function `WrtEnv'
+src/cfsc.c:1192: warning: implicit declaration of function `WrtVars'
+src/cfsc.c: In function `ReadEffs':
+src/cfsc.c:1284: warning: implicit declaration of function `IsCondAct'
+src/cfsc.c:1304: warning: implicit declaration of function `ACndtoB'
+src/cfsc.c: In function `WrtEffs':
+src/cfsc.c:1337: warning: implicit declaration of function `BCndtoA'
+gcc -g -O -Wall -pedantic -ansi -I./include -c -o src/cfsio.o src/cfsio.c
+src/cfsio.c: In function `CloseFILE':
+src/cfsio.c:143: warning: implicit declaration of function `fclose'
+src/cfsio.c: In function `ReadS':
+src/cfsio.c:200: warning: implicit declaration of function `_filbuf'
+src/cfsio.c: In function `WriteStd':
+src/cfsio.c:248: warning: implicit declaration of function `fprintf'
+src/cfsio.c:259: warning: implicit declaration of function `fflush'
+gcc -g -O -Wall -pedantic -ansi -I./include -c -o src/cfsutil.o src/cfsutil.c
+gcc -g -O -Wall -pedantic -ansi -I./include -c -o src/core.o src/core.c
+src/core.c: In function `RdDetect':
+src/core.c:68: warning: implicit declaration of function `GetDMsgs'
+src/core.c:72: warning: implicit declaration of function `WriteStd'
+src/core.c:82: warning: implicit declaration of function `StoreMsg'
+src/core.c:86: warning: implicit declaration of function `DsplMsgs'
+src/core.c: At top level:
+src/core.c:135: warning: return-type defaults to `int'
+src/core.c: In function `GenNMsgs':
+src/core.c:409: warning: unused variable `i'
+src/core.c:408: warning: unused variable `mptr'
+src/core.c: In function `PostCfMs':
+src/core.c:804: warning: control reaches end of non-void function
+src/core.c: In function `GenBehav':
+src/core.c:1127: warning: implicit declaration of function `BMsgtoA'
+src/core.c:1159: warning: implicit declaration of function `DoBkgBeh'
+src/core.c:1162: warning: implicit declaration of function `GtSysRew'
+gcc -g -O -Wall -pedantic -ansi -I./include -c -o src/display.o src/display.c
+In file included from src/display.c:24:
+./include/usercmd.ext:35: warning: useless keyword or type name in empty declaration
+src/display.c: In function `Display':
+src/display.c:78: warning: implicit declaration of function `DsplCfs'
+src/display.c:81: warning: implicit declaration of function `DsplMsgs'
+src/display.c:87: warning: implicit declaration of function `DsplEnv'
+src/display.c: In function `AuDisplay':
+src/display.c:220: warning: unknown conversion type character 0xa in format
+src/display.c: In function `PrnVars':
+src/display.c:312: warning: implicit declaration of function `FindHighLowStrCf'
+src/display.c:449: warning: unsigned int format, pointer arg (arg 5)
+src/display.c:451: warning: unsigned int format, pointer arg (arg 4)
+src/display.c:306: warning: unused variable `AllPayBd'
+src/display.c:306: warning: unused variable `ShareRew'
+src/display.c:305: warning: unused variable `AveCfBR'
+src/display.c: In function `WrtVars':
+src/display.c:498: warning: implicit declaration of function `fprintf'
+gcc -g -O -Wall -pedantic -ansi -I./include -c -o src/dsclearn.o src/dsclearn.c
+src/dsclearn.c: In function `Discover':
+src/dsclearn.c:74: warning: implicit declaration of function `DscCDM'
+src/dsclearn.c:77: warning: implicit declaration of function `DscCEff'
+src/dsclearn.c:80: warning: implicit declaration of function `DscACPC'
+src/dsclearn.c:83: warning: implicit declaration of function `DscCSS'
+src/dsclearn.c:86: warning: implicit declaration of function `DscTLB'
+src/dsclearn.c:89: warning: implicit declaration of function `DscBkgGA'
+src/dsclearn.c: In function `ReCalcFitness':
+src/dsclearn.c:145: warning: `protectActiveBound' may be used uninitialized in this function
+src/dsclearn.c: In function `PckPrnts':
+src/dsclearn.c:291: warning: implicit declaration of function `WriteStd'
+src/dsclearn.c: In function `PkBPPool':
+src/dsclearn.c:475: warning: `retries' may be used uninitialized in this function
+src/dsclearn.c:662: warning: control reaches end of non-void function
+src/dsclearn.c: In function `RplcCfs':
+src/dsclearn.c:687: warning: unused variable `lowstr'
+src/dsclearn.c: In function `DemoRpl':
+src/dsclearn.c:964: warning: implicit declaration of function `PutCNd'
+src/dsclearn.c: In function `GenTypeM':
+src/dsclearn.c:1375: warning: implicit declaration of function `BCndtoA'
+src/dsclearn.c:1387: warning: implicit declaration of function `BActtoA'
+gcc -g -O -Wall -pedantic -ansi -I./include -c -o src/dscops.o src/dscops.c
+src/dscops.c: In function `DscCDM':
+src/dscops.c:104: warning: implicit declaration of function `WriteStd'
+src/dscops.c:180: warning: implicit declaration of function `GnRndCA'
+src/dscops.c:181: warning: implicit declaration of function `AActtoB'
+src/dscops.c: In function `CndMtchS':
+src/dscops.c:379: warning: implicit declaration of function `BMsgtoA'
+src/dscops.c:380: warning: implicit declaration of function `BCndtoA'
+src/dscops.c: In function `GnrlzCf':
+src/dscops.c:429: warning: implicit declaration of function `ACndtoB'
+src/dscops.c: In function `DCrFullCf':
+src/dscops.c:884: warning: implicit declaration of function `BActtoA'
+src/dscops.c:940: warning: implicit declaration of function `CalcSpec'
+gcc -g -O -Wall -pedantic -ansi -I./include -c -o src/dscops2.o src/dscops2.c
+src/dscops2.c: In function `DscCSS':
+src/dscops2.c:97: warning: implicit declaration of function `BActtoA'
+src/dscops2.c:99: warning: implicit declaration of function `GnRndCA'
+src/dscops2.c:114: warning: implicit declaration of function `AActtoB'
+src/dscops2.c:116: warning: implicit declaration of function `ACndtoB'
+src/dscops2.c:136: warning: implicit declaration of function `BCndtoA'
+src/dscops2.c:137: warning: implicit declaration of function `CalcSpec'
+src/dscops2.c: In function `PckCC':
+src/dscops2.c:186: warning: implicit declaration of function `WriteStd'
+src/dscops2.c: In function `DscCEff':
+src/dscops2.c:826: warning: implicit declaration of function `MakeActS'
+gcc -g -O -Wall -pedantic -ansi -I./include -c -o src/grandcfs.o src/grandcfs.c
+src/grandcfs.c: In function `GnRndCfs':
+src/grandcfs.c:68: warning: implicit declaration of function `WriteStd'
+src/grandcfs.c:89: warning: implicit declaration of function `InitCfLs'
+src/grandcfs.c: In function `GenRndCf':
+src/grandcfs.c:165: warning: implicit declaration of function `AddCf'
+gcc -g -O -Wall -pedantic -ansi -I./include -c -o src/usercmd.o src/usercmd.c
+src/usercmd.c: In function `GUserCmd':
+src/usercmd.c:84: warning: implicit declaration of function `tolower'
+src/usercmd.c: In function `SetVar':
+src/usercmd.c:224: warning: unused variable `li'
+src/usercmd.c: In function `SetGen':
+src/usercmd.c:553: warning: too many arguments for format
+gcc -g -O -Wall -pedantic -ansi -I./include -c -o src/utility.o src/utility.c
+src/utility.c: In function `GetLInt':
+src/utility.c:257: warning: unused variable `li'
+src/utility.c: In function `StpTok1':
+src/utility.c:380: warning: implicit declaration of function `WriteStd'
+ar rv ./lib/libCFSC.a ./src/bblearn.o ./src/cfmsgio.o ./src/cfops.o ./src/cfsc.o   ./src/cfsio.o ./src/cfsutil.o  ./src/core.o ./src/display.o ./src/dsclearn.o ./src/dscops.o  ./src/dscops2.o ./src/grandcfs.o ./src/usercmd.o ./src/utility.o
+ar: creating ./lib/libCFSC.a
+a - ./src/bblearn.o
+a - ./src/cfmsgio.o
+a - ./src/cfops.o
+a - ./src/cfsc.o
+a - ./src/cfsio.o
+a - ./src/cfsutil.o
+a - ./src/core.o
+a - ./src/display.o
+a - ./src/dsclearn.o
+a - ./src/dscops.o
+a - ./src/dscops2.o
+a - ./src/grandcfs.o
+a - ./src/usercmd.o
+a - ./src/utility.o
+ranlib ./lib/libCFSC.a
+( cd tools; make all CC=gcc CFLAGS="-g -O -Wall -pedantic -ansi -I../include" )
+gcc -g -O -Wall -pedantic -ansi -I../include  -target sun4 -c  ccls1.c
+ccls1.c:139: warning: return-type defaults to `int'
+ccls1.c: In function `main':
+ccls1.c:151: warning: implicit declaration of function `printf'
+ccls1.c:233: warning: implicit declaration of function `sscanf'
+ccls1.c:321: warning: implicit declaration of function `fprintf'
+ccls1.c:349: warning: char format, different type arg (arg 3)
+ccls1.c:349: warning: char format, different type arg (arg 4)
+ccls1.c:366: warning: implicit declaration of function `fclose'
+ccls1.c:144: warning: unused variable `path'
+ccls1.c:144: warning: `idptr' may be used uninitialized in this function
+ccls1.c:392: warning: control reaches end of non-void function
+ccls1.c: In function `PrntCon':
+ccls1.c:684: warning: pointer targets in passing arg 2 of `IntInLst' differ in signedness
+ccls1.c:527: warning: unused variable `f1'
+ccls1.c:527: warning: `hires' may be used uninitialized in this function
+ccls1.c:527: warning: `lores' may be used uninitialized in this function
+ccls1.c: In function `Help':
+ccls1.c:840: warning: unknown conversion type character `(' in format
+ccls1.c:849: warning: implicit declaration of function `_filbuf'
+ccls1.c:852: warning: flag ` ' used with type `o'
+ccls1.c:852: warning: too few arguments for format
+gcc -g -O -Wall -pedantic -ansi -I../include -o ccls1 ccls1.o ../src/cfsio.o ../src/utility.o -lm
+gcc -g -O -Wall -pedantic -ansi -I../include  -target sun4 -c  getdvars.c
+getdvars.c: In function `main':
+getdvars.c:122: warning: implicit declaration of function `printf'
+getdvars.c:135: warning: implicit declaration of function `sscanf'
+getdvars.c:233: warning: implicit declaration of function `fclose'
+getdvars.c: In function `StoreVar':
+getdvars.c:269: warning: unused variable `f2'
+getdvars.c:269: warning: unused variable `f1'
+getdvars.c: In function `Help':
+getdvars.c:467: warning: implicit declaration of function `_filbuf'
+gcc -g -O -Wall -pedantic -ansi -I../include -o getdvars getdvars.o ../src/cfsio.o ../src/utility.o -lm
+gcc -g -O -Wall -pedantic -ansi -I../include  -target sun4 -c  getperf.c
+getperf.c: In function `main':
+getperf.c:147: warning: implicit declaration of function `printf'
+getperf.c:186: warning: implicit declaration of function `sscanf'
+getperf.c:277: warning: implicit declaration of function `fclose'
+getperf.c: In function `PrntGue':
+getperf.c:374: warning: too few arguments for format
+getperf.c: In function `PrntTGs':
+getperf.c:574: warning: too few arguments for format
+getperf.c: In function `PrntPerf':
+getperf.c:815: warning: `mrate' may be used uninitialized in this function
+getperf.c: In function `PrntTPerf':
+getperf.c:853: warning: `mrate' may be used uninitialized in this function
+gcc -g -O -Wall -pedantic -ansi -I../include -o getperf getperf.o ../src/cfsio.o ../src/utility.o -lm
+gcc -g -O -Wall -pedantic -ansi -I../include  -target sun4 -c  getstr1.c
+getstr1.c: In function `main':
+getstr1.c:100: warning: implicit declaration of function `printf'
+getstr1.c:140: warning: implicit declaration of function `sscanf'
+getstr1.c:215: warning: implicit declaration of function `fclose'
+getstr1.c:69: warning: unused variable `cfid'
+getstr1.c:72: warning: `idptr' may be used uninitialized in this function
+getstr1.c: In function `Help':
+getstr1.c:511: warning: implicit declaration of function `_filbuf'
+getstr1.c:540: warning: flag ` ' used with type `o'
+getstr1.c:540: warning: too few arguments for format
+getstr1.c:544: warning: flag ` ' used with type `o'
+getstr1.c:544: warning: too few arguments for format
+gcc -g -O -Wall -pedantic -ansi -I../include -o getstr1 getstr1.o ../src/cfsio.o ../src/utility.o -lm
+gcc -g -O -Wall -pedantic -ansi -I../include  -target sun4 -c  getvars.c
+getvars.c: In function `main':
+getvars.c:117: warning: implicit declaration of function `printf'
+getvars.c:130: warning: implicit declaration of function `sscanf'
+getvars.c:227: warning: implicit declaration of function `fclose'
+getvars.c: In function `PrntFull':
+getvars.c:362: warning: too many arguments for format
+getvars.c: In function `Help':
+getvars.c:458: warning: implicit declaration of function `_filbuf'
+gcc -g -O -Wall -pedantic -ansi -I../include -o getvars getvars.o ../src/cfsio.o ../src/utility.o -lm
+gcc -g -O -Wall -pedantic -ansi -I../include  -target sun4 -c  getvc.c
+getvc.c: In function `main':
+getvc.c:126: warning: implicit declaration of function `printf'
+getvc.c:160: warning: implicit declaration of function `sscanf'
+getvc.c:232: warning: implicit declaration of function `fclose'
+getvc.c:95: warning: `idptr' may be used uninitialized in this function
+getvc.c: In function `PrntTR':
+getvc.c:442: warning: unused variable `i'
+getvc.c: In function `PrntTTR':
+getvc.c:519: warning: unused variable `i'
+getvc.c: In function `Help':
+getvc.c:650: warning: implicit declaration of function `_filbuf'
+gcc -g -O -Wall -pedantic -ansi -I../include -o getvc getvc.o ../src/cfsio.o ../src/utility.o -lm
+gcc -g -O -Wall -pedantic -ansi -I../include  -target sun4 -c  getvc1.c
+getvc1.c: In function `main':
+getvc1.c:146: warning: implicit declaration of function `printf'
+getvc1.c:188: warning: implicit declaration of function `sscanf'
+getvc1.c:279: warning: implicit declaration of function `fclose'
+getvc1.c:107: warning: unused variable `f'
+getvc1.c:106: warning: `idptr' may be used uninitialized in this function
+getvc1.c: In function `PrntTVC':
+getvc1.c:474: warning: int format, double arg (arg 2)
+getvc1.c: In function `PrntBst':
+getvc1.c:519: warning: `f' may be used uninitialized in this function
+getvc1.c: In function `PrntTBst':
+getvc1.c:669: warning: `f' may be used uninitialized in this function
+getvc1.c: In function `Help':
+getvc1.c:903: warning: implicit declaration of function `_filbuf'
+getvc1.c: In function `AllocUIA':
+getvc1.c:920: warning: type mismatch with previous external decl
+/usr/local/gnulang-93c/lib/gcc-lib/sun4/2.4.3/include/stdlib.h:25: warning: previous external decl of `calloc'
+getvc1.c:920: warning: extern declaration of `calloc' doesn't match global one
+getvc1.c: In function `AllocFA':
+getvc1.c:935: warning: type mismatch with previous external decl
+/usr/local/gnulang-93c/lib/gcc-lib/sun4/2.4.3/include/stdlib.h:25: warning: previous external decl of `calloc'
+getvc1.c:935: warning: extern declaration of `calloc' doesn't match global one
+gcc -g -O -Wall -pedantic -ansi -I../include -o getvc1 getvc1.o ../src/cfsio.o ../src/utility.o -lm
+gcc -g -O -Wall -pedantic -ansi -I../include  -target sun4 -c  concnt-1.c
+concnt-1.c:107: warning: return-type defaults to `int'
+concnt-1.c: In function `main':
+concnt-1.c:113: warning: type mismatch with previous external decl
+/usr/local/gnulang-93c/lib/gcc-lib/sun4/2.4.3/include/stdlib.h:29: warning: previous external decl of `malloc'
+concnt-1.c:113: warning: extern declaration of `malloc' doesn't match global one
+concnt-1.c:119: warning: implicit declaration of function `printf'
+concnt-1.c:192: warning: implicit declaration of function `sscanf'
+concnt-1.c:275: warning: implicit declaration of function `fprintf'
+concnt-1.c:325: warning: implicit declaration of function `fclose'
+concnt-1.c:112: warning: unused variable `path'
+concnt-1.c:111: warning: unused variable `tstep'
+concnt-1.c:112: warning: `idptr' may be used uninitialized in this function
+concnt-1.c:338: warning: control reaches end of non-void function
+concnt-1.c: In function `ReadCon':
+concnt-1.c:349: warning: unused variable `statebuff'
+concnt-1.c:349: warning: unused variable `tbuff'
+concnt-1.c:347: warning: unused variable `endstate'
+concnt-1.c:347: warning: unused variable `startstate'
+concnt-1.c:347: warning: unused variable `teststate'
+concnt-1.c: In function `ReadConBoole':
+concnt-1.c:668: warning: unused variable `tbuff'
+concnt-1.c: In function `Converge':
+concnt-1.c:785: warning: unused variable `i'
+concnt-1.c: In function `PrntCon':
+concnt-1.c:1010: warning: pointer targets in passing arg 2 of `IntInLst' differ in signedness
+concnt-1.c:1016: warning: passing arg 2 of `IntInLst' from incompatible pointer type
+concnt-1.c:902: warning: unused variable `f1'
+concnt-1.c:901: warning: unused variable `tstep'
+concnt-1.c: In function `Help':
+concnt-1.c:1241: warning: implicit declaration of function `_filbuf'
+gcc -g -O -Wall -pedantic -ansi -I../include -o concnt-1 concnt-1.o ../src/cfsio.o ../src/utility.o -lm
+gcc -g -O -Wall -pedantic -ansi -I./include -c -o letseq1/letseq1.o letseq1/letseq1.c
+letseq1/letseq1.c: In function `ReadEnv':
+letseq1/letseq1.c:141: warning: implicit declaration of function `ReadEffs'
+letseq1/letseq1.c: In function `InitEnv':
+letseq1/letseq1.c:168: warning: implicit declaration of function `printf'
+letseq1/letseq1.c: In function `ReadLetS':
+letseq1/letseq1.c:222: warning: implicit declaration of function `sscanf'
+letseq1/letseq1.c:207: warning: `lastlet' may be used uninitialized in this function
+letseq1/letseq1.c: In function `SaveEnv':
+letseq1/letseq1.c:482: warning: implicit declaration of function `fprintf'
+letseq1/letseq1.c:491: warning: implicit declaration of function `WrtEffs'
+letseq1/letseq1.c:480: warning: unused variable `GOutBuff'
+letseq1/letseq1.c:479: warning: unused variable `EffLst'
+letseq1/letseq1.c: In function `GetDMsgs':
+letseq1/letseq1.c:540: warning: implicit declaration of function `Int2Loci'
+letseq1/letseq1.c: In function `StoreSup':
+letseq1/letseq1.c:588: warning: implicit declaration of function `BMsgtoA'
+letseq1/letseq1.c:592: warning: implicit declaration of function `Loci2Int'
+letseq1/letseq1.c: In function `MkGuess':
+letseq1/letseq1.c:630: warning: type of `BehavStp' defaults to `int'
+letseq1/letseq1.c:634: warning: unused variable `DemoLev'
+letseq1/letseq1.c: In function `MakeActS':
+letseq1/letseq1.c:914: warning: implicit declaration of function `GnRndCA'
+letseq1/letseq1.c: In function `SetEnv':
+letseq1/letseq1.c:1178: warning: implicit declaration of function `toupper'
+letseq1/letseq1.c: In function `DisCfIE':
+letseq1/letseq1.c:1241: warning: implicit declaration of function `BCndtoA'
+letseq1/letseq1.c:1281: warning: implicit declaration of function `BActtoA'
+gcc -g -O -Wall -pedantic -ansi -o ./letseq1/letseq1 ./letseq1/letseq1.o -L./lib -lCFSC -lm
+gcc -g -O -Wall -pedantic -ansi -I./include -c -o fsw1/fsw1a.o fsw1/fsw1a.c
+fsw1/fsw1a.c: In function `DisCfIE':
+fsw1/fsw1a.c:64: warning: implicit declaration of function `BCndtoA'
+fsw1/fsw1a.c:149: warning: implicit declaration of function `BActtoA'
+fsw1/fsw1a.c: In function `DoEnvCmd':
+fsw1/fsw1a.c:530: warning: implicit declaration of function `BMsgtoA'
+fsw1/fsw1a.c:546: warning: implicit declaration of function `EmptyML'
+fsw1/fsw1a.c:513: warning: unused variable `dir'
+fsw1/fsw1a.c: In function `FSWGetCf':
+fsw1/fsw1a.c:727: warning: implicit declaration of function `printf'
+fsw1/fsw1a.c: In function `FSWGetSB':
+fsw1/fsw1a.c:769: warning: unused variable `cfptr'
+gcc -g -O -Wall -pedantic -ansi -I./include -c -o fsw1/fsw1.o fsw1/fsw1.c
+In file included from fsw1/fsw1.c:41:
+fsw1/fsw1.ext:39: warning: useless keyword or type name in empty declaration
+fsw1/fsw1.ext:46: warning: useless keyword or type name in empty declaration
+fsw1/fsw1.ext:53: warning: useless keyword or type name in empty declaration
+fsw1/fsw1.c: In function `LoadEnv':
+fsw1/fsw1.c:75: warning: control reaches end of non-void function
+fsw1/fsw1.c: In function `ReadEnv':
+fsw1/fsw1.c:156: warning: implicit declaration of function `ReadEffs'
+fsw1/fsw1.c:138: warning: unused variable `f'
+fsw1/fsw1.c: In function `ReadFSW':
+fsw1/fsw1.c:412: warning: unsigned value < 0 is always 0
+fsw1/fsw1.c:322: warning: unused variable `f'
+fsw1/fsw1.c:324: warning: `ltnode' may be used uninitialized in this function
+fsw1/fsw1.c:325: warning: `lpnode' may be used uninitialized in this function
+fsw1/fsw1.c: In function `RdStates':
+fsw1/fsw1.c:582: warning: implicit declaration of function `IsMessage'
+fsw1/fsw1.c:588: warning: implicit declaration of function `AMsgtoB'
+fsw1/fsw1.c: In function `WrtEnv':
+fsw1/fsw1.c:919: warning: implicit declaration of function `BMsgtoA'
+fsw1/fsw1.c: In function `SaveEnv':
+fsw1/fsw1.c:1013: warning: implicit declaration of function `fprintf'
+fsw1/fsw1.c:1056: warning: implicit declaration of function `WrtEffs'
+fsw1/fsw1.c: In function `PkTrans':
+fsw1/fsw1.c:1275: warning: type of `BehavStp' defaults to `int'
+fsw1/fsw1.c: In function `MakeActS':
+fsw1/fsw1.c:1718: warning: implicit declaration of function `GnRndCA'
+fsw1/fsw1.c:1716: warning: unused variable `DscDemo'
+gcc -g -O -Wall -pedantic -ansi -o ./fsw1/fsw1 ./fsw1/fsw1a.o ./fsw1/fsw1.o -L./lib -lCFSC -lm

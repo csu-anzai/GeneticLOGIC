@@ -1,0 +1,67 @@
+%
+% This file was automatically produced at Mon Jun 15 17:22:31 1992 by
+% c2latex f_12.c
+%
+\expandafter\ifx\csname indentation\endcsname\relax
+\newlength{\indentation}\fi
+\setlength{\indentation}{0.5em}
+\begin{flushleft}
+{\it /$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$\mbox{}\\
+\hspace*{1\indentation}$\ast$\mbox{}\\
+\hspace*{1\indentation}$\ast$\hspace*{2\indentation}Copyright\hspace*{1\indentation}(c)\hspace*{1\indentation}1991\mbox{}\\
+\hspace*{1\indentation}$\ast$\hspace*{2\indentation}Thomas\hspace*{1\indentation}Baeck\mbox{}\\
+\hspace*{1\indentation}$\ast$\hspace*{2\indentation}Computer\hspace*{1\indentation}Science\hspace*{1\indentation}Department,\hspace*{1\indentation}LSXI\mbox{}\\
+\hspace*{1\indentation}$\ast$\hspace*{2\indentation}University\hspace*{1\indentation}of\hspace*{1\indentation}Dortmund\mbox{}\\
+\hspace*{1\indentation}$\ast$\hspace*{2\indentation}Baroper\hspace*{1\indentation}Str.\hspace*{1\indentation}301\mbox{}\\
+\hspace*{1\indentation}$\ast$\hspace*{2\indentation}D-4600\hspace*{1\indentation}Dortmund\hspace*{1\indentation}50\mbox{}\\
+\hspace*{1\indentation}$\ast$\mbox{}\\
+\hspace*{1\indentation}$\ast$\hspace*{2\indentation}e-mail:\hspace*{1\indentation}baeck@ls11.informatik.uni-dortmund.de\mbox{}\\
+\hspace*{1\indentation}$\ast$\mbox{}\\
+\hspace*{1\indentation}$\ast$\hspace*{2\indentation}Permission\hspace*{1\indentation}is\hspace*{1\indentation}hereby\hspace*{1\indentation}granted\hspace*{1\indentation}to\hspace*{1\indentation}copy\hspace*{1\indentation}all\hspace*{1\indentation}or\hspace*{1\indentation}any\hspace*{1\indentation}part\hspace*{1\indentation}of\mbox{}\\
+\hspace*{1\indentation}$\ast$\hspace*{2\indentation}this\hspace*{1\indentation}program\hspace*{1\indentation}for\hspace*{1\indentation}free\hspace*{1\indentation}distribution.\hspace*{3\indentation}The\hspace*{1\indentation}author's\hspace*{1\indentation}name\mbox{}\\
+\hspace*{1\indentation}$\ast$\hspace*{2\indentation}and\hspace*{1\indentation}this\hspace*{1\indentation}copyright\hspace*{1\indentation}notice\hspace*{1\indentation}must\hspace*{1\indentation}be\hspace*{1\indentation}included\hspace*{1\indentation}in\hspace*{1\indentation}any\hspace*{1\indentation}copy.\mbox{}\\
+\hspace*{1\indentation}$\ast$\mbox{}\\
+\hspace*{1\indentation}$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$$\ast$/}\mbox{}\\
+\mbox{}\\
+{\it /$\ast$\mbox{}\\
+\hspace*{1\indentation}$\ast$\hspace*{8\indentation}file:\hspace*{8\indentation}f\_12.c\mbox{}\\
+\hspace*{1\indentation}$\ast$\mbox{}\\
+\hspace*{1\indentation}$\ast$\hspace*{4\indentation}author:\hspace*{8\indentation}Thomas\hspace*{1\indentation}Baeck,\hspace*{1\indentation}27.\hspace*{1\indentation}Feb.\hspace*{1\indentation}'91\mbox{}\\
+\hspace*{1\indentation}$\ast$\mbox{}\\
+\hspace*{1\indentation}$\ast$\hspace*{16\indentation}A\hspace*{1\indentation}simply\hspace*{1\indentation}binary\hspace*{1\indentation}testfunction\hspace*{1\indentation}(`mimikry\hspace*{1\indentation}problem').\mbox{}\\
+\hspace*{1\indentation}$\ast$\hspace*{16\indentation}The\hspace*{1\indentation}global\hspace*{1\indentation}optimum\hspace*{1\indentation}is\hspace*{1\indentation}given\hspace*{1\indentation}by\hspace*{1\indentation}the\hspace*{1\indentation}bitstring\hspace*{1\indentation}(000000...000),\mbox{}\\
+\hspace*{1\indentation}$\ast$\hspace*{16\indentation}the\hspace*{1\indentation}fitness\hspace*{1\indentation}function\hspace*{1\indentation}is\hspace*{1\indentation}simple\hspace*{1\indentation}defined\hspace*{1\indentation}as\hspace*{1\indentation}the\hspace*{1\indentation}Hamming\hspace*{1\indentation}distance\mbox{}\\
+\hspace*{1\indentation}$\ast$\hspace*{16\indentation}to\hspace*{1\indentation}this\hspace*{1\indentation}optimum.\mbox{}\\
+\hspace*{1\indentation}$\ast$\mbox{}\\
+\hspace*{1\indentation}$\ast$$\ast$TeX\mbox{}\\
+\hspace*{1\indentation}$\ast$\hspace*{8\indentation}$\backslash$Fct\{Hamming\hspace*{1\indentation}distance\hspace*{1\indentation}to$\sim$\$0$\wedge$l\$\}\{\}\mbox{}\\
+\hspace*{1\indentation}$\ast$\hspace*{8\indentation}$\backslash$Expr\{f\_\{12\}($\backslash$vec\{a\})\hspace*{1\indentation}$=$\hspace*{1\indentation}$\backslash$sum\_\{i$=$1\}$\wedge$l\hspace*{1\indentation}$\backslash$alpha\_i\}\mbox{}\\
+\hspace*{1\indentation}$\ast$\hspace*{8\indentation}$\backslash$Min\{$\backslash$min(f\_\{12\})\hspace*{1\indentation}$=$\hspace*{1\indentation}f\_\{12\}(0,$\backslash$ldots,0)\hspace*{1\indentation}$=$\hspace*{1\indentation}0\}\mbox{}\\
+\hspace*{1\indentation}$\ast$$\ast$TeX\mbox{}\\
+\hspace*{1\indentation}$\ast$\mbox{}\\
+\hspace*{1\indentation}$\ast$\hspace*{8\indentation}\$Id\$\mbox{}\\
+\hspace*{1\indentation}$\ast$\mbox{}\\
+\hspace*{1\indentation}$\ast$\mbox{}\\
+\hspace*{1\indentation}$\ast$/}\mbox{}\\
+\mbox{}\\
+{\tt \#include} "{\tt ../extern.h}"\mbox{}\\
+\mbox{}\\
+\mbox{}\\
+{\bf double}\mbox{}\\
+f\_12(x, Length)\mbox{}\\
+{\bf register} {\bf char}		x[];\mbox{}\\
+{\bf register} {\bf int}		Length;\mbox{}\\
+\mbox{}\\
+\{\mbox{}\\
+\hspace*{1\indentation}\mbox{}\\
+\hspace*{8\indentation}{\bf register} {\bf int} 	i, Dst;\mbox{}\\
+\mbox{}\\
+\hspace*{8\indentation}{\bf for} (Dst = 0, i = 0; i $<$ Length; i++) \{\mbox{}\\
+\hspace*{16\indentation}Dst += (x[i]) ? 1 : 0;\mbox{}\\
+\hspace*{8\indentation}\}\mbox{}\\
+\mbox{}\\
+\hspace*{8\indentation}{\bf return} (({\bf double}) Dst);\mbox{}\\
+\}	 \mbox{}\\
+\mbox{}\\
+{\it /$\ast$$\ast$$\ast$\hspace*{1\indentation}end\hspace*{1\indentation}of\hspace*{1\indentation}file\hspace*{1\indentation}$\ast$$\ast$$\ast$/}\mbox{}\\
+\end{flushleft}

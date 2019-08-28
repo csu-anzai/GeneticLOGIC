@@ -1,0 +1,246 @@
+___________________________________________________________________
+-------------------------------------------------------------------
+     Name: GAucsd  Date: 920707  Version: 1.4  Patchlevel: 0
+-------------------------------------------------------------------
+<<<<<<<<<<<<<<<<<<                             >>>>>>>>>>>>>>>>>>>>
+<<<<<<<<<<<<<<<<<< DO NOT EDIT ABOVE THIS LINE >>>>>>>>>>>>>>>>>>>>
+
+
+Congratulations - it looks as if you have successfully unpacked the
+source files for GAucsd 1.4 into this directory.  Instructions  for
+the installation and use of the system are in the ``User's Guide to
+GAucsd 1.4'' in the file GAucsd.doc.  A PostScript version  can  be
+obtained  -- along with other related material -- via anonymous ftp
+from cs.ucsd.edu (132.239.51.3), directory pub/GAucsd.
+
+GAucsd has been developed in a Unix environment, but should be easy
+to port to any platform that has a C compiler, and the make and awk
+utilities.  A Unix 'sh' compatible command shell is helpful but not
+necessary -- see the User's Guide for details.
+
+NOTE: The installation procedure has changed significantly from the
+previous version.  Even if you are familiar with GAucsd, you should
+take a quick look at the installation section in the User's Guide.
+
+Share and enjoy!
+
+- Nici Schraudolph.                        San Diego, 7th July 1992
+
+
+Changes since 1.2:
+=================
+
+Many thanks to those who spotted problems -- they are noted below
+next to "their" bug.
+
+1) Bug Fixes
+------------
+
+- random generator does not get stuck in a loop anymore; a patch
+  for this was distributed back in '91  (Peter J.B. Hancock)
+
+- five missing values in second row of 'a' array in f5.c are now
+  supplied  (Bruce Rosen)
+
+- avg and var arrays in report.c are now dynamically allocated
+  to prevent overflow  (Richard E. Gillilan)
+
+- the wrapper and Ctoi() can now handle very long genes, including
+  those longer than the machine's integer size  (John C. Schultz)
+
+- a missing external declaration for _eval() has been supplied in
+  best.c  (Sabih Gerez)
+
+- simultaneous use of the subdirectory and remote execution features
+  in non-shared file space works now; min and cpt file names are still
+  not treated quite right though
+
+
+2) Portability
+--------------
+
+Special thanks to Daniele Montanari for sharing his experiences in
+porting GAucsd to DOS, and thus facilitating many improvements.
+
+- all filenames are now DOS-friendly; e.g. "init.foo" --> "foo.ini"
+
+- the use of popen() and pclose() in setup.c has been eliminated
+
+- problems with GNU's gawk and "picky" C compilers have been resolved
+
+- the two makefiles have been merged to simplify customization; the
+  merged file now uses macros to achieve high portability
+
+- to reduce the frequent name clashes between GAucsd utilities and other
+  software, "ex" and "go" have mutated into "gx" and "ga" while "setup"
+  has metamorphosed to "inset"
+
+- more support for heterogenous environments: library and utilities
+  are now compiled into machine-specific subdirectories
+
+- the cryptic and Unix-specific "make dir" installation step has been
+  replaced with the "GAUCSD" environment variable  (Dave Demers)
+
+
+3) Other Changes
+----------------
+
+- structured source tree with src, usr, bin & etc subdirectories
+
+- the default population size suggested by "inset" is now a little
+  more reasonable (the usual disclaimers still apply though!)
+
+- by popular request, crossover rate is now entered in "inset" on
+  a per-individual basis again, with a dynamically computed default
+
+- the obsolete "clean" shell script has been thrown out
+
+- define.h now uses <limits.h> to get machine constants (Norman Barth)
+
+- global.h and extern.h have been collapsed into a single file to
+  improve code consistency
+
+
+Changes since 1.1:
+=================
+
+1) Incompatibilities
+--------------------
+
+- the "ckpt" file format has changed;
+
+- the Unpack() function used by low-level evaluation functions no longer
+  has a "length" parameter;
+
+- due to a new feature (see 4) below) low-level evaluation functions may
+  be called with a negative "length" parameter.  The minimum action re-
+  quired to maintain compatibility is to insert "if (length < 0) return;"
+  at the start of your old "eval()" or "_eval()" functions.
+
+Note that the 1.2ucsd "wrapper" takes these changes into account; your old
+high-level evaluation functions can therefore be used without modification.
+
+2) Bug Fixes
+------------
+
+- the non-portable bzero() function is no longer used;
+- a bug causing the very first bit to always mutate has been fixed;
+- problems with fully converged populations have been dealt with;
+- sigma scaling no longer causes a small inadvertent generation gap;
+- flawed genotype comparisons in cross.c and elitist.c have been fixed;
+- bugs in the schema performance calculations have been corrected;
+- restarts don't cause extraneous lines in the "out" file anymore;
+- "go" no longer removes old out files (this has mangled restarts).
+
+3) Refinements
+--------------
+
+- floats are printed out with more precision in various places;
+- there's more validity checking when reading "in" & "ckpt" files;
+- the experiment counter now starts at one, not zero ("ckpt" file);
+
+- there is no more "length" argument to Unpack() since this function
+  produces garbage unless "length" is invariant;
+
+- the min file may now contain duplicate genotypes if they cause differing
+  entries due to DPE, anti-aliassing ('A') or stochastic evaluation ('a');
+
+- the source for the "random()" number generator has been included in the
+  distribution, eliminating the need to compile with "#ifdef genrand" on
+  non-BSD systems;
+
+- since an immediate abort of the simulation may leave the data files in a
+  corrupt state, a third level of urgency - quit after current generation -
+  has been added to the signal handler.  INT (^C) signals are now caught as
+  well as TERM (kill) signals.
+
+4) New Feature
+--------------
+
+The "min" files now also contain "phenotypes" (ie. the decoded parameters
+to the fitness function) along with the encoded genome; this greatly aids
+the interpretation of the file.  To make use of this feature, low-level
+"eval()" or "_eval()" functions must return a string describing the most
+recently evaluated phenotype when called with a negative "length" para-
+meter.  This can be achieved by making the variables holding the phenotype
+static - see file "f1-ga.c" for an example.  For high-level evaluation
+functions the "wrapper" provides phenotype descriptions automatically.
+
+
+
+Changes since 1.0:
+=================
+
+1) Bug Fixes
+------------
+- "go" can now handle remote execution when "l" flag is not set;
+- fussy shells no longer complain about missing )'s in "go";
+- the non-portable cbrt() library function is no longer used;
+- a bug in the fitness scaling algorithm has been fixed.
+
+2) New Features
+---------------
+- subdirectory structure for data files;
+- re-editing of "in" files;
+- application-specific parameters;
+- sigma scaling;
+- stochastic decoding for continuous search spaces ('A');
+- super-uniform population initialization ('u');
+- Dynamic Parameter Encoding (DPE).
+
+
+Changes from GENESIS 4.5 to GAucsd 1.0:
+======================================
+
+1) Bug Fixes
+------------
+John Grefenstette's published 4.5 bug fixes:
+- changed random seeds from int to unsigned int;
+- corrected cross.c, line 81 to use i instead of temp;
+- correct crossover if crossing points are within same byte.
+
+Problems with machine-dependent data formats:
+- get char and int sizes from <values.h>;
+- modified use of bitmasks to allow for differing char sizes;
+- corrected built-in Rand() to allow for differing int sizes;
+- changed a number of variables from int to long.
+
+Other sundry bugs:
+- cross.c starts diff after Xing segment at xbyte2 + 1;
+- prevented computation of log(0.0) in calculation of Mu_next;
+- "go" without suffix reports to file "report", not "report.";
+- "clean" stays quiet when it can't find optional files;
+- made user input fields in setup.c longer (30 characters);
+- repaired signal bell to ring when experiment terminates.
+
+2) Code Improvements (Consistency & Efficiency)
+-----------------------------------------------
+- collapsed IN_FORMAT and OUT_FORMAT to single constant;
+- introduced symbolic constant for checkpoint file format;
+- genes are no longer unpacked for mutation;
+- use random() generator, saving its entire state in dumps;
+- diff outside Xing segment is computed more efficiently in cross.c;
+- modified Makefile to better reflect dependencies.
+
+3) Improved User Interface
+--------------------------
+- eval file name is default file suffix;
+- "clean" exits on "" (instead of "q");
+- maintain and start several named simulation queues for "ex";
+- user notification upon completion of queue execution;
+- better diagnostics from "report" in case of irregularities;
+- crossover rates greater than 1.0 possible;
+- setting "Max Gens w/o Eval" to 0 disables this feature;
+- zero report interval reports on initial and final generations only;
+- "G=..." line in go, ex and UserMakefile generated automatically;
+- eval function may use packed gene directly for added speed;
+- kill signals are caught for orderly termination.
+
+4) Major Departures from 4.5
+----------------------------
+- MUTATION macro always flips one bit by default;
+- dynamically computed default values in "setup";
+- C_rate is entered on a per-bit basis;
+- new termination criteria (Bias and Conv thresholds);
+- wrapper for eval functions automates genotype decoding;
+- ex/go can distribute simulations to remote machines.

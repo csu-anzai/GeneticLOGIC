@@ -1,0 +1,108 @@
+**********************************************************************
+
+Hints to include the Evolution Machine (EM) in the AI Repository and
+                             CD-ROM of the CMU
+
+1. Copyrights
+
+   The EM software is a (free of charge) product of Hans-Michael Voigt,
+   Joachim Born  and Jens Treptow.  The authors developed the EM at the
+   Institute for Informatics and Computing Techniques of Berlin.
+   At present, Hans-Michael Voigt and Joachim Born are at the Technical
+   University of Berlin.
+
+2. NO WARRANTIES
+
+   THIS SOFTWARE IS PROVIDED BY THE DEVELOPERS ``AS IS'' AND ANY EXPRESS
+   OR  IMPLIED WARRANTIES,  INCLUDING,  BUT NOT LIMITED TO,  THE IMPLIED
+   WARRANTIES OF  MERCHANTABILITY  AND  FITNESS FOR A PARTICULAR PURPOSE
+   ARE DISCLAIMED.  IN NO EVENT  SHALL  THE DEVELOPERS BE LIABLE FOR ANY
+   DIRECT,  INDIRECT,  INCIDENTAL,  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+   DAMAGES  (INCLUDING,  BUT NOT LIMITED TO,  PROCUREMENT OF  SUBSTITUTE
+   GOODS  OR  SERVICES;  LOSS OF USE,  DATA,  OR  PROFITS;  OR  BUSINESS
+   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,  WHETHER
+   IN  CONTRACT,  STRICT LIABILITY,  OR TORT  (INCLUDING  NEGLIGENCE  OR
+   OTHERWISE)  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,  EVEN
+   IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+   (Abided by 386BSD Release 0.1 / Copyright)
+
+3. Distribution kit
+
+   We provide  the EM-software in object code,  which can be run on PC's
+   with MS--DOS and Turbo C,v2.0,  resp. Turbo C++,v1.01.  The Manual to
+   the EM is included in the distribution kit.
+
+
+4. Brief description
+
+   The Evolution Machine (EM)  is  universally applicable  to continuous
+   (real-coded) optimization problems.
+
+   In the EM,  we have coded  fundamental  evolutionary algorithms,  and
+   added some of our approaches to evolutionary search.
+
+   The EM includes extensive menu techniques with:
+
+         * Default parameter setting for unexperienced users.
+         * Well-defined entries for  EM- control by freaks of
+           the EM,  who want  to leave  the standard  process
+           control.
+         * Data processing for repeated runs (with or without
+           change of the strategy parameters).
+         * Graphical presentation of results:
+           online presentation of the evolution progress, one-,
+           two- and three-dimensional graphic output to analyse
+           the fitness function and the evolution process.
+         * Integration of calling MS--DOS utilities (Turbo C).
+
+5. Keywords
+
+      Evolutionary Algorithms, Evolution Strategies, Genetic
+      Algorithms
+
+6. Official contact information
+
+      Hans-Michael Voigt or Joachim Born
+
+   Email adresses:
+
+      voigt@fb10.tu-berlin.de, born@fb10.tu-berlin.de.
+
+   Postal adress:
+
+      Technical University Berlin
+      Bionics and Evolution Techniques Laboratory
+      Bio- and Neuroinformatics Research Group
+      Ackerstr. 71-76 (ACK1)
+      D-13355 Berlin
+      GERMANY
+
+   Phone: +49-30-314-72-677.
+
+4. Other materials
+
+   Manual to the EM (included in the distribution kit)
+
+   Further-reaching papers (a selection, copies are available  from  our
+   ftp-server 'ftp-bionik.fb10.tu-berlin.de' in the '/pub/papers/Bionik'
+   - directory):
+
+   [1] H.-M. Voigt and J. Born and I. Santibanez-Koref, Hierarchically
+       Structured Distibuted Genetic Algorithms.  In R. Maenner and B.
+       Manderick (Eds.), Parallel Problem Solving from Nature 2, 155 -
+       164, North-Holland, Amsterdam, London, New York, 1992.
+   [2] J. Born and H.-M. Voigt and I. Santibanez-Koref,    Alternative
+       Evolution Strategies to Global Optimization. In R. Maenner and B.
+       Manderick (Eds.), Parallel Problem Solving from Nature 2 , 187 -
+       196, North-Holland, Amsterdam, London, New York, 1992.
+   [3] H.-M. Voigt and J. Born and I. Santibanez-Koref,   A Multivalued
+       Evolutionary Algorithm. Technical Report TR-93-022, International
+       Computer Science Institute (ICSI), Berkeley, April 1993.
+   [4] H.-M. Voigt and J. Born and I. Santibanez-Koref,    Evolutionary
+       Structuring of  Artificial  Neural  Networks.  Technical  Report
+       TR-93-002,  Technical University Berlin,  Bionics and  Evolution
+       Techniques Laboratory, 1993.
+
+
+**********************************************************************
+

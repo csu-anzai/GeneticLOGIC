@@ -1,0 +1,138 @@
+#!/bin/sh
+
+###############################################################
+#                                                             #
+#   Copyright (c) 1989 Nicol N. Schraudolph                   #
+#   Computer Science & Engineering, C-014                     #
+#   University of California, San Diego                       #
+#   La Jolla, CA 92093-0114                                   #
+#                                                             #
+#   Permission is hereby granted to copy all or any part of   #
+#   this program for free distribution.   The author's name   #
+#   and this copyright notice must be included in any copy.   #
+#                                                             #
+###############################################################
+
+#
+#  file:    ga
+#
+#  author:  Nicol N. Schraudolph
+#
+#  created: August 1989
+#
+#  purpose: Bourne shell script for GAucsd simulation startup
+#
+
+trap "" 21	# shell bug fix: ignore background tty reads
+nice=/bin/nice	# or whatever path your remote nice has
+
+# set up file names
+if test -d in
+then in=in/${2-in}
+else in=${2+$2.}in
+fi
+if test -d out
+then out=out/${2-out}
+else out=${2+$2.}out
+fi
+if test -d ini
+then init=ini/${2-ini}
+else init=${2+$2.}ini
+fi
+if test -d sma
+then sma=sma/${2-sma}
+else sma=${2+$2.}sma
+fi
+if test -d rep
+then rep=rep/${2-rep}
+else rep=${2+$2.}rep
+fi
+if test -d cpt
+then cpt=cpt
+else cpt=\.
+fi
+if test -d min
+then min=min
+else min=\.
+fi
+if grep -s '^ *Options = [a-zA-Z]*l' $in
+then
+	if test -d log
+	then log=log/${2-log}
+	else log=${2+$2.}log
+	fi
+else
+	log=/dev/null
+fi
+
+touch $out
+if test $3z = z   # no host name: execute locally
+then
+	nice -10 $1 $2
+else
+	if test $4z = z
+	then me=$USER
+	else me=$4
+	fi
+	if test $5z = z   # binary compatible: run directly in /tmp
+	then
+		rsh -l $me $3 "mkdir /tmp/$$" 2> e$$ && \
+		rcp $1 $me@$3:/tmp/$$ 2>> e$$ && \
+		rcp $in $me@$3:/tmp/$$/$2.in 2>> e$$ && \
+		rcp $out $me@$3:/tmp/$$/$2.out 2>> e$$ && \
+		(rcp $init $me@$3:/tmp/$$/$2.ini 2> /dev/null || true) && \
+		(rcp $sma $me@$3:/tmp/$$/$2.sma 2> /dev/null || true) && \
+		echo running on $3: >> $log && \
+		(rsh -l $me $3 "cd /tmp/$$ && ($nice -15 $1 $2 l; cat $2.log \
+			|| echo Error: couldn\'t start $1 && date \
+			&& echo ''; rm -f $1 $2.in $2.ini $2.log)" >> $log 2>> e$$
+		rcp -p $me@$3:/tmp/$$/$2.out $out 2> /dev/null
+		rcp -p $me@$3:/tmp/$$/$2.dpe $dpe 2> /dev/null
+		rcp -p $me@$3:/tmp/$$/$2.min\* $min 2> /dev/null
+		rcp -p $me@$3:/tmp/$$/$2.cpt\* $cpt 2> /dev/null
+		rcp -p $me@$3:/tmp/$$/$2.sma $sma 2> /dev/null
+		rsh -l $me $3 "rm -rf /tmp/$$" 2>> e$$)
+	else
+		rsh -l $me $3 "touch $5/t$$" 2> e$$ && \
+		if test -f t$$
+		then            # shared file space: don't copy files
+			rm -f t$$
+			rsh -l $me $3 "cd $5; $nice -15 $1 $2"
+		else
+			eva=`echo $1 | sed -e 's/^ga\.//'`
+			rcp -p $eva.c $me@$3:$5/$eva.c 2> e$$ && \
+			rcp $in $me@$3:$5/$2.in 2>> e$$ && \
+			rcp $out $me@$3:$5/$2.out 2>> e$$ && \
+			(rcp $init $me@$3:$5/$2.ini 2> /dev/null || true) && \
+			(rcp $sma $me@$3:$5/$2.sma 2> /dev/null || true) && \
+			echo running on $3: >> $log && \
+			(rsh -l $me $3 "cd $5 && rm -f t$$ && \
+				($nice -5 make -f" \`which Makefile\` "GAeval=$eva && \
+				($nice -15 $1 $2 l; cat $2.log && rm $2.in $2.log || \
+				echo Error: couldn\'t start $1 && date && echo ''; \
+				rm -f $2.ini) || echo Error: couldn\'t make $1 && date \
+				&& echo '')" >> $log 2>> e$$
+			rcp -p $me@$3:$5/$2.out $out 2> /dev/null
+			rcp -p $me@$3:$5/$2.dpe $dpe 2> /dev/null
+			rcp -p $me@$3:$5/$2.min\* $min 2> /dev/null
+			rcp -p $me@$3:$5/$2.cpt\* $cpt 2> /dev/null
+			rcp -p $me@$3:$5/$2.sma $sma 2> /dev/null)
+		fi
+	fi
+	if test -s e$$   # collect errors, if any
+	then
+		echo running on $3: > f$$
+		cat e$$ >> f$$
+		date >> f$$
+		echo "" >> f$$
+		cat f$$ >> errors
+	fi
+	rm -f e$$ f$$
+fi
+if test -s $out   # prepare report
+then
+	echo This is $rep for $1 > $rep
+	date >> $rep
+	report $2 >> $rep
+fi
+

@@ -1,0 +1,288 @@
+
+/*************************************************************/
+/*                                                           */
+/*  Copyright (c) 1990                                       */
+/*  Darrell L. Whitley                                       */
+/*  Computer Science Department                              */
+/*  Colorado State University                                */
+/*                                                           */
+/*  Permission is hereby granted to copy all or any part of  */
+/*  this program for free distribution.   The author's name  */
+/*  and this copyright notice must be included in any copy.  */
+/*                                                           */
+/*************************************************************/
+/****************************************************************
+ *								*
+ *	This is the cycle operator developed by Oliver et al	*
+ * 	(Proc 2nd Int'l Conf on GA's) and implemented by    	*
+ *	Susan McDaniel at Colorado State University     	*
+ *								*
+ *	To use this program include the following lines in 	*
+ *	the main_tsp.c file:					*
+ *								*
+ *								*
+ *	This call should only happen once:			*
+ *	get_city_table (Pool->string_length);			*
+ *								*
+ *								*
+ *	This code should be in a loop so it is called once	*
+ *	for each recombination:					*
+ *	if ( bitgen () )					*
+ *	   cycle (mom->string, dad->string, child->string, 	*
+ *  	           Pool->string_length, city_table);		*
+ *      else							*
+ *	   cycle (dad->string, mom->string, child->string, 	*
+ *		   Pool->string_length, city_table);		*
+ *								*
+ *								*
+ *	This operator attempts to preserve the position of 	*
+ *	cities in the parent tours.  A parent tour is 		*
+ *	selected randomly as is a cycle starting point.  The 	*
+ *	city at the cycle starting point of the selected parent *
+ *	is inherited by the child.  The city which is in 	*
+ *	the same position in the other pare nt cannot then 	*
+ *	be placed in this position so its position is found 	*
+ *	in the selected parent and is inherited from that 	*
+ *	position by the child.  This continues until the 	*
+ *	cycle is completed by encountering the initial city 	*
+ *	in the unselected parent.  Any cities which are not 	*
+ *	yet present in the offspring are inherited from the 	*
+ *	unselected parent.					*
+ *								*
+ *	Example- cycle cross:					*
+ *	Parent 1: 	a b c d e f g h i j			*
+ *	Cross Pts:	        *      	   (Parent 1 selected)  *
+ *	Parent 2:	c f a j h d i g b e			*
+ *								*
+ *	Offspring:	c b a d e f g h i j			*
+ *								*	
+ *	Position four in Parent 1 is the selected starting 	*
+ *	position for the cycle and O ff[4] = P1[4] = d.  	*
+ *	Parent 2 is then searched until the position of 	*
+ *	city d is fo und (P2[6]) and the offspring tour 	*
+ *	at this position inherits the city in this position 	*
+ *	from Parent 1, Off[6] = P1[6] = f.  f occurs in P2 	*
+ *	at position 2, so Off[2] = P1[2] = b followed by 	*
+ *	Off[9] = P1[9] = i, Off[7] = P1[7] = h, Off[5] = 	*
+ *	P1[5 ] = e and Off[10] = P1[10] = j.  This 		*
+ *	completes a cycle since P2[5] = j and P1[5] = d 	*
+ *	which was the starting city in the cycle.  Now 		*
+ *	any remaining cities are in herited from Parent 2:  	*
+ *	Off[1] = P2[1] = c and Off[3] = P2[3] = a. 		*
+ *								*
+ *								*
+ ****************************************************************/
+
+
+#include <stdio.h> 
+#include <malloc.h>
+#include "ga_random.h"
+#include "gene.h"
+#include "op_cycle.h"
+
+
+
+/*****************************************************************
+ *  FUNCTION: get_city_table 
+ *
+ *  DESCRIPTION: allocates space for the city data table
+ *		 the city data table contains the position
+ *		 of each city in each parent and also 
+ *		 has a field which is set when a city has
+ *		 been included in the offspring tour.
+ *
+ *		 note: the city table is indexed by the city
+ *		 number, not the position in the tour.
+ *
+ * INPUT PARAMETERS: string length
+ *
+ *
+ * RETURN VALUE: the address of the city table
+ *
+ *****************************************************************/
+CITY_DATA *
+get_city_table (length)
+int length;
+
+{
+    CITY_DATA *city_table;
+
+    /*  malloc one extra location so that cities 1-N can be accessed
+	directly.  location 0 will not be used  */
+
+    if (!(city_table = (CITY_DATA *) malloc ((length + 1)*sizeof (CITY_DATA))))
+       printf ("get_city_table: Malloc failure. \n");
+
+    return (city_table);
+
+}
+
+
+/********************************************************
+ *							*
+ *	FUNCTION: tsp_mutate				*
+ *							*
+ *	DESCRIPTION: swaps a random number of cities	*
+ *		     in the tour			*
+ *							*
+ *	INPUT PARAMETERS: tour address			*
+ *			  length of tour		*
+ *							*
+ *							*
+ ********************************************************/
+
+ void tsp_mutate (tour, length)
+ GENE_DATA	tour[];
+ int		length;
+
+ {
+     int   swap_point1;
+     int   swap_point2;
+     int   num_swaps;
+     GENE_DATA   temp;
+
+
+     num_swaps = randomain (length/3, 0);
+
+     while (num_swaps > 0) 	{
+	swap_point1 = randomain (length-1, 0);
+	swap_point2 = randomain (length-1, 0);
+
+	while (swap_point1 == swap_point2)
+	   swap_point2 = randomain (length-1, 0);
+
+	temp = tour[swap_point1];
+	tour[swap_point1] = tour[swap_point2];
+	tour[swap_point2] = temp;
+
+
+	num_swaps -= 1;
+
+    }
+}
+
+
+/*****************************************************************
+ *  FUNCTION: cycle 
+ *
+ *  DESCRIPTION: performs cycle crossover operation
+ *
+ *  INPUT PARAMETERS: two parent gene strings
+ *		     space for child string
+ *		     the length of the two strings
+ *		     the city table address
+ *
+ *
+ *  RETURN VALUE:
+ *
+ *****************************************************************/
+
+void cycle (dad, mom, kid, length, city_table)
+GENE_DATA	dad[], mom[], kid[];
+int		length;
+CITY_DATA	*city_table;
+
+{
+
+    int start_pos;
+    int curr_pos;
+    int i;
+    int count = 0;
+    int numdiffs = 0;
+    GENE_DATA	kid1[], kid2[];
+
+
+    for (i=1; i<=length; i++)	{		/* initialize city table */
+       city_table[i].used = 0;
+       city_table[mom[i-1]].mom_position = i-1;
+       city_table[dad[i-1]].dad_position = i-1;
+    }
+
+    start_pos = randomain (length - 1, 0);	/* randomly choose cycle 
+						   starting position	 */
+
+    kid[start_pos] = mom[start_pos];		/* child inherits first city  */
+    curr_pos = start_pos;			/* from mom to begin cycle */
+    city_table[mom[start_pos]].used = 1;
+    count += 1;
+
+    while (dad[curr_pos] != mom[start_pos])  {	/* follow cycle thru parents */
+       city_table[dad[curr_pos]].used = 1;	/* till cycle is completed  */
+       curr_pos = city_table[dad[curr_pos]].mom_position;
+       kid[curr_pos] = mom[curr_pos];
+       count += 1;
+    }
+
+    if (count < length)  {	/* cycle did not create a complete tour */
+       for (i=1; i<=length; i++)	{	/* finish creating the tour */
+	  if (!city_table[i].used) 	{
+	     kid[city_table[i].dad_position] = dad[city_table[i].dad_position];
+	     count += 1;
+	  }
+       }
+    }
+
+    if (count < length)		/* still not complete ERROR condition */
+       printf ("\n*** ERROR in cycle -- number of elements in child not correct ***\n");
+
+    numdiffs = 0;
+    for (i=0; i<length; i++) 	/* count the number of differences between */
+       if (mom[i] != kid[i])	/* mother and child. */ 
+	  numdiffs += 1;	
+
+    if (numdiffs == 0)	{	/* If no differences then mutate the child. */
+       tsp_mutate (kid, length);
+    }
+
+
+ }
+
+/***************************************************************************
+ * FUNCTION: maketour
+ *
+ * DESCRIBE: Randomly generates a legal "traveling salesman" tour 
+ *           (i.e. where each point is visited only once.)
+ *
+ *           Essentially, this routine fills an array with all possible
+ *           points on the tour and randomly chooses the 'next' city from
+ *           this array.  When a city is chosen, the array is shortened
+ *           and the procedure repeated.
+ *
+ * INPUT PARAMETERS: an empty tour, number of points per tour
+ *
+ * RETURN VALUE: none
+ *
+ * RESULT: fills input tour
+ ****************************************************************************/
+void
+maketour(gene, num_points)
+GENE_DATA gene[];
+int      num_points;
+{
+static int          first_time = 1;
+static GENE_DATAPTR temp;
+int                 remainder;
+int                 next, i;
+
+if (first_time)
+   {
+    if (!(temp = (GENE_DATAPTR) malloc (num_points*sizeof(GENE_DATA))))
+ 	   fatal_error ("maketour: malloc failure\n");
+    first_time = 0;
+   }
+   
+for(i = 0; i < num_points; i++)
+   temp[i] = (GENE_DATA) i+1;
+
+remainder = num_points - 1;
+
+for(i = 0; i < num_points; i++)
+   {
+    next = randomain(remainder, 0);
+    gene[i] = temp[next];
+    temp[next] = temp[remainder];
+    remainder--;
+   }
+} 
+
+

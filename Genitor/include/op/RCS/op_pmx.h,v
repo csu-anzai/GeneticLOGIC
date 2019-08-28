@@ -1,0 +1,80 @@
+head     1.2;
+branch   ;
+access   ;
+symbols  ;
+locks    whitley:1.2; strict;
+comment  @ * @;
+
+
+1.2
+date     91.02.01.13.41.41;  author whitley;  state Exp;
+branches ;
+next     1.1;
+
+1.1
+date     91.02.01.11.24.51;  author whitley;  state Exp;
+branches ;
+next     ;
+
+
+desc
+@pmx op's declarations.
+@
+
+
+1.2
+log
+@copyright notice added
+@
+text
+@
+
+/*************************************************************/
+/*                                                           */
+/*  Copyright (c) 1990                                       */
+/*  Darrell L. Whitley                                       */
+/*  Computer Science Department                              */
+/*  Colorado State University                                */
+/*                                                           */
+/*  Permission is hereby granted to copy all or any part of  */
+/*  this program for free distribution.   The author's name  */
+/*  and this copyright notice must be included in any copy.  */
+/*                                                           */
+/*************************************************************/
+/*************************************************************/
+/*                                                           */
+/*  Copyright (c) 1990                                       */
+/*  Darrell L. Whitley                                       */
+/*  Computer Science Department                              */
+/*  Colorado State University                                */
+/*                                                           */
+/*  Permission is hereby granted to copy all or any part of  */
+/*  this program for free distribution.   The author's name  */
+/*  and this copyright notice must be included in any copy.  */
+/*                                                           */
+/*************************************************************/
+typedef struct citydata
+{  int failed;
+   int from;
+   int fail_indx;
+   int check_list;
+} CITY_DATA;
+
+
+extern int * get_array ( /* int length */);
+
+extern void maketour(/* GENE_DATA gene[], num_points */);
+
+extern void pmx ( /* GENE_DATA mom[], dad[], kid[]; int length;
+		int *failed, *from, *indx, *checklist; */);
+
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d1 26
+@

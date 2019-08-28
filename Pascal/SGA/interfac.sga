@@ -1,0 +1,22 @@
+{ interfac.sga: contains  objfunc, decode }
+{ Change these for different problem      }
+
+function objfunc(x:real):real;
+{ Fitness function - f(x) = x**n }
+const coef = 1073741823.0; { Coefficient to normalize domain }
+         n = 10;           { Power of x }
+begin objfunc := power( x/coef, n ) end;
+
+function decode(chrom:chromosome; lbits:integer):real;
+{ Decode string as unsigned binary integer - true=1, false=0 }
+var j:integer;
+    accum, powerof2:real;
+begin
+ accum := 0.0; powerof2 := 1;
+ for j := 1 to lbits do begin
+   if chrom[j] then accum := accum + powerof2;
+   powerof2 := powerof2 * 2;
+  end;
+ decode := accum;
+end;
+

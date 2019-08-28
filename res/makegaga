@@ -1,0 +1,11 @@
+CFLAGS=-g
+all:    gaga
+
+gaga:   gaga.o main.o
+	cc -o gaga $(CFLAGS) main.o gaga.o -lm
+
+gaga.o: gaga.c gaga.h globs.h
+	cc -c $(CFLAGS) gaga.c
+
+main.o: main.c gaga.h globs.h mainglobs.h
+	cc -c $(CFLAGS) main.c

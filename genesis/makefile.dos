@@ -1,0 +1,34 @@
+# MAKEFILE for DOS version of GENESIS
+
+# Implicit rule for Turbo C
+.c.obj:
+	tcc -O -K -c $<
+
+GA = best.obj checkpnt.obj convert.obj cross.obj display.obj \
+    done.obj elitist.obj error.obj eval.obj evaluate.obj \
+    generate.obj init.obj input.obj main.obj measure.obj \
+    mutate.obj restart.obj schema.obj select.obj
+
+H = define.h extern.h global.h format.h
+
+ga.exe : $(GA)
+	tcc -ega.exe *.obj
+
+$(GA) : $(H)
+
+install : ga.exe report setup
+
+report : report.obj error.obj
+	tcc report.obj error.obj
+	del report.obj
+
+report.obj: $(H)
+
+setup : setup.c
+	tcc setup.c
+	del setup.obj
+
+
+
+
+

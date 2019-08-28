@@ -1,0 +1,15 @@
+
+# GAhosts - the host table used by GAucsd to distribute simulations.
+# The base table in $GAUCSD/usr can be overridden by a user-specific
+# table "~/GAhosts" which in turn yields to "GAhosts" in the current
+# directory.  Each entry should have the format:
+#
+# <load factor> <host name> [<login> [<directory>]]
+# eg. "1 neuromancer smith /data/GAucsd"
+#
+# For binary compatible hosts the directory may coincide with the
+# current directory through disk sharing (in which case redundant
+# copies will be avoided) or even be omitted (in which  case  the
+# executable  will be run in /tmp).  If the login is also omitted
+# it will default to $USER.  Add entries below:
+

@@ -1,0 +1,251 @@
+/*		CORE.EXT	for the CFS-C Classifier System.
+
+Declarations of data structures for the "core" classifier components defined in CORE.DEF file.
+To access these structures in other source files, #include CORE.H and this.
+
+*/
+
+#ifndef CFLSTSZ
+#include "core.h"
+#endif
+
+extern unsigned int CycleStp;
+
+extern struct MsgNode {
+    unsigned int Msg_Id;
+    unsigned int Message[INTPRSTR];
+    float Intensit;
+    struct CfNode *Producer;
+    struct MsgNode *MtchMsg1;
+    struct MsgNode *MtchMsg2;
+    struct MsgNode *NxtEMsg;
+    short int FromDet;
+    short int IsMsg;
+    short int MsgMtchd;
+    short int MsgUsed;
+}
+
+   *DetMsgs[DMSGSSZ];
+
+extern struct MsgNode *CurMsgs, *NextCMsg;
+extern unsigned int NmCMsgs, NmCMsgIn, NmDetMsg;
+extern int LastCMsg;
+
+extern struct MsgNode *NewMsgs, *NextNMsg;
+extern unsigned int NmNMsgs, NmNMsgIn;
+extern int LastNMsg;
+
+extern struct MsgNode *OldMsgs, *NextOMsg;
+extern unsigned int NmOMsgs, NmOMsgIn;
+extern int LastOMsg;
+
+extern unsigned int NmIMsgMx;
+extern unsigned int NmDMsgMx;
+extern float MsgIntDf;
+
+extern unsigned int TOTMtch;
+extern unsigned int TOTMsPrd;
+extern unsigned int TOTMsPst;
+extern unsigned int TOTDtMsg;
+
+/*
+	CfNode  -- structure to store a classifier and associated attributes.
+	Also, variables for storing 'candidate' classifier information.
+*/
+
+extern struct CfNode {
+    unsigned int Cf_Id;
+
+   /*   Condition  1   and 2  */
+    unsigned int Cnd1Bits[INTPRSTR];
+    unsigned int Cnd1DCs[INTPRSTR];
+    short int Cnd1Type;
+    unsigned int Cnd2Bits[INTPRSTR];
+    unsigned int Cnd2DCs[INTPRSTR];
+    short int Cnd2Type;
+
+   /*   The Action part  */
+    short int ActType;
+    unsigned int ActBits[INTPRSTR];
+    unsigned int ActDCs[INTPRSTR];
+
+   /*  Longer-lived variable values */
+    float Strength;
+    float BidRatio;
+    unsigned int TotNmBid;
+    unsigned int TotMtch;
+    unsigned int TotProd;
+    unsigned int TotPost;
+    unsigned int TotEMtch;
+    unsigned int TotEAct;
+    unsigned int TotPosRw;
+    unsigned int TotNegRw;
+    unsigned int TotNmOfs;
+
+   /*  Temporary variables, for use in bidding by candidates and by learning algoritms. */
+    float ChngStr;
+    float Support;
+    float CfBid;
+    float CfBBid;
+    float BidShare;
+    short int PstEfMsg;
+    unsigned int NmMtch;
+    unsigned int MMBitsC1[INTPRML];
+    short int NmMMC1;
+    unsigned int MMBitsC2[INTPRML];
+    short int NmMMC2;
+    short int NmProd;
+    short int NmPost;
+    short int NmDetMM;
+
+   /* Variables for use by 'Discovery' algorithms */
+    float PBiasStr;
+    float RBiasStr;
+    short int EligRpl;
+    short int ReplFlg;
+    unsigned int StpCrtd;
+    unsigned int StpLPrd;
+    unsigned int StpLPst;
+
+    short int NoBBFlg;
+    short int NoRplFlg;
+    short int NoPrnFlg;
+
+    struct CfNode *NxtCand;
+
+    struct CfNode *PrvStrCf;
+    struct CfNode *NxtStrCf;
+}
+
+   *CfLst,
+   *CurCfs,
+   *NxtFrCf,
+   *CandCfs,
+   *LstCndCf,
+   *StrSrtCf,
+   *HiStrCf;
+
+extern struct CfNode *HighestStrCf;
+extern struct CfNode *LowestStrCf;
+
+extern unsigned int OneMPerC;
+extern unsigned int DelHall;
+extern unsigned int MxDupMsg;
+extern unsigned int NxtCfId;
+extern unsigned int NmCfs;
+extern unsigned int NmCfsMx;
+extern unsigned int NmCandCf;
+extern unsigned int NmCfWon;
+extern unsigned int NmCfPost;
+extern float TotCfStr;
+extern float AveCfStr;
+extern float TotCfBR;
+extern float AveCfBR;
+
+extern float CfStrDf;
+extern float CfSuppDf;
+extern float CfStrMax;
+extern float CfStrMin;
+extern float CfBidMin;
+
+extern float GRCFrMC;
+extern float GRCFrNSL;
+
+extern float TOTBidRa;
+extern unsigned int TOTNmBid;
+extern unsigned int TOTNmWin;
+extern unsigned int TOTCfPst;
+extern unsigned int TOTBGStr;
+extern unsigned int TOTActEf;
+extern unsigned int TOTNmPRw;
+extern unsigned int TOTNmNRw;
+extern unsigned int TOTSyRwP;
+extern unsigned int TOTSyRwN;
+
+extern unsigned int NmMtchs;
+extern unsigned int ORMBits[INTSZ];
+extern unsigned int NmIEMMx;
+extern unsigned int NmIEMsgs;
+extern unsigned int NmIIMMx;
+extern unsigned int NmIIMsgs;
+
+/**
+	Special variables for bidding and classifier strength modification.
+*/
+extern unsigned int BBType;
+extern float SysTreas;
+extern float SysRew;
+extern float FrPayDet;
+extern float FrPayNEC;
+extern float DMShare;
+extern float DMDscnt;
+extern short ShareRew;
+extern short AllPayBd;
+extern short SuppBid;
+extern float BidPow;
+extern float Bid_k;
+extern float BRPow;
+extern float EBRPow;
+extern float BtCSB, BtCMB;
+extern float HeadTax, AHeadTax;
+extern float BidTax;
+extern float FBidTax;
+extern float PrdTaxMx, PrdTaxPw;
+extern float TotCCSup, AveCCSup;
+extern float TotBBid;
+extern float TotCCBid, HiCCBid, LowCCBid;
+
+extern struct EffNode {
+    unsigned int Eff_Id;
+    char EffName[EFFNAMSZ];
+    unsigned int ECndBit[INTPRSTR];
+    unsigned int ECndDCs[INTPRSTR];
+    unsigned int ECndType;
+    int (*Eff_Set) ();
+    int (*Eff_Fn) ();
+    int (*EQEfAct) ();
+    unsigned int NmEMtch;
+    unsigned int NmEAct;
+    unsigned int CEffFlg;
+    struct MsgNode *EffMtch;
+    unsigned int ETotMtch;
+    unsigned int ETotAct;
+}
+
+EffLst[EFFLSTSZ];
+
+extern unsigned int NmEffs;
+extern unsigned int DetectRt;
+extern unsigned int EffectRt;
+extern unsigned int DetMsgMn;
+extern unsigned int TOTEMtch;
+extern unsigned int TOTEAMsg;
+extern unsigned int TOTEAct;
+extern unsigned int MadeMstk;
+
+extern char *GMsgBuff;
+extern char *GCfBuff;
+
+extern unsigned int DsCfLIds[];
+extern short DsCfLst;
+
+
+#if defined(__STDC__) || defined(__cplusplus)
+# define PRO(s) s
+#else
+# define PRO(s) ()
+#endif
+
+/* core.c */
+VOID RdDetect PRO((void));
+int GenCands PRO((void));
+VOID GenCand PRO((struct CfNode *cp));
+VOID GCndsDem PRO((void));
+VOID GenNMsgs PRO((void));
+int PostCfMs PRO((struct CfNode *CfPtr));
+int MakeNMsg PRO((struct CfNode *Cf, struct MsgNode *Msg1, struct MsgNode *Msg2));
+VOID CalcBid PRO((struct CfNode *Cfptr));
+VOID GenBehav PRO((void));
+VOID ChkEftrs PRO((void));
+
+#undef PRO

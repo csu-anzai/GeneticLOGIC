@@ -1,0 +1,12 @@
+ PERMSSN  UID GID  PACKED    SIZE  RATIO        CRC        STAMP       NAME
+----------------- ------- ------- ------ ---------- ------------ -------------
+rw-r--r--10187/15     1374    2591  53.0% -lh5- 6a43 May 14  1992 cnsannc.txt
+rw-r--r--10187/15     1467    3134  46.8% -lh5- 5da6 May 14  1992 cnsspon1.txt
+[MS-DOS]             4951   16997  29.1% -lh5- 1d08 Jun 30  1990 genalg3.pas
+[MS-DOS]              234     491  47.6% -lh5- 64a3 Jul 21  1990 genalg.bat
+[MS-DOS]            23464   37754  62.1% -lh5- 4489 Jun  3  1990 genalg3.exe
+[MS-DOS]             1864    4513  41.3% -lh5- 08e6 Jul 21  1990 900628.ga
+[MS-DOS]             1568    2966  52.8% -lh5- 2717 Oct 31  1991 cnsannc.txt
+[MS-DOS]             1468    3142  46.7% -lh5- 6493 Oct 31  1991 cnsspon1.txt
+----------------- ------- ------- ------ ---------- ------------ -------------
+ Total    8 files   36390   71588  50.8%            Jul  8 08:06

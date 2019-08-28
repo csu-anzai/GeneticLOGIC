@@ -1,0 +1,45 @@
+The Gene Invariant Genetic Algorithm - a prototype demonstration
+program.  The purpose for making this available is to allow readers of
+the technical report TR92-05 to verify the experiments and check the
+robustness over parameter variations.
+
+Last updated:
+ Jan 22/93 - code added to free memory allocated in initpop().
+
+To obtain, copy the SHAR.Z file, 
+uncompress SHAR.Z
+unshar SHAR.Z
+cd Source
+make
+cd ../Experiments
+mv ../Source/giga .
+giga <Decept/goldberg.1
+
+In the last step the input file can be replaced by any of the 
+files, or take input from the standard input.
+
+
+Related Papers:
+Obtainable as technical reports one directory level up.
+
+Michael Lewchuk, Master's Thesis;
+"Genetic Invariance: A New Approach to Genetic Algorithms" 
+April 1992 Technical Report TR92-05
+
+Joseph Culberson; "GIGA Program Description and Operation"
+June 1992 Technical Report TR92-06
+
+Joseph Culberson;
+"Genetic Invariance: A New Paradigm for Genetic Algorithm Design"
+June 1992 Technical Report TR92-02
+
+For hard copies, email britta@cs.ualberta.ca
+
+* Permission is hereby granted to copy all or any part of
+* this program for free distribution.  The author's name
+* and this copyright notice must be included in any copy.
+* This program is provided ``as is'' without any express or implied
+* warranties.
+
+* Comments and suggestions may be emailed to joe@cs.ualberta.ca
+

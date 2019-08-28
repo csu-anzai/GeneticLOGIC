@@ -1,0 +1,182 @@
+%
+%	GENEsYs-mod.tex		Ba, 22 feb 91		LaTeX 2.09
+%				Ba, 15 jun 92
+%
+%	How to make modifications to GENESIS.
+%{
+
+\section{Inserting New Test Functions}\label{genesis-mod}
+ 
+The current set of objective functions can easily be extended by the user.
+The parameter list of objective functions is standardized according to 
+the following two principal possibilities:
+%
+\begin{Enumerate}
+%
+\item	A pseudoboolean objective function is implemented.
+	In this case, the arguments of the objective function are an 
+	array of characters ('0' and '1', forming the bitstring) and
+	an integer value giving the complete length of the bitstring.
+%
+\item	An objective function mapping continuous, real-valued object 
+	variables to fitness values is implemented.
+	In this case, the arguments of the objective function are
+	an array of doubles and an integer value giving the dimension
+	of the object variable vector.
+%
+\end{Enumerate}
+%
+Examples for both parameter lists and formulations of the objective 
+function are given in the following source code.
+
+\vskip1.0\baselineskip
+\noindent\rule{\textwidth}{0.1pt}
+
+\begin{scriptsize}
+\input{GENEsYs-f01c.tex}
+\end{scriptsize}
+
+\noindent\rule{\textwidth}{0.1pt}
+
+\begin{scriptsize}
+\input{GENEsYs-f12c.tex}
+\end{scriptsize}
+\noindent\rule{\textwidth}{0.1pt}
+\vskip1.0\baselineskip
+
+\subsection{Automatic \LaTeX-Documentation}
+
+In order to have the documentation up-to-date, when inserting a new 
+objective function the user should also add a \LaTeX\ description of
+the objective function to the source code, included in the comment 
+header and bracketed by \verb/**TeX/ keywords.
+The meaning of the macros provided to do so is as follows:
+%
+\begin{Itemize}
+%
+\item	\verb/\Fct{}{}/							\\
+	The description of the objective function.
+	First parameter: A short textual description of the objective 
+	function, e.g.~the name of the function (if known).		\\
+	Second parameter: A bibliographic key to an entry of the
+	bibliography database file.
+	This parameter may be left empty.
+%
+\item	\verb/\Expr{}/							\\
+	The arithmetic expression which describes the objective function.
+	Several repetitions of this macro may occur in the description.
+%
+\item	\verb/\begin{Cst}...\end{Cst}/					\\
+	All constant definitions for the objective function are included
+	in this environment.				
+%
+\item	\verb/\Min{}/							\\
+	A specification of the minimum point and objective function
+	value at the minimum point (if known).
+%
+\end{Itemize}
+
+To have your documentation up-to-date, simply process
+%
+\begin{center}
+	\verb/make dvi/
+\end{center}
+%
+two times in the directory GENEsYs/doc.
+This will automatically extract the \LaTeX-description from the 
+function sources and create the updated documentation by running
+\LaTeX\ on the \verb/.tex/-files.
+
+\subsection{Function Table Entries}
+
+In order to add a new objective function, the user should proceed
+according to the following stepwise description:
+%
+\begin{Enumerate}
+%
+\item	Write an objective function source file according to the examples
+	given above.
+	The file containing the objective function should be named according to
+	the pattern \File{f\_xx.c} where \File{xx} is the next free number for
+	objective functions.
+\ifUS
+	The file must be placed in the directory GENEsYs/ src/fct.
+\else
+	The file must be placed in the directory GENEsYs/src/fct.
+\fi
+%
+\item	In the file GENEsYs/src/fct/ftab.c, provide the following entries
+	(here demonstrated by referring to an already existing example):
+	%
+	\begin{footnotesize}
+	\input{GENEsYs-ftabc.tex}
+	\end{footnotesize}
+	%
+	The first line simply declares your new function to be extern.
+	More interesting is the entry you have to provide in the data
+	structure \Vrb{f\_tab[]}, where the entries in the order of their
+	appearance in the example have the following meaning:
+	%
+	\begin{Itemize}
+	%
+	\item	The default dimensionality of the objective function.
+	%
+	\item	A keyword which describes, whether the default dimensionality
+		may be changed (\Vrb{VRBL}) or not (\Vrb{STRC}).
+	%
+	\item	A keyword which classifies the objective function as a
+		pseudoboolean function (\Vrb{BINY}) or a continuous 
+		function mapping real vectors to fitness values (\Vrb{REAL}).
+	%
+	\item	Default values for lower and upper bound of the object
+		variables (for decoding purposes).
+	%
+	\item	The name of the objective function (i.e.~a pointer to the			function).
+	%
+	\item	The name of the file containing the objective function code,
+		without the extension \File{.c}.
+	%
+	\item	A textual description of the objective function (for the
+		online help).
+	%
+	\item	Up to three real-valued additional parameters, which can 
+		during a call to the \GA\ directly be passed to the 
+		objective function.
+		The options for these values are defined to be 
+		\O{-p}, \O{-q}, and \O{-r}, respectively, in
+		the order of definition of the options.
+		Here, these are the parameters~$a$, $b$, and $c$ of the 
+		objective function by Ackley.
+		Referring to section~\ref{genesis-fct}, the reader may easily
+		identify these parameters in function number nine.
+	%
+	\item	For each of the three real-valued parameters, a short textual
+		description for the online help may be given.
+		Here, this reduces to ``Factor A'', ``Factor B'', and
+		``Factor C''.
+	%
+	\item	Up to three discrete options, each having up to three
+		different values, are given next.
+		This can be used to pass certain flags to objective functions,
+		if necessary.
+		The options for these discrete values are defined to be
+		\O{-s}, \O{-t}, and \O{-u}, respectively,
+		in the order of definition of the options.
+		For each of the three possible values, short textual 
+		descriptions are allowed to be entered in the fields
+		actually occupied by \Cmd{NULL} pointers.
+		The first number in each of these three rows gives the 
+		default value of the option.
+		For an example on this kind of option handling, the user
+		may have a look a \Vrb{f\_13()}.
+	%
+	\end{Itemize}
+%
+\item	In the makefile GENEsYs/src/Makefile, add the new object file name
+	\File{f\_xx.o} to the list \Vrb{FUNS} of objective functions.
+%
+\item	In the directory GENEsYs/src, type \Cmd{make}.
+%
+\end{Enumerate}
+
+%}

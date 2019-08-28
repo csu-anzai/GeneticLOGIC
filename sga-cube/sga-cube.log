@@ -1,0 +1,79 @@
+This is TeX, C Version 3.14t3 (format=lplain 91.7.4)  2 MAR 1994 16:25
+**sga-cube
+(sga-cube.tex
+ILaTeX Version 2.09 <13 Jun 1989>
+(/u/comec4/bigdrive/Aix_tex/tex/inputs/us_english/article.sty
+Document Style `article' <16 Mar 88>.
+(/u/comec4/bigdrive/Aix_tex/tex/inputs/us_english/art10.sty)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+) (apaua.sty
+BiBTeX Style `APAUA'. Experimental release 0.1 <M. Valenzuela>
+\bibhang=\skip41
+) (sga-cube.aux) [0
+
+] [1] [2]
+Overfull \hbox (0.2376pt too wide) in paragraph at lines 248--250
+[] []\tenrm should per-form any application-specific ini-tial-iza-tion needed. 
+It is called by \tentt initialize()\tenrm . 
+
+\hbox(6.94444+2.22223)x422.75499, glue set - 1.0
+.\hbox(0.0+0.0)x0.0
+.\glue 0.0
+.\hbox(6.94444+2.22223)x34.02954
+..\glue -22.0
+..\glue 0.0
+..\glue -5.0
+..\hbox(6.94444+2.22223)x56.02954
+...\glue 5.0
+...\tentt a
+...\tentt p
+...\tentt p
+...\kern 0.62996
+...etc.
+..\glue 5.0
+.\penalty 0
+.\tenrm s
+.etc.
+
+
+Overfull \hbox (13.98755pt too wide) in paragraph at lines 256--258
+[] []\tenrm should per-form any application-specific sta-tis-ti-cal cal-cu-la-t
+ions. It is called by \tentt statistics()\tenrm . 
+
+\hbox(6.94444+2.22223)x422.75499, glue set - 1.0
+.\hbox(0.0+0.0)x0.0
+.\glue 0.0
+.\hbox(6.94444+2.22223)x39.2795
+..\glue -22.0
+..\glue 0.0
+..\glue -5.0
+..\hbox(6.94444+2.22223)x61.2795
+...\glue 5.0
+...\tentt a
+...\tentt p
+...\tentt p
+...\kern 0.62996
+...etc.
+..\glue 5.0
+.\penalty 0
+.\tenrm s
+.etc.
+
+[3] [4] [5] (sga-cube.bbl) [6] (sga-cube.aux) ) 
+Here is how much of TeX's memory you used:
+ 180 strings out of 4464
+ 1728 string characters out of 103273
+ 35015 words of memory out of 262141
+ 2121 multiletter control sequences out of 9500
+ 19473 words of font info for 74 fonts, out of 72000 for 255
+ 14 hyphenation exceptions out of 607
+ 12i,6n,25p,173b,319s stack positions out of 300i,40n,60p,3000b,4000s
+
+Output written on sga-cube.dvi (7 pages, 25764 bytes).

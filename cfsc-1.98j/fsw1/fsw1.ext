@@ -1,0 +1,132 @@
+/*  The FSW1 data structures declared.
+   See FSW1.DEF for the definitions.
+ */
+
+#include "fsw1.h"
+
+extern struct StateNd
+  {
+#if ( INTSZ == 16 )
+    unsigned int Id;
+#else
+    short int Id;
+#endif
+    short int NoAttr;
+    unsigned int Attrib[INTPRSTR];
+    struct VLociNd *VarLoci;
+    float Payoff;
+    unsigned int VisitCnt;
+    struct TrNode *Transits;
+    short NmEffTr;
+    unsigned int MaxRInit;
+#if ( INTSZ == 16 )
+    int BestNxt;
+#else
+    short int BestNxt;
+#endif
+    unsigned int NmBest;
+    unsigned int NmNeg;
+  }
+ *States, *CurState, *OldState;
+
+extern unsigned int NmStates;
+
+extern struct VLociNd
+  {
+    short int VarLocus;
+    float Prob1;
+    struct VLociNd *NxtVL;
+  };
+
+extern struct TrNode
+  {
+    short EffSet;
+    struct PaNode *Paths;
+    struct TrNode *NxtTrans;
+  };
+
+extern struct PaNode
+  {
+    float PathProb;
+    struct StateNd *PathDest;
+    struct PaNode *NxtPath;
+  };
+
+extern float TotSup;
+extern float EfValSup[EFFVALMX + 1];
+extern unsigned int EfValBin;
+extern char EfSetAsc[STRATTSZ + 1];
+extern unsigned int EffLoci[STRATTSZ];
+
+extern unsigned int EffAttSz;
+extern unsigned int EffAttMx;
+extern unsigned int EffValMx;
+extern unsigned int StrAttSz;
+extern unsigned int StrAttMx;
+
+extern short HiTrRsl;
+extern short DftRand;
+extern short DftMstk;
+
+extern unsigned int TotNmDft;
+extern unsigned int NmInvldE;
+extern unsigned int DisCndSz;
+
+extern float FSWTSR;
+
+extern unsigned int FSWNmCfs;
+extern struct CfNode *FSWCfs[20];
+extern float FSWCSBds[20];
+extern short FSWCBdWr[20];
+
+extern unsigned int DemoLev;
+
+#ifndef __PROTO_H__
+#define __PROTO_H__
+
+#if defined(__STDC__) || defined(__cplusplus)
+# define PP(x) x
+#else
+# define PP(x) ()
+#endif
+
+
+/* fsw1.c */
+int LoadEnv PP((char *FDName));
+VOID ReadEnv PP((FILE *FilePtr));
+VOID InitEnv PP((void));
+VOID ReadFSW PP((FILE *FilePtr));
+VOID RdStates PP((FILE *FilePtr));
+char *RdVarLoc PP((char *BufPtr, struct StateNd *State));
+struct TrNode *TrAlloc PP((void));
+int TrFree PP((struct TrNode *tnode));
+struct PaNode *PaAlloc PP((void));
+int PaFree PP((struct PaNode *pnode));
+struct VLociNd *VLAlloc PP((void));
+int VLFree PP((struct VLociNd *tnode));
+int DsplEnv PP((char *FDName, int Format));
+VOID WrtEnv PP((FILE *FilePtr, int Format));
+VOID SaveEnv PP((FILE *FilePtr));
+int GetDMsgs PP((char MStrings[], float MIntens[]));
+int StoreSup PP((struct MsgNode *MsgPtr));
+int IsMemSym PP((unsigned int Symbol, char Set[]));
+int PkTrans PP((int BehavStp));
+int DftTrans PP((int BehavStp));
+int EQTrans PP((char EMsg[]));
+VOID DoBkgBeh PP((void));
+VOID GtSysRew PP((void));
+VOID MakeActS PP((char NewAct[]));
+
+/* fsw1a.c */
+VOID DisCfIE PP((struct CfNode *Cp, char *Buff, unsigned int Fmt));
+VOID DsCfSTag PP((char CfBuff[], char OutBuff[]));
+VOID DsCfSta PP((char CfBuff[], char Buff[], struct CfNode *Cp, int Cond));
+VOID DsCfAct PP((struct CfNode *CPtr, char Buff[]));
+VOID DsCfEffS PP((char CfBuff[], char OutBuff[], int Fmt));
+VOID DoEnvCmd PP((char *ParStrng));
+VOID FSWGetCf PP((char *Cfs));
+VOID FSWGetSB PP((char *Bds));
+VOID HelpEnv PP((void));
+
+#undef PP
+#endif	/* __PROTO_H__ */

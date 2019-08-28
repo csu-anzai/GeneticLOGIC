@@ -1,0 +1,30 @@
+head     1.1;
+branch   ;
+access   ;
+symbols  ;
+locks    chrisw:1.1; strict;
+comment  @ * @;
+
+
+1.1
+date     90.06.10.10.57.38;  author chrisw;  state Exp;
+branches ;
+next     ;
+
+
+desc
+@@
+
+
+
+1.1
+log
+@Initial revision
+@
+text
+@extern void    adaptive_mutate (/* GENE_DATA  buf[],
+								   int   length,
+								   int   numdiff,
+								   float mutate_rate
+								*/);
+@

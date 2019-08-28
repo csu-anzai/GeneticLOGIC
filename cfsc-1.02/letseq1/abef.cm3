@@ -1,0 +1,6 @@
+set echo=1 log=abef.lg3
+dis banner 
+set urndsd=14
+< abef.cm
+stop
+

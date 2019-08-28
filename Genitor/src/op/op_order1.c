@@ -1,0 +1,218 @@
+
+/*************************************************************/
+/*                                                           */
+/*  Copyright (c) 1990                                       */
+/*  Darrell L. Whitley                                       */
+/*  Computer Science Department                              */
+/*  Colorado State University                                */
+/*                                                           */
+/*  Permission is hereby granted to copy all or any part of  */
+/*  this program for free distribution.   The author's name  */
+/*  and this copyright notice must be included in any copy.  */
+/*                                                           */
+/*************************************************************/
+
+/****************************************************************
+ *								*
+ *	This is the order operator developed by Davis 		*
+ * 	(Proc Int'l Joint Conf on AI) and implemented by    	*
+ *	Susan McDaniel at Colorado State University     	*
+ *								*
+ *								*
+ *	To use this program include the following lines in 	*
+ *	the main_tsp.c file:					*
+ *								*
+ *								*
+ *	This call should only happen once:			*
+ *	get_city_table (Pool->string_length);			*
+ *								*
+ *								*
+ *	This code should be in a loop so it is called once	*
+ *	for each recombination:					*
+ *	if ( bitgen () )					*
+ *	   ordercross (mom->string, dad->string, child->string, *
+ *  	           Pool->string_length, city_table);		*
+ *      else							*
+ *	   ordercross (dad->string, mom->string, child->string, *
+ *		   Pool->string_length, city_table);		*
+ *								*
+ *								*
+ *								*
+ *								*
+ *	This operator attempts to preserve the relative 	*
+ *	order of the cities or tasks in the parent strings 	*
+ *	when producing offspring.  One of the parent tours 	*
+ *	and two crossover points are chosen at random.  	*
+ *	The child tour inhe rits the cities between the 	*
+ *	two crossover points, inclusive, from the selected 	*
+ *	parent in the same order and position as they 		*
+ *	appeared in that parent.  The remai ning cities 	*
+ *	are inherited from the unselected parent in the 	*
+ *	order in which they appear in that parent, 		*
+ *	beginning with the first position following the 	*
+ *	second crossover point and skipping over all		*
+ *	cities already present in the offspring.  		*
+ *								*
+ *	Example-Order Crossover:				*
+ *	Parent 1: 	a b c d e f g h i j			*
+ *	Parent 2:	c f a j h d i g b e			*
+ *	Cross Pts:	     *        *	   (Parent 2 selected)	*
+ *								*
+ *	Offspring:	f g a j h d i b c e			*
+ *								*
+ *	The cities a, j, h, d and i are inherited from 		*
+ *	P2 in the order and position in which they occur 	*
+ *	in P2.  Then starting from the 1st position after 	*
+ *	the second cr ossover point, the child tour 		*
+ *	inherits from P1.  In this example, position 8 is 	*
+ *	this next position.  P1[8] = h, which is already 	*
+ *	present in the offspring, so P1 is searched until 	*
+ *	a city is found which is not already present in 	*
+ *	the child tour.  Since h, i and j are already 		*
+ *	present in the child, the search continues from 	*
+ *	the beginning of the string and Off(8) = b = P1(2), 	*
+ *	then Off(9) = c = P1(3), Of f(10) = e = P1(4) and 	*
+ *	so on until the new tour is complete.			*
+ *								*
+ *								*
+ ****************************************************************/
+
+
+#include <stdio.h>
+#include <malloc.h>
+#include <math.h>
+#include "ga_random.h"
+#include "gene.h"
+#include "op_order1.h"
+
+/*****************************************************************
+ *  FUNCTION: get_city_table 
+ *
+ *  DESCRIPTION: allocates space for the city data table
+ *		 the city data table contains the position
+ *		 of each city in each parent and also 
+ *		 has a field which is set when a city has
+ *		 been included in the offspring tour.
+ *
+ * INPUT PARAMETERS: string length
+ *
+ *
+ * RETURN VALUE: the address of the city table
+ *
+ *****************************************************************/
+CITY_DATA *
+get_city_table (length)
+int length;
+
+{
+    CITY_DATA *city_table;
+
+    /*  malloc one extra location so that cities 1-N can be accessed
+	directly.  location 0 will not be used  */
+
+    if (!(city_table = (CITY_DATA *) malloc ((length + 1)*sizeof (CITY_DATA))))
+       printf ("get_city_table: Malloc failure. \n");
+
+    return (city_table);
+
+}
+
+
+/**********************************************************************/
+/*                      ORDERCROSS CROSSOVER OPERATOR                 */
+/* copy a portion of mom to corresponding positions in kid ... starting*/
+/*      with next position in pop, copy from pop to kid, skipping over */
+/*      any cities in pop that already appear in kid                   */
+/***********************************************************************/
+void ordercross(mom, pop, kid, length, city_table)
+    GENE_DATA mom[];
+    GENE_DATA pop[];
+    GENE_DATA kid[];
+    int	     length;
+    CITY_DATA *city_table;
+{
+   int left, right, k, p, temp;
+
+   for (k = 1; k <= length; k++)         /* init city_table to false */
+     city_table[k].used = 0;
+
+   left = randomain (length - 1, 0);    /* select portion to copy from mom */
+   right = randomain (length - 1, 0);
+   
+   if (left > right)
+   {
+     temp = left;
+     left = right;       
+     right = temp;
+   }
+   for (k = left; k <= right; k++)      /* copy portion from mom to kid */
+   {
+     kid[k] = mom[k];
+     city_table[mom[k]].used = 1;
+   }
+
+   k = (right + 1) % length;                   /* index into kid */
+   p = k;                                      /* index into pop */
+   while (k != left)                           /* copy stuff from pop to kid */
+   {
+     if (!city_table[pop[p]].used)
+     {
+       kid[k] = pop[p];
+       k = (k + 1) % length;    
+       city_table[pop[p]].used = 1;
+     }
+     p = (p + 1) % length;                      /* increment pop-index */
+   }
+
+ }
+/* end of ordercross */
+
+/***************************************************************************
+ * FUNCTION: maketour
+ *
+ * DESCRIBE: Randomly generates a legal "traveling salesman" tour 
+ *           (i.e. where each point is visited only once.)
+ *
+ *           Essentially, this routine fills an array with all possible
+ *           points on the tour and randomly chooses the 'next' city from
+ *           this array.  When a city is chosen, the array is shortened
+ *           and the procedure repeated.
+ *
+ * INPUT PARAMETERS: an empty tour, number of points per tour
+ *
+ * RETURN VALUE: none
+ *
+ * RESULT: fills input tour
+ ****************************************************************************/
+void
+maketour(gene, num_points)
+GENE_DATA gene[];
+int      num_points;
+{
+static int          first_time = 1;
+static GENE_DATAPTR temp;
+int                 remainder;
+int                 next, i;
+
+if (first_time)
+   {
+    if (!(temp = (GENE_DATAPTR) malloc (num_points*sizeof(GENE_DATA))))
+ 	   fatal_error ("maketour: malloc failure\n");
+    first_time = 0;
+   }
+   
+for(i = 0; i < num_points; i++)
+   temp[i] = (GENE_DATA) i+1;
+
+remainder = num_points - 1;
+
+for(i = 0; i < num_points; i++)
+   {
+    next = randomain(remainder, 0);
+    gene[i] = temp[next];
+    temp[next] = temp[remainder];
+    remainder--;
+   }
+} 
+
+

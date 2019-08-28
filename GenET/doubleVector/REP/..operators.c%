@@ -1,0 +1,181 @@
+/* operators.c defines all operators for the current representation          */
+/* NOTE: finishOper(), which must be called at the end of each operator,     */
+/*    has variable number of arguments: all parents must be listed           */
+/* These operators are for vector of doubles                                 */
+/* NOTE: NumGenes is imported                                                */
+
+#include <stdlib.h>
+#include <stddef.h>
+#include <string.h>
+#include <math.h>
+#include "main.h"         /* provides global information and getCurPrctRun() */
+#include "representation.def"          /* representation for these operators */
+#include "rand.h"            /* provides probRand(), intRand() and binRand() */
+#include "pop.h"              /* includes generic chromosome type definition */
+#include "opers.h"                                  /* includes finishOper() */ 
+#include "representation.h"                            /* standard interface */
+#include "representationNS.h"    /* non-standard, problem-specific interface */
+#include "operators.h"                             /* interface to operators */
+#include "problem.h"                       /* standard interface to yourself */
+
+#define DEBUG 0
+
+
+#define REPEAT_DIFF_PARENT 10  /* how long try looking for different parents */
+
+/*   each is called indirectly by address                                    */
+/*   follow the standard format                                              */
+/*   get more parents if needed by calling getParent(), put offspring into   */
+/*     newPop up to maxNumOff. Call FinishOper() for each of numOffspring    */
+/*   return number of new offspring placed in newChroms                      */
+/*   maxNumOffspring is the max to be generated - do not overflow            */
+
+/* This is adaptive mutation on one gene - dense the probability distribution */
+/*   of possible mutations around current value as the simulation runs        */
+/* Gives initially random mutation, later highly localized tuning             */
+int nUMut1(genericChromType *parentChrom,
+                 genericChromsType newChroms, int maxNumOff, int curNumOff)
+{ static const int operNum=0;
+  static const int numParents=1;
+  static const int numOffspring=1;
+  double *chrom;
+  const double exponent=6;                          /* best between 4 and 10 */
+  int which=intRand(NumGenes-1);                     /* which gene to mutate */
+  if (maxNumOff<=0)
+    return(0);
+                                               /************ actual operator */
+  memcpy(newChroms[curNumOff]->chrom,parentChrom->chrom,
+         sizeof(double)*NumGenes);                        /* copy chromosome */
+  chrom=(double*)newChroms[curNumOff]->chrom;
+  if (binRand())                       /* mutate to right withing boundaries */
+    chrom[which]+=(*(double*)upper(which)-chrom[which])*(1-pow(probRand(),
+                     pow(1-getCurPrctRun(),exponent)));
+  else
+    chrom[which]-=(chrom[which]-*(double*)lower(which))*
+                     (1-pow(probRand(),pow(1-getCurPrctRun(),exponent)));
+                                               /******************************/
+  finishOper(newChroms[curNumOff],operNum,&curNumOff,numParents,parentChrom);
+#if DEBUG
+  printf("\nApplied operator %s\n",getOperName(operNum));
+  printf("\tParent:\n\t");
+  dspChrom(stdout,parentChrom->chrom);
+  printf("\tOffspring:\n\t");
+  dspChrom(stdout,newChroms[curNumOff]->chrom);
+  printf("\n");
+#endif
+  return(numOffspring);
+}
+
+/* This is adaptive mutation on one gene - dense the probability distribution */
+/*   of possible mutations around current value as the simulation runs        */
+/* Gives initially random mutation, later highly localized tuning             */
+/* It is slightly less dense at end of simulation than nUMut1                 */
+int nUMut2(genericChromType *parentChrom,
+                 genericChromsType newChroms, int maxNumOff, int curNumOff)
+{ static const int operNum=1;
+  static const int numParents=1;
+  static const int numOffspring=1;
+  double *chrom;
+  const double exponent=-6;                       /* best between -4 and -10 */
+  int which=intRand(NumGenes-1);
+  if (maxNumOff<=0)
+    return(0);
+                                               /************ actual operator */
+  memcpy(newChroms[curNumOff]->chrom,parentChrom->chrom,
+         sizeof(double)*NumGenes);
+  chrom=(double*)newChroms[curNumOff]->chrom;
+  if (binRand())
+    chrom[which]+=(*(double*)upper(which)-chrom[which])*
+                    pow(1-probRand(),pow(1-getCurPrctRun(),exponent));
+  else
+    chrom[which]-=(chrom[which]-*(double*)lower(which))*
+                    pow(1-probRand(),pow(1-getCurPrctRun(),exponent));
+                                               /******************************/
+  finishOper(newChroms[curNumOff],operNum,&curNumOff,numParents,parentChrom);
+#if DEBUG
+  printf("\nApplied operator %s\n",getOperName(operNum));
+  printf("\tParent:\n\t");
+  dspChrom(stdout,parentChrom->chrom);
+  printf("\tOffspring:\n\t");
+  dspChrom(stdout,newChroms[curNumOff]->chrom);
+  printf("\n");
+#endif
+  return(numOffspring);
+}
+
+/* 1-point crossover between genes (doubles), only one offspring             */
+int onePCross(genericChromType *parentChrom,
+                 genericChromsType newChroms, int maxNumOff, int curNumOff)
+{ int i=0;
+  genericChromType *parent2Chrom=getParent();
+  static const int operNum=2;
+  static const int numParents=2;
+  static const int numOffspring=1;
+  double *off=(double*)newChroms[curNumOff]->chrom;
+  double *p1=(double*)parentChrom->chrom;
+  double *p2=(double*)parent2Chrom->chrom;
+  int which=intRand(NumGenes-1);
+  if (maxNumOff<=0)
+    return(0);
+  while (parentChrom==parent2Chrom && i<REPEAT_DIFF_PARENT)
+  { parent2Chrom=getParent();     /* prevent crossing with itself, but allow */
+    i++;                          /* if suitableother parent cannot be found */
+  }
+                                                  /********* actual operator */
+  for (i=0; i<which; i++)
+    off[i]=p1[i];
+  for ( ; i<NumGenes; i++)
+    off[i]=p2[i];
+                                                  /***************************/
+  finishOper(newChroms[curNumOff],operNum,&curNumOff,numParents,parentChrom,
+             parent2Chrom);
+#if DEBUG
+  printf("\nApplied operator %s\n",getOperName(operNum));
+  printf("\tParents:\n\t");
+  dspChrom(stdout,parentChrom->chrom);
+  printf("\t");
+  dspChrom(stdout,parent2Chrom->chrom);
+  printf("\tOffspring:\n\t");
+  dspChrom(stdout,newChroms[curNumOff]->chrom);
+  printf("\n");
+#endif
+  return(numOffspring);
+}
+
+/* average of two whole chromosomes                                          */
+int aveWholeTwo(genericChromType *parentChrom,
+                 genericChromsType newChroms, int maxNumOff, int curNumOff)
+{ int i=0;
+  genericChromType *parent2Chrom=getParent();
+  static const int operNum=3;
+  static const int numParents=2;
+  static const int numOffspring=1;
+  double *off=(double*)newChroms[curNumOff]->chrom;
+  double *p1=(double*)parentChrom->chrom;
+  double *p2=(double*)parent2Chrom->chrom;
+  if (maxNumOff<=0)
+    return(0);
+  while (parentChrom==parent2Chrom && i<REPEAT_DIFF_PARENT) 
+  { parent2Chrom=getParent();  
+    i++;
+  }
+                                                  /********* actual operator */
+  for (i=0; i<NumGenes; i++)
+    off[i]=(p1[i]+p2[i])/2;
+                                                  /***************************/
+  finishOper(newChroms[curNumOff],operNum,&curNumOff,numParents,parentChrom,
+             parent2Chrom);
+#if DEBUG
+  printf("\nApplied operator %s\n",getOperName(operNum));
+  printf("\tParents:\n\t");
+  dspChrom(stdout,parentChrom->chrom);
+  printf("\t");
+  dspChrom(stdout,parent2Chrom->chrom);
+  printf("\tOffspring:\n\t");
+  dspChrom(stdout,newChroms[curNumOff]->chrom);
+  printf("\n");
+#endif
+  return(numOffspring);
+}
+
+prctR

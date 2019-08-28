@@ -1,0 +1,2 @@
+sunrman: rman.c
+	cc rman.c -o sunrman -lrpcsvc

@@ -1,0 +1,265 @@
+head     1.2;
+branch   ;
+access   ;
+symbols  ;
+locks    ; strict;
+comment  @ * @;
+
+
+1.2
+date     91.02.01.13.34.18;  author whitley;  state Exp;
+branches ;
+next     1.1;
+
+1.1
+date     91.02.01.11.21.26;  author whitley;  state Exp;
+branches ;
+next     ;
+
+
+desc
+@copyright notice added.
+@
+
+
+
+1.2
+log
+@copyright notice added.
+@
+text
+@
+/*************************************************************/
+/*                                                           */
+/*  Copyright (c) 1990                                       */
+/*  Darrell L. Whitley                                       */
+/*  Computer Science Department                              */
+/*  Colorado State University                                */
+/*                                                           */
+/*  Permission is hereby granted to copy all or any part of  */
+/*  this program for free distribution.   The author's name  */
+/*  and this copyright notice must be included in any copy.  */
+/*                                                           */
+/*************************************************************/
+
+/****************************************************************
+ *								*
+ *	This is the position operator developed by Syswerda	*
+ * 	(The Genetic Algorithms Handbook, L Davis, ed) and 	*
+ *	implemented by Susan McDaniel at Colorado State 	*
+ *	 University.					     	*
+ *								*
+ *								*
+ *	To use this program include the following lines in 	*
+ *	the main_tsp.c file:					*
+ *								*
+ *								*
+ *	This call should only happen once:			*
+ *	get_city_table (Pool->string_length);			*
+ *								*
+ *								*
+ *	This code should be in a loop so it is called once	*
+ *	for each recombination:					*
+ *	if ( bitgen () )					*
+ *	   position (mom->string, dad->string, child->string, 	*
+ *  	           Pool->string_length, city_table);		*
+ *      else							*
+ *	   position (dad->string, mom->string, child->string, 	*
+ *		   Pool->string_length, city_table);		*
+ *								*
+ *								*
+ *								*
+ *								*
+ *	This operator attempts to preserve position 		*
+ *	information during the recombination process.  		*
+ *	Several random locations in the tour are selected 	*
+ *	along with one of the parents and the cities in 	*
+ *	those positions are inherited from that parent.  	*
+ *	The remaining cities are inherited in the order in 	*
+ *	which they appear in the unselected parent skipping 	*
+ *	over all cities which have already been included in 	*
+ *	the offspring.						*
+ *								*
+ *	Example- Position based crossover:			*
+ *	Parent 1: 	a b c d e f g h i j			*
+ *	Cross Pts:	  * *     *      *  (Parent 1 selected)	*
+ *	Parent 2:	c f a j h d i g b e			*
+ *								*
+ *	Offspring:	a b c j h f d g i e			*
+ *								*
+ *	The cities b, c , f and i are inherited from 		*
+ *	Parent 1 in positions 2, 3, 6 and 9 respectively.  	*
+ *	The remaining cities are inherited from Parent 2 as 	*
+ *	follows:  Off[1] = P2[3] since P2[1] and P2[2] have 	*
+ *	already been included in the child tour.  Then 		*
+ *	going through Parent 2 in order, Off[4] = P2[4], 	*
+ *	Off[5] = P2[5], Off[7] = P2[6], Off[8] = P2[8] and 	*
+ *	Off[10] = P2[10].					*
+ *								*
+ ****************************************************************/
+
+
+#include <stdio.h> 
+#include <malloc.h>
+#include "ga_random.h"
+#include "gene.h"
+#include "op_position.h"
+
+
+
+/*****************************************************************
+ *  FUNCTION: get_city_table 
+ *
+ *  DESCRIPTION: allocates space for the city data table
+ *		 the city data table contains the position
+ *		 of each city in each parent and also 
+ *		 has a field which is set when a city has
+ *		 been included in the offspring tour.
+ *
+ * INPUT PARAMETERS: string length
+ *
+ *
+ * RETURN VALUE: the address of the city table
+ *
+ *****************************************************************/
+CITY_DATA *
+get_city_table (length)
+int length;
+
+{
+    CITY_DATA *city_table;
+
+    /*  malloc one extra location so that cities 1-N can be accessed
+	directly.  location 0 will not be used  */
+
+    if (!(city_table = (CITY_DATA *) malloc ((length + 1)*sizeof (CITY_DATA))))
+       printf ("get_city_table: Malloc failure. \n");
+
+    return (city_table);
+
+}
+
+
+
+/*****************************************************************
+ *  FUNCTION: position 
+ *
+ *  DESCRIPTION: performs position crossover operation
+ *
+ * INPUT PARAMETERS: two parent gene strings
+ *		     space for child string
+ *		     the length of the two strings
+ *		     the city table address
+ *
+ *
+ * RETURN VALUE:
+ *
+ *****************************************************************/
+
+void position (dad, mom, kid, length, city_table)
+GENE_DATA	dad[], mom[], kid[];
+int		length;
+CITY_DATA	*city_table;
+
+{
+
+    int num_positions;
+    int i, pos, dad_index, kid_index;
+
+
+    for (i=1; i<=length; i++)	{	/* initialize city table */
+       city_table[i].used = 0;
+    }
+
+    /* select #positions that will be inherited directly from parent */
+    num_positions = randomain (2*length/3, length/3);	
+
+    for (i=0; i<num_positions; i++)   {	
+       pos = randomain (length - 1, 0);		/* select position randomly */
+       kid[pos] = mom[pos];			/* transfer cities to child */
+       city_table[mom[pos]].used = 1;		/* mark city used */
+    }
+
+
+    dad_index = 0;
+    kid_index = 0;
+
+    while (kid_index < length)	{
+       if (!city_table[mom[kid_index]].used) {	/* next position in kid filled*/
+	  if (!city_table[dad[dad_index]].used)	{  /*next city in dad not used*/
+	     kid[kid_index] = dad[dad_index];	/* inherit from dad */
+	     dad_index ++;			/* increment indexes */
+	     kid_index ++;
+	  }
+	  else 	{			/* next city in dad has been used */
+	     dad_index ++;		/* so increment dad index */
+ 	  }  /* end else */
+
+       }   /* end if */
+       else 	{			/* next position in kid is filled */
+	  kid_index ++;			/* so increment kid index */
+       }   /* end else */
+
+    }   /* end while */
+
+ }
+
+/***************************************************************************
+ * FUNCTION: maketour
+ *
+ * DESCRIBE: Randomly generates a legal "traveling salesman" tour 
+ *           (i.e. where each point is visited only once.)
+ *
+ *           Essentially, this routine fills an array with all possible
+ *           points on the tour and randomly chooses the 'next' city from
+ *           this array.  When a city is chosen, the array is shortened
+ *           and the procedure repeated.
+ *
+ * INPUT PARAMETERS: an empty tour, number of points per tour
+ *
+ * RETURN VALUE: none
+ *
+ * RESULT: fills input tour
+ ****************************************************************************/
+void
+maketour(gene, num_points)
+GENE_DATA gene[];
+int      num_points;
+{
+static int          first_time = 1;
+static GENE_DATAPTR temp;
+int                 remainder;
+int                 next, i;
+
+if (first_time)
+   {
+    if (!(temp = (GENE_DATAPTR) malloc (num_points*sizeof(GENE_DATA))))
+ 	   fatal_error ("maketour: malloc failure\n");
+    first_time = 0;
+   }
+   
+for(i = 0; i < num_points; i++)
+   temp[i] = (GENE_DATA) i+1;
+
+remainder = num_points - 1;
+
+for(i = 0; i < num_points; i++)
+   {
+    next = randomain(remainder, 0);
+    gene[i] = temp[next];
+    temp[next] = temp[remainder];
+    remainder--;
+   }
+} 
+
+
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d2 13
+@

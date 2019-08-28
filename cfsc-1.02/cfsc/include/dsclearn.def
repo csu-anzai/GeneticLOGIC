@@ -1,0 +1,230 @@
+/*		DSCLEARN.DEF	for the CFS-C Classifier System.
+
+Define variables for use by "discovery" subtroutines (& friends) by
+including this file in the file DSCLEARN.C .
+See the file DSCLEARN.H for definitions of constants.
+See the file DSCLEARN.EXT for extern declaraions of these variables.
+
+NOTE WELL: If you change this, change DSCLEARN.EXT .
+*/
+
+#include	"dsclearn.h"
+
+unsigned int	DscDemo  = 0;	/* Control 'discovery demonstration' disply. 0 is off. */ 
+
+unsigned int	TOTNmOfs = 0;	/* Total number of offspring produced from this classifier */
+
+#if !MACLSC
+float			MutdSpec = 1.0/(2.0*STRNGSZ);	/* Amount specificity changes when one trit changes */
+#else
+float			MutdSpec = 0.03125;				/* Lightspeed C can't do the calculation! (Assume STRNGSZ = 16) */
+#endif
+
+	/* variables for choosing 'parent' classifiers for the 'background Genetic Algorithm' operator */
+
+float			FrNewCfs = 0.04;	/* Fraction of classifier list to replace with new classifiers 
+										whenever 'background GA' operator is invoked.
+										The "Generation Gap" of DeJong and others. */
+
+unsigned int	MxNewCfs = 0;	/* Maximum number of new classifiers (and max to replace) at a step.
+									This is just NmCfs * FrNewCfs. */
+struct CfNode	*PrntPool[NEWCFSZ];	/* array of pointers to possible parents */
+unsigned int	PrPoolSz;
+unsigned int	NxtPPool;
+
+short    int	PkPrnWOR = 0;	/* 1 => pick parents with out replacement */ 
+unsigned int	BidFit   = 0;	/* 1 => Use BidRatio*Strength as fitness instead of Strength only */
+
+unsigned int	NmNewCfs = 0;	/* Actual number of new classifiers during a step.
+									This is index into NewCfs array for place to put next new classifier, too. */
+
+float			TPrtBStr = 0.0;	/* Total 'Parent' Biased Strength of all classifiers, for chosing Parents. */
+
+float			PrntBPow = 1.0;	/* Power to raise strength to when computing 'biased' str for selecting parents */
+
+struct NCfNode		/* Define Nodes for storing 'business' part of new classifiers */
+{	unsigned int	NewCf_Id;
+	unsigned int	NewCnd1B[INTPRSTR];	/* conditon parts */
+	unsigned int	NewCnd1D[INTPRSTR];
+	short int		NewCnd1T;
+	unsigned int	NewCnd2B[INTPRSTR];
+	unsigned int	NewCnd2D[INTPRSTR];
+	short int		NewCnd2T;
+	short int		NewActT;			/* action part */
+	unsigned int	NewActB[INTPRSTR];
+	unsigned int	NewActD[INTPRSTR];
+	float			NewStr;				/* strength and bid ratio */
+	float			NewBR;
+};
+
+struct NCfNode	NewCfs[NEWCFSZ];	/* Here's the nodes in an array */
+
+struct CfNode	*Parents[2];		/* Pointers to 'parents' chosen by PckPrnts() */
+
+unsigned int     FitnessCalc;       /* set true when ReCalcFitness() called, set False when Discover() called. */
+unsigned int	 CLSorted;			/* Set true when ReSrtCfs() called, to indicate list sorted this step. */
+
+	/* Variables to control the strength of new classifiers */
+
+float			NwCfStrF  = 1.0;		/* New cf strength = NwCfStrF * AvrCfStr */
+unsigned int	NwCfStrV  = NWSTRFA;	/* New cf strength is Fraction of Average. */
+
+	/* variables for choosing classifiers to be replaced */
+
+struct CfNode	*RPoolCfs[RPOOLSZ];	/* Pointers to classifiers to be (possibly) replaced. */
+
+unsigned int	RCPoolSz = 0;	/* Number actually in the pool */
+
+unsigned int	CrowdFac = 1;	/* Crowding factor. This is number of classifiers in CrowdCfs[] (in order 0...)
+									to examine and choose from when selecting a classifier to replace. */
+
+unsigned int	RandRplc = 0;	/* 1 => Pick classifiers to be replaced randomly (uniform over all cfs). 
+									0 => Pick classifier using RBiasStr/TRplBStr as probability.
+                                */
+
+float			TRplBStr = 0;	/* Total "Replacable" Biased Strength for classifiers, for chosing Replacable cfs */
+
+float			RplcBPow = 1.0;	/* Power to raise 1/strength to when computing 'biased' str for replacing cfs */
+
+unsigned int	NmEligRp = 0;	/* number cfs eligible for replacement */
+
+float			RplCfUBd = 1.0;	/* Don't replace cfs with S > AveS * RplCfUBd */
+
+float			RplACUBd = 1000.0;	/* Don't replace 'active' cfs with S > AveS * RplCfUBd */
+unsigned int	RplACSBd = 0;	/* Classifier considered 'active' wrt RplACUBd 
+									RplACUBd if its StpLWon > CycleStp - RplACSBd */
+unsigned int	 MxCfCopy = 0;	/* if > 0, this is maximum number of copies of one classifier genotype */
+
+
+unsigned int    RplcXBid = 0;   /* If > 0 then replace from bidders that lost when NmCandCf > n.
+                                   This will need some fixes to guarentee there is enough, and to
+                                   relate number to MsgList size or something.
+                                 */
+unsigned int    RplcXBidTot = 0; /* Count number of times applied */
+
+	/*  Variables for the 'Background Genetic Algorithm' (reproduction/crossover) operator.
+
+		BkgGARt	probability that operator will be invoked each step.
+				This determines the background rate of reproduction.
+
+		The following 3 variables define a cummulative prob. distr. which is used
+		to detemine, for each pair of offspring, whether or not to cross them, and if so,
+		what kind of cross to do. 
+		NOTE WELL:	The variables are tested in the order defined below.
+					Also, it is currently the users responsibility to set these so they
+					indeed define a cummulative prob. function.
+
+		BGASCPr		Probability cross in one string (first or second condition, or action).
+		BGAFCPr		Probability cross full classfier.
+		BGANCPr		Probability no cross (just reproduce parents).
+
+		Note: The following variables determine source of parents for BkgGA:
+
+		BGABPPr		Probability parents from hi bidders.
+					(Otherwise from Hi Str classifiers)
+    */
+
+float			BkgGARt  = 0.0;		/* Default is off */
+
+float			BGASCPr = 0.0;
+float			BGAFCPr = 0.5;
+float			BGANCPr = 1.0;
+
+float			BGABPPr = 0.0;
+
+unsigned int	TotBkgGA = 0;		/* Total num of times DscBkgOp invoked */
+unsigned int	TotBGASC = 0;		/* Total num of 'string' crosses */
+unsigned int	TotBGAFC = 0;		/* Total num of 'full' crosses */
+unsigned int	TotBGANC = 0;		/* Total num of bkg. reprod. with no cross */
+unsigned int	TotBGABP = 0;		/* Total num of times bidding parents used */
+
+	/*  Variables for the 'Mutation' operator.
+
+		The following probabilities define a cummulative prob. function
+		over the types of mutation, used to decide what to mutate.
+		Be sure these are in increasing order, and the last is 1.00 
+		**** THIS SHOULD BE FIXED UP: maybe use an array  ***** 
+	*/
+
+float	MuPrTot  = 0.04;	/* Probability a mutation of some kind will occur. */
+float	MuPrTab[MUTABSZ] = { .961, .9994, 1.0, 1.0, 1.0 };  /* cummul poisson for MuPrTot = 0.04 */
+
+	/*	If mutation does occur in a classifier, the following
+		values will be used to determine what will be mutated to what.
+	*/
+float	MuPrCnd1 = 0.32;	/* Probability Mutate Condition 1 of a classifier */
+float	MuPrCnd2 = 0.64;	/* Probability Mutate Condition 2 of a classifier */
+float	MuPrAct  = 0.96;	/* Probability Mutate Action string of a classifier */
+float	MuPrCT2  = 1.00;	/* Probability Mutate Condition 2 Type (MATCH-NOTMATCH) */
+float	MuPrAT   = 1.00;	/* Probability Mutate classifier operator (ActType) of a classifier */
+
+	/* The following 2 probabilities bias the mutation toward certain outcomes.
+		For example, if a condition type is mutated, the result is NOT just 
+		obtained by changing MATCH to NOTMATCH (or vice versa). Instead, the
+		new condition type is selected by a random draw under the the distribution
+		defined by MuFrMC, i.e., that is the fraction that are MATCH, and the rest are NOTMATCH.
+	*/
+
+float			MuFrMC   = 0.95;	/* Fraction of 'match' conditions by mutation */     
+float			MuFrNSL  = 0.20;	/* Fraction of non-specific loci (DON'T CARES) generated by mutation */
+
+unsigned int	TotMu   = 0;		/* Total number of times mutation operator used in a run */
+
+
+	/* Variables for the 'Cover Detector Messages' operator */ 
+
+unsigned int	CDMsgs   = 0;		/* Cover Detector Messages operator version: mine (1) or George's (2) */
+short    int    CDMsgAct = 0;       /* set to 1 to create random actions by CDMsgs operator */
+float			CDMsgsRt = 0.0;		/* Probability applied when on and triggered */
+
+unsigned int	TotCDM   = 0;		/* Total number of times CDM operator used in a run (number of cfs generalized) */
+
+unsigned int	TotCDMC  = 0;		/* Total number of loci generalized */
+
+unsigned int	TotCDML  = 0;		/* Total number of conditions generalized */
+
+
+	/*  Variables for the 'Cover Effectors' operator  */
+
+unsigned int	CEffs    = 0;		/* Number of classifiers to be generated at one application */
+float			CEffsRt  = 0.0;		/* If CEffs > 0, this is prob. operator applied when MadeMstk */
+short			CEffSplz = 0;		/* Control "specialization" of new cover effector classifiers */
+
+unsigned int	TotCEf   = 0;		/* Total number of times this operator used in a run */
+unsigned int	TotCEfW  = 0;		/* Number of times parent from wrong predictors */
+unsigned int	TotCEfB  = 0;		/* Number of times parents from bidders (not guessers) */
+
+	/* Variables for 'Asunchronous Coupling Profitable Classifiers' operator */
+
+float			ACPCRt   = 0.0;		/* Prob applied on each step */
+unsigned int	TotACPC  = 0;		/* Total number of times applied */
+float			ACPCt    = 0.0;		/* Threshold for "profit" (* cf strength) */
+float			NwCCStrF = 0.0;		/* Determines strength of new coupled classifiers */
+struct  ActCfNd
+{	struct CfNode	*ActCf;			/* Pointer to active cf */
+	float			ChngStr;		/* Change in strength = Rewards,taxes,BB exchanges */
+}
+	ActCfPrv[MSGLSTSZ-1];
+
+unsigned int	NmActCfTminus1 = 0; /* number active at t-1 when in Discover routines */
+unsigned int    NmActCfTminus2 = 0; /* ditto, for t-2. Both these set in StartStp */
+
+	/* Variables for special creating and manipulating "Tag" regions */
+
+unsigned int	TagLMx = 2;			/* Restrict creation of "tags" to loci from TagLMx to */
+unsigned int	TagRMx = 11;		/* TagRMx, counting 0 as left locus. */
+
+	/* Variables for the 'Couple Stage Setters' operator */
+
+float			CSSRt   = 0.0;		/* Prob apply at each step  */
+unsigned int	TotCSS  = 0;		/* total number of times applied (new coupling) */
+unsigned int	TotCSSR = 0;		/* total number of times applied (Recouple) */
+float			CSSFrM  = 0.0;		/* Fraction of CSS couplings forced to use "memory" (11) messages */
+float			CSSFrRf = 0.0;		/* Fraction of CSS couplings that create "reflex" classifiers */
+
+	/* Variables for the 'Trigger on Low Bid' operator */
+
+float			TLBRt   = 0.0;		/* Prob apply at each step  */
+unsigned int	TotTLB  = 0;		/* total number of times applied */
+float			TLBFrE  = 0.0;		/* Fraction of TLB couplings forced to use "effector" (10) messages */
+float			TLBt    = -1.0;		/* Threshold multiplier: -1.0 means disable it */

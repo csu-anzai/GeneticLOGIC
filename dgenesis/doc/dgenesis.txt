@@ -1,0 +1,979 @@
+                             
+                              
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              Distributed GENESIS User's Guide
+                         Version 1.0
+                              
+                              
+                              
+                              
+                              
+                       Erick Cantu-Paz
+                 ecantu@lamport.rhon.itam.mx
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+          Instituto Tecnologico Autonomo de Mexico
+                              
+                        February 1994
+                              
+Contents
+
+    1. Introduction                                       1
+         1.1. Genetic Algorithms                          1
+         1.2. Parallel Genetic Algorithms                 2
+    2. Installing DGENESIS                                3
+         2.1. System Requirements                         3
+         2.2. Building DGENESIS                           3
+         2.3. Configuration                               4
+         2.4. Check the installation                      4
+    3. Major Procedures                                   5
+         3.1. Initial Communication                       5
+         3.2. Initialization                              5
+         3.3. Generation & intermediate communication     5
+    4. Evaluation Procedure                               6
+    5. Parameters                                         6
+    6. Topologies                                         9
+    7. Running DGENESIS                                   10
+    8. Files                                              11
+    9. Options                                            12
+    10. Reports                                           13
+    11. Acknowledgments                                   14
+    12. References                                        14
+
+
+1. Introduction
+
+This document describes Distributed GENESIS 1.0 (DGENESIS)  a
+distributed  implementation of parallel  genetic  algorithms.
+DGENESIS  code  is  based in GENESIS 5.0 a  standard  genetic
+algorithm  package by John J. Grefenstette. Many features  of
+GENESIS  will  not  be  discussed  here  and  any  user   not
+familiarized  with  it is encouraged to read  GENESIS  User's
+Guide  before  continuing. This document will  focus  on  the
+differences  between  standard  (serial)  GAs  and   parallel
+genetic algorithms and their implementation in DGENESIS.
+
+
+1.1. Genetic Algorithms
+
+Genetic  Algorithms  (GAs)  are search  algorithms  based  in
+natural selection and natural genetics [Gol89]. They  can  be
+aplied  to a great variety of problems keeping a good balance
+between eficacy and efficiency (i.e. they find good and  even
+optimal solutions in a very reasonable time).
+
+GAs  work  over  a population of individuals  that  represent
+possible solutions to the problem being solved using a set of
+genetic  operators.  The  operators  of  a  simple  GA   are:
+selection, crossover, and mutation. [Gol89][Hol92]. In figure
+1 a basic genetic algorithm is shown. Each iteration is known
+as a generation.
+
+
+
+    Generate initial population
+    Evaluate the population
+    While termination conditions not satisfied
+    {
+        Select the fittest individuals
+        Apply genetic operators
+        Evaluate the offspring
+        Insert new individuals to the population
+    }
+              Figure 1. Basic Genetic Algorithm
+                              
+The  selection  operator identifies the  fittest  individuals
+from the population using the value returned by an evaluation
+function  that depends on the specific problem being  solved.
+The  best  individuals  from  each  generation  are  combined
+between themselves using the crossover operator. The mutation
+operator  is  applied  eventually  to  some  individuals   to
+randomly change a part of their chromosome and introduce  new
+genetic material to the population.
+
+GAs  can be used to solve a great range of problems, but  the
+most  known application is on function optimization problems.
+Optimize  a  function means find the best  solutions  in  the
+search   space   defined   by  the  function   domain.   Many
+optimization  methods  base their solving  strategy  on  some
+problem  characteristic  and  hence  their  applicability  is
+reduced in real world problems where the functions don't have
+the  necessary  characteristics to use  the  method.  Genetic
+algorithms require very little information on the problem and
+are  able  to optimize functions with many variables,  highly
+multimodal,  discontinuous  or  noisy  functions.  The   only
+problem dependent part of the GA is the evaluation function.
+
+Many problems can be expresses as optimization problems,  and
+GAs  have  been  used  in very diverse applications  such  as
+combinatorial   optimization,  design  problems,   scheduling
+problems and for design and training of neural networks.
+
+
+1.2. Parallel Genetic Algorithms
+
+A  very  natural  way to parallelize a GA is  to  divide  the
+population  into  subpopulations, run a conventional  genetic
+algorithm  in  each  subpopulation  and  allow  the  periodic
+communication  of  information  between  subpopulations  that
+helps in the search for the solution. The information usually
+exchanged  between subpopulations is a subset of the  fittest
+indiviuduals   of  each  subpopulation.  This   exchange   of
+individuals is known as migration.
+
+This  model is known in several ways in the literature:  some
+call  it  distributed genetic algorithm [Tan89] pointing  out
+the fact that it is usually implemented in distributed memory
+MIMD  machines. Others, using population genetics terms, call
+it  island  model  [MÅl89]  because  the  subpopulations  are
+relatively isolated from each other except for some  more  or
+less frequent exchange of individuals.
+
+DGENESIS   is   an   implementation  of  this   model.   Each
+subpopulation is managed by a UNIX process that executes  the
+algorithm  presented  in figure 2. The communication  between
+subpopulations is handled using Berkeley sockets.
+
+
+
+    Generate the initial population
+
+    Evaluate the population
+
+    while termination conditions not satisfied
+
+    {
+
+        Select the fittest individuals
+
+        Apply genetic operators
+
+        Evaluate the offspring
+
+        Send migrants if necesary
+
+        Receive migrants if necesary
+
+         Insert  new  individuals  (and  migrants)  into  the
+population
+
+    }
+
+            Figure 2.  Parallel Genetic Algorithm
+                              
+This models requieres several additional parameters:
+
+1)The   frequency  of  migrations  (When  should   migrations
+  occur?)
+  
+2)The   intensity   of   migrations  (How  many   individuals
+  migrate?)
+  
+3)The   communication  topology  used  to  send   individuals
+  (Migrate to where?)
+  
+The  effect of this parameters on the search performed by the
+PGA  is  not  completely  understood  yet.  Some  works  have
+presented  results  that  show  that  some  combinations   of
+migration  parameters yield better results than others  (e.g.
+[Tan89]),  but  research in the effect  of  the  topology  is
+scarce.
+
+
+
+2. Installing DGENESIS
+
+DGENESIS   can  distribute  the  subpopulations  to   several
+machines to try to improve its performance, this implies that
+DGENESIS  has  to be installed in all the machines  that  are
+allowed to participate in a distributed run.
+
+
+2.1. System Requirements
+
+This  version  of  DGENESIS  requires  the  socket  interface
+provided  with 4.2BSD UNIX. DGENESIS 1.0 has run successfully
+on  DECStations (running Ultrix 4.2), Sun workstations  (with
+SunOS), microVAXes (running Ultrix 4.1) and PCs (with  386BSD
+0.1).  This section will address these systems. The code  has
+been designed to be portable so it should compile with any  C
+compiler.
+
+DGENESIS uses rsh and rcp to execute remote processes and  to
+copy  files  across  a  network, so  this  programs  must  be
+available.
+
+
+2.2. Building DGENESIS
+
+To  build DGENESIS do the following steps in every system you
+plan to use:
+
+1) In  your .cshrc file set the environment variable DGENESIS
+   to  the  path  where you want to install the program.  For
+   example:
+   
+        setenv DGENESIS=$HOME/dgenesis
+
+   sets  DGENESIS  to  a  subdirectory  in  the  user's  home
+   directory.  You can use any path you want as long  as  you
+   have read/write access to it.
+   
+2) Copy  the  distribution file (dgenesis.tar) to  your  home
+   directory and issue the command
+   
+        % tar -xvf dgenesis.tar
+
+   to   create  the  subdirectory  structure  to   hold   the
+   distribution  files  and  to  expand  them  in  the  right
+   places.   In   this  step  the  directory   dgenesis   and
+   subdirectories  src,  bin,  usr  and  doc   are   created.
+   Subdirectory  src holds the source files for  the  system.
+   After  compiling  the  system, bin contains  the  programs
+   setup,  report, rgo and a library that is  linked  to  the
+   user-supplied evaluation function. Documentation  for  the
+   system is in subdirectory doc in postcript and ascii  text
+   formats.  Subdirectory usr is intended to  hold  the  data
+   produced  by  the experiments. DeJong's functions  [DeJ75]
+   are  saved  in usr/DEJONG, MÅhlenbein's functions  [Muh91]
+   are in usr/MUHLENBEIN.
+   
+3)To  compile  the  system, move to the src subdirectory  and
+  use the make command:
+  
+        % make install
+
+   This should compile the programs setup, report, rgo and  a
+   random   archive   library  ga.a.   and   move   them   to
+   subdirectory bin.
+   
+4.To  be  able  to  use  DGENESIS you  have  to  include  the
+  location of the system files in your path. An easy  way  to
+  do  this  is  to put the following line in the .cshrc  file
+  after   the   declaration  of  the   environment   variable
+  DGENESIS:
+  
+          set path=($path $DGENESIS/bin)
+  
+
+2.3. Configuration
+
+In  a  network  there are usually fast and slow machines.  To
+make  the most of available resources, the work load  in  the
+participating  systems has to be balanced. In  DGENESIS  it's
+possible  to  assign  to each system a  different  number  of
+processes according to their capabilities. This is done using
+the file usr/GAhosts. This file has a very simple format:
+
+               Machine name        Number of
+                                   processes
+                                        
+                 [string]            [int]
+                                        
+
+
+The  machine  name refers to the name used  to  register  the
+machine  in file /etc/hosts. rsh is used to execute processes
+and  rcp  is used to copy remote data files, for this  reason
+/usr/GAhosts  has  to have the machine name,  you  can't  use
+their IP address.
+
+In every machine the user has to yield permissions to execute
+remote  commands  and  to  copy files  registering  his  main
+machine account in file .rhosts.
+
+
+2.4. Check the installation
+
+To  correctly  execute  DGENESIS  it's  important  that  file
+usr/GAhosts has the correct names of the machines  that  will
+be  used in the experiments and that these machines have  the
+adecuate  permissions  to execute processes  and  copy  files
+remotely. The final step of the installation is the check  to
+see if these requierements are met.
+
+In  the  machine chosen to launch the system,  the  following
+tests must be done:
+
+1) Check  that usr/GAhosts exist and that it has the  correct
+   names  of  the  machines that are going  to  be  used  for
+   executing DGENESIS. Check that every machine has a  number
+   of processes associated with it.
+   
+2) For   each   machine  registered  execute  the   following
+   command:
+   
+        % rsh mmm echo \$DGENESIS
+
+   where  mmm  is the name of the machine exactly  as  it  is
+   registered in usr/GAhosts. You should get the name of  the
+   directory in mmm where DGENESIS is installed. If  this  is
+   not  the  case  refer to the installation instructions  to
+   see if you haven't missed something.
+   
+
+
+3. Major Procedures
+
+This  section  briefly describes some of the  more  important
+procedures in the DGENESIS system.  For full details, see the
+actual source code.
+
+
+3.1. Initial Communication
+
+There  is  one process that controls this part  of  the  run.
+Input  parameters for the PGA are read from files created  by
+the  user  and  are  sent to the systems registered  in  file
+usr/GAhosts.  The  remote processes answer registering  their
+intention to participate in the experiment. If the number  of
+processes  that  respond is greater  than  the  requiered  to
+simulate   the   user  specified  topology  then   additional
+responses are ignored. If on the contrary, too less responses
+are received the experiment aborts.
+
+After  sending the registration message the remote  processes
+wait  to  receive a message that confirms their participation
+in the experiment. If the remote processes don't receive this
+message after a predetermined time they terminate.
+
+
+3.2. Initialization
+
+To  seed the initial population you follow the same procedure
+as  in GENESIS. You have to put the initial structures  in  a
+file  called init.foo (or just init if you are not using file
+extensions) and use the "i" option.
+
+Initial structures can be sent so that
+
+1) each  of the participating processes gets the same  number
+   of initial structures or
+   
+2) each  process receives a number of structures proportional
+   to its population size.
+   
+The initialization method is specified using option "P".
+   
+
+3.3. Generation & intermediate communication
+
+As  previously  mentioned,  one generation  (see  generate.c)
+comprises   the   following   steps:   selection,   mutation,
+crossover,  evaluation, some data collection  procedures  and
+communication within processes.
+
+Control in this part of the algorithm is totally distributed,
+the  selection  and recombination are done  locally  in  each
+process. Communication can be synchronous or asynchronous. In
+synchronous  mode fast processes wait for slow  processes  to
+communicate. In asynchronous mode communication is done  when
+each  process is ready to send migrants. The possibility that
+the   receiving  process  might  be  processing  a  different
+generation is ignored. In any case, migrants are appended  to
+the  current population, performance measures are  calculated
+and in the next generation they are considered for selection,
+just as any other individuals.
+
+Some   tests  have  been  conducted  using  synchronous   and
+asynchronous communication and the results seem to show  that
+the  ability  of  the  algorithm to  find  solutions  is  not
+affected  much.  Nevertheless, if you want to do  experiments
+where the effect of the migration interval is important,  you
+should use synchronous communication.
+
+
+
+4. Evaluation Procedure
+
+DGENESIS  evaluates  its population  using  a  user  supplied
+evaluation procedure. This procedure written as a C  function
+takes  one  structure as input and returns a double precision
+value.  The function declaration is as follows:
+
+    double eval(str, length, vect, genes)
+    char str[];
+    int length;
+    double vect[];
+    int genes;
+
+
+1)Please  note that the function must be named eval and  must
+  be  declared with all the parameters, even if not  all  are
+  used.
+  
+2)str  is  string representation of the structure, length  is
+  the   length   of   str  ,  vect  is  the  floating   point
+  representation  (if  option f is set),  and  genes  is  the
+  length of vect.  The body of the evaluation function is  of
+  course application dependent.
+  
+Some  C  compilers requiere that the parameters are typed  in
+separate  lines as in the example above, this can be annoying
+to  some  programmers, but if you are using different systems
+to  run  DGENESIS, you should declare the parameters in  this
+way to avoid problems.
+
+Examples  of  evaluation  functions  can  be  found  in   the
+usr/DEJONG and usr/MUHLENBEIN subdirectories.
+
+
+
+5. Parameters
+
+The system is configured in two steps:
+
+1) set the parameters for the GA that runs in each node
+   
+2) set  the communication topology between the nodes and  the
+   frequency and intensity of migrations.
+   
+This  section  addresses exclusively the setting  of  the  GA
+parameters. The next section describes the steps requiered to
+establish the topology and migration parameters.
+
+To  set  the  GA parameters execute the setup program,  which
+prompts  you for a number of input parameters.  All  of  this
+information is stored in files for future use. Default values
+for the input parameters are read from the corresponding file
+if  it  exists  or are generated by the program.  A  [RETURN]
+response  to  any  prompt  gets the default  value  shown  in
+brackets.  The prompts are as follows:
+
+  file suffix[]:
+  
+The  answer to this prompt will be used as the extension  for
+the  files of this run. As DGENESIS runs on UNIX, you can use
+names of any length. For example, if you enter "foo" then the
+files  for this run will have names like "in.foo", "log.foo",
+etc.
+
+  Floating point representation [y]:
+  
+If  the  individuals used by the GA represent real  variables
+you  must answer "y" so that the evaluation function receives
+a vector with the real numbers represented by the individual.
+If individuals don't represent real numbers the decoding must
+be done explicitly in the evaluation function.
+
+  Number of Genes [3]:
+  
+Each gene will take on a range of floating point values, with
+a  user-defined granularity and output format.  The user will
+be  asked  to specify for each gene: its minimum  value;  its
+maximum value; the number of values (must be a positive power
+of  2); the desired output format for this gene (using printf
+format, e.g., %7.2f).  The user may also specify a repetition
+count,  meaning that there a number of genes  with  the  same
+range,  granularity, and output format.  When all genes  have
+been  specified,  the information is stored in  the  template
+file, and setup prompts for:
+
+  Processes [1]:
+  
+This  is  the  number  of processes needed  for  the  desired
+topology.
+
+  Experiments [1]:
+  
+This  is the number of independent optimizations of the  same
+function.   The  population  is  initialized  with  different
+structures in each experiment and the report program  obtains
+the  average  and variance of the data produced  by  all  the
+experiments.
+
+  Trials [5000]:
+  
+The number of trials (function evaluations) per experiment IN
+EACH NODE.
+
+  Population Size [100]:
+  
+If  more than one process is specified, setup will prompt for
+the  population  size  for each process.  The  user  is  also
+prompted   for  a  repetition  count  to  make  things   more
+convenient.
+
+  Length of the structures in bits [30]:
+  
+If  the  floating point representation is used,  this  number
+will be computed automatically from the information collected
+above, and the user will not be prompted for this.
+
+  Crossover Rate [0.60]:
+  
+  Mutation Rate [0.001]:
+  
+  Generation Gap [1.0]:
+  
+The  generation gap indicates the fraction of the  population
+which is replaced in each generation.
+
+  Scaling Window [5]:
+  
+When  minimizing a numerical function with a GA, it is common
+to define the performance value u(x) of a structure x as u(x)
+=  f_max  - f(x), where f_max is the maximum value that  f(x)
+can  assume  in  the given search space.  This transformation
+guarantees  that the performance u(x) is positive, regardless
+of   the  characteristics  of  f(x).   Often,  f_max  is  not
+available  a  priori,  in which case we  may  define  u(x)  =
+f(x_max) - f(x), where f(x_max) is the maximum value  of  any
+structure evaluated so far.
+
+Either  definition  of  u(x) has the  unfortunate  effect  of
+making  good  values of x hard to distinguish.  For  example,
+suppose  f_max = 100.  After several generations, the current
+population might contain only structures x for which 5 < f(x)
+<  10.   At this point, no structure in the population has  a
+performance  which  deviates much  from  the  average.   This
+reduces  the selection pressure toward the better structures,
+and the search stagnates.
+
+One  solution is to define a new parameter F_max with a value
+of,  say,  15, and rate each structure against this standard.
+For example, if f(xi) = 5 and f(xj) = 10, then u(xi) = F_max-
+f(xi) = 10, and u(xj) = F_max - f(xj) = 5; the performance of
+xi now appears to be twice as good as the performance of xj.
+
+The scaling window W allows the user to control how often the
+baseline  performance (F_max) is updated.  If  W>0  then  the
+system  sets  F_max to the greatest value of f(x)  which  has
+occurred  in  the  last W generations.  A  value  of  W  =  0
+indicates an infinite window (i.e.  u(x) = f(x_max)-f(x)).
+
+  Report Interval [100]:
+  
+This is the number of trials between data collections.
+
+  Structures Saved [10]:
+  
+How many of the best structures are saved in file min.
+
+  Max Gens w/o eval [2]:
+  
+How  many  consecutive generations are permitted without  any
+evaluations ocurring.
+
+  Dump Interval [0]:
+  
+This  is the number of generations between dumps. 0 indicates
+no dumps will occur.
+
+  Dumps Saved [0]:
+  
+  Options [cefglS]:
+  
+See  section 9 for an explanation of the options available in
+  DGENESIS.
+  
+  Random Seed [123456789]:
+  
+Initial seed for the random number generator. GA results  may
+vary   when  different  seeds  are  used,  that's  why   it's
+convenient to run several experiments and get the average and
+variance  of  the results. In this way, the results  will  be
+more reliable.
+
+  Rank Min [0.75]:
+  
+This  is the minimum expected number of offspring for ranking
+(used  only  if  option  "R" is set). The  Ranking  selection
+algorithm used here is a linear mapping under which the worst
+structure  is  assigned Rank_Min offspring and  the  best  is
+assigned 2-Rank_Min.
+
+setup  then  echoes  the input file, and registers  the  user
+supplied   information  in  the  corresponding   files   (in,
+template, and proc) and then exits. The first time the  setup
+program  is  runned it creates the input files  for  the  GA.
+Subsequent  runs use the information in this input  files  as
+default values.
+
+
+
+
+
+6. Topologies
+
+DGENESIS    encourages   experimentation    with    different
+communication topologies between the processes involved in an
+experiment.
+
+To   specify  a  topology,  you  must  create  a  file  named
+link.foo., where foo is the name of the experiment.  Each  of
+the  processes involved in a run has a unique id and you must
+specify the links between all the processes. The file has the
+following format:
+
+           sender   receiver   migration   migration
+                                interval      rate
+                                                
+            [int]    [int]       [int]      [float]
+                                                
+
+
+where  sender  and  receiver  stand  for  the  identification
+numbers   of  the  processes  involved,  migration   interval
+determines  how  frequently  the processes  will  communicate
+(measured   in  generations)  and  migration  rate   is   the
+proportion of the sender node's population that will be  sent
+to  the  receiver  node.  Note that all  the  parameters  are
+integer except for the migration rate.
+
+As an example consider the following topology:
+
+                              
+                              
+This example depicts an unidirectional ring topology. Ten per
+cent  of  the  population  of each node  migrates  every  ten
+generations  to  the  next. Migrants travel  in  a  clockwise
+direction.
+
+The  file  where the topology is specified can be  edited  by
+hand  or  you can use a program called links written to  ease
+this  operation.  links can create files for  four  different
+topologies:
+
+         unidirectional and bidirectional rings
+         
+         hypercubes of any dimension
+         
+         mesh topologies
+         
+         complete graphs
+         
+The user is prompted for the number of nodes or the dimension
+of  the  topology, the migration interval, and the  migration
+rate.   The   program   creates   the   corresponding    file
+automatically.
+
+
+
+7. Running DGENESIS
+
+If the installation procedures were followed correctly, there
+is  a  library called ga.a in subdirectory bin. This  library
+has  all  the functions needed to execute the PGA except  the
+evaluation  function.  To  make an  executable  program  that
+optimizes a functions the following steps must be followed:
+
+1) Program   the   evaluation  function  using   the   header
+   described  in section 4. The current version  of  DGENESIS
+   requieres  that  a  subdirectory in usr exists  for  every
+   function  to  optimize.  The file where  the  function  is
+   written  and  this subdirectory have to be  named  in  the
+   same  way  and  the function file has to  be  inside  this
+   subdirectory.
+   
+   For  example, if you want to use a function fx,  you  must
+   program  it  and  store  it in file fx.c  in  subdirectory
+   usr/fx.c.
+   
+2) Execute  the program do in every machine that you want  to
+   use.  do  makes  the executable file and receives  as  the
+   only  parameter  the name of the function or  subdirectory
+   (e.g. do fx).
+   
+It  has been mentioned that DGENESIS requieres a UNIX process
+for  each subpopulation in the PGA. To execute this processes
+you use the program rgo. rgo syntaxis is the following:
+
+    % rgo [-options] function experiment-name
+
+where  function  is the name of the function you  programmed,
+experiment-name is the name used in setup and  links  as  the
+file suffix.
+
+rgo options are:
+
+-c this  creates a file called experiment-name.tar that holds
+   all  the  input  and  output files  for  the  run  and  is
+   compacted  with  compress  to file  experiment-name.tar.Z.
+   Files  avg, var and rep are not included to make it easier
+   to review them later.
+   
+-v this  is  the verbose option. Executed commands are  shown
+   on the standard output.
+   
+
+
+8. Files
+
+The files used by DGENESIS are described below.
+
+avg   This  file is produced by the report program from  file
+      out  if  option  -t  is used. It contains  the  average
+      performance values of the algorithm.
+      
+GAhosts     This  file  has the hostnames and the  number  of
+      processes  assigned to each hostspossible  hosts.  This
+      file   is   required  and  has  to  be   in   the   usr
+      subdirectory.
+      
+in    contains  input  parameters and initial  random  number
+      seeds.   This  file is required and can be  created  by
+      the setup program.
+      
+init  contains  structures  to  be included  in  the  initial
+      population.  This is useful if you have heuristics  for
+      selecting plausible starting structures.  This file  is
+      read if the option "i" is set.
+      
+link  describes the links within the processes. Each line  in
+      the  file describes a link between two processes  using
+      the  format described in the "Topologies" section. This
+      file  is  read if the parameter Processess  is  greater
+      than 1.
+      
+log.error   logs  error  messages that precede  aborting  the
+      program. Check here first when problems occur.
+      
+min   contains  the  best structures found by  the  GA.   The
+      number  of elements in min is indicated by the response
+      to  the  Structures Saved prompt during setup.  If  the
+      number  of  experiments is greater than one,  the  best
+      structures   are  stored  in  min.n  during  experiment
+      number  n.   This  file is produced if  the  number  of
+      saved  structures is positive. In DGENESIS  these  file
+      is  sorted  by  performance values. If  more  than  one
+      process is used, each produces a file xmin, where x  is
+      the process id.
+      
+out   contains  data describing the performance  of  the  GA.
+      This  file  is  produced if option  "c"  is  set.  Each
+      process  creates  a file named xout,  where  x  is  the
+      process id.
+      
+proc  determines  the size of the subpopulations involved  in
+      the  PGA.  Each  entry in the file  has  the  following
+      format:
+      
+                  process id   subpopulation
+                                   size
+                                     
+                    [int]          [int]
+                                     
+
+
+      This  file  is  created by setup  using  user  supplied
+      values. It is read if the input parameter Processes  is
+      greater  than 1. Each line represents one process.  The
+      process  id  field  serves  no  real  purpose  in   the
+      algorithm, it's there for clarity.
+      
+reg   Has  the hostnames for each process. This file is  used
+      by rgo to copy out files from each processs.
+      
+rep   summarizes the performance of the algorithm. This  file
+      is  produced by the report program from the out file of
+      each process.
+      
+schemalogs  a  history  of  a single schema.   This  file  is
+      required for the "s" option.
+      
+var   contains  the  variances of the performance  values  of
+      the  algorithm. It is produced by program  report  from
+      file  out  when  the -t option is used  when  invocking
+      report.
+      
+
+
+9. Options
+
+GENESIS allows a number of options which control the kinds of
+output  produced,  as  well  as certain  strategies  employed
+during  the search.  Each option is associated with a  single
+character.   The options are indicated by responding  to  the
+"options"  prompt  in  setup with  a  string  containing  the
+appropriate  characters.  If no options are desired,  respond
+to the prompt by typing ".".  Options may be indicated in any
+order.   All options may be invoked independently, except  as
+noted below.
+
+a  Evaluate all structures in each generation.  This  may  be
+   useful  when evaluating a noisy function, since it  allows
+   the  GA  to  sample a given structure several  times.   If
+   this  option  is  not selected then structures  which  are
+   identical to parents are not evaluated.
+   
+b  At  the  end  of the experiments, write the  average  best
+   value   (taken  over  all  experiments)  to  the  standard
+   output.
+   
+c  Collect  statistics  concerning  the  convergence  of  the
+   algorithm.  These statistics are written to the out  file,
+   after  every "report interval" trials.  The intervals  are
+   approximate, since statistics are collected  only  at  the
+   end  of  a  generation.  Option "c"  implies  option  "C".
+   Option "c" is expensive relative to option "C".
+   
+C  Collect  statistics  concerning  the  performance  of  the
+   algorithm.   These  statistics are written  to  the  "out"
+   file,   after   every  "report  interval"   trials.    The
+   intervals  are approximate, since statistics are collected
+   only  at  the  end of a generation.  This  information  is
+   also printed on the screen under the "D" and "I" options.
+   
+d  Dump  the  current  population to  ckpt  file  AFTER  EACH
+   EVALUATION.  WARNING: This may considerably slow down  the
+   program.    This  may  be  useful  when  each   evaluation
+   represents a significant amount of computation.
+   
+D  Display mode.  Performance statistics are printed  to  the
+   screen  after  each generation. This option is  still  not
+   implemented in DGENESIS.
+   
+i  Read  structures into the initial population.  The initial
+   population will be read from the init file.  If  the  file
+   contains  fewer structures than the population needs,  the
+   remaining structures will be initialized randomly.   Note:
+   it  is good practice to allow at least some randomness  in
+   the initial population.
+   
+I  Interactive   mode.    Display  mode   is   enabled,   and
+   statistics   are   printed  to  the  screen   after   each
+   generation.   In  addition,  the  user  is  prompted   for
+   command   to   control  the  operation  of   the   genetic
+   algorithm.   This  option  is  not  yet   implemented   in
+   DGENESIS.
+   
+l  Log  activity (starts and restarts) in the log file.  Some
+   error messages also end up in the log file.
+   
+o  At  the  end of the experiments, write the average  online
+   performance  measure  to  the  standard  output.    Online
+   performance is the average of all evaluations  during  the
+   experiment.
+   
+O  At  the  end of the experiments, write the average Offline
+   performance  measure  to  the  standard  output.   Offline
+   performance is the average of the best current values.
+   
+p  The  structures in the init file are sent to participating
+   nodes  proportionally  to  their  population  sizes.  This
+   option  implies option i and requieres that the init  file
+   exists.
+   
+r    Testart  a  previously interrupted execution.   In  this
+   case,  the ckpt file is read back in, and the GA takes  up
+   where it left off. This option is not yet implemented.
+   
+R  Rank based selection.
+   
+s    Trace  the history of one schema.  This option  requires
+   that  a  file named schema exists in which the first  line
+   contains  a  string which has the length of one  structure
+   and  which contains only the characters "0", "1", and  "#"
+   (and  no blanks).  The system will append one line to  the
+   schema   file   after  each  generation   describing   the
+   performance   characteristics  of  the  indicated   schema
+   (number of representatives, relative fitness, etc.).   The
+   lines  are  also  printed  on screen  under  "D"  and  "I"
+   options.
+   
+S  This  is  the  Synchronous mode flag. In synchronous  mode
+   the  migrants are processed in the receiver  node  in  the
+   same generation they were sent.
+   
+
+
+10. Reports
+
+DGENESIS has a program to make reports that show the progress
+of   the  algorithm.  This  program  is  based  in  the   one
+distributed  with  GENESIS, but was extensively  modified  to
+meet the output characteristics of DGENESIS
+
+report  was  modified  to handle files produced  by  all  the
+processes involved in a run and the size of the report if now
+only limited by the available memory. report syntax is
+
+    % report [options] experiment-name
+
+The available options are:
+
+-c produces  a complete report, including GA parameters,  the
+   mean  and  variance of the measures collected in  the  out
+   files. This option is set by default.
+   
+-t produces  files avg and var. This files contain  the  mean
+   and  variance  tables and are very useful  to  export  PGA
+   data to graphics and analysis tools.
+   
+If  you haven't done so, you should read GENESIS User's Guide
+for an explanation of the report format.
+
+
+
+11. Acknowledgments
+
+Many  people have influenced this project and I want to thank
+everyone  for their help and support. Specially,  I  want  to
+thank my advisor, Dr. Marcelo Mej°a Olvera, for the trust and
+motivation I received from him to complete this work.
+
+
+
+12. References
+
+[DeJ75]DeJong, Kenneth A., An Analysis of the Behavior  of  a
+       Class   of  Genetic  Adaptive  Systems,  PhD   Thesis,
+       University of Michigan, Ann Arbor, 1975.
+       
+[Gre90]Grefenstette,  John  J.,  A  Users  Guide  to  GENESIS
+       Version  5.0,  Navy  Center for  Applied  Research  in
+       Artificial Intelligence, Wasington D.C., 1990.
+       
+[Gol89]Goldberg,  David  E.,  Genetic Algorithms  in  Search,
+       Optimization  &  Machine  Learning,  Addison   Wesley,
+       1989.
+       
+[Hol92]Holland,   John   H.,  Adaptation   in   Natural   and
+       Artificial  Systems:  An  Introductory  Analysis  with
+       Applications  to  Biology,  Control,  and   Artificial
+       Intelligence, MIT Press, 2nd edition, 1992.
+       
+[MÅh89]MÅhlenbein,    H.,   Parallel   Genetic    Algorithms,
+       Population  Genetics  and Combinatorial  Optimization,
+       In  Proceedings of the Third International  Conference
+       on Genetic Algorithms, Morgan Kaufmann, 1989.
+       
+[Tan89]Tanese,  Reiko,  Distributed  Genetic  Algorithms,  In
+       Proceedings  of the Third International Conference  on
+       Genetic Algorithms, Morgan Kaufmann, 1989.
+       
+
+

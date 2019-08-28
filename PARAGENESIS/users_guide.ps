@@ -1,0 +1,2768 @@
+%!              for use by dvi2ps Version 2.00
+% a start (Ha!) at a TeX mode for PostScript.
+% The following defines procedures assumed and used by program "dvi2ps"
+% and must be downloaded or sent as a header file for all TeX jobs.
+
+% By:  Neal Holtz, Carleton University, Ottawa, Canada
+%      <holtz@cascade.carleton.cdn>
+%      <holtz%cascade.carleton.cdn@ubc.csnet>
+%      June, 1985
+%      Last Modified: Aug 25/85
+% oystr 12-Feb-1986
+%   Changed @dc macro to check for a badly formed bits in character
+%   definitions.  Can get a <> bit map if a character is not actually
+%   in the font file.  This is absolutely guaranteed to drive the
+%   printer nuts - it will appear that you can no longer define a
+%   new font, although the built-ins will still be there.
+% jr@bbn.com 18-May-1987
+%   inserted psfig defs for startTexFig, endTexFig, doclip and
+%   TeXscale; these are copyright 1987 Trevor J. Darrell; please refer
+%   to complete notice preceding the def for /TeXscale.
+% To convert this file into a downloaded file instead of a header
+% file, uncomment all of the lines beginning with %-%
+
+%-%0000000 			% Server loop exit password
+%-%serverdict begin exitserver
+%-%  systemdict /statusdict known
+%-%  {statusdict begin 9 0 3 setsccinteractive /waittimeout 300 def end}
+%-% if
+
+/TeXDict 200 dict def   % define a working dictionary
+TeXDict begin           % start using it.
+
+                        % units are in "dots" (300/inch)
+/Resolution 300 def
+/Inch  {Resolution mul} def  % converts inches to internal units
+
+/Mtrx 6 array def
+
+%%%%%%%%%%%%%%%%%%%%% Page setup (user) options %%%%%%%%%%%%%%%%%%%%%%%%
+
+% dvi2ps will output coordinates in the TeX system ([0,0] 1" down and in
+% from top left, with y +ive downward).  The default PostScript system
+% is [0,0] at bottom left, y +ive up.  The Many Matrix Machinations in
+% the following code are an attempt to reconcile that. The intent is to
+% specify the scaling as 1 and have only translations in the matrix to
+% properly position the text.  Caution: the default device matrices are
+% *not* the same in all PostScript devices; that should not matter in most 
+% of the code below (except for lanscape mode -- in that, rotations of
+% -90 degrees resulted in the the rotation matrix [ e 1 ]
+%                                                 [ 1 e ]
+% where the "e"s were almost exactly but not quite unlike zeros.
+
+/@letter
+  { letter initmatrix
+    72 Resolution div dup neg scale          % set scaling to 1.
+    310 -3005 translate      % move origin to top (these are not exactly 1"
+    Mtrx currentmatrix pop   % and -10" because margins aren't set exactly right)
+  } def
+        % note mode is like letter, except it uses less VM
+/@note
+  { note initmatrix
+    72 Resolution div dup neg scale          % set scaling to 1.
+    310 -3005 translate                      % move origin to top
+    Mtrx currentmatrix pop
+  } def
+
+/@landscape
+  { letter initmatrix
+    72 Resolution div dup neg scale          % set scaling to 1.
+%    -90 rotate                              % it would be nice to be able to do this
+    Mtrx currentmatrix 0 0.0 put             % but instead we have to do things like this because what
+    Mtrx 1 -1.0 put                          % should be zero terms aren't (and text comes out wobbly)
+    Mtrx 2 1.0 put                           % Fie!  This likely will not work on QMS printers
+    Mtrx 3 0.0 put                           % (nor on others where the device matrix is not like
+    Mtrx  setmatrix                          %  like it is on the LaserWriter).
+    300 310  translate                       % move origin to top
+    Mtrx currentmatrix pop
+  } def
+
+/@legal
+  { legal initmatrix
+    72 Resolution div dup neg scale          % set scaling to 1.
+    295 -3880 translate                      % move origin to top
+    Mtrx currentmatrix pop
+  } def
+
+/@manualfeed
+   { statusdict /manualfeed true put
+   } def
+        % n @copies -   set number of copies
+/@copies
+   { /#copies exch def
+   } def
+
+%%%%%%%%%%%%%%%%%%%% Procedure Defintions %%%%%%%%%%%%%%%%%%%%%%%%%%
+
+/@newfont       % id @newfont -         -- initialize a new font dictionary
+  { /newname exch def
+    pop
+    newname 7 dict def          % allocate new font dictionary
+    newname load begin
+        /FontType 3 def
+        /FontMatrix [1 0 0 -1 0 0] def
+        /FontBBox [0 0 1 1] def
+        /BitMaps 128 array def
+        /BuildChar {CharBuilder} def
+        /Encoding 128 array def
+        0 1 127 {Encoding exch /.undef put} for
+        end
+    newname newname load definefont pop
+  } def
+
+
+% the following is the only character builder we need.  it looks up the
+% char data in the BitMaps array, and paints the character if possible.
+% char data  -- a bitmap descriptor -- is an array of length 6, of 
+%          which the various slots are:
+
+/ch-image {ch-data 0 get} def   % the hex string image
+/ch-width {ch-data 1 get} def   % the number of pixels across
+/ch-height {ch-data 2 get} def  % the number of pixels tall
+/ch-xoff  {ch-data 3 get} def   % number of pixels below origin
+/ch-yoff  {ch-data 4 get} def   % number of pixels to left of origin
+/ch-tfmw  {ch-data 5 get} def   % spacing to next character
+
+/CharBuilder    % fontdict ch Charbuilder -     -- image one character
+  { /ch-code exch def           % save the char code
+    /font-dict exch def         % and the font dict.
+    /ch-data font-dict /BitMaps get ch-code get def     % get the bitmap descriptor for char
+    ch-data null eq not
+      { ch-tfmw   0   ch-xoff neg   ch-yoff neg   ch-width ch-xoff sub   ch-height ch-yoff sub
+            setcachedevice
+        ch-width ch-height true [1 0  0 1  ch-xoff ch-yoff]
+            {ch-image} imagemask
+      }
+    if
+  } def
+
+
+/@sf            % fontdict @sf -        -- make that the current font
+  { dup
+    % All smallcaps fonts must have the string SmallCaps in their name
+    /FontName known
+      { dup /FontName get tempstring cvs (SmallCaps) search
+	  {/smallcaps true def pop pop pop}
+	  {/smallcaps false def pop}
+        ifelse
+      }
+      {/smallcaps false def} 
+    ifelse
+    setfont() pop
+  } def
+
+                % in the following, the font-cacheing mechanism requires that
+                % a name unique in the particular font be generated
+
+/@dc            % char-data ch @dc -    -- define a new character bitmap in current font
+  { /ch-code exch def
+% ++oystr 12-Feb-86++
+    dup 0 get
+    length 2 lt
+      { pop [ <00> 1 1 0 0 8.00 ] } % replace <> with null
+    if
+% --oystr 12-Feb-86--
+    /ch-data exch def
+    currentfont /BitMaps get ch-code ch-data put
+    currentfont /Encoding get ch-code 
+       dup (   ) cvs cvn   % generate a unique name simply from the character code
+       put
+  } def
+
+/@bop0           % n @bop0 -              -- begin the char def section of a new page
+  { 
+  } def
+
+/@bop1           % n @bop1 -              -- begin a brand new page
+  { pop
+    erasepage initgraphics 
+    Mtrx setmatrix
+    /SaveImage save def() pop
+  } def
+
+/@eop           % - @eop -              -- end a page
+  { showpage 
+    SaveImage restore() pop
+  } def
+
+/@start         % - @start -            -- start everything
+  { @letter                             % (there is not much to do)
+  } def
+
+/@end           % - @end -              -- done the whole shebang
+  { end
+  } def
+
+/p              % x y p -               -- move to position
+  { moveto
+  } def
+
+/r              % x r -                 -- move right
+  { 0 rmoveto
+  } def
+
+/s              % string s -            -- show the string
+  { smallcaps {SmallCapShow} {show} ifelse
+  } def
+
+/c              % ch c -                -- show the character (code given)
+  { c-string exch 0 exch put
+    c-string s
+  } def
+
+/c-string ( ) def
+
+/ru             % dx dy ru -   -- set a rule (rectangle)
+  { /dy exch neg def    % because dy is height up from bottom
+    /dx exch def
+    /x currentpoint /y exch def def   % remember current point
+    newpath x y moveto
+    dx 0 rlineto
+    0 dy rlineto
+    dx neg 0 rlineto
+    closepath fill
+    x y moveto
+  } def
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%     the \special command junk
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   The structure of the PostScript produced by dvi2ps for \special is:
+%         @beginspecial
+%           - any number of @hsize, @hoffset, @hscale, etc., commands
+%         @setspecial
+%           - the users file of PostScript commands
+%         @endspecial
+
+% The @beginspecial command recognizes whether the Macintosh Laserprep
+% has been loaded or not, and redfines some Mac commands if so.
+% The @setspecial handles the users shifting, scaling, clipping commands
+
+
+% The following are user settable options from the \special command.
+
+/@SpecialDefaults
+  { /hs 8.5 Inch def
+    /vs 11 Inch def
+    /ho 0 def
+    /vo 0 def
+    /hsc 1 def
+    /vsc 1 def
+    /CLIP false def
+  } def
+
+%       d @hsize -      specify a horizontal clipping dimension
+%                       these 2 are executed before the MacDraw initializations
+/@hsize {/hs exch def /CLIP true def} def
+/@vsize {/vs exch def /CLIP true def} def
+%       d @hoffset -    specify a shift for the drwgs
+/@hoffset {/ho exch def} def
+/@voffset {/vo excl def} def
+%       s @hscale -     set scale factor
+/@hscale {/hsc exch def} def
+/@vscale {/vsc exch def} def
+
+/@setclipper
+  { hsc vsc scale
+    CLIP
+      { newpath 0 0 moveto hs 0 rlineto 0 vs rlineto hs neg 0 rlineto closepath clip }
+    if
+  } def
+
+% this will be invoked as the result of a \special command (for the
+% inclusion of PostScript graphics).  The basic idea is to change all
+% scaling and graphics back to defaults, but to shift the origin
+% to the current position on the page.  Due to TeXnical difficulties,
+% we only set the y-origin.  The x-origin is set at the left edge of
+% the page.
+
+/@beginspecial          % - @beginspecial -     -- enter special mode
+  { gsave /SpecialSave save def
+          % the following magic incantation establishes the current point as
+          % the users origin, and reverts back to default scalings, rotations
+    currentpoint transform initgraphics itransform translate
+    @SpecialDefaults    % setup default offsets, scales, sizes
+    @MacSetUp           % fix up Mac stuff 
+  } def
+
+/@setspecial    % to setup user specified offsets, scales, sizes (for clipping)
+  {
+    MacDrwgs
+      {md begin /pxt ho def /pyt vo neg def end}
+      {ho vo translate @setclipper}
+    ifelse
+  } def
+
+/@endspecial            % - @endspecial -       -- leave special mode
+  { SpecialSave restore
+    grestore
+  } def
+
+% Following four (through doclip) defs are from the psfig
+% distribution; included here to get them into the right disctionary.
+% /jr
+% 
+% All software, documentation, and related files in this distribution of
+% psfig/tex are Copyright (c) 1987 Trevor J. Darrell
+%
+% Permission is granted for use and non-profit distribution of psfig/tex 
+% providing that this notice be clearly maintained, but the right to
+% distribute any portion of psfig/tex for profit or as part of any commercial
+% product is specifically reserved for the author.
+%
+%
+% psfigTeX PostScript Prolog
+% $Header: figtex.pro,v 1.3 87/01/19 00:56:36 trevor Exp $
+%
+/TeXscale { 65536 div } def
+
+/startTexFig {
+% usage :  x y bb-llx bb-lly bb-urx bb-ury startFig
+	/SavedState save def
+	userdict maxlength dict begin
+	currentpoint transform
+	initgraphics
+	itransform moveto
+
+	/ury exch TeXscale def
+	/urx exch TeXscale def
+	/lly exch TeXscale def
+	/llx exch TeXscale def
+	/y exch TeXscale def
+	/x exch TeXscale def
+	
+	currentpoint /cy exch def /cx exch def
+
+	/sx x urx llx sub div def 	% scaling for x
+	/sy y ury lly sub div def	% scaling for y
+
+	sx sy scale			% scale by (sx,sy)
+
+	cx sx div llx sub
+	cy sy div ury sub translate
+	
+	/DefFigCTM matrix currentmatrix def
+	/initmatrix {
+		DefFigCTM setmatrix
+	} def
+	/defaultmatrix {
+		DefFigCTM exch copy
+	} def
+	/exval {
+		load dup
+		dup xcheck exch
+		type /arraytype eq and {
+			aload pop
+		} if
+	} def
+	/initgraphics [
+		/initgraphics exval
+		DefFigCTM /setmatrix exval
+	] cvx def
+
+	/showpage {
+		initgraphics
+	} def
+
+} def
+% Args are llx lly urx ury (in figure coordinates)
+/clipFig {
+	currentpoint 6 2 roll
+	newpath 4 copy
+	4 2 roll moveto
+	6 -1 roll exch lineto
+	exch lineto
+	exch lineto
+	closepath clip
+	moveto
+} def
+% doclip, if called, will always be just after a `startfig'
+/doclip { llx lly urx ury clipFig } def
+/endTexFig {
+	end SavedState restore
+} def
+% end of Trevor Darrell contribution.
+
+%%%% Additions by LA Carr to reencode Adobe fonts as TeX fonts (almost)
+%%%% Based on routine in LaserWriter Cookbook
+/ReEncodeForTeX
+  { /newfontname exch def
+    /basefontname exch def
+    /TeXstr 30 string def
+
+    /basefontdict basefontname findfont def
+    /newfont basefontdict maxlength dict def
+    basefontdict
+      { exch dup /FID ne
+	  { dup /Encoding eq
+	    { exch dup length array copy
+	        newfont 3 1 roll put }
+	    { exch newfont 3 1 roll put }
+	    ifelse
+	  }
+	{ pop pop }
+	ifelse
+      } forall
+
+%%    newfont /FontName newfontname put %%
+      basefontname TeXstr cvs (Dingbat) search
+	{ pop pop pop }
+        { pop
+	  /TeXvec basefontname TeXstr cvs (Courier) search
+	    { pop pop pop TeXcourvec }
+	    { pop TeXnormalvec }
+	  ifelse def
+          TeXvec aload pop
+
+          TeXvec length 2 idiv
+	    { newfont /Encoding get 3 1 roll put }
+	  repeat
+	}
+      ifelse
+
+      newfontname newfont definefont pop
+  } def
+
+/TeXnormalvec
+	[ 8#014 /fi 8#015 /fl 8#020 /dotlessi 8#022 /grave 8#023 /acute
+	  8#024 /caron 8#025 /breve 8#026 /macron 8#027 /ring 8#030 /cedilla
+	  8#031 /germandbls 8#032 /ae 8#033 /oe 8#034 /oslash 8#035 /AE
+	  8#036 /OE 8#037 /Oslash 8#042 /quotedblright 8#074 /exclamdown
+	  8#076 /questiondown 8#134 /quotedblleft 8#136 /circumflex
+	  8#137 /dotaccent 8#173 /endash 8#174 /emdash 8#175 /quotedbl
+	  8#177 /dieresis ] def
+/TeXcourvec
+	[ 8#016 /exclamdown 8#017 /questiondown 8#020 /dotlessi 8#022 /grave
+	  8#023 /acute 8#024 /caron 8#025 /breve 8#026 /macron 8#027 /ring
+	  8#030 /cedilla 8#031 /germandbls 8#032 /ae 8#033 /oe 8#034 /oslash
+	  8#035 /AE 8#036 /OE 8#037 /Oslash 8#074 /less 8#076 /greater
+	  8#134 /backslash 8#136 /circumflex 8#137 /underscore 8#173 /braceleft
+	  8#174 /bar 8#175 /braceright 8#177 /dieresis ] def
+
+/TeXPSmakefont {	% defines a routine for generating PS fonts, fudged!
+	/TeXsize exch def
+	findfont 
+	[ TeXsize 0 0 TeXsize neg 0 0 ] makefont
+	} def
+
+%Create a General Oblique font
+/ObliqueFont {
+    /ObliqueAngle exch def
+    /ObliqueBaseName exch def
+    /ObliqueFontName exch def
+    /ObliqueTransform [1 0 ObliqueAngle sin ObliqueAngle cos div 1 0 0] def
+    /basefontdict ObliqueBaseName findfont ObliqueTransform makefont def
+    /newfont basefontdict maxlength dict def
+    basefontdict
+      { exch dup /FID ne
+	  { dup /Encoding eq
+	    { exch dup length array copy
+	        newfont 3 1 roll put }
+	    { exch newfont 3 1 roll put }
+	    ifelse
+	  }
+	{ pop pop }
+	ifelse
+      } forall
+
+     newfont /FontName ObliqueFontName put
+     ObliqueFontName newfont definefont
+     pop
+     } def
+
+/Times-Oblique /Times-Roman 15.5 ObliqueFont
+/Times-BoldOblique /Times-Bold 15 ObliqueFont
+/Palatino-Oblique /Palatino-Roman 10 ObliqueFont
+/Palatino-BoldOblique /Palatino-Bold 10 ObliqueFont
+/Times-ItalicUnslanted /Times-Italic -15.15 ObliqueFont
+
+%Create a Palatino-ItalicUnslanted font? You must be joking!
+
+%Create a General SmallCaps font
+/SmallCapsFont {
+    /SmallCapsBaseName exch def
+    /SmallCapsFontName exch def
+    /basefontdict SmallCapsBaseName findfont def
+    /newfont basefontdict maxlength dict def
+    basefontdict
+      { exch dup /FID ne
+	  { dup /Encoding eq
+	    { exch dup length array copy
+	        newfont 3 1 roll put }
+	    { exch newfont 3 1 roll put }
+	    ifelse
+	  }
+	{ pop pop }
+	ifelse
+      } forall
+
+     newfont /FontName SmallCapsFontName put
+     SmallCapsFontName newfont definefont
+     pop
+     } def
+
+/Times-SmallCaps /Times-Roman SmallCapsFont
+/Palatino-SmallCaps /Palatino-Roman SmallCapsFont
+
+/SmallCapShow {
+	% string smallcaps show
+	/achar (A) def
+	/xfac 0.8 def
+	/yfac 0.8 def
+	/xrec 1 xfac div def
+	/yrec 1 yfac div def
+	{ dup dup
+	  8#141 ge exch 8#172 le and 
+	    { 8#40 sub achar exch 0 exch put achar
+	      xfac yfac scale show xrec yrec scale }
+	    { achar exch 0 exch put achar show }
+	  ifelse
+	} forall
+} def
+
+/tempstring 100 string def	% used for string conversions
+%%%% Additions by LA Carr to reencode Adobe fonts as TeX fonts (almost)
+%%%% Based on routine in LaserWriter Cookbook
+
+/MacDrwgs false def     % will get set if we think the Mac LaserPrep file has been loaded
+
+        % - @MacSetUp -   turn-off/fix-up all the MacDraw stuff that might hurt us
+                        % we depend on 'psu' being the first procedure executed
+                        % by a Mac document.  We redefine 'psu' to adjust page
+                        % translations, and to do all other the fixups required.
+                        % This stuff will not harm other included PS files
+/@MacSetUp
+  { userdict /md known  % if md is defined
+      { userdict /md get type /dicttype eq      % and if it is a dictionary
+         { /MacDrwgs true def
+           md begin                             % then redefine some stuff
+              /psu                              % redfine psu to set origins, etc.
+                /psu load
+                        % this procedure contains almost all the fixup code
+                { /letter {} def        % it is bad manners to execute the real
+                  /note {} def          %   versions of these (clears page image, etc.)
+                  /legal {} def
+                  statusdict /waittimeout 300 put
+                  /page {pop} def       % no printing of pages
+                  /pyt vo neg def       % x & y pixel translations
+                  /pxt ho def
+                }
+                concatprocs 
+              def
+              /od                               % redefine od to set clipping region
+                /od load
+                { @setclipper }
+                concatprocs
+              def
+           end }
+        if }
+    if    
+  } def
+
+%       p1 p2 concatprocs p       - concatenate procedures
+/concatprocs
+  { /p2 exch cvlit def 
+    /p1 exch cvlit def
+    /p p1 length p2 length add array def
+    p 0 p1 putinterval 
+    p p1 length p2 putinterval
+    p cvx
+  } def
+
+end                     % revert to previous dictionary
+TeXDict begin @start
+%%Title: paragen.dvi
+%%Creator: dvi2ps
+%%EndProlog
+4 @bop0
+[ 300 ] /cmbx12.300 @newfont
+cmbx12.300 @sf
+[<01FC3FC007FF3FC00F81BE001F00FE001F007E001F003E001F003E001F003E001F003E001F003E001F003E001F003E001F00
+  3E001F003E001F003E001F003E001F003E001F003E001F003E001F003E00FF01FE00FF01FE00> 32 22 -2 0 31.133] 117 @dc
+[ 300 ] /cmr12.300 @newfont
+cmr12.300 @sf
+[<03FFFF00000FC000000780000007800000078000000780000007800000078000000780000007800000078000000780000007
+  8000000780000007800000078000000780000007800000078000000780000007800000078000000780008007800480078004
+  8007800480078004C007800C40078008400780084007800860078018780780787FFFFFF8> 32 34 -2 0 35.225] 84 @dc
+[<FFE7FF000E0070000E0070000E0070000E0070000E0070000E0070000E0070000E0070000E0070000E0070000E0070000E00
+  70000E0070000E0070000E0070000F0070000F0070000E80E0000E60C0000E1F80000E0000000E0000000E0000000E000000
+  0E0000000E0000000E0000000E0000000E0000000E0000000E0000001E000000FE0000000E000000> 32 35 -1 0 27.097] 104 @dc
+[<FFC00E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E001E00FE000E000000000000000000
+  00000000000000001C001E003E001E001C00> 16 34 -1 0 13.548] 105 @dc
+[<8FC0D030E018C008C00C800C800C801C003C01F80FF03FE07F80F000E008C008C008C018601830780F88> 16 21 -2 0 19.239] 115 @dc
+[<01F0030807080E040E040E040E040E040E040E000E000E000E000E000E000E000E000E000E000E00FFF83E001E000E000600
+  060006000200020002000200> 16 31 -1 0 18.968] 116 @dc
+[<00FC000703000E00801C0040380020780020700000F00000F00000F00000F00000F00000FFFFE0F000E07000E07801E03801
+  C01C01C00C038007070001FC00> 24 21 -1 0 21.677] 101 @dc
+[<0003F00000001C0800000030060000006001000000E000800001C000800003C000400003C000400003800040000780002000
+  0780002000078000200007800020000780002000078000200007800020000780002000078000200007800020000780002000
+  0780002000078000200007800020000780002000078000200007800020000780002000078000200007800020000780002000
+  0780002000078000200007800070000FC000F800FFFC07FF00> 40 35 -2 1 36.563] 85 @dc
+[<FFE7FF000E0070000E0070000E0070000E0070000E0070000E0070000E0070000E0070000E0070000E0070000E0070000E00
+  70000E0070000E0070000E0070000F0070000F0070001E80E000FE60C0000E1F8000> 32 21 -1 0 27.097] 110 @dc
+[<7FF8000780000700000700000700000700000700000700000700000700000700000700000700000700000700000700000700
+  00070000070000070000FFF800070000070000070000070000070000070000070000070000070000030F00038F00018F0000
+  C600003C00> 24 35 0 0 14.903] 102 @dc
+[<01FC000707000E03801C01C03800E07800F0700070F00078F00078F00078F00078F00078F00078F000787000707000703800
+  E01800C00C018007070001FC00> 24 21 -1 0 24.387] 111 @dc
+[<FFF0000F00000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00000F00000F06
+  000F0F001E8F00FE46000E3C00> 24 21 -1 0 18.968] 114 @dc
+[<FFE3FF8FFE0E003800E00E003800E00E003800E00E003800E00E003800E00E003800E00E003800E00E003800E00E003800E0
+  0E003800E00E003800E00E003800E00E003800E00E003800E00E003800E00F003C00E00F003C00E01E807201C0FE60E18380
+  0E1FC07F00> 40 21 -1 0 40.645] 109 @dc
+[<0007E00000381C0000E0020001C0010003800080070000400E0000401E0000201C0000203C0000103C0000107C0000107800
+  001078000000F8000000F8000000F8000000F8000000F8000000F8000000F8000000F800000078000010780000107C000010
+  3C0000303C0000301C0000301E0000700E000070070000F0038000F001C0017000E00630003818300007E010> 32 36 -3 1 35.225] 67 @dc
+[<00100000380000380000380000740000740000E20000E20000E20001C10001C1000380800380800380800700400700400E00
+  200E00200E00301E0078FFC1FE> 24 21 -1 0 25.742] 118 @dc
+[<7FF3FF8007003800070038000700380007003800070038000700380007003800070038000700380007003800070038000700
+  380007003800070038000700380007003800070038000700380007003800FFFFF80007003800070038000700380007003800
+  0700380007003800070038000700380007003800038078000180780000C0780000703800001FD800> 32 35 0 0 27.097] 13 @dc
+[<0FC1E03C2390781708F00F08F00708F00708F007087007007807003C07001E070007C70000FF000007000007000007001807
+  003C0E003C0C001838000FE000> 24 21 -2 0 24.387] 97 @dc
+[<03FE000E03803800E0600030600030C00018C00018C000184000186000303800F00FFFE00FFFC01FFE001800001800001000
+  0010000019F0000F1C000E0E001C07001C07003C07803C07803C07803C07801C07001C07000E0E18071E1801F198000070> 24 33 -1 11 24.387] 103 @dc
+[<00600600000060060000006006000000F00F000000F00F000000F00D000001C81C800001C81C800001C81880000384384000
+  038438400003843040000702702000070270200007026020000E01E010000E01E010000E01C018001C01C018001E01E03C00
+  FF8FF8FF00> 40 21 -1 0 35.225] 119 @dc
+[<01F8000706000C01001C0080380040780040700000F00000F00000F00000F00000F00000F00000F000007000007800003803
+  001C07800C078007030001FE00> 24 21 -2 0 21.677] 99 @dc
+[<01F0FE070CF00C02E01801E03800E07800E07000E0F000E0F000E0F000E0F000E0F000E0F000E0F000E07000E07800E03800
+  E01C01E00C02E00704E001F8E00000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00001E000
+  0FE00000E0> 24 35 -2 0 27.097] 100 @dc
+[<FFFC00000FC00000078000000780000007800000078000000780000007800000078000000780000007800000078000000780
+  000007800000078000000780000007FFF00007803C0007800F0007800780078007C0078003C0078003E0078003E0078003E0
+  078003E0078003E0078003E0078003C0078007C00780078007800F000F803C00FFFFF000> 32 34 -2 0 33.185] 80 @dc
+[<FFE00E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E00
+  0E000E000E000E000E000E000E001E00FE000E00> 16 35 -1 0 13.548] 108 @dc
+[<0007F00000003C0C080000E003180001C000B800038000B80007000078000F000078001E000078001E000078003C00007800
+  3C000078007C000078007800007800780000F800F8001FFF00F800000000F800000000F800000000F800000000F800000000
+  F800000000F800000000780000080078000008007C000008003C000018003C000018001E000018001E000038000F00003800
+  0700007800038000F80001C001B80000E0021800003C0C18000007F00800> 40 36 -3 1 38.270] 71 @dc
+[<00FC7F0003827800060170000E00F0000E00F0000E0070000E0070000E0070000E0070000E0070000E0070000E0070000E00
+  70000E0070000E0070000E0070000E0070000E0070001E00F000FE07F0000E007000> 32 21 -1 0 27.097] 117 @dc
+[<FFE0000E00000E00000E00000E00000E00000E00000E00000E00000E00000E3F000E41C00E80E00F00700E00380E003C0E00
+  3C0E001E0E001E0E001E0E001E0E001E0E001E0E001E0E001C0E003C0E00380F00700E8060FE61C00E1F00> 24 31 -1 10 27.097] 112 @dc
+[<70F8F8F870> 8 5 -4 0 13.548] 46 @dc
+[ 300 ] /cmbx17.300 @newfont
+cmbx17.300 @sf
+[<001E000000003F000000007F800000007F800000007F800000007F800000007F800000007F800000007F800000007F800000
+  003F800000003F800000003F800000003F800000001F800000001F800000001F800000000FC00000000FC00000000FC00000
+  0007C000000007C000000003C000000003E000000001E000000001E000000000F00000000070000000007800000000380000
+  00001C000000000E000000000E0000E000070000E000038000E00001C000700000E000700000E00070000070007800003800
+  7FFFFFFC007FFFFFFE007FFFFFFE003FFFFFFF003FFFFFFF803FFFFFFF803FFFFFFF803E000000003800000000> 40 49 -4 1 38.978] 55 @dc
+[<FFFFFFFFE000FFFFFFFFFE00FFFFFFFFFF8001FE0001FFC001FE00003FE001FE00001FF001FE00000FF801FE000007FC01FE
+  000007FC01FE000003FC01FE000003FE01FE000003FE01FE000003FE01FE000003FE01FE000003FE01FE000003FE01FE0000
+  03FE01FE000003FC01FE000007FC01FE000007F801FE00000FF801FE00000FF001FE00001FE001FE00007F8001FFFFFFFE00
+  01FFFFFFF00001FE003FFC0001FE0001FF0001FE00007F8001FE00003FC001FE00001FE001FE00001FF001FE00000FF001FE
+  00000FF801FE00000FF801FE00000FF801FE00000FF801FE00000FF801FE00000FF801FE00000FF801FE00000FF001FE0000
+  1FF001FE00001FE001FE00003FE001FE00007FC001FE0001FF00FFFFFFFFFE00FFFFFFFFF800FFFFFFFF8000> 48 49 -3 0 55.363] 66 @dc
+[<001FF03FFC007FFC3FFC01FC063FFC03F8013FC003F000BF8007F000FF8007F0007F8007F0007F8007F0003F8007F0003F80
+  07F0003F8007F0003F8007F0003F8007F0003F8007F0003F8007F0003F8007F0003F8007F0003F8007F0003F8007F0003F80
+  07F0003F8007F0003F8007F0003F8007F0003F8007F0003F8007F0003F8007F0003F800FF0007F80FFF007FF80FFF007FF80
+  FFF007FF8003F0001F80> 40 32 -2 0 43.309] 117 @dc
+[<001FFE000001FFFFE00007F003F8001F80007E003E00001F007C00000F807C00000F80F8000007C0F8000007C0F8000007C0
+  F8000007C0F8000007C07C00000FC03C00001F801F0000FF8007FFFFFF8003FFFFFF0007FFFFFE0007FFFFFC000FFFFFF000
+  0FFFFF00000F000000001E000000000C000000000C000000000C000000000C1FE0000004FFFC000003F03F000007E01F8000
+  0FC00FC0001F8007E0001F8007E0003F8007F0003F8007F0003F8007F0003F8007F0003F8007F0003F8007F0003F8007F000
+  1F8007E0001F8007E1C00FC00FC3E007E01F87E003F03FC3E000FFFC71E0001FE03FC00000000F80> 40 48 -2 15 38.978] 103 @dc
+[<C0FF8000E3FFE000F780F800FE003C00FC001E00F8000E00F8000E00F0000F00F0000F00E0000F00E0001F00E0003F000000
+  FF00000FFE0001FFFE0007FFFC000FFFF8003FFFF0003FFFC0007FFF0000FFE00000FE000000F8001C00F0001C00F0001C00
+  F0001C0070003C0078003C0038007C001E01FC000FFFDC0001FF0C00> 32 32 -3 0 30.749] 115 @dc
+[<01FF003F000FFFC07FC01FE070FFE03FC019FCE07F8009F870FF0005F870FF0005F870FF0003F870FF0003F870FF0003F870
+  7F8003F8007F8003F8003FC003F8001FE003F80007F003F80001FE03F800003FE3F8000003FFF800000003F800000003F800
+  000003F800000003F800000003F8000FC003F8000FC003F8001FE007F0001FE007F0001FE00FE0001FC00FC0000FC03F8000
+  03FFFE000000FFF00000> 40 32 -2 0 38.978] 97 @dc
+[<FFFF87FFFCFFFF87FFFCFFFF87FFFC07F0003F8007F0003F8007F0003F8007F0003F8007F0003F8007F0003F8007F0003F80
+  07F0003F8007F0003F8007F0003F8007F0003F8007F0003F8007F0003F8007F0003F8007F0003F8007F0003F8007F0003F80
+  07F0003F8007F0003F8007F8003F8007F8003F8007F8003F8007F4003F8007F4003F000FF2007F00FFF1807E00FFF0E0FC00
+  FFF07FF80003F01FE000> 40 32 -2 0 43.309] 110 @dc
+[<001FE07FF800FFFC7FF803F81E7FF807E007FF800FC001FF001FC000FF001F80007F003F80007F007F00007F007F00007F00
+  7F00007F00FF00007F00FF00007F00FF00007F00FF00007F00FF00007F00FF00007F00FF00007F00FF00007F00FF00007F00
+  7F00007F007F00007F007F00007F003F80007F003F80007F001F80007F001FC000FF000FC001FF0007F003FF0001FC0F7F00
+  007FFC7F00001FF07F000000007F000000007F000000007F000000007F000000007F000000007F000000007F000000007F00
+  0000007F000000007F000000007F000000007F000000007F00000000FF0000000FFF0000000FFF0000000FFF000000003F00> 40 50 -3 0 43.309] 100 @dc
+[<FFFFFF000000FFFFFF000000FFFFFF00000001FE0000000001FE0000000001FE0000000001FE0000000001FE0000000001FE
+  0000000001FE0000000001FE0000000001FE0000000001FE0000000001FE0000000001FE0000000001FE0038000001FE0038
+  000001FE0038000001FE0038000001FE0038000001FE0078000001FE00F8000001FE01F8000001FFFFF8000001FFFFF80000
+  01FFFFF8000001FE01F8000001FE00F8000001FE0078000001FE0038000001FE0038000001FE0038000001FE003801C001FE
+  003801C001FE000001C001FE000001C001FE0000038001FE0000038001FE0000038001FE0000078001FE0000078001FE0000
+  0F8001FE00000F8001FE00001F8001FE00007F8001FE0003FF00FFFFFFFFFF00FFFFFFFFFF00FFFFFFFFFF00> 48 49 -3 0 48.924] 70 @dc
+[<000FE000003FF80000FE1C0000FC0C0001FC0E0003F8060003F8070003F8070003F8070003F8070003F8070003F8070003F8
+  070003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F80000
+  03F8000003F8000003F8000003F80000FFFFFC00FFFFFC001FFFFC0007F8000003F8000001F8000001F8000000F8000000F8
+  00000078000000780000007800000038000000380000003800000038000000380000> 32 46 -1 0 30.316] 116 @dc
+[<FFFFC000FFFFC000FFFFC00007F0000007F0000007F0000007F0000007F0000007F0000007F0000007F0000007F0000007F0
+  000007F0000007F0000007F0000007F0000007F0000007F0000007F0000007F0000007F0000007F8000007E81F8007E81F80
+  07E83FC007EC3FC00FE43FC0FFE61F80FFE31F80FFE1FF0003E0FC00> 32 32 -2 0 31.412] 114 @dc
+[<000FF800007FFF0001FE03C003F800E007E000700FC000381FC0001C3F80001C3F8000007F8000007F0000007F000000FF00
+  0000FF000000FF000000FF000000FFFFFFFCFFFFFFFCFF0001FCFF0001FC7F0001FC7F0001FC7F0001F83F8001F83F8003F8
+  1F8003F00FC003F00FC007E003E00FC001F81F80007FFE00000FF000> 32 32 -2 0 35.310] 101 @dc
+[<000003C000001E000000000003C000001E000000000007C000001F000000000007E000003F000000000007E000003F000000
+  00000FE000003F80000000000FF000007F80000000000FF000007F80000000001FF000007FC0000000001FF80000FFC00000
+  00001FF80000FFC0000000003FF80000FFE0000000003FDC0001FEE0000000003FDC0001FEE0000000007FDE0003FE700000
+  00007F8E0003FC70000000007F8E0003FC7000000000FF0F0007FC3800000000FF070007F83800000000FF070007F8380000
+  0001FE07800FF81C00000001FE03800FF01C00000003FE03800FF01E00000003FC03C01FF00E00000003FC01C01FE00E0000
+  0007FC01C01FE00F00000007F801E03FE00700000007F800E03FC0070000000FF800E03FC0078000000FF000707FC0038000
+  000FF000707F80038000001FF000707F8003C000001FE00038FF8001C000001FE00038FF0001C000003FE00038FF0001E000
+  003FC0001DFE0000E000003FC0001DFE0000E000007FC0001DFE00007000007F80000FFC00007000007F80000FFC00007000
+  00FF00000FFC0000380000FF000007F80000380000FF000007F80000380001FE00000FF800001C0001FE00000FF000001C00
+  01FE00000FF000001C00FFFFF803FFFFC00FFFF8FFFFF803FFFFC00FFFF8FFFFF803FFFFC00FFFF8> 80 49 -1 0 80.410] 87 @dc
+[<000FFC0000007FFF800001FC0FE00003F003F0000FE001FC000FC000FC001F80007E003F80007F003F80007F007F00003F80
+  7F00003F807F00003F80FF00003FC0FF00003FC0FF00003FC0FF00003FC0FF00003FC0FF00003FC0FF00003FC0FF00003FC0
+  7F00003F807F00003F807F00003F803F00003F003F80007F001F80007E000FC000FC0007E001F80003F003F00001FC0FE000
+  007FFF8000000FFC0000> 40 32 -2 0 38.978] 111 @dc
+[<FFFF83FFF8FFFF83FFF8FFFF83FFF807F0007F0007F000FE0007F001FC0007F001FC0007F003F80007F007F00007F007F000
+  07F00FE00007F01FC00007F03FC00007F03F800007F87F000007FEFE000007FFFE000007F7FC000007F3F8000007F1F80000
+  07F0F0000007F078000007F03C000007F01E000007F00F000007F007800007F001E00007F000F00007F000780007F007FFE0
+  07F007FFE007F007FFE007F000000007F000000007F000000007F000000007F000000007F000000007F000000007F0000000
+  07F000000007F000000007F000000007F000000007F00000000FF0000000FFF0000000FFF0000000FFF000000003F0000000> 40 50 -2 0 41.143] 107 @dc
+[ 300 ] /cmr14.300 @newfont
+cmr14.300 @sf
+[<FFFFFF0000FFFFFFC0000F8007F000078001F800078000FC000780007C000780003E000780003E000780001F000780001F00
+  0780001F000780001F000780001F000780001F000780001E000780003E000780003C000780007C00078000F800078001F000
+  078007C00007FFFE000007800F8000078003E000078001F000078000F000078000F80007800078000780007C000780007C00
+  0780007C000780007C000780007C000780007C00078000F800078000F800078001F000078003E0000F8007C000FFFFFF8000
+  FFFFFC0000> 40 41 -4 0 40.383] 66 @dc
+[<007E0FE001818FE003004F0006002E000E001E000E001E000E000E000E000E000E000E000E000E000E000E000E000E000E00
+  0E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E001E001E00FE00FE00FE00FE00
+  1E001E00> 32 26 -2 0 31.635] 117 @dc
+[<01FF00000701C000180030003000180060000C0060000C00C0000600C0000600C0000600C00006004000060060000C003000
+  1C001800780007FFF00007FFE0000FFF80001C0000001800000018000000100000001000000019F800000B0C000006060000
+  0E0700001C0380001C0380003C03C0003C03C0003C03C0003C03C0003C03C0001C0380001C0380000E07020006070700030C
+  870001F8610000001E00> 32 40 -2 13 28.449] 103 @dc
+[<83F000CC0C00D00200E00300E00100C00180C00180C00180800180800380800700001F0001FE000FFC001FF0003F00007800
+  00E00100C00100C00100C00100C00300400300200700181B0007E100> 24 26 -2 0 22.395] 115 @dc
+[<07E078001C18F6003804E2007003C100F003C100F001C100F001C100F001C1007001C1007801C0003801C0001C01C0000F01
+  C00003C1C00000FFC0000001C0000001C0000001C0001001C0003801C0007C01C0007C0380007803000020060000181C0000
+  07F00000> 32 26 -3 0 28.449] 97 @dc
+[<FFE0FFE0FFE0FFE00E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E00
+  0E000E000E000E000E000E000E000E000E000E000E000E000E000F000E000F000E000E800E001E801C00FE401800FE303000
+  1E0FE000> 32 26 -2 0 31.635] 110 @dc
+[<007E0FE003818FE007004F000E002E001C001E0038001E0038000E0078000E0070000E00F0000E00F0000E00F0000E00F000
+  0E00F0000E00F0000E00F0000E00F0000E0070000E0078000E0038000E0038000E001C001E000E002E0007004E0001C18E00
+  007E0E0000000E0000000E0000000E0000000E0000000E0000000E0000000E0000000E0000000E0000000E0000000E000000
+  0E0000001E000000FE000000FE0000001E00> 32 42 -2 0 31.635] 100 @dc
+[<FFE01807FFE0FFE01807FFE01F0018007E000E003C003C0004003C003C0004003C003C0004007A003C0004007A003C000400
+  7A003C000400F1003C000400F1003C000400F1003C000401E0803C000401E0803C000401E0803C000403C0403C000403C040
+  3C000403C0403C00040780203C00040780203C00040780203C00040F00103C00040F00103C00041E00083C00041E00083C00
+  041E00083C00043C00043C00043C00043C00043C00043C00047800023C00047800023C00047800023C0004F000013C0004F0
+  00013C0004F000013C0005E00000BC0005E00000BC0005E00000BC000FC000007E00FFC000007FE0FFC000007FE0> 48 41 -4 0 52.318] 77 @dc
+[<FFE0FFE00E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E001E00FE00FE00
+  1E000000000000000000000000000000000000001C003E003E003E001C00> 16 40 -2 0 15.704] 105 @dc
+[<00FE000383800600C00C00601C007038003838003878003C70001CF0001EF0001EF0001EF0001EF0001EF0001EF0001EF000
+  1E70001C70001C3800383800381C00700C00600600C003838000FE00> 24 26 -2 0 28.449] 111 @dc
+[<FFF000FFF0000F00000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00
+  000E00000E00000F00000F00000F01801E83C0FE43C0FE21801E1F00> 24 26 -2 0 22.076] 114 @dc
+[<FFFE0000FFFE00000FC000000780000007800000078000000780000007800000078000000780000007800000078000000780
+  00000780100007801000078010000780100007801000078030000780700007FFF00007FFF000078070000780300007801000
+  0780100007801000078010040780100407800004078000080780000807800008078000080780001807800018078000380780
+  00700F8003F0FFFFFFF0FFFFFFF0> 32 41 -4 0 37.197] 70 @dc
+[<FF807FF0FF807FF01F001E0006001C0002003800010038000180700000C0E0000041E0000021C00000138000001F0000000F
+  0000000E0000001E0000003B0000003900000070800000E0400001C0600001C0200003801000070018000F803E00FFC07FE0
+  FFC07FE0> 32 26 -1 0 30.042] 120 @dc
+[<00FC000383000600C00C00401C0020380010380010780000700000F00000F00000F00000F00000F00000FFFFF0F00070F000
+  707000707000F07800E03800E01C00C00C01C006038003870000FC00> 24 26 -2 0 25.263] 101 @dc
+[<70F8F8F8700000000000000000000000000000000070F8F8F870> 8 26 -5 0 15.704] 58 @dc
+[ 300 ] /cmsy12.300 @newfont
+cmsy12.300 @sf
+[<03E0000FF8001FFC003FFE007FFF007FFF00FFFF80FFFF80FFFF80FFFF80FFFF80FFFF80FFFF80FFFF807FFF007FFF003FFE
+  001FFC000FF80003E000> 24 20 -3 -2 24.387] 15 @dc
+cmr12.300 @sf
+[<0000007C00FFFC01E2000FC003C100078007C08007800FC08007800F808007800F800007800F800007800F800007800F0000
+  07800F000007800F000007800F000007800E000007801E000007801C00000780380000078070000007FFE0000007803C0000
+  07800E00000780078000078007C000078003C000078003E000078003E000078003E000078003E000078003E000078003C000
+  078007C000078007800007800E00000F803C0000FFFFE00000> 40 35 -2 1 35.894] 82 @dc
+[ 300 ] /cmtt12.300 @newfont
+cmtt12.300 @sf
+[<E3F800EFFE00FFFF00FC0780F003C0E001C0E001C06001C0000780003F8007FE003FFC007FC000780000E00380E00380E003
+  807807807FFF801FFF8007FB80> 24 21 -4 0 25.632] 115 @dc
+[<00FE0003FFC00FFFE01F01F03C0070780070700000700000E00000FFFFF0FFFFF0FFFFF0E00070E000707000E07800E03C01
+  C01E07C00FFF8007FF0001F800> 24 21 -3 0 25.632] 101 @dc
+[<001F00007FC000FFE000E0E001C07001C07001C07001C07001C00001C00001C00001C00001C00001C00001C00001C00001C0
+  0001C000FFFFE0FFFFE07FFFE001C00001C00001C00001C00001C00001C00000C000> 24 28 -1 0 25.632] 116 @dc
+[<00FCFE03FFFE07FFFE0F03E00E01E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00
+  E00E00E0FE0FE0FE0FE0FE0FE0> 24 21 -1 0 25.632] 117 @dc
+[<FFE000FFE000FFE0000E00000E00000E00000E00000E00000E00000E00000E00000E3E000EFF800FFFC00FC1E00F80F00F00
+  780F00380E001C0E001C0E001C0E001C0E001C0E001C0E001C0E00380F00380F80700FC1F0FFFFE0FEFF80FE3E00> 24 32 -1 11 25.632] 112 @dc
+cmr12.300 @sf
+[<FFFC0FC007800780078007800780078007800780078007800780078007800780078007800780078007800780078007800780
+  07800780078007800780078007800FC0FFFC> 16 34 -2 0 17.595] 73 @dc
+[<3C0000430000F18000F08000F0400000400000200000200000200000100000100000380000380000380000740000740000E2
+  0000E20000E20001C10001C1000380800380800380800700400700400E00200E00200E00301E0078FFC1FE> 24 31 -1 10 25.742] 121 @dc
+cmbx12.300 @sf
+[<FFF00000C0FFF00001C006000003C006000003C006000007C00600000FC00600001FC00600003FC00600007FC00600007FC0
+  060000FFC0060001FEC0060003FCC0060007F8C0060007F0C006000FF0C006001FE0C006003FC0C006007F80C00600FF00C0
+  0600FE00C00601FE00C00603FC00C00607F800C0060FF000C0060FE000C0061FE000C0063FC000C0067F8000C006FF0000C0
+  07FE0000C007FC0000C0FFFC001FFEFFF8001FFE> 40 34 -2 0 43.816] 78 @dc
+[<00FE0007FFC00F83E01F01F03E00F87C007C7C007CFC007EFC007EFC007EFC007EFC007EFC007EFC007E7C007C7C007C7C00
+  7C3E00F81E00F00F83E007FFC000FE00> 24 22 -2 0 28.019] 111 @dc
+[<00F80003FE0007C3000F83000F81800F81800F81800F81800F81800F80000F80000F80000F80000F80000F80000F80000F80
+  000F80000F80000F8000FFFF00FFFF003F80000F8000078000078000038000038000018000018000018000018000> 24 32 -1 0 21.793] 116 @dc
+[<00FF0003FFC00FC0701F00303E00187E00007C00007C0000FC0000FC0000FC0000FFFFF8FFFFF8FC00F8FC00F87C00F87C00
+  F03E01F01E01E00F87C007FF8000FE00> 24 22 -2 0 25.569] 101 @dc
+[<387CFEFEFE7C380000000000000000387CFEFEFE7C38> 8 22 -4 0 15.566] 58 @dc
+cmr12.300 @sf
+[<083F000C41C00C80600F00700E00380E003C0E001C0E001E0E001E0E001E0E001E0E001E0E001E0E001E0E001C0E003C0E00
+  380F00300E80600E61C00E1F000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00001E0000FE
+  00000E0000> 24 35 -1 0 27.097] 98 @dc
+[<FF03FE3E01F00C00E00401E00201C0010380018700008E00004E00003C0000380000780000780000E40001C2000383000381
+  000700800E00C01F01F0FF83FE> 24 21 -1 0 25.742] 120 @dc
+cmr14.300 @sf
+[<007C0001C2000381000381000700800700800700800700800700800700800700800700000700000700000700000700000700
+  00070000070000070000070000070000070000070000FFFF003FFF000F000007000007000003000003000003000001000001
+  0000010000010000010000> 24 37 -1 0 22.076] 116 @dc
+[<0000C000030000000000C000030000000000C000030000000001E000078000000001E000078000000001E000078000000003
+  E00007C000000003D0000F4000000003D0000F4000000007D0000F600000000788001E200000000788001E20000000078800
+  1E200000000F04003C100000000F04003C100000000F04003C100000001E020078080000001E020078080000001E02007808
+  0000003C0300F8040000003C0100F0040000003C0100F0040000007C0100F006000000780081E002000000780081E0020000
+  00780081E002000000F00043C001000000F00043C001000000F00043C001000001E000278000800001E000278000800001E0
+  00278000800003C0003F8000400003C0001F0000400003C0001F0000400007C0001F000020000780001E000020000780001E
+  000020000780001E000070000F80003E0000F800FFF803FFE003FF00FFF803FFE003FF00> 64 42 -1 1 58.691] 87 @dc
+[<FFE1FFC0FFE1FFC00E007C000E0078000E0070000E00F0000E00E0000E01E0000E01C0000E0380000E0780000E0700000F8E
+  00000E5E00000E3C00000E1C00000E0800000E0400000E0200000E0100000E0080000E0040000E0060000E00FC000E01FF80
+  0E01FF800E0000000E0000000E0000000E0000000E0000000E0000000E0000000E0000000E0000000E0000000E0000000E00
+  00001E000000FE000000FE0000001E000000> 32 42 -2 0 30.042] 107 @dc
+cmr12.300 @sf
+[<FF800FFF003E0001F8000C0000F0000C0000F000040001E000040001E000040003E000020003C000020003C000030007C000
+  0100078000010007800000FFFF000000800F000000800F000000401E000000401E000000401E000000203C000000203C0000
+  00203C0000001078000000107800000010F800000008F000000008F00000000DF000000005E000000005E000000003C00000
+  0003C000000003C00000000180000000018000000001800000> 40 35 -2 0 36.563] 65 @dc
+[<FFFC3FFF000FC003F000078001E000078001E000078001E000078001E000078001E000078001E000078001E000078001E000
+  078001E000078001E000078001E000078001E000078001E000078001E000078001E00007FFFFE000078001E000078001E000
+  078001E000078001E000078001E000078001E000078001E000078001E000078001E000078001E000078001E000078001E000
+  078001E000078001E0000FC003F000FFFC3FFF00> 40 34 -2 0 36.563] 72 @dc
+[<FFFFFFE00F8003E0078000E00780007007800030078000300780001007800010078000100780000807800008078020080780
+  20000780200007802000078060000780E00007FFE0000780E000078060000780200007802000078020000780202007800020
+  0780002007800020078000600780004007800040078000C0078001C00F8007C0FFFFFFC0> 32 34 -2 0 33.185] 69 @dc
+[<000FFE0000E00000E00000E00000E00000E00000E00000E00000E00000E001F0E0070CE00C02E01C01E03801E07800E07000
+  E0F000E0F000E0F000E0F000E0F000E0F000E0F000E07800E07800E03801E01C01600E026007046001F820> 24 31 -2 10 25.742] 113 @dc
+[<01FFF0001F00000E00000E00000E00000E00000E00000E00000E00FFFFF8800E00400E00200E00200E00100E00100E00080E
+  00040E00040E00020E00020E00010E00008E00008E00004E00004E00002E00001E00001E00000E00000E00000600000200> 24 33 -1 0 24.387] 52 @dc
+4 @bop1
+cmbx12.300 @sf
+14 7 p 117 c
+cmr12.300 @sf
+24 r (This) s
+17 r (is) s
+16 r (the) s
+16 r (Uniform) s
+16 r (Crosso) s
+0 r 118 c
+-1 r (er) s
+15 r (\015ag) s
+16 r (whic) s
+0 r 104 c
+15 r (directs) s
+16 r 80 c
+0 r (arallel) s
+15 r (Genesis) s
+17 r (to) s
+16 r (use) s
+16 r (uniform) s
+136 67 p (crosso) s
+0 r 118 c
+-2 r (er) s
+15 r (as) s
+17 r (opp) s
+1 r (osed) s
+16 r (to) s
+17 r 116 c
+-1 r 119 c
+-1 r 111 c
+15 r 112 c
+1 r (oin) s
+0 r 116 c
+15 r (crosso) s
+0 r 118 c
+-1 r (er.) s
+cmbx17.300 @sf
+14 264 p 55 c
+78 r (Bugs) s
+26 r (and) s
+26 r 70 c
+-6 r (uture) s
+25 r 87 c
+-5 r (ork) s
+cmr14.300 @sf
+14 403 p (Bugs) s
+19 r (and) s
+19 r (Minor) s
+19 r (Fixes:) s
+cmsy12.300 @sf
+87 535 p 15 c
+cmr12.300 @sf
+25 r (Reset) s
+16 r (defaults) s
+16 r (in) s
+cmtt12.300 @sf
+16 r (setup) s
+cmr12.300 @sf
+17 r (program.) s
+cmsy12.300 @sf
+87 637 p 15 c
+cmr12.300 @sf
+25 r (Include) s
+16 r (dynamic) s
+16 r (allo) s
+1 r (cation) s
+17 r (in) s
+16 r 80 c
+0 r (arallel) s
+15 r (Genesis.) s
+cmbx12.300 @sf
+14 768 p (Note:) s
+cmr12.300 @sf
+22 r 80 c
+-1 r (arallel) s
+16 r (Genesis) s
+16 r (has) s
+16 r (not) s
+16 r 98 c
+2 r (een) s
+16 r (extensivly) s
+16 r (tested) s
+16 r (and) s
+17 r (ma) s
+-1 r 121 c
+16 r (con) s
+-1 r (tain) s
+16 r (undetected) s
+14 829 p (bugs.) s
+cmr14.300 @sf
+14 944 p 70 c
+-4 r (uture) s
+18 r 87 c
+-4 r (ork:) s
+cmsy12.300 @sf
+87 1075 p 15 c
+cmr12.300 @sf
+25 r (Add) s
+16 r 97 c
+16 r (parasites) s
+16 r (option) s
+17 r 112 c
+1 r (er) s
+16 r (Hillis.) s
+cmsy12.300 @sf
+87 1177 p 15 c
+cmr12.300 @sf
+25 r (Add) s
+16 r 97 c
+16 r (lo) s
+1 r (cal) s
+17 r (selection) s
+16 r (radius) s
+16 r (parameter.) s
+cmsy12.300 @sf
+87 1279 p 15 c
+cmr12.300 @sf
+25 r (Allo) s
+-1 r 119 c
+15 r (lo) s
+2 r (cal) s
+16 r (selection) s
+16 r (on) s
+17 r (other) s
+16 r (top) s
+1 r (ologies.) s
+cmsy12.300 @sf
+87 1380 p 15 c
+cmr12.300 @sf
+25 r (Add) s
+16 r 97 c
+16 r (Punctuated) s
+16 r (Equilibria) s
+17 r (option.) s
+902 2940 p 52 c
+@eop
+3 @bop0
+cmbx17.300 @sf
+[<000FFFFFC0000FFFFFC0000FFFFFC000000FE00000000FE00000000FE00000000FE00000000FE00000000FE00000000FE000
+  00000FE00000000FE000FFFFFFFFC0FFFFFFFFC0FFFFFFFFC0E0000FE00070000FE00038000FE0001C000FE0001E000FE000
+  0E000FE00007000FE00003800FE00001C00FE00001C00FE00000E00FE00000700FE00000380FE00000380FE000001C0FE000
+  000E0FE00000070FE00000038FE00000038FE0000001CFE0000000EFE00000007FE00000007FE00000003FE00000001FE000
+  00000FE00000000FE000000007E000000003E000000001E000000000E000> 40 46 -2 0 38.978] 52 @dc
+[<FFFFFC000000FFFFFC000000FFFFFC00000001FE0000000001FE0000000001FE0000000001FE0000000001FE0000000001FE
+  0000000001FE0000000001FE0000000001FE0000000001FE0000000001FE0000000001FE0000000001FE0000000001FE0000
+  000001FE0000000001FE0000000001FE0000000001FE0000000001FE0000000001FE0000000001FFFFFFE00001FFFFFFF800
+  01FE0003FE0001FE0000FF8001FE00003FC001FE00001FE001FE00001FE001FE00001FF001FE00000FF001FE00000FF801FE
+  00000FF801FE00000FF801FE00000FF801FE00000FF801FE00000FF801FE00000FF801FE00000FF001FE00001FF001FE0000
+  1FE001FE00001FE001FE00003FC001FE0000FF8001FE0003FF00FFFFFFFFFC00FFFFFFFFF000FFFFFFFF0000> 48 49 -3 0 53.197] 80 @dc
+[<FFFF80FFFF80FFFF8007F00007F00007F00007F00007F00007F00007F00007F00007F00007F00007F00007F00007F00007F0
+  0007F00007F00007F00007F00007F00007F00007F00007F00007F00007F00007F00007F00007F00007F00007F00007F00007
+  F00007F00007F00007F00007F00007F00007F00007F00007F00007F00007F00007F0000FF000FFF000FFF000FFF00003F000> 24 50 -2 0 21.654] 108 @dc
+[<FFFF00FFFF00FFFF0007F00007F00007F00007F00007F00007F00007F00007F00007F00007F00007F00007F00007F00007F0
+  0007F00007F00007F00007F00007F00007F00007F00007F00007F00007F0000FF000FFF000FFF000FFF00003F00000000000
+  00000000000000000000000000000000000000000000000000000380000FE0000FE0001FF0001FF0001FF0000FE0000FE000
+  038000> 24 51 -2 0 21.654] 105 @dc
+[<000FF800007FFF0001FE078003F001C00FE000E00FC000701FC000383F8000383F8000007F8000007F0000007F000000FF00
+  0000FF000000FF000000FF000000FF000000FF000000FF000000FF0000007F0000007F0000007F0000003F8007E03F8007E0
+  1F800FF00FC00FF00FE00FF003F007F001F807E0007FFF80000FFE00> 32 32 -3 0 34.647] 99 @dc
+cmr12.300 @sf
+[<7FE1FF8007003800070038000700380007003800070038000700380007003800070038000700380007003800070038000700
+  380007003800070038000700380007003800070038000700380007007800FFFFF80007000000070000000700000007000000
+  0700000007000000070000000700300007007800038078000180380000C0100000702000001FC000> 32 35 0 0 27.097] 12 @dc
+[<008000008000008000008000008000C08180E08380388E000C980003E00001C00003E0000C9800388E00E08380C081800080
+  00008000008000008000008000> 24 21 -3 -16 24.387] 42 @dc
+cmtt12.300 @sf
+[<01F1FC07FDFC1FFFFC3E0FC03807C07003C07003C0E001C0E001C0E001C0E001C0E001C0E001C0E001C07001C07803C03C07
+  C01E0FC00FFFC007FDC001F1C00001C00001C00001C00001C00001C00001C0001FC0001FC0001FC0> 24 30 -2 0 25.632] 100 @dc
+[<01F00007FC001FFF003E0F803C07807803C07001C0F001E0E000E0E000E0E000E0E000E0E000E0E000E07001C07803C03C07
+  803E0F801FFF0007FC0001F000> 24 21 -3 0 25.632] 111 @dc
+[<063E000EFF800FFFC00FC1E00F80F00F00780F00380E001C0E001C0E001C0E001C0E001C0E001C0E001C0E00380F00380F80
+  700FC1F00FFFE00EFF800E3E000E00000E00000E00000E00000E00000E0000FE0000FE0000FE0000> 24 30 -1 0 25.632] 98 @dc
+[<FFFFE0FFFFE0FFFFE000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00000E0
+  0000E00000E00000E00000E00000E00000E00000E00000E00000E00000E000FFE000FFE000FFE000> 24 30 -3 0 25.632] 108 @dc
+[<3078FCFC78300000000000000000003078FCFC7830> 8 21 -10 0 25.632] 58 @dc
+[<FFE3FEFFE7FEFFE3FE0E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00F00E00F80
+  E00FC1C00FFFC00EFF800E3E000E00000E00000E00000E00000E00000E0000FE0000FE0000FE0000> 24 30 -1 0 25.632] 104 @dc
+[<1E00003F80007FC00071E00078E000307000007000007000003800003800003800003C00003C00003C00006E0000660000E6
+  0000E70000E70001C70001C38003C3800383800381C00781C00701C00700E00E00E00E00E07FC3FCFFC7FE7FC3FC> 24 32 -1 11 25.632] 121 @dc
+[<7FFF80FFFFC07FFF8000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00000E0
+  0000E0007FE0007FE0007FE00000000000000000000000000000000000000000C00001E00001E00000C000> 24 31 -4 0 25.632] 105 @dc
+[<00FE0003FFC00FFFE01F01F03C0070780070700000700000E00000E00000E00000E00000E000007000007000007800003C00
+  C01F01E00FFFE003FFC000FF80> 24 21 -3 0 25.632] 99 @dc
+[<07F0FC1FFDFC3FFFFC780F80700780E00380E00380E003807003807803803F83801FFF8007FF80007F800003800003803007
+  00780F007FFE003FFC001FF000> 24 21 -3 0 25.632] 97 @dc
+[<FF8000FF8000FF80001C00001C00001C00001C00001C00001C00001C00001C00001C00001FFE001FFF801FFFC01C03E01C00
+  F01C00701C00781C00381C00381C00381C00381C00781C00701C00F01C03E0FFFFC0FFFF80FFFE00> 24 30 -2 0 25.632] 80 @dc
+[<003800007C00007C0000EE0000EE0000EE0001C70001C70001C7000383800383800383800701C00701C00701C00E00E00E00
+  E00E00E07F83FCFFC7FE7F83FC> 24 21 -1 0 25.632] 118 @dc
+[<0038007800F801E003C007800F000E001C001C0038003800700070007000E000E000E000E000E000E000E000E000E000E000
+  700070007000380038001C001C000E000F00078003C001E000F000780038> 16 40 -8 5 25.632] 40 @dc
+[<7FFF00FFFF007FFF0003800003800003800003800003800003800003800003800003800003800003C00003C00003E00003F0
+  1803FC3C7FBFFCFF8FF87F83F0> 24 21 -2 0 25.632] 114 @dc
+[<E000F800FC001C000E000E0007001F003F007F007E003E001800> 16 13 -9 7 25.632] 44 @dc
+[<FFE3FEFFE7FEFFE3FE0E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00E00F00E00F80
+  E00FC1C0FFFFC0FEFF80FE3E00> 24 21 -1 0 25.632] 110 @dc
+[<01FF0007FFC01FFFF03E00F878003C70001CE0000EE0000EE0000EE0000E70001C78007C3FFFF81FFFE01FFF801C00003800
+  0038000039F8001FFE001FFF001E07801C03803801C03801C03801C03801C03801C01C03801E078C0FFFFE07FFFE01F87C> 24 33 -1 12 25.632] 103 @dc
+[<6000F00078003C001E000F000780038001C001C000E000E00070007000700038003800380038003800380038003800380038
+  00700070007000E000E001C001C0038007800F001E003C007800F0006000> 16 40 -4 5 25.632] 41 @dc
+[<FFF8FFF8FFF8E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000
+  E000E000E000E000E000E000E000E000E000E000E000FFF8FFF8FFF8> 16 39 -10 4 25.632] 91 @dc
+[<FFF8FFF8FFF80038003800380038003800380038003800380038003800380038003800380038003800380038003800380038
+  00380038003800380038003800380038003800380038FFF8FFF8FFF8> 16 39 -2 4 25.632] 93 @dc
+[<C0F0F83C1C0E0E1E3E7E7E3C18000000000000000000183C7E7E3C18> 8 28 -9 7 25.632] 59 @dc
+cmr12.300 @sf
+[<01F000071C000C06001C07003803803803807803C07001C07001C07001C0F001E0F001E0F001E0F001E0F001E0F001E0F001
+  E0F001E0F001E0F001E0F001E0F001E0F001E0F001E07001C07001C07001C07001C03803803803801803000C0600071C0001
+  F000> 24 34 -2 1 24.387] 48 @dc
+[<FFE0FFE0> 16 2 -1 -10 16.258] 45 @dc
+[<FFFE07C003800380038003800380038003800380038003800380038003800380038003800380038003800380038003800380
+  0380038003800380F3800F8003800080> 16 33 -4 0 24.387] 49 @dc
+cmtt12.300 @sf
+[<3078FCFC7830> 8 6 -10 0 25.632] 46 @dc
+cmbx17.300 @sf
+[<003FC00001FFF80007FFFE000FC07F001E001FC03C000FE0380007E0700007F07C0007F8FE0003F8FF0003F8FF0003FCFF00
+  03FCFF0003FC7F0003FC3E0003FC000003FC000003FC000003FC000003F8000003F8000003F8000003F00C0007F00E0007E0
+  0F000FC00F800F800EF03F000E7FFC000E0FF0000E0000000E0000000E0000000E0000000E0000000E0000000E0000000E00
+  00000E0000000FFF80000FFFE0000FFFF8000FFFFE000FFFFF000FFFFF800FFFFFC00FC007E00C000060> 32 48 -4 1 38.978] 53 @dc
+[<000007FF000000007FFFE0000003FFFFF800000FFF007E00001FF0000F00007FC000038000FF000001C001FE000000E003FC
+  0000007007F8000000380FF0000000380FF00000001C1FE00000001C1FE00000001C3FC00000000E3FC00000000E7FC00000
+  000E7FC00000000E7F80000000007F8000000000FF8000000000FF8000000000FF8000000000FF8000000000FF8000000000
+  FF8000000000FF8000000000FF8000000000FF8000000000FF8000000000FF80000000007F80000000007F800000000E7FC0
+  0000000E7FC00000000E3FC00000001E3FC00000001E1FE00000001E1FE00000003E0FF00000003E0FF00000007E07F80000
+  007E03FC000000FE01FE000001FE00FF000003FE007FC000077E001FF0001E3E000FFF007C1E0003FFFFF00E00007FFFC00E
+  000007FE0006> 48 51 -4 1 56.301] 67 @dc
+[<FFFF83FFFE0FFFF8FFFF83FFFE0FFFF8FFFF83FFFE0FFFF807F0001FC0007F0007F0001FC0007F0007F0001FC0007F0007F0
+  001FC0007F0007F0001FC0007F0007F0001FC0007F0007F0001FC0007F0007F0001FC0007F0007F0001FC0007F0007F0001F
+  C0007F0007F0001FC0007F0007F0001FC0007F0007F0001FC0007F0007F0001FC0007F0007F0001FC0007F0007F0001FC000
+  7F0007F0001FC0007F0007F0001FC0007F0007F0001FC0007F0007F8001FE0007F0007F8001FE0007F0007F8001FE0007F00
+  07F4001FD0007F0007F6001F98007E000FF3003F8C00FE00FFF1803F0600FC00FFF0E07E0381F800FFF03FFC00FFF00003F0
+  0FF0003FC000> 64 32 -2 0 64.963] 109 @dc
+[<FFFF800000FFFF800000FFFF80000007F000000007F000000007F000000007F000000007F000000007F000000007F0000000
+  07F000000007F000000007F000000007F000000007F07F800007F1FFF00007F781FC0007FE007F0007FC003F8007F8001FC0
+  07F0001FC007F0000FE007F0000FE007F0000FF007F0000FF007F00007F007F00007F807F00007F807F00007F807F00007F8
+  07F00007F807F00007F807F00007F807F00007F807F00007F807F00007F007F0000FF007F0000FF007F0000FE007F0001FC0
+  07F8001FC00FFC003F80FFFE007F00FFF7C0FE00FFF1FFF80003F03FC000> 40 46 -2 14 43.309] 112 @dc
+[<000007FE00000000007FFFE004000003FFFFF81C00000FFE00FC3C00003FF0001E7C00007FC0000FFC0000FF000007FC0001
+  FE000003FC0003FC000003FC0007F8000003FC000FF0000003FC000FF0000003FC001FE0000003FC001FE0000003FC003FC0
+  000003FC003FC0000003FC007FC0000003FC007FC0000003FC007F80000FFFFFE07F80000FFFFFE0FF80000FFFFFE0FF8000
+  00000000FF800000000000FF800000000000FF800000000000FF800000000000FF800000000000FF800000000000FF800000
+  000000FF800000000000FF8000000000007F8000000000007F800000001C007FC00000001C007FC00000001C003FC0000000
+  3C003FC00000003C001FE00000003C001FE00000007C000FF00000007C000FF0000000FC0007F8000000FC0003FC000001FC
+  0001FE000003FC0000FF000007FC00007FC0000FFC00003FF0001E7C00000FFE00F83C000003FFFFF01C0000007FFFC01C00
+  000007FE000C00> 56 51 -4 1 61.246] 71 @dc
+cmr12.300 @sf
+[<000FE00000783C0000E00E0003C00780078003C00F0001E00F0001E01E0000F03E0000F83C0000787C00007C7C00007C7800
+  003CF800003EF800003EF800003EF800003EF800003EF800003EF800003EF800003EF800003E7800003C7800003C7C00007C
+  7C00007C3C0000783C0000781E0000F00E0000E00F0001E0078003C003C0078000E00E0000783C00000FE000> 32 36 -3 1 37.935] 79 @dc
+[<4020101008080404040474FCFCF870> 8 15 -4 10 13.548] 44 @dc
+cmtt12.300 @sf
+[<7F1F1F00FF9F9F807F1F1F001C1C1C001C1C1C001C1C1C001C1C1C001C1C1C001C1C1C001C1C1C001C1C1C001C1C1C001C1C
+  1C001C1C1C001C1C1C001E1E1C001E1E1C001F1F1C007FFFF800FFFBF8007CE0E000> 32 21 0 0 25.632] 109 @dc
+[<FFE3FE00FFE3FF00FFE3FE000E00F0000E01E0000E01C0000E0380000E0780000F8F00000FDE00000FFC00000EFC00000E78
+  00000E3C00000E1E00000E0F00000E0780000E03C0000E0FFC000E1FFE000E0FFC000E0000000E0000000E0000000E000000
+  0E0000000E000000FE000000FE000000FE000000> 32 30 -1 0 25.632] 107 @dc
+[<3FFF807FFFC03FFF8000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00000E0
+  0000E000FFFFF0FFFFF07FFFF000E00000E00000E00000E00000F030007878003FF8001FF00007E0> 24 30 -1 0 25.632] 102 @dc
+[<7FFFF0FFFFF8FFFFF87FFFF00000000000000000000000007FFFF0FFFFF8FFFFF87FFFF0> 24 12 -2 -9 25.632] 61 @dc
+[ 300 ] /cmti12.300 @newfont
+cmti12.300 @sf
+[<3C00000062000000F3000000F18000007180000001C0000001C0000000C0000000E0000000E0000000E003C000E006200070
+  0E2000700E1000700E1000700E10007007080038070000380700003807000038038000380380001C0380001C0380001C01C0
+  001C01C0001C01C0000E01C0000E00E0000E00E000FFFFE0000E000000070000000700000007000000070000000700000003
+  800000038000000380380001803C0001C03C0000E01C0000301800000FE0> 32 45 2 10 27.397] 12 @dc
+[<1E003100708070407020702038103800380038001C001C001C001C000E000E000E000E0007000700FFF80700038003800380
+  038001C001C001C001C000C0> 16 31 -4 0 16.189] 116 @dc
+[<1801E03803101C03081C07081C07041C03840E03820E01C00E01C00E01C00700E00700E00700E00700E043807043807043C0
+  7043C07023A0601318E00E0780> 24 21 -4 0 27.397] 110 @dc
+[<0F80306070186004E002E002E000E000E000E000F000F000FFE0F018780438023C021C020E02038400F8> 16 21 -6 0 22.416] 101 @dc
+[<1FC000203000400800E00400F00600F00600700700000700000F00003E0003FE0007FC000FF0000F00000C00000C03000C03
+  8004018002008001830000FC00> 24 21 -3 0 19.925] 115 @dc
+[<3C00000062000000F3000000F18000007180000001C0000001C0000000C0000000E0000000E0000000E0000000E000000070
+  0000007000000070000000700000007000000038000000380000003800000038000000380000001C0000001C0000001C0000
+  001C0000001C0000000E0000000E0000000E000000FFF000000E000000070000000700000007000000070000000700000003
+  800000038000000380000001860000018F000000CF000000470000003E00> 32 45 2 10 14.944] 102 @dc
+[<03E1E00613100E0F100E07080C07080E07080E03840E03800E03800E03800701C00701C00701C00381C04380E04380E041C0
+  E021C0E021C0701180700F0030> 24 21 -4 0 26.152] 117 @dc
+[<0FC000183000300C00700200700100F00100F00000F00000F00000F000007800007800007800003800003C00001C07800E07
+  8007038003018001C100007E00> 24 21 -5 0 22.416] 99 @dc
+[<0E00190038803840384038401C201C001C000E000E000E00070007004380438043802180218011800E000000000000000000
+  000000000000000000E000E000F00060> 16 33 -4 0 14.944] 105 @dc
+[<07C000187000301800700C00700E00700700F00780F00380F003C0F003C07801E07801E07801E03801E03C01E01C01E00E01
+  C00701C003818001C300007E00> 24 21 -5 0 24.906] 111 @dc
+cmr12.300 @sf
+[<FFFE00000FC00000078000000780000007800000078000000780000007800000078000000780000007800000078020000780
+  20000780200007802000078060000780E00007FFE0000780E000078060000780200007802000078020000780202007800020
+  0780002007800020078000600780004007800040078000C0078001C00F8007C0FFFFFFC0> 32 34 -2 0 31.830] 70 @dc
+cmtt12.300 @sf
+[<7FE000FFE0007FE0000E00000E00000E00000E00000E00000E00000E00000E00000E03800E03800E03800FFF800FFF800FFF
+  800E03800E03800E03800E00000E00000E00000E001C0E001C0E001C0E001C7FFFFCFFFFFC7FFFFC> 24 30 -1 0 25.632] 70 @dc
+[<7FFF007FFF007FFF0001C00001C00001C00001C00001C00001C00001C00001C00001C00001C00001C00001C00001C00001C0
+  0001C00001C00001C00001C00071C000FDC0007FC0000FC00007C00003C00001C00001C00000C000> 24 30 -5 0 25.632] 49 @dc
+cmr12.300 @sf
+[<FFE3FE0E00F80E00F00E01E00E01C00E03C00E07800E07000E0E000E1E000F1C000EF8000E38000E10000E08000E04000E02
+  000E01800E01C00E01F00E03FC0E00000E00000E00000E00000E00000E00000E00000E00000E00000E00000E00001E0000FE
+  00000E0000> 24 35 -1 0 25.742] 107 @dc
+cmbx17.300 @sf
+[<000FF80000007FFF000000FFFF800003F80FE00007E007F00007C003F8000FC001F8001F8001FC001F8000FE003F8000FE00
+  3F8000FE003F0000FF007F0000FF007F0000FF007F0000FF007F0000FF00FF0000FF00FF0000FF00FF0000FF00FF0000FF00
+  FF0000FF00FF8000FE00FF8000FE00FF8000FE00FFC001FC00FF4001F800FF6001F000FF2003E000FF1807C000FF0F7F8000
+  7F07FE00007F000000007F000000007F000000003F800000003F8000F0003F8001F8001F8003FC000FC003FC000FC003FC00
+  07E003FC0003F001FC0001F800F80000FC007800007F81F000001FFFE0000007FFC0000000FF0000> 40 48 -3 1 38.978] 54 @dc
+[<FFFF8000000E00FFFF8000001E00FFFF8000003E0001C00000003E0001C00000007E0001C0000000FE0001C0000001FE0001
+  C0000001FE0001C0000003FE0001C0000007FE0001C000000FFE0001C000000FFE0001C000001FFE0001C000003FEE0001C0
+  00007FCE0001C00000FF8E0001C00000FF8E0001C00001FF0E0001C00003FE0E0001C00007FC0E0001C00007FC0E0001C000
+  0FF80E0001C0001FF00E0001C0003FE00E0001C0007FC00E0001C0007FC00E0001C000FF800E0001C001FF000E0001C003FE
+  000E0001C003FE000E0001C007FC000E0001C00FF8000E0001C01FF0000E0001C01FF0000E0001C03FE0000E0001C07FC000
+  0E0001C0FF80000E0001C1FF00000E0001C1FF00000E0001C3FE00000E0001C7FC00000E0001CFF800000E0001CFF800000E
+  0001DFF000000E0001FFE000000E0001FFC000000E00FFFFC00007FFFCFFFF800007FFFCFFFF000007FFFC> 56 49 -3 0 60.863] 78 @dc
+[<0001E0003C00000001E0003C00000001F0007C00000003F0007E00000003F0007E00000003F800FE00000007F800FF000000
+  07FC01FF0000000FFC01FF8000000FFC01FB8000000FEE03FB8000001FCE03F1C000001FCE03F1C000001FC707F1C000003F
+  8707E0E000003F878FE0E000007F838FE0F000007F038FC07000007F01DFC0700000FE01DF80380000FE01DF80380000FE00
+  FF80380001FC00FF001C0001FC00FF001C0003FC007F001E0003F8007E000E0003F800FE000E0007F000FC00070007F000FC
+  000700FFFF1FFFC07FF8FFFF1FFFC07FF8FFFF1FFFC07FF8> 56 32 -1 0 56.301] 119 @dc
+[<00001FFE0000000000FFFFC000000007F807F80000001FE001FE0000003F80007F000000FF00003FC00001FE00001FE00003
+  FC00000FF00007F8000007F80007F0000003F8000FF0000003FC001FE0000001FE001FE0000001FE003FE0000001FF003FC0
+  000000FF003FC0000000FF007FC0000000FF807FC0000000FF807F800000007F807F800000007F80FF800000007FC0FF8000
+  00007FC0FF800000007FC0FF800000007FC0FF800000007FC0FF800000007FC0FF800000007FC0FF800000007FC0FF800000
+  007FC0FF800000007FC0FF800000007FC07F800000007F807F800000007F807F800000007F807FC0000000FF803FC0000000
+  FF003FC0000000FF003FC0000000FF001FE0000001FE001FE0000001FE000FF0000003FC0007F0000003F80007F8000007F8
+  0003F8000007F00001FC00000FE00000FE00001FC000003F80007F0000001FC000FE00000007F807F800000000FFFFC00000
+  00001FFE000000> 56 51 -4 1 58.525] 79 @dc
+cmbx12.300 @sf
+[<07E03F001FF87F007E0CF8007E02F000FC01F000FC01F000FC01F000FC01F0007E01F0003F01F0001FC1F00003FDF000003F
+  F0000001F0000001F0001E01F0003F01F0003F01E0003F03E0003F07C0001FFF800007FC0000> 32 22 -2 0 27.241] 97 @dc
+cmr12.300 @sf
+[<81FC00C60700C80180F000C0E000C0C00060C000608000708000708000708000700000700000F00000F00001E00007E0003F
+  C003FF800FFF001FFE003FF0007F0000780000F00000F00000E00020E00020E00020E00060E000606000607000E03001E018
+  02600C0C6003F020> 24 36 -3 1 27.097] 83 @dc
+cmbx12.300 @sf
+[<FFE1FFC0FFE1FFC01F003E001F003E001F003E001F003E001F003E001F003E001F003E001F003E001F003E001F003E001F00
+  3E001F003E001F003E001F003E001F803E001F803E001F403C001F307C00FF1FF800FF07E000> 32 22 -2 0 31.133] 110 @dc
+cmr12.300 @sf
+[<FFE00020001F000060000E00006000040000E000040001E000040001E000040003E000040003E000040007A00004000F2000
+  04000F200004001E200004003E200004003C200004007820000400F820000400F020000401E020000401E020000403C02000
+  04078020000407802000040F002000041F002000041E002000043C002000047C002000047800200004F000200004F0002000
+  05E000200007C000700007C000F800FF8007FF00> 40 34 -2 0 36.563] 78 @dc
+[<00020000800000030001800000070001C00000070001C00000070001C000000F8003E000000F8003E000000F8003E000001E
+  40079000001E40079000001E40079000003C200F0800003C200F0800003C200F0800007C101E04000078101E04000078101E
+  040000F8183E060000F0083C020000F0083C020000F0083C020001E00478010001E00478010001E00478010003C002F00080
+  03C002F0008003C002F00080078001E00040078001E00040078001E000400F0003C000200F0003C000200F0003C000701F80
+  07E000F8FFF03FFC03FE> 48 35 -1 1 50.111] 87 @dc
+cmbx12.300 @sf
+[<FFE00000FFE000001F0000001F0000001F0000001F0000001F0000001F0000001F0000001F0000001F0FC0001F3FF8001FE0
+  FC001FC03E001F803F001F001F801F001F801F000FC01F000FC01F000FC01F000FC01F000FC01F000FC01F000FC01F000FC0
+  1F001F801F001F801F001F001F803E001FF07C00FF3FF800FF0FE000> 32 32 -2 10 31.133] 112 @dc
+cmr12.300 @sf
+[<FFFFFC000F800F00078007C0078003E0078001F0078001F0078000F8078000F8078000F8078000F8078000F8078000F80780
+  00F0078001F0078001E0078003C00780078007FFFE0007803E0007800F80078007C0078003E0078001E0078001F0078001F0
+  078001F0078001F0078001F0078001E0078003E0078003C0078007800F800E00FFFFF800> 32 34 -2 0 34.539] 66 @dc
+cmbx12.300 @sf
+[<03FFFFF80003FFFFF8000003F800000003F800000003F800000003F800000003F800000003F800000003F800000003F80000
+  0003F800000003F800000003F800000003F800000003F800000003F800000003F800000003F800000003F800000003F80000
+  0003F800000003F80000C003F800C0C003F800C0C003F800C0C003F800C0E003F801C0E003F801C06003F801807003F80380
+  7803F807807E03F80F807FFFFFFF807FFFFFFF80> 40 34 -2 0 38.973] 84 @dc
+cmr12.300 @sf
+[<03F0000C1C00100F002007804007804003C0F003C0F803E0F803E07003E02003E00003E00003C00003C0000780000780000F
+  00001C0003F000003800000E00000F000007000007800007803807C07807C07803C07807C04007C02007801007000C1E0003
+  F800> 24 34 -2 1 24.387] 51 @dc
+3 @bop1
+cmbx17.300 @sf
+14 15 p 52 c
+78 r 80 c
+-1 r (arallel) s
+25 r (Fitness) s
+26 r 70 c
+-6 r (unctions) s
+cmr12.300 @sf
+14 155 p 84 c
+-3 r 111 c
+15 r 98 c
+2 r 101 c
+16 r (used) s
+16 r (with) s
+16 r 80 c
+0 r (arallel) s
+15 r (Genesis) s
+16 r 97 c
+17 r (\014tness) s
+16 r (function) s
+16 r 109 c
+0 r (ust) s
+15 r 98 c
+1 r 101 c
+17 r (written) s
+16 r (in) s
+16 r (C*) s
+17 r (and) s
+16 r (use) s
+14 215 p (the) s
+16 r (follo) s
+0 r (wing) s
+15 r (header.) s
+cmtt12.300 @sf
+14 347 p (double:physical) s
+26 r (Peval\(str,) s
+25 r (length,) s
+26 r (vect,) s
+25 r (genes\)) s
+14 407 p (char:physical) s
+26 r (str[];) s
+14 467 p (int) s
+26 r (length;) s
+14 527 p (double:physical) s
+26 r (vect[];) s
+14 587 p (int) s
+26 r (genes;) s
+cmr12.300 @sf
+14 719 p (The) s
+16 r 99 c
+0 r (haracter) s
+15 r (string) s
+cmtt12.300 @sf
+16 r (str) s
+cmr12.300 @sf
+17 r (will) s
+16 r 98 c
+1 r 101 c
+17 r (of) s
+16 r (length) s
+cmtt12.300 @sf
+16 r (length) s
+cmr12.300 @sf
+16 r (and) s
+17 r (the) s
+16 r 118 c
+-1 r (ector) s
+16 r (arra) s
+-1 r 121 c
+cmtt12.300 @sf
+16 r (vect) s
+cmr12.300 @sf
+16 r (will) s
+14 779 p (ha) s
+0 r 118 c
+-2 r 101 c
+cmtt12.300 @sf
+16 r (genes) s
+cmr12.300 @sf
+16 r 112 c
+1 r (ositions) s
+16 r (from) s
+17 r 48 c
+16 r (to) s
+cmtt12.300 @sf
+16 r (genes) s
+cmr12.300 @sf
+0 r (-1.) s
+22 r (As) s
+16 r (usual) s
+16 r (the) s
+17 r (\014tness) s
+16 r (function) s
+16 r 109 c
+0 r (ust) s
+15 r (also) s
+16 r (use) s
+14 839 p (the) s
+cmtt12.300 @sf
+16 r (.cs) s
+cmr12.300 @sf
+16 r (extension) s
+17 r (with) s
+16 r (its) s
+16 r (\014le) s
+17 r (name.) s
+cmbx17.300 @sf
+14 1034 p 53 c
+78 r (Compiling) s
+26 r 80 c
+-1 r (arallel) s
+25 r (Genesis) s
+cmr12.300 @sf
+14 1174 p (Once) s
+16 r (the) s
+16 r (\014tness) s
+17 r (function) s
+16 r (is) s
+16 r (ready) s
+17 r (and) s
+cmtt12.300 @sf
+16 r (setup) s
+cmr12.300 @sf
+16 r (has) s
+16 r 98 c
+2 r (een) s
+16 r (run,) s
+16 r 80 c
+0 r (arallel) s
+15 r (Genesis) s
+16 r (can) s
+17 r 98 c
+1 r 101 c
+14 1234 p (compiled) s
+16 r (using) s
+16 r (the) s
+cmtt12.300 @sf
+17 r (make) s
+cmr12.300 @sf
+16 r (command.) s
+cmtt12.300 @sf
+14 1324 p (make) s
+26 r (f=) s
+cmti12.300 @sf
+0 r (\014tness) s
+17 r (function) s
+cmtt12.300 @sf
+16 r (ga.) s
+cmti12.300 @sf
+0 r (\014tness) s
+18 r (function) s
+cmr12.300 @sf
+14 1414 p 70 c
+-3 r (or) s
+15 r (example) s
+16 r (if) s
+17 r (the) s
+16 r (\014tness) s
+16 r (function) s
+16 r 119 c
+0 r (ere) s
+15 r (named) s
+cmtt12.300 @sf
+17 r (F1.cs) s
+cmr12.300 @sf
+16 r (then) s
+16 r (the) s
+cmtt12.300 @sf
+16 r (make) s
+cmr12.300 @sf
+17 r (command) s
+16 r (to) s
+14 1474 p (compile) s
+16 r 80 c
+0 r (arallel) s
+15 r (Genesis) s
+16 r 119 c
+0 r (ould) s
+15 r 98 c
+2 r (e,) s
+cmtt12.300 @sf
+14 1565 p (make) s
+26 r (f=F1) s
+25 r (ga.F1) s
+cmbx12.300 @sf
+14 1655 p (Note:) s
+cmr12.300 @sf
+22 r (The) s
+cmtt12.300 @sf
+16 r (make) s
+cmr12.300 @sf
+16 r (utilit) s
+0 r 121 c
+15 r (seems) s
+16 r (to) s
+17 r (ha) s
+-1 r 118 c
+-1 r 101 c
+15 r (some) s
+16 r (trouble) s
+17 r 107 c
+-1 r (eeping) s
+16 r (trac) s
+-1 r 107 c
+15 r (of) s
+17 r (the) s
+16 r (C*) s
+16 r (\014les) s
+14 1715 p (and) s
+16 r (it) s
+16 r (ma) s
+0 r 121 c
+15 r 98 c
+2 r 101 c
+16 r (necessary) s
+16 r (to) s
+16 r (explicitly) s
+16 r (mo) s
+0 r 118 c
+-1 r 101 c
+15 r (or) s
+16 r (remo) s
+0 r 118 c
+-2 r 101 c
+15 r (an) s
+0 r 121 c
+15 r (executables) s
+16 r (or) s
+cmtt12.300 @sf
+17 r (.o) s
+cmr12.300 @sf
+16 r (\014le) s
+16 r (that) s
+14 1775 p (need) s
+16 r (to) s
+16 r 98 c
+2 r 101 c
+16 r (recompiled.) s
+cmbx17.300 @sf
+14 1970 p 54 c
+78 r (New) s
+26 r (Options) s
+cmbx12.300 @sf
+14 2099 p 97 c
+cmr12.300 @sf
+24 r (This) s
+17 r (option) s
+16 r (tells) s
+16 r (Serial) s
+16 r (Genesis) s
+17 r (to) s
+16 r (ev) s
+-2 r (aluation) s
+15 r (the) s
+17 r (en) s
+-1 r (tire) s
+16 r 112 c
+1 r (opulation) s
+16 r (ev) s
+0 r (ery) s
+136 2159 p (generation.) s
+22 r 80 c
+-1 r (arallel) s
+15 r (Genesis) s
+17 r (alw) s
+-1 r 97 c
+-1 r (ys) s
+15 r (do) s
+2 r (es) s
+16 r (this) s
+16 r (and) s
+16 r (ignores) s
+17 r (this) s
+16 r (\015ag.) s
+cmbx12.300 @sf
+14 2257 p 110 c
+cmr12.300 @sf
+24 r (This) s
+17 r (is) s
+16 r (the) s
+16 r (Neigh) s
+0 r 98 c
+0 r (orho) s
+1 r 111 c
+2 r 100 c
+16 r (Selection) s
+16 r (\015ag) s
+17 r (whic) s
+-1 r 104 c
+16 r (directs) s
+16 r 80 c
+-1 r (arallel) s
+16 r (Genesis) s
+16 r (to) s
+16 r (ha) s
+0 r 118 c
+-2 r 101 c
+136 2318 p (eac) s
+0 r 104 c
+15 r (mem) s
+-1 r 98 c
+1 r (er) s
+16 r (select) s
+16 r (its) s
+17 r (paren) s
+-1 r 116 c
+15 r (probabilistically) s
+17 r (from) s
+16 r (its) s
+16 r (four) s
+17 r (neigh) s
+-1 r 98 c
+1 r (ors.) s
+21 r (The) s
+136 2378 p 112 c
+1 r (oplation) s
+17 r (is) s
+16 r (placed) s
+16 r (on) s
+16 r 97 c
+17 r (torus) s
+16 r (and) s
+16 r (eac) s
+0 r 104 c
+15 r (mem) s
+0 r 98 c
+0 r (er) s
+16 r (of) s
+16 r (the) s
+17 r 112 c
+1 r (opulation) s
+16 r (in) s
+0 r (teracts) s
+136 2438 p (only) s
+16 r (with) s
+16 r (its) s
+17 r (North,) s
+16 r (East,) s
+16 r 87 c
+-3 r (est,) s
+15 r (and) s
+17 r (South) s
+16 r (neigh) s
+0 r 98 c
+0 r (ors.) s
+cmbx12.300 @sf
+14 2536 p 112 c
+cmr12.300 @sf
+24 r (This) s
+17 r (is) s
+16 r (the) s
+16 r (Probabilistic) s
+16 r (Selection) s
+17 r (\015ag) s
+16 r (whic) s
+0 r 104 c
+15 r (directs) s
+16 r 80 c
+0 r (arallel) s
+15 r (Genesis) s
+16 r (to) s
+16 r (do) s
+136 2597 p (selection) s
+16 r (probabilistically) s
+16 r (as) s
+17 r (opp) s
+1 r (osed) s
+16 r (to) s
+17 r (using) s
+16 r (the) s
+16 r (Bak) s
+0 r (er) s
+15 r (Sto) s
+1 r 99 c
+0 r (hastic) s
+15 r (Selection) s
+136 2657 p (Algorithm.) s
+cmbx12.300 @sf
+14 2755 p 84 c
+cmr12.300 @sf
+24 r (This) s
+17 r (is) s
+16 r (the) s
+16 r (Time) s
+16 r (\015ag) s
+17 r (whic) s
+-1 r 104 c
+16 r (directs) s
+16 r 80 c
+-1 r (arallel) s
+16 r (Genesis) s
+16 r (to) s
+16 r (prin) s
+0 r 116 c
+15 r (timing) s
+16 r (information) s
+136 2816 p (on) s
+16 r (eac) s
+0 r 104 c
+15 r (of) s
+16 r (it) s
+17 r 118 c
+-2 r (arious) s
+15 r (parts) s
+16 r (as) s
+17 r (it) s
+16 r (runs.) s
+22 r (Times) s
+16 r (are) s
+16 r (prin) s
+0 r (ted) s
+15 r (in) s
+16 r (seconds.) s
+902 2940 p 51 c
+@eop
+2 @bop0
+cmr12.300 @sf
+[<7FF1FFCFFE07001C00E007001C00E007001C00E007001C00E007001C00E007001C00E007001C00E007001C00E007001C00E0
+  07001C00E007001C00E007001C00E007001C00E007001C00E007001C00E007001C00E007001C00E007001C00E007001C00E0
+  FFFFFFFFE007001C00E007001C00E007001C00E007001C00E007001C00E007001C00E007001C00E007001C00E007001C00E0
+  03803E01E001803E01E000E01B01E0007011C0E0000FE07F60> 40 35 0 0 40.645] 15 @dc
+[<7FE3FF8007007800070070000700700007007000070070000700700007007000070070000700700007007000070070000700
+  700007007000070070000700700007007000070070000700700007007000FFFFFFC007007000070070000700700007007000
+  07007000070070000700700007007000070070000380F0780180F87800C07C7800706E30001F83E0> 32 35 0 0 28.451] 11 @dc
+[<7FF1FFCFFE07001C00E007001C00E007001C00E007001C00E007001C00E007001C00E007001C00E007001C00E007001C00E0
+  07001C00E007001C00E007001C00E007001C00E007001C00E007001C00E007001C00E007001C00E007001C00E007001C01E0
+  FFFFFFFFE007001C000007001C000007001C000007001C000007001C000007001C000007001C000007001C00C007003C01E0
+  03803E01E001801E00E000E00B0040007031C080000FC07F00> 40 35 0 0 40.645] 14 @dc
+[<00200040008001000300060004000C000C00180018003000300030007000600060006000E000E000E000E000E000E000E000
+  E000E000E000E000E000E000E0006000600060007000300030003000180018000C000C000400060003000100008000400020> 16 50 -4 13 18.968] 40 @dc
+cmti12.300 @sf
+[<FFC0C07FFC001E00C007C0000C00E003C0000400F003C0000400F003C0000400F803C0000200F801E0000200F401E0000200
+  F201E0000200F201E0000101E100F0000101E100F0000101E080F0000101E040F0000081E04078000081E02078000081E020
+  78000081E01078000041E0083C000043C0083C000043C0043C000043C0043C000023C0021E000023C0011E000023C0011E00
+  0023C0009E000013C0008F000013C0004F000013C0002F00001780002F00000F80001780000F80001780000F80000F8000FF
+  800007FC> 48 34 -3 0 43.678] 77 @dc
+[<0F0780308C40305C40703C20701C20F01C20F00E10F00E00F00E00F00E007807007807007807003807003C03801C03800E03
+  800E03800705C00185C000F9C00001C00000E00000E00000E00000E000007000007000007000007000003800003800003800
+  03F800003C> 24 35 -5 0 24.906] 100 @dc
+[<0F0780308C40305C40703C20701C20F01C20F00E10F00E00F00E00F00E007807007807007807003807003C03801C03800E03
+  800E03800705C00185C000F8C0> 24 21 -5 0 24.906] 97 @dc
+[<81FC0000C6070000C80180007000C0007000600060003000600038002000180020001C0020001C0020001C0000001E000000
+  1E0000001E0000003C0000007C000003FC00001FF800007FF00000FFE00001FF000001F8000003E0000003C0000003C00000
+  03C0010003C0010001C0018001C0018000C0018000E00180006001C0003001C0001802C0000E0C400001F020> 32 36 -3 1 27.397] 83 @dc
+[<1800003800001C00001C00001C00001C00000E00000E00000E00000E00000700000700000700000700004380004380C04381
+  E043C1E023A0E01310400E0F80> 24 21 -4 0 20.548] 114 @dc
+[<38006400E200E200E200E200710070007000700038003800380038001C001C001C001C000E000E000E000E00070007000700
+  0700038003800380038001C001C001C01FC001E0> 16 35 -4 0 12.453] 108 @dc
+[<00FE0000000381C1000006002300001C0013800018000F800038000780007000078000700003C000F00003C000E00003C000
+  E00003C000E00001E000E00001E000E00001E000F0003FFC00F000000000F000000000F000000000F0000000007800000000
+  780000000078000000003C000008003C000004001E000004000E000004000F000004000700000E000380000E0001C0000E00
+  00E0000E000070001F000038002700000E006300000380810000007F0080> 40 36 -7 1 37.694] 71 @dc
+cmr12.300 @sf
+[<800040002000100018000C000400060006000300030001800180018001C000C000C000C000E000E000E000E000E000E000E0
+  00E000E000E000E000E000E000E000C000C000C001C0018001800180030003000600060004000C0018001000200040008000> 16 50 -3 13 18.968] 41 @dc
+cmbx17.300 @sf
+[<003FF0000001FFFF000007FFFFC0000FC03FE0001E000FF000380007F8007E0003FC007F0003FC00FF8003FE00FF8001FE00
+  FF8001FF00FF8001FF007F0001FF007F0001FF001C0001FF00000001FF00000001FF00000001FE00000001FE00000003FC00
+  000003FC00000003F800000007F00000000FC00000003F0000003FF80000003FF000000000FE000000003F000000001FC000
+  00000FE00000000FF000000007F000000007F8000F0007F8001F8007FC003FC003FC003FC003FC003FC003FC003FC003FC00
+  3FC007FC001F8007F8001E0007F8000F800FF00007E03FE00003FFFFC00000FFFF0000001FF80000> 40 48 -3 1 38.978] 51 @dc
+[<000003FF80000000003FFFF000000000FFFFFC00000003FE007E00000007F8000F8000000FE00003C000001FC00001C00000
+  3F800000E000003F8000007000007F000000700000FF000000380000FF000000380000FE000000380001FE0000001C0001FE
+  0000001C0001FE0000001C0001FE0000001C0001FE0000001C0001FE0000001C0001FE0000001C0001FE0000001C0001FE00
+  00001C0001FE0000001C0001FE0000001C0001FE0000001C0001FE0000001C0001FE0000001C0001FE0000001C0001FE0000
+  001C0001FE0000001C0001FE0000001C0001FE0000001C0001FE0000001C0001FE0000001C0001FE0000001C0001FE000000
+  1C0001FE0000001C0001FE0000001C0001FE0000001C0001FE0000001C0001FE0000001C0001FE0000001C0001FE0000001C
+  0001FE0000001C0001FE0000001C0001FE0000001C0001FE0000001C00FFFFFC000FFFF8FFFFFC000FFFF8FFFFFC000FFFF8> 56 50 -3 1 59.809] 85 @dc
+[<C003FE0000C03FFFC000E0FFFFF000F3FC03F800FFC0007C00FF00003E00FE00003F00FC00001F00F800001F80F000000F80
+  F000000F80F000000FC0E000000FC0E000000FC0E000000FC0E000001FC00000001FC00000001FC00000003FC00000007F80
+  000001FF8000000FFF000000FFFF00000FFFFE00007FFFFC0001FFFFF80007FFFFF0000FFFFFE0001FFFFF80001FFFFC0000
+  3FFFC000007FF80000007FC00000007F80000000FF00000000FE00000700FE00000700FC00000700FC00000F00FC00000F00
+  FC00000F007C00001F007C00001F007E00003F003E00007F001F0000FF000F8003FF0007E01FCF0003FFFF070000FFFE0300
+  003FF00300> 40 51 -4 1 43.309] 83 @dc
+cmr12.300 @sf
+[<FFFF807007807801803800801C00800E00C00F004007004003804001C00001E00000E000007000403800403C00401C00600E
+  002007003007803803803FFFC0> 24 21 -1 0 21.677] 122 @dc
+[<FFFFFF000F803F0007800F000780030007800300078001000780018007800180078000800780008007800080078000800780
+  0000078000000780000007800000078000000780000007800000078000000780000007800000078000000780000007800000
+  078000000780000007800000078000000780000007800000078000000FC00000FFFE0000> 32 34 -2 0 30.475] 76 @dc
+[<FFFFC07FFFC03FFFC030004018006008002004002002002001000001800000C000006000003000001800001C00000E000007
+  000007800003C00003C00003E02003E0F801E0F801E0F801E0F003E08003E04003C04003C02007801007000C1C0003F000> 24 33 -2 0 24.387] 50 @dc
+2 @bop1
+cmr12.300 @sf
+136 7 p 112 c
+1 r (opulation) s
+16 r (one) s
+16 r (at) s
+16 r 97 c
+16 r (time) s
+16 r (and) s
+16 r (therefore) s
+16 r (can) s
+16 r (only) s
+16 r (use) s
+16 r (the) s
+16 r 98 c
+1 r (est) s
+16 r (mem) s
+0 r 98 c
+0 r (er) s
+16 r (found) s
+16 r (so) s
+136 67 p (far) s
+16 r (to) s
+16 r (calculate) s
+17 r (O\017ine) s
+16 r 80 c
+0 r (erformance.) s
+cmsy12.300 @sf
+87 169 p 15 c
+cmr12.300 @sf
+25 r (The) s
+16 r (order) s
+16 r (in) s
+16 r (whic) s
+0 r 104 c
+15 r (the) s
+16 r 98 c
+2 r (est) s
+16 r (mem) s
+0 r 98 c
+0 r (ers) s
+16 r (are) s
+17 r 99 c
+-1 r (hosen) s
+15 r (for) s
+17 r (inclusion) s
+16 r (in) s
+0 r (to) s
+15 r (the) s
+cmtt12.300 @sf
+16 r (min) s
+cmr12.300 @sf
+16 r (\014le) s
+136 229 p (is) s
+16 r (sligh) s
+0 r (tly) s
+15 r (di\013eren) s
+0 r 116 c
+15 r (ho) s
+0 r 119 c
+-2 r (ev) s
+-1 r (er) s
+15 r (the) s
+16 r (\014tnesses) s
+17 r (of) s
+16 r (the) s
+16 r 118 c
+-2 r (alues) s
+16 r (in) s
+16 r (the) s
+cmtt12.300 @sf
+16 r (min) s
+cmr12.300 @sf
+17 r (\014le) s
+16 r (will) s
+16 r 98 c
+1 r 101 c
+136 289 p (the) s
+16 r (same.) s
+22 r 70 c
+-3 r (or) s
+15 r (example) s
+16 r (if) s
+17 r (there) s
+16 r (are) s
+16 r (11) s
+16 r (mem) s
+0 r 98 c
+0 r (ers) s
+17 r (with) s
+16 r (optimal) s
+16 r (genes) s
+16 r (then) s
+136 350 p 80 c
+0 r (arallel) s
+15 r (Genesis) s
+16 r (and) s
+16 r (Serial) s
+17 r (Genesis) s
+16 r (ma) s
+-1 r 121 c
+16 r (not) s
+16 r 99 c
+0 r (ho) s
+0 r (ose) s
+16 r (the) s
+17 r (same) s
+16 r (subset) s
+16 r (of) s
+16 r (10) s
+17 r (to) s
+136 410 p (store) s
+16 r (in) s
+cmtt12.300 @sf
+16 r (min) s
+cmr12.300 @sf
+0 r 46 c
+cmsy12.300 @sf
+87 512 p 15 c
+cmr12.300 @sf
+25 r (The) s
+16 r (in) s
+-1 r (ternal) s
+16 r (represen) s
+-1 r (tations) s
+16 r (ha) s
+-1 r 118 c
+-1 r 101 c
+15 r 98 c
+1 r (een) s
+17 r 99 c
+-1 r (hanged) s
+16 r (to) s
+16 r (remo) s
+0 r 118 c
+-2 r 101 c
+15 r (the) s
+17 r (need) s
+16 r (for) s
+136 572 p (dynamically) s
+16 r (allo) s
+2 r (cated) s
+16 r (structures.) s
+21 r (This) s
+17 r (has) s
+16 r 98 c
+1 r (een) s
+17 r (done) s
+16 r (to) s
+16 r (sp) s
+1 r (eed) s
+17 r (the) s
+16 r (parallel) s
+136 632 p (implemen) s
+0 r (tation) s
+15 r (and) s
+16 r (to) s
+16 r 97 c
+0 r 118 c
+-1 r (oid) s
+15 r (di\016culties) s
+16 r (in) s
+16 r (the) s
+17 r (C*) s
+16 r (memory) s
+16 r (managemen) s
+0 r (t.) s
+20 r (The) s
+136 692 p (e\013ects) s
+16 r (of) s
+16 r (this) s
+17 r 99 c
+-1 r (hange) s
+16 r (are) s
+16 r (explained) s
+16 r (in) s
+16 r (Section) s
+17 r (3.) s
+14 824 p (In) s
+16 r (addition) s
+16 r (to) s
+17 r (these) s
+16 r (di\013erences) s
+16 r 80 c
+0 r (arallel) s
+15 r (Genesis) s
+16 r (has) s
+17 r 98 c
+1 r (een) s
+16 r (expanded) s
+17 r (to) s
+16 r (include) s
+16 r 97 c
+14 884 p 110 c
+0 r (um) s
+-2 r 98 c
+1 r (er) s
+16 r (of) s
+16 r (new) s
+16 r (options.) s
+22 r (One) s
+16 r (of) s
+17 r (these) s
+16 r (new) s
+16 r (options,) s
+16 r (lo) s
+2 r (cal) s
+16 r (selection,) s
+16 r (is) s
+16 r (sp) s
+2 r (eci\014cally) s
+14 944 p (orien) s
+0 r (ted) s
+15 r (to) s
+-1 r 119 c
+-1 r (ards) s
+15 r (the) s
+16 r (parallel) s
+16 r (implemen) s
+-1 r (tation) s
+15 r (while) s
+16 r (the) s
+16 r (others) s
+16 r (are) s
+16 r (applicable) s
+16 r (to) s
+16 r 98 c
+1 r (oth) s
+14 1004 p 80 c
+0 r (arallel) s
+15 r (and) s
+16 r (Serial) s
+16 r (Genesis\(see) s
+17 r (the) s
+16 r (rep) s
+1 r (ort) s
+cmti12.300 @sf
+17 r (Mo) s
+-2 r (di\014c) s
+-2 r (ations) s
+16 r (to) s
+17 r (Serial) s
+18 r (Genesis) s
+cmr12.300 @sf
+0 r (\).) s
+cmbx17.300 @sf
+14 1201 p 51 c
+78 r (Using) s
+26 r (Setup) s
+cmr12.300 @sf
+14 1340 p (As) s
+16 r (men) s
+0 r (tioned) s
+15 r 98 c
+1 r (efore) s
+17 r 80 c
+-1 r (arallel) s
+16 r (Genesis) s
+16 r (has) s
+16 r 98 c
+2 r (een) s
+16 r (mo) s
+1 r (di\014ed) s
+16 r (to) s
+17 r (remo) s
+-1 r 118 c
+-1 r 101 c
+15 r (all) s
+16 r (dynamic) s
+14 1400 p (memory) s
+16 r (allo) s
+2 r (cation.) s
+21 r (Instead) s
+17 r (the) s
+cmtt12.300 @sf
+16 r (setup) s
+cmr12.300 @sf
+16 r (program) s
+16 r (creates) s
+17 r 97 c
+16 r (\014le) s
+16 r (called) s
+cmtt12.300 @sf
+16 r (parameters.h) s
+cmr12.300 @sf
+14 1461 p (whic) s
+0 r 104 c
+15 r (de\014nes) s
+16 r (the) s
+16 r (constan) s
+0 r (ts) s
+15 r (necessary) s
+17 r (to) s
+16 r (allo) s
+1 r (cate) s
+16 r (the) s
+17 r (structures) s
+16 r (statically) s
+-3 r 46 c
+14 1551 p (The) s
+16 r (only) s
+16 r (e\013ect) s
+17 r (this) s
+16 r (has) s
+16 r (on) s
+17 r (the) s
+16 r (user) s
+16 r (is) s
+16 r (that) s
+17 r (the) s
+16 r (program) s
+16 r 109 c
+0 r (ust) s
+15 r 98 c
+1 r 101 c
+17 r (recompiled) s
+14 1611 p (whenev) s
+0 r (er) s
+15 r (one) s
+16 r (of) s
+16 r (the) s
+17 r (follo) s
+-1 r (wing) s
+16 r (parameters) s
+16 r (is) s
+16 r 99 c
+0 r (hanged.) s
+cmsy12.300 @sf
+87 1743 p 15 c
+cmr12.300 @sf
+25 r 80 c
+-1 r (opulation) s
+15 r (Size) s
+cmsy12.300 @sf
+87 1844 p 15 c
+cmr12.300 @sf
+25 r (Num) s
+-1 r 98 c
+1 r (er) s
+16 r (of) s
+16 r (Genes) s
+cmsy12.300 @sf
+87 1946 p 15 c
+cmr12.300 @sf
+25 r (Structure) s
+16 r (Length) s
+cmsy12.300 @sf
+87 2048 p 15 c
+cmr12.300 @sf
+25 r (Scaling) s
+16 r (Windo) s
+-1 r 119 c
+cmsy12.300 @sf
+87 2150 p 15 c
+cmr12.300 @sf
+25 r (Structures) s
+16 r (Sa) s
+-1 r 118 c
+-1 r (ed) s
+14 2281 p (The) s
+cmtt12.300 @sf
+16 r (setup) s
+cmr12.300 @sf
+16 r (program) s
+17 r (will) s
+16 r (automatically) s
+16 r (notify) s
+17 r (the) s
+16 r (user) s
+16 r (to) s
+16 r (recompile) s
+17 r (whenev) s
+-1 r (er) s
+15 r (one) s
+17 r (of) s
+14 2341 p (these) s
+16 r (parameters) s
+16 r (is) s
+17 r 99 c
+-1 r (hanged.) s
+14 2432 p (Some) s
+16 r (tec) s
+0 r (hniques) s
+15 r (to) s
+16 r 97 c
+0 r 118 c
+-1 r (oid) s
+15 r (frequen) s
+0 r 116 c
+15 r (compilation) s
+16 r (are) s
+74 2563 p (1.) s
+24 r (Run) s
+cmtt12.300 @sf
+16 r (setup) s
+cmr12.300 @sf
+16 r 98 c
+2 r (efore) s
+16 r (compiling) s
+16 r 97 c
+17 r 118 c
+-1 r (ersion) s
+16 r (for) s
+16 r (the) s
+16 r (\014rst) s
+16 r (time.) s
+74 2665 p (2.) s
+24 r (Sa) s
+0 r 118 c
+-2 r 101 c
+16 r (executables) s
+16 r (in) s
+16 r 97 c
+16 r (sub) s
+2 r (directory) s
+16 r (with) s
+16 r (their) s
+cmtt12.300 @sf
+16 r (parameters.h) s
+cmr12.300 @sf
+17 r (\014le) s
+16 r (so) s
+16 r (that) s
+16 r (that) s
+136 2725 p (con\014guration) s
+16 r (will) s
+16 r (not) s
+17 r (ha) s
+-1 r 118 c
+-1 r 101 c
+15 r (to) s
+16 r 98 c
+2 r 101 c
+16 r (built) s
+16 r (again.) s
+902 2940 p 50 c
+@eop
+1 @bop0
+[ 300 ] /cmr20.300 @newfont
+cmr20.300 @sf
+[<FFFF80000000FFFF8000000007F00000000003E00000000003E00000000003E00000000003E00000000003E00000000003E0
+  0000000003E00000000003E00000000003E00000000003E00000000003E00000000003E00000000003E00000000003E00000
+  000003E00000000003E00000000003E00000000003E00000000003E00000000003E00000000003E00000000003E000000000
+  03E00000000003E00000000003E00000000003E00000000003FFFFFE000003E0001FC00003E00003F00003E00000F80003E0
+  00007C0003E000003E0003E000001F0003E000000F8003E000000F8003E000000FC003E0000007C003E0000007E003E00000
+  07E003E0000007E003E0000007E003E0000007E003E0000007E003E0000007E003E0000007C003E000000FC003E000000FC0
+  03E000000F8003E000001F0003E000003F0003E000007E0003E00000F80003E00003F00007F0001FE000FFFFFFFF0000FFFF
+  FFF80000> 48 59 -5 0 51.930] 80 @dc
+[<00FE003E000781807F801F0060F0C03E0011E0407C000BC020F8000BC020F80007C020F80007C020F80003C020F80003C020
+  F80003C0207C0003C0207C0003C0003C0003C0003E0003C0001F0003C0000F8003C00003C003C00001F003C000007C03C000
+  000FF3C00000003FC000000003C000000003C000000003C0001E0003C0003F0003C0003F0003C0003F0003C0003E00038000
+  1C00078000100007000008000E000004001C0000020038000001C0F00000003F800000> 40 37 -3 0 37.619] 97 @dc
+[<FFFF8000FFFF800007E0000003C0000003C0000003C0000003C0000003C0000003C0000003C0000003C0000003C0000003C0
+  000003C0000003C0000003C0000003C0000003C0000003C0000003C0000003C0000003C0000003C0000003C0000003C00000
+  03C0000003E0000003E0000003E0000003E0060007D00F00FFD01F80FFC81F803FC41F800FC20F0003C102000040FC00> 32 37 -2 0 28.809] 114 @dc
+[<FFFF00FFFF0007E00003C00003C00003C00003C00003C00003C00003C00003C00003C00003C00003C00003C00003C00003C0
+  0003C00003C00003C00003C00003C00003C00003C00003C00003C00003C00003C00003C00003C00003C00003C00003C00003
+  C00003C00003C00003C00003C00003C00003C00003C00003C00003C00003C00003C00003C00003C00003C00003C00003C000
+  03C00003C00003C00007C000FFC000FFC0003FC0000FC00003C000004000> 24 60 -1 0 19.999] 108 @dc
+[<0007F00000380C0000E0030001C0008003800040070000200F0000101E0000101E0000083C0000083C0000007C0000007800
+  000078000000F8000000F8000000F8000000F8000000F8000000F8000000FFFFFFF8F8000078F80000787800007878000078
+  7C0000F83C0000F03C0000F03C0000F01E0001E00E0001E0070001C0070003800380070000E00E0000703C00000FE000> 32 37 -2 0 33.214] 101 @dc
+[<000003FF00000000001FFFE002000000FF007806000001F8000E06000007E000030E00000F8000019E00001E000000DE0000
+  7C0000005E0000F80000007E0000F00000003E0001F00000003E0003E00000003E0007C00000003E0007C00000003E000F80
+  0000003E000F800000003E001F000000003E001F000000003E003F000000003E003E000000003E007E000000003E007E0000
+  00003E007E00000000FF007C000000FFFFF87C000000FFFFF8FC000000000000FC000000000000FC000000000000FC000000
+  000000FC000000000000FC000000000000FC000000000000FC000000000000FC000000000000FC000000000000FC00000000
+  00007C0000000000007C0000000000007E0000000002007E0000000002007E0000000002003E0000000002003F0000000006
+  001F0000000006001F0000000006000F800000000E000F800000000E0007C00000000E0007C00000001E0003E00000001E00
+  01E00000003E0000F00000007E0000F80000007E00007C000000BE00001E0000011E00000F8000021E000007C0000C0E0000
+  01F000180E000000FE00F0060000001FFFC00600000003FE000200> 56 61 -3 1 60.192] 71 @dc
+[<FFFF07FFF8FFFF07FFF807E0003F0003C0001E0003C0001E0003C0001E0003C0001E0003C0001E0003C0001E0003C0001E00
+  03C0001E0003C0001E0003C0001E0003C0001E0003C0001E0003C0001E0003C0001E0003C0001E0003C0001E0003C0001E00
+  03C0001E0003C0001E0003C0001E0003C0001E0003C0001E0003C0001E0003C0001E0003E0001E0003E0001E0003E0001E00
+  07D0001C00FFD0003C00FFC8003C003FC40038000FC200700003C181E00000407F8000> 40 37 -2 0 42.023] 110 @dc
+[<807F0000C180E000C6003000E8001800E8000C00F0000E00E0000600E0000700C0000700C0000700C0000700C00007008000
+  0F0080000F0080001E0000003E000000FC000007F80000FFF00003FFE0000FFF80001FFC00003F8000007E00000078000400
+  F0000400F0000400E0000400E0000400E0000C00E0000C0060000C0070001C0030003C001C004C0007018C0001FE0400> 32 37 -2 0 29.249] 115 @dc
+[<FFFEFFFE07E003C003C003C003C003C003C003C003C003C003C003C003C003C003C003C003C003C003C003C003C003C003C0
+  03C003C003C003C003C007C07FC07FC03FC00FC001C000400000000000000000000000000000000000000000000000000000
+  07800FC00FC01FC00FC00FC00780> 16 57 -1 0 19.999] 105 @dc
+[<00000FE0000000007FFC00000000F80E00000003C003800000078000C000000F00006000001E00003000003C00001000003C
+  0000080000780000080000F80000040000F00000040001F00000020001F00000020001E00000020001E00000020003E00000
+  010003E00000010003E00000010003E00000010003E00000010003E00000010003E00000010003E00000010003E000000100
+  03E00000010003E00000010003E00000010003E00000010003E00000010003E00000010003E00000010003E00000010003E0
+  0000010003E00000010003E00000010003E00000010003E00000010003E00000010003E00000010003E00000010003E00000
+  010003E00000010003E00000010003E00000010003E00000010003E00000010003E00000010003E00000010003E000000100
+  03E00000010003E00000010003E00000010003E00000010003E00000010003E00000038003E00000038007F000000FE0FFFF
+  80007FFCFFFF80007FFC> 48 60 -5 1 57.431] 85 @dc
+[<4000200010001000080008000400040002000200020001000100010001000100010039007D00FF00FE00FE007C003800> 16 24 -6 -36 19.999] 39 @dc
+[<0007F01FF8003C0C1FF80070021F0000E0011E0001E0009E0001C0005E0003C0005E0003C0003E0003C0003E0003C0003E00
+  03C0001E0003C0001E0003C0001E0003C0001E0003C0001E0003C0001E0003C0001E0003C0001E0003C0001E0003C0001E00
+  03C0001E0003C0001E0003C0001E0003C0001E0003C0001E0003C0001E0003C0001E0003C0001E0003C0001E0003C0001E00
+  07C0003E00FFC007FE00FFC007FE003FC001FE000FC0007E0003C0001E000040000200> 40 37 -2 0 42.023] 117 @dc
+[<0007F01FF800380C1FF800E0021F0001C0011E000380009E000700005E000F00003E001E00003E001E00001E003C00001E00
+  3C00001E007C00001E007800001E007800001E00F800001E00F800001E00F800001E00F800001E00F800001E00F800001E00
+  F800001E00F800001E00F800001E007800001E007C00001E007C00001E003C00001E003C00001E001E00001E001E00001E00
+  0F00003E000700005E000380005E0001C0009E000070031E00001C0C1E000007F01E000000001E000000001E000000001E00
+  0000001E000000001E000000001E000000001E000000001E000000001E000000001E000000001E000000001E000000001E00
+  0000001E000000001E000000001E000000003E00000007FE00000007FE00000001FE000000007E000000001E000000000200> 40 60 -2 0 42.023] 100 @dc
+cmr14.300 @sf
+[<00FE000381800700400E00201C0020380010380010780000700000F00000F00000F00000F00000F00000F00000F00000F000
+  007000007800403800E03801F01C01F00E00F00700200380C000FF00> 24 26 -2 0 25.263] 99 @dc
+[<FFE0FFE0FFE0FFE00E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E00
+  0E000E000E000E000E000E000E000E000E000E000E000E000E000F000E000F000E000E800E000E801C000E4018000E303000
+  0E0FE0000E0000000E0000000E0000000E0000000E0000000E0000000E0000000E0000000E0000000E0000000E0000000E00
+  00001E000000FE000000FE0000001E000000> 32 42 -2 0 31.635] 104 @dc
+[<FFE0FFE00E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E000E00
+  0E000E000E000E000E000E000E000E000E000E000E000E000E001E00FE00FE001E00> 16 42 -2 0 15.704] 108 @dc
+[<0001FE0000000FFFC000001F80F000007C00180000F0000C0001E000060003C000020007800001000F000000801F00000080
+  1E000000803E000000403C000000407C000000407C000000407C000000007800000000F800000000F800000000F800000000
+  F800000000F800000000F800000000F800000000F800000000F80000000078000000007C000000407C000000407C00000040
+  3C000000C03E000000C01E000000C01F000001C00F000001C007800003C003C00003C001E00007C000F00009C0007C0031C0
+  001F80E0C0000FFF80C00001FE0040> 40 43 -3 1 41.194] 67 @dc
+[<70F8F8F870> 8 5 -5 0 15.704] 46 @dc
+[<00040000000E0000000E0000000E0000001D0000001D0000003D8000003880000038800000704000007040000070400000E0
+  200000E0200001C0100001C0100001C01000038008000380080007800C0007000400070004000E0006000F000F00FFE03FE0
+  FFE03FE0> 32 26 -1 0 30.042] 118 @dc
+[<FFFFFFE0FFFFFFE00F800FE0078001E0078000F0078000700780003007800030078000100780001007800010078000100780
+  0008078000080780000807800008078000000780000007800000078000000780000007800000078000000780000007800000
+  0780000007800000078000000780000007800000078000000780000007800000078000000780000007800000078000000780
+  00000FC00000FFFE0000FFFE0000> 32 41 -4 0 35.604] 76 @dc
+[<FFFFE0FFFFE07FFFF020003030001010001008001004000802000803000001800000C000006000003000003800001C00000E
+  000007000007800003800003C00001E00001E00000F00000F00000F87800F8FC0078FC0078FC0078FC00F8F800F84000F040
+  00F06001E02001E01003C00C0F8007FF0001F800> 24 40 -3 0 28.449] 50 @dc
+[<FFFF80FFFF8003E00001C00001C00001C00001C00001C00001C00001C00001C00001C00001C00001C00001C00001C00001C0
+  0001C00001C00001C00001C00001C00001C00001C00001C00001C00001C00001C00001C00001C00001C00001C00001C00001
+  C000E1C000FDC0001FC00003C00001C000004000> 24 40 -5 0 28.449] 49 @dc
+[<FFC0007FFCFFC0007FFC1F00000FC00E0000078006000007800200000F000200000F000200000F000100001E000100001E00
+  0100003E000080003C000080003C0000C0007C00007FFFF800007FFFF800002000F000002000F000002000F000001001E000
+  001001E000001001E000000803C000000803C000000803C0000004078000000407800000040F800000020F000000020F0000
+  00021F000000011E000000011E00000001BE00000000BC00000000BC00000000780000000078000000007800000000300000
+  00003000000000300000> 40 42 -2 0 42.759] 65 @dc
+[<07E0001FF800381C00300E007807007C03807C01803801C00001E00000E00000E00000F000007000007000007001F8780704
+  780C02781C01781801783800F87000F87000F8700078F00078F00078F00078F00078F00070F00070F00070F000707000F070
+  00E07800E03801C01C01C00E038007070003FE0000F800> 24 41 -3 1 28.449] 57 @dc
+cmbx17.300 @sf
+[<FFFFFFE0FFFFFFE0FFFFFFE0003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F
+  8000003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F8000
+  003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F
+  8000003F8000E03F8000FFBF8000FFFF80001FFF8000007F8000000F80000007800000018000> 32 47 -6 0 38.978] 49 @dc
+[<FFFFFF00FFFFFF00FFFFFF0000FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF
+  000000FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000
+  00FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF
+  000000FF000000FF000000FF000000FF000000FF000000FF000000FF000000FF0000FFFFFF00FFFFFF00FFFFFF00> 32 49 -2 0 28.439] 73 @dc
+cmr12.300 @sf
+[<4020101008080404040474FCFCF870> 8 15 -4 -20 13.548] 39 @dc
+[<FFE0203FFF001F007003F0000E007001E00004007001E0000400F801E0000400F801E0000400F801E0000401E401E0000401
+  E401E0000401E401E0000403C201E0000403C201E00004078101E00004078101E00004078101E000040F0081E000040F0081
+  E000040F0081E000041E0041E000041E0041E000043C0021E000043C0021E000043C0021E00004780011E00004780011E000
+  04780011E00004F00009E00004F00009E00004F00009E00005E00005E00005E00005E00007C00003E0000FC00003F000FFC0
+  0003FF00> 48 34 -2 0 44.692] 77 @dc
+[<FFFFF8000F801E0007800700078003C0078001E0078000E0078000F007800078078000780780007C0780003C0780003C0780
+  003E0780003E0780003E0780003E0780003E0780003E0780003E0780003E0780003E0780003C0780003C0780003C0780007C
+  0780007807800078078000F0078000E0078001C0078003C0078007000F801E00FFFFF000> 32 34 -2 0 37.249] 68 @dc
+cmti12.300 @sf
+[<03F00000000E0C000000180200000038018000003000400000700040000070002000007000100000F000100000F000080000
+  700008000078000400007800040000780004000078000400003C000200003C000200003C000200003C000200001E00010000
+  1E000100001E000100001E000100000F000080000F000080000F000080000F00008000078000400007800040000780004000
+  078000400003C000200003C000600003C00078003FFE03FF00> 40 35 -9 1 36.206] 85 @dc
+[<3F800060E000F03000F01800701C00000E00000E00000E0000070000070001E700061700060B800E07800E03801E03801E01
+  C01E01C01E01C01E01C00F00E00F00E00F00E00700E007807003807001C07001C07000E0B80030B8001F18> 24 31 -2 10 22.416] 103 @dc
+[<6003C0E00620700610700E10700E087007083807043803803803803803801C01C01C01C01C01C01C01C00E00E00E00E00F00
+  E00F00E007C0C0072180071F0007000003800003800003800003800001C00001C00001C00001C00000E00000E00000E0000F
+  E00000F000> 24 35 -3 0 24.906] 104 @dc
+[<FFC00080001E000080000C0001C000040001C000040001C000040003C000020003E000020003E000020007A000020007A000
+  010007900001000F100001000F100001001F100000801E080000801E080000803E080000803C080000403C04000040780400
+  004078040000407804000020F002000020F002000020F002000021E002000011E001000011E001000013C001000013C00100
+  000FC00080000F800180000F8001E000FF000FFC> 40 34 -3 0 36.206] 78 @dc
+[<000000F000FFF8038C000F80070200078007020007800F010007800F010007800F000003C007800003C007800003C0078000
+  03C007800001E003C00001E003C00001E003C00001E003C00000F003800000F007000000F00E000000FFFC00000078078000
+  007801E00000780070000078003800003C003C00003C001E00003C001E00003C001E00001E000F00001E000F00001E000E00
+  001E000E00000F001C00000F003C00000F00700000FFFFC000> 40 35 -3 1 35.537] 82 @dc
+[<FFFFFE000F803E0007800F0007800300078001000780018003C0008003C0008003C0004003C0004001E0002001E0002001E0
+  000001E0000000F0000000F0000000F0000000F0000000780000007800000078000000780000003C0000003C0000003C0000
+  003C0000001E0000001E0000001E0000001E0000000F0000000F0000000F800000FFFC00> 32 34 -3 0 30.556] 76 @dc
+[<00FE0000000381C0000006003000001C000800001800040000380002000070000100007000008000F000008000E000004000
+  E000004000E000002000E000002000E000000000F000000000F000000000F000000000F000000000F0000000007800000000
+  780000000078000000003C000008003C000004001E000004000E000004000F000004000700000E000380000E0001C0000E00
+  00E0000E000070001F000038002700000E006300000380810000007F0080> 40 36 -7 1 34.869] 67 @dc
+[<7FF07FF87FF8> 16 3 -3 -9 17.434] 45 @dc
+[<801E00807F0040FF8063FFC05F80C020006010002008003004001002000001000000C0000020000018000006000003000001
+  C00700E00880F008407808403808203C08203C04101E04101E04101E02101E02201E01001C00801C00801800603800106000
+  0FC0> 24 34 -4 1 24.906] 50 @dc
+[<1F000030E000607000E03800E01C00E01C00E00E00E00F00E00700E00780E00780F00380F003C0F003C0F003C07801E07801
+  E07801E07801E03C00F03C00F03C00F01C00F01E00701E00700E00700F007007007003007003807001C07000E0600030C000
+  0F80> 24 34 -6 1 24.906] 48 @dc
+[<FFF80000000F80000000078000000007800000000780000000078000000003C000000003C000000003C000000003C0000000
+  01E000000001E000000001E000000001E000000000F000000000F000000000FFFE000000F003C000007800E0000078007800
+  0078003C000078001E00003C001E00003C000F00003C000F00003C000F00001E000700001E000700001E000700001E000700
+  000F000E00000F001E00000F00380000FFFFE000> 40 34 -3 0 33.047] 80 @dc
+[<80700040F80061FC003F06001003000801000400800200000100000080000040000020000010000008000004000802000801
+  00041F8007F8C003F06001E020> 24 21 -3 0 19.925] 122 @dc
+[<FF003FFC3C0007C00C0003C0040003C0040003C0020003C0030003C0010003C0008003C0008007C0004007C0007FFF800020
+  0780003007800010078000080780000807800004078000040780000207800002078000010780000087800000878000004F80
+  00004F0000002F0000002F0000001F0000000F0000000F0000000700000007000000030000000300> 32 35 -3 0 36.206] 65 @dc
+[<1801800F0038038018801C01C018401C01C038401C01C038201C01C01C200E00E01C100E00E00E000E00E00E000E00E00E00
+  07007007000700700700070070070007007007004380380380438038038043C03C038043C03C038023B03303001308608600
+  0E07C07C00> 40 21 -4 0 39.850] 109 @dc
+cmbx17.300 @sf
+[<FFFFFFF0FFFFFFF0FFFFFFF07FFFFFF03FFFFFF81FFFFFF80FFFFFF806000078070000380380003801C0003800E0001C0070
+  001C003C001C001E0000000F0000000780000003C0000001E0000001F8000000FC0000007E0000003F0000003F8000001FC0
+  00001FE000000FF000000FF0000007F8000007F8000007FC3E0007FC7F0003FCFF8003FCFF8003FCFF8007FCFF8007FCFF00
+  07F87E0007F87C000FF038001FF038001FE01E007FC00F81FF8007FFFF0001FFFC00003FE000> 32 47 -4 0 38.978] 50 @dc
+[<FFFFFFFFC00000FFFFFFFFF80000FFFFFFFFFF000001FE0001FFC00001FE00003FE00001FE00000FF00001FE000007F80001
+  FE000003FC0001FE000001FE0001FE000000FF0001FE0000007F8001FE0000007F8001FE0000003FC001FE0000003FC001FE
+  0000003FC001FE0000001FE001FE0000001FE001FE0000001FE001FE0000001FE001FE0000001FF001FE0000001FF001FE00
+  00001FF001FE0000001FF001FE0000001FF001FE0000001FF001FE0000001FF001FE0000001FF001FE0000001FF001FE0000
+  001FF001FE0000001FF001FE0000001FE001FE0000001FE001FE0000001FE001FE0000003FE001FE0000003FC001FE000000
+  3FC001FE0000003F8001FE0000007F8001FE0000007F0001FE000000FF0001FE000001FE0001FE000003FC0001FE000007F8
+  0001FE00000FF00001FE00003FE00001FE0001FF8000FFFFFFFFFF0000FFFFFFFFF80000FFFFFFFF800000> 56 49 -3 0 59.694] 68 @dc
+[<7FFFC3FFFF00007FFFC3FFFF00007FFFC3FFFF000003F8001FC0000003F8001FC0000003F8001FC0000003F8001FC0000003
+  F8001FC0000003F8001FC0000003F8001FC0000003F8001FC0000003F8001FC0000003F8001FC0000003F8001FC0000003F8
+  001FC0000003F8001FC0000003F8001FC0000003F8001FC0000003F8001FC0000003F8001FC0000003F8001FC0000003F800
+  1FC0000003F8001FC0000003F8001FC0000003F8001FC0000003F8001FC0000003F8001FC0000003F8001FC0000003F8001F
+  C00000FFFFFFFFFFC000FFFFFFFFFFC000FFFFFFFFFFC00003F8001FC0000003F8001FC0000003F8001FC0000003F8001FC0
+  000003F8001FC0000003F8001FC0000003F8001FC0000003F8001FC0000003F8001FC0180003F8003FC07E0001F8003FC0FF
+  0001FC003FE0FF0000FC003FE0FF00007E001FE0FF00003F800FF07E00000FF01FFC3E000003FFFE7FFC0000003FF80FF000> 56 50 -1 0 45.474] 11 @dc
+[<07007F80000781FFF00007C781FC0007CE007F0007FC001F8007F8001FC007F0000FC007F0000FE007F0000FE007F00007F0
+  07F00007F007F00007F007F00007F807F00007F807F00007F807F00007F807F00007F807F00007F807F00007F807F00007F8
+  07F00007F807F00007F007F00007F007F00007F007F0000FE007F0000FC007F8001FC007FC001F8007FE003F0007F7C0FE00
+  07F1FFF80007F03FC00007F000000007F000000007F000000007F000000007F000000007F000000007F000000007F0000000
+  07F000000007F000000007F000000007F000000007F00000000FF0000000FFF0000000FFF0000000FFF000000003F0000000> 40 50 -2 0 43.309] 98 @dc
+1 @bop1
+cmr20.300 @sf
+433 209 p 80 c
+-2 r (arallel) s
+24 r (Genesis) s
+24 r (User's) s
+25 r (Guide) s
+cmr14.300 @sf
+661 386 p (Mic) s
+-1 r (hael) s
+18 r (C.) s
+19 r 118 c
+-2 r (an) s
+18 r (Len) s
+-1 r 116 c
+720 533 p (21) s
+19 r (August) s
+19 r (1992) s
+cmbx17.300 @sf
+14 783 p 49 c
+78 r (In) s
+-1 r (tro) s
+1 r (duction) s
+cmr12.300 @sf
+14 922 p (This) s
+16 r (User's) s
+16 r (Guide) s
+17 r (is) s
+16 r (for) s
+16 r (use) s
+17 r (with) s
+16 r (the) s
+16 r 80 c
+0 r (arallel) s
+15 r (Implemen) s
+0 r (tation) s
+15 r (of) s
+16 r (Genesis) s
+16 r (whic) s
+0 r 104 c
+15 r (runs) s
+14 983 p (on) s
+16 r (the) s
+16 r (CM-200.) s
+22 r (Describ) s
+2 r (ed) s
+16 r (here) s
+16 r (will) s
+16 r 98 c
+2 r 101 c
+16 r (the) s
+16 r (di\013erences) s
+16 r 98 c
+2 r (et) s
+-1 r 119 c
+-1 r (een) s
+15 r 80 c
+0 r (arallel) s
+15 r (Genesis) s
+16 r (and) s
+14 1043 p (standard) s
+16 r (Serial) s
+16 r (Genesis,) s
+17 r (ho) s
+-1 r 119 c
+16 r (to) s
+16 r (use) s
+16 r 80 c
+0 r (arallel) s
+15 r (Genesis,) s
+16 r (and) s
+17 r (curren) s
+-1 r 116 c
+15 r (bugs) s
+17 r (and) s
+16 r (ideas) s
+16 r (for) s
+14 1103 p (future) s
+16 r (impro) s
+-1 r 118 c
+-1 r (emen) s
+-1 r (ts) s
+15 r (to) s
+15 r 80 c
+0 r (arallel) s
+15 r (Genesis.) s
+21 r (It) s
+16 r (is) s
+16 r (assumed) s
+16 r (that) s
+16 r (the) s
+16 r (user) s
+16 r (is) s
+15 r (familiar) s
+16 r (with) s
+14 1163 p (Serial) s
+16 r (Genesis,) s
+16 r (C*) s
+17 r (and) s
+16 r (kno) s
+0 r (ws) s
+15 r (ho) s
+0 r 119 c
+15 r (to) s
+16 r (op) s
+1 r (erate) s
+17 r (the) s
+16 r (Connection) s
+16 r (Mac) s
+0 r (hine.) s
+21 r (Instructions) s
+14 1223 p (on) s
+15 r (using) s
+16 r (the) s
+15 r (NRL) s
+16 r (Connection) s
+15 r (Mac) s
+0 r (hine) s
+14 r (can) s
+16 r 98 c
+1 r 101 c
+15 r (found) s
+16 r (in) s
+15 r (the) s
+16 r (rep) s
+1 r (ort) s
+15 r (en) s
+0 r (titled) s
+cmti12.300 @sf
+14 r (Using) s
+17 r (the) s
+14 1284 p (NRL) s
+17 r (CM-200) s
+cmr12.300 @sf
+0 r 46 c
+22 r (This) s
+16 r (guide) s
+17 r (also) s
+16 r (do) s
+1 r (es) s
+16 r (not) s
+17 r (commen) s
+-1 r 116 c
+16 r (on) s
+16 r (the) s
+16 r (implemen) s
+0 r (tation) s
+15 r (details) s
+16 r (of) s
+14 1344 p 80 c
+0 r (arallel) s
+15 r (Genesis.) s
+21 r (These) s
+16 r (are) s
+16 r (discussed) s
+16 r (in) s
+16 r (the) s
+16 r (rep) s
+1 r (ort) s
+cmti12.300 @sf
+16 r (Par) s
+-2 r (al) s
+2 r (lelizing) s
+17 r (Genetic) s
+17 r 65 c
+0 r (lgorithms) s
+cmr12.300 @sf
+0 r 46 c
+cmbx17.300 @sf
+14 1540 p 50 c
+78 r (Di\013erences) s
+26 r 98 c
+2 r (et) s
+-1 r 119 c
+-2 r (een) s
+25 r (Genesis) s
+26 r (and) s
+26 r 80 c
+-1 r (arallel) s
+25 r (Genesis) s
+cmr12.300 @sf
+14 1680 p 80 c
+0 r (arallel) s
+15 r (Genesis) s
+16 r (is) s
+16 r (an) s
+17 r (implemen) s
+-1 r (tation) s
+16 r (of) s
+16 r (Genesis) s
+16 r (on) s
+16 r (the) s
+17 r (Connection) s
+16 r (Mac) s
+-1 r (hine) s
+16 r (that) s
+14 1740 p (attempts) s
+16 r (to) s
+16 r (retain) s
+17 r (as) s
+16 r 109 c
+0 r (uc) s
+-2 r 104 c
+16 r (of) s
+16 r (the) s
+16 r (seman) s
+0 r (tics) s
+15 r (and) s
+16 r 98 c
+2 r (eha) s
+-1 r (vior) s
+15 r (of) s
+17 r (Serial) s
+16 r (Genesis) s
+16 r (as) s
+14 1800 p 112 c
+1 r (ossible) s
+17 r (while) s
+16 r (still) s
+16 r (pro) s
+0 r (viding) s
+15 r (maxim) s
+0 r (um) s
+15 r 112 c
+1 r (erformance.) s
+22 r (The) s
+16 r (sole) s
+16 r (di\013erence) s
+17 r 98 c
+1 r (et) s
+0 r 119 c
+-2 r (een) s
+14 1860 p (the) s
+15 r (seman) s
+0 r (tics) s
+14 r (of) s
+16 r 80 c
+-1 r (arallel) s
+15 r (and) s
+15 r (Serial) s
+16 r (Genesis) s
+15 r (is) s
+15 r (the) s
+16 r (manner) s
+15 r (in) s
+15 r (whic) s
+0 r 104 c
+15 r (random) s
+15 r 110 c
+0 r (um) s
+-2 r 98 c
+1 r (ers) s
+14 1920 p (are) s
+16 r (generated.) s
+22 r (Theoretically) s
+16 r (if) s
+16 r (the) s
+17 r (parallel) s
+16 r (random) s
+16 r 110 c
+0 r (um) s
+-2 r 98 c
+1 r (er) s
+16 r (generator) s
+16 r 119 c
+0 r (ere) s
+14 1981 p (con) s
+0 r (trolled) s
+15 r (to) s
+16 r (matc) s
+0 r 104 c
+15 r (the) s
+16 r (serial) s
+17 r (random) s
+16 r 110 c
+-1 r (um) s
+-1 r 98 c
+0 r (er) s
+17 r (generator) s
+16 r 98 c
+1 r (oth) s
+17 r 118 c
+-1 r (ersions) s
+15 r (of) s
+17 r (Genesis) s
+14 2041 p 119 c
+0 r (ould) s
+15 r (giv) s
+0 r 101 c
+15 r (iden) s
+-1 r (tical) s
+16 r (rep) s
+1 r (orts\(with) s
+16 r (the) s
+17 r (exception) s
+16 r (of) s
+16 r (O\017ine) s
+16 r 112 c
+2 r (erformance) s
+16 r (as) s
+16 r (men) s
+0 r (tioned) s
+14 2101 p 98 c
+1 r (elo) s
+0 r (w\).) s
+21 r (This) s
+16 r (means) s
+16 r (that) s
+16 r 112 c
+2 r (opulation) s
+16 r (statistics) s
+16 r (from) s
+17 r 97 c
+16 r (run) s
+16 r (of) s
+16 r 80 c
+0 r (arallel) s
+15 r (Genesis) s
+16 r (and) s
+17 r 97 c
+14 2161 p (run) s
+16 r (of) s
+16 r (Serial) s
+17 r (Genesis) s
+16 r (can) s
+16 r 98 c
+2 r 101 c
+16 r (compared) s
+16 r (directly) s
+-3 r 46 c
+14 2251 p (Other) s
+16 r (minor,) s
+16 r (non-seman) s
+0 r (tic) s
+15 r (di\013erences) s
+17 r (are) s
+cmsy12.300 @sf
+87 2383 p 15 c
+cmr12.300 @sf
+25 r 80 c
+-1 r (arallel) s
+15 r (Genesis) s
+17 r (alw) s
+-1 r 97 c
+-1 r (ys) s
+15 r (ev) s
+-1 r (aluates) s
+15 r (ev) s
+-1 r (ery) s
+16 r (mem) s
+-1 r 98 c
+1 r (er) s
+16 r (of) s
+16 r (the) s
+16 r 112 c
+2 r (opulation) s
+16 r (eac) s
+0 r 104 c
+136 2443 p (generation) s
+16 r (ev) s
+0 r (en) s
+15 r (if) s
+16 r 97 c
+16 r (mem) s
+0 r 98 c
+0 r (er's) s
+17 r (genot) s
+-1 r (yp) s
+1 r 101 c
+16 r (has) s
+16 r (not) s
+16 r 99 c
+0 r (hanged.) s
+21 r (This) s
+16 r (is) s
+16 r (equiv) s
+-2 r (alen) s
+-1 r 116 c
+15 r (to) s
+136 2503 p (ha) s
+0 r (ving) s
+15 r (the) s
+cmtt12.300 @sf
+16 r 97 c
+cmr12.300 @sf
+16 r (\015ag) s
+17 r (alw) s
+-1 r 97 c
+-1 r (ys) s
+15 r (on) s
+16 r (in) s
+17 r (Serial) s
+16 r (Genesis.) s
+22 r (Note) s
+16 r (that) s
+16 r 80 c
+0 r (arallel) s
+15 r (Genesis) s
+16 r (pa) s
+0 r (ys) s
+136 2564 p (no) s
+16 r (time) s
+16 r 112 c
+2 r (enalt) s
+-1 r 121 c
+16 r (for) s
+16 r (this.) s
+cmsy12.300 @sf
+87 2665 p 15 c
+cmr12.300 @sf
+25 r 80 c
+-1 r (arallel) s
+15 r (Genesis) s
+17 r (calculates) s
+16 r (O\017ine) s
+16 r 80 c
+0 r (erformance) s
+15 r (sligh) s
+0 r (tly) s
+15 r (di\013eren) s
+0 r (tly) s
+-4 r 46 c
+20 r (Since) s
+17 r (the) s
+136 2726 p (en) s
+0 r (tire) s
+15 r 112 c
+1 r (opulation) s
+16 r (is) s
+16 r (ev) s
+-1 r (aluated) s
+15 r (at) s
+16 r (once) s
+16 r (O\017ine) s
+16 r 80 c
+0 r (erformance) s
+15 r (is) s
+16 r (alw) s
+0 r 97 c
+-1 r (ys) s
+15 r (calculated) s
+136 2786 p (with) s
+16 r (the) s
+16 r 98 c
+2 r (est) s
+16 r (mem) s
+0 r 98 c
+0 r (er) s
+16 r (of) s
+17 r (the) s
+16 r 112 c
+1 r (opulation.) s
+22 r (Serial) s
+16 r (Genesis) s
+16 r (ev) s
+-1 r (aluates) s
+15 r (the) s
+902 2940 p 49 c
+@eop
+@end

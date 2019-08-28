@@ -1,0 +1,77 @@
+< gref1.ld
+; ****
+; classifiers..
+set systreas=1000000
+set cfstrmax=99999
+set grcfrnsl=0.1
+set cfstrdf=500
+genrandcfs 200
+; *******
+set nmimsgmx=8  mxdupmsg=0 nmiemmx=4 nmiimmx=4
+set bid_k=0.1
+set bidpow=1
+set brpow=1
+set ebrpow=6
+set btcsb=10.0  btcmb=0.0
+;
+set headtax=0.0005
+set bidtax=0.00  fbidtax=0.02
+set prdtaxmx=0.0 Prdtaxpw=1.5
+set frpaydet=1.00 dmshare=0.0
+set frpaynec=0.0
+set sharerew=1
+set allpaybd=0
+set cfbidmin=0.10001
+set cfstrmin=1
+;
+set onemperc=1
+set suppbid=0
+set delhall=1
+; ******
+set frnewcfs=0.04
+set nwcfstrf=1.0
+set nwcfstrv=1
+;
+set prntbpow=1.0
+set pkprnwor=1
+set bgabppr=0.00
+set bidfit=0
+;
+set randrplc=0
+set rplcbpow=1  rplcfubd=1.0
+set crowdfac=1
+set mxcfcopy=0
+;
+set cdmsgsrt=1.00 cdmsgs=2  cdmsgact=1
+set ceffsrt=0.10  ceffs=2  ceffsplz=1
+set muprtot=0.05
+set bkggart=0.04  bgascpr=.0 bgafcpr=.50 bgancpr=1.0
+set acpcrt=0.0 acpct=-0.03 nwccstrf=0
+set cssrt=0.25 cssfrm=0.0 cssfrrf=0
+set tlbrt=0.2 tlbt=0.5 tlbfre=1.0
+;
+; ********
+; Do the run....
+di env,1 env,2  time
+;
+; < tst-grf1.cm
+set adenvint=800 adenvfmt=1 advarint=4000 adcfint=8000 adcffmt=22
+cl 500
+; cl 15988
+;
+< tst-grf1.cm
+set adenvint=800 adenvfmt=1 advarint=4000 adcfint=8000 adcffmt=22
+cl 500
+; cl 15988
+;
+< tst-grf1.cm
+set adenvint=800 adenvfmt=1 advarint=4000 adcfint=8000 adcffmt=22
+cl 500
+; cl 15988
+;
+; ENDRUN
+; ********
+< tst-grf1.cm
+set dscflst=0
+di cl,22
+di time

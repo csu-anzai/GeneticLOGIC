@@ -1,0 +1,72 @@
+
+/*		CFSIO.DEF  for the CFS-C Classifier System.
+
+Define variables for control of I/O defined in routines in CFSIO.C .
+Space for the char names (e.g., GOutBuff, StdInFN, etc.) is obtained in Init_CFS,
+and default names are assigned at that time.
+
+NOTE WELL: If you chaange this, change CFSIO.EXT - the declarations for these variables.
+*/
+
+#include	"cfsio.h"
+
+char *GOutBuff;				/* Global output buffer - written by calls to WriteGOB */
+char *GInBuff;				/* Global input buffer - used by ReadS() and friends */
+
+
+short LogFlg;				/* Set ON (1) tells Write macro (see CFSIO.H) to echo to LogFName. */
+char *LogFName = NULL;			/* Name of file for logging. Default will be constructed in Init routines */
+FILE *LogFILE = NULL;			/* FILE pointer for LogFName. */
+
+short GenFlg;				/* Set 1 to have system write 'geneolgy' information. */
+char *GenFName = NULL;			/* Name of file for geneology information. */
+FILE *GenFILE = NULL;			/* FILE pointer for GenFName. */
+
+char *StdInFN = NULL;
+
+char *StdOutFN = NULL;			/* Default File/device written to WriteStd */
+
+#if ( CBELLMTS || CI86 )
+FILE *StdOFILE;
+#else
+FILE *StdOFILE = stdout;		/* FILE associated with StdOutFN */
+#endif
+
+char *DisOutFN = NULL;			/* Default file/device for the DISPLAY comamnd */
+
+#if ( CBELLMTS || CI86 )
+FILE *DisOFILE;
+#else
+FILE *DisOFILE = stdout;		/* FILE associated with DisOutFN[] */
+#endif
+
+char *StdErrFN = NULL;			/* NOT CURRENTLY USED */
+
+char *MsgInFN = NULL;
+
+char *CfInFN = NULL;
+
+char *LoadSyFN = NULL;			/* NOT CURRENTLY USED */
+
+char *SaveSyFN = NULL;
+char *SaveSyPa = NULL;
+
+char *EnvInFN = NULL;
+
+
+#if defined(__STDC__) || defined(__cplusplus)
+# define PRO(s) s
+#else
+# define PRO(s) ()
+#endif
+
+/* cfsio.c */
+FILE *GetFILE PRO((char *FileName, char *Default, char *How));
+int CloseFILE PRO((char *FileName, char *Default, FILE *FilePtr));
+int ReadS PRO((char LineBuff[], int BufLen, FILE *Source, int *RetLen));
+VOID WriteStd PRO((char *Strng));
+VOID WrtPrompt PRO((char *Strng));
+VOID WriteS PRO((char *Strng, FILE *FilePtr));
+VOID WriteGen PRO((char *Strng));
+
+#undef PRO

@@ -1,0 +1,402 @@
+%
+%	GENEsYs-pro.tex		Ba, 22 feb 91		LaTeX 2.09
+%				Ba, 02 may 92
+%
+%	The major procedures of GENESIS
+%{
+
+\section{Major Procedures}\label{genesis-pro}
+
+In this section several extensions of the  basic GA are presented.
+These extensions are implemented in \GEN\ and concern selection,
+recombination, and mutation.
+
+\subsection{Selection}\label{selection}
+
+A lot of selection schemes are implemented in \GEN\ in order to allow
+a comparison of different mechanisms.
+It is not possible to describe these selection mechanisms here in depth,
+hence we will focus on the selection probabilities and certain
+main characteristics of the schemes.
+More detailed informations are given in~\cite{BH91c}.
+
+In general, each of the selection mechanisms described below can be
+used either in their familiar {\em preservative\/} or in their
+{\em extinctive\/} version.
+In preservative selection schemes each individual is assigned a nonzero
+selection probability, hence providing the possibility to be selected 
+for each individual.
+On the contrary, an extinctive scheme definitely does not allow some
+individuals to be selected by assigning them a selection probability
+of zero.
+Generally this will be the worst individuals, but other choices are imaginable.
+The user explicitly defines the degree of extinctiveness of the \GA\ 
+during the startup-process.
+The default is preservativeness, but the number~$\mu$ of individuals
+which are taken into account by selection can be set by the user
+between the lower bound~$1$ and the upper bound~$\lambda$.
+
+In order to allow for extinctiveness concerning the worst individuals
+it is assumed in the following that individuals are always sorted according
+to their fitness values, the best individual indexed by~$1$ and the 
+worst by~$\lambda$.
+
+Additionally, each selection scheme can be turned into an {\em elitist\/}
+one, thus guaranteeing the best individual to be copied at least once 
+to the next generation.
+
+The special selection schemes currently implemented include the
+standard {\em proportional selection\/}~\cite{Hol75},
+{\em linear ranking\/}~\cite{Bak85}, 
+{\em Whitley's linear ranking\/}~\cite{Whi89},
+{\em uniform ranking\/}~\cite{Schw81}, 
+{\em uniform ranking with copying\/}, and {\em inverse linear ranking\/}.
+These are briefly described in the following sections.
+
+\subsubsection{Proportional selection}
+
+In the proportional selection scheme individuals are assigned the 
+following fitness-propor\-ti\-o\-na\-te selection 
+probabilities~\cite{Hol75,BH91c}:
+%
+\begin{equation}
+	p_s(a^t_i) = \left\{
+	\begin{array}{c@{\hspace{0.5em},\hspace{0.5em}}l}
+		f(a^t_i) / \sum_{j=1}^{\mu} f(a^t_j)	
+				& 1 \leq i \leq \mu		\\
+		0		& \mu+1 \leq i \leq \lambda	\\
+	\end{array} \right.%}
+\end{equation}
+%
+It is important to notice the distinct cases depending upon the index
+of an individual in the sorted population.
+The implementation is based upon the {\em stochastic universal sampling\/}
+algorithm by Baker~\cite{Bak87}.
+
+\subsubsection{Linear ranking}
+
+In ranking selection schemes the selection probabilities are generally not
+based upon the abslute fitness values of individuals but only upon their
+relative ordering~\cite{Bak85}, i.e.~their indices~$i$ in the
+sorted population.
+Then, selection probabilities are calculated as defined in 
+equation~(\ref{ranking}), including extinctiveness~\cite{BH91c}:
+%
+\begin{equation}\label{ranking}
+	p_s(a^t_i) = \left\{
+	\begin{array}{c@{\hspace{0.5em},\hspace{0.5em}}l}
+		\frac{1}{\mu}
+		\left(\eta_{max} - (\eta_{max} - \eta_{min})
+			\frac{i - 1}{\mu - 1}
+		\right)	
+				& 1 \leq i \leq \mu		\\
+		0		& \mu+1 \leq i \leq \lambda	\\
+	\end{array} \right.%}
+\end{equation}
+%
+According to Baker, the relation~$1 \leq \eta_{max} \leq 2$ must be
+satisfied.
+The parameter~$\eta_{max}$ can by changed by the user; it's default
+value is~$\eta_{max} = 1.1$~\cite{Bak85}.
+
+\subsubsection{Whitley's linear ranking}
+
+Concerning the selection probabilities this scheme is identical to
+Baker's linear ranking, but it has the advantage to
+give a direct expression for the calculation of an index of the 
+individual that should be selected~\cite{Whi89}:
+%
+\begin{equation}
+	i(\chi,a) = 	\frac{\lambda}{2(a-1)}
+			\left(a - \sqrt{a^2 - 4(a-1)\chi} \right)
+\end{equation}
+%
+Here~$\chi$ is a random number uniformly distributed on the interval~$[0,1]$.
+$a$ is an external parameter similar to~$\eta_{max}$ in linear ranking,
+but providing a wider variety of selective pressure than Bekaer's ranking
+due to the fact that extinctiveness is autmatically obtained for~$a > 2$
+and for~$a < 0$.
+Hence a value of~$\mu$ is not taken into account here.
+Just as for linear ranking,~$a$ can be set externally (the default value 
+again being~$a = 1.1$).
+
+\subsubsection{Uniform ranking}
+
+Uniform ranking corresponds to Baker's ranking with~$\eta_{max} = 1$
+and is similar to \cSelml-selection as used in 
+{\em Evolution Strategies\/}~\cite{Rec73,Schw77,Schw81}, except that
+\ESs\ use deterministic selection of the~$\mu$ best individuals.
+The selection probabilities are defined by~\cite{Schw81,HB91}:
+%
+\begin{equation}
+	p_s(a^t_i) = \left\{
+	\begin{array}{c@{\hspace{0.5em},\hspace{0.5em}}l}
+		1 / \mu		& 1 \leq i \leq \mu		\\
+		0		& \mu+1 \leq i \leq \lambda	\\
+	\end{array} \right.%}
+\end{equation}
+%
+For~$\mu = \lambda$ random walk emerges, hence only extinctive schemes
+are making sense here.
+
+\subsubsection{Uniform ranking with copying}
+
+This scheme is identical to uniform ranking, but the~$\mu$
+best individuals are first copied once, and only the~$\lambda-\mu$ 
+remaining places are filled by randomly sampling the~$\mu$ best ones.
+This implementation does mainly serve for testing purposes (e.g.~selection
+can be disabled completely by setting~$\mu = \lambda$).
+
+\subsubsection{Inverse linear ranking}
+
+While linear ranking assigns increasing selection probabilities
+as fitness increases, the inverse scheme assigns increasing selection
+probabilities as fitness decreases, according to 
+expression~(\ref{whitley-inverse}):
+%
+\begin{equation}\label{whitley-inverse}
+	p_s(a^t_i) = \left\{
+	\begin{array}{c@{\hspace{0.5em},\hspace{0.5em}}l}
+		\frac{1}{\mu}
+		\left(\eta_{min} + (\eta_{max} - \eta_{min})
+			\frac{i - 1}{\mu - 1}
+		\right)	
+				& 1 \leq i \leq \mu		\\
+		0		& \mu+1 \leq i \leq \lambda	\\
+	\end{array} \right.%}
+\end{equation}
+%
+Thus, for preservative selection the average fitness of the population
+becomes worse during the course of evolution.
+This behaviour can be counteracted by extinctive schemes for sufficient
+small value of~$\mu$.
+Possibly, this scheme could have advantages on multimodal objective 
+functions.
+However, this mechanism does only serve for testing purposes actually.
+
+\subsubsection{Boltzmann selection}
+
+Boltzmann selection is an attempt to transfer the acceptance criterion
+from Simulated Annealing~\cite{AK89} to GAs.
+In order to do so, a mixture of Simulated Annealing acceptance probabilities
+and three-way tournament selection was introduced by Goldberg~\cite{Gol90c}.
+During the selection phase, for each population slot first an individual
+$a_1$ is chosen at random.
+Individual~$a_2$ is also chosen at random, but must differ from~$a_1$ by a
+fitness amount of~$\Theta$.
+$a_3$ must also differ from~$a_1$ by at least~$\Theta$; half the time it 
+must also differ from~$a_2$ by~$\Theta$.
+Preliminarily, $a_2$ and~$a_3$ compete with the worse value probabilistically
+winning according to a logistic probability function of fitnesses and
+temperature.
+The winner competes again with~$a_1$, and the best individual 
+advances to the next generation according to a similar probability function.
+Using the fitness values~$f_1$, $f_2$, and~$f_3$ of individuals~$a_1$, $a_2$,
+and~$a_3$, the winning probabilities for~$a_2$ over~$a_3$,
+$a_1$ over~$a_2$, and~$a_1$ over~$a_3$, are given 
+by~$p' = \left(1 + \exp((f_3 - f_2) / T)\right)^{-1}$, 
+$p''   = \left(1 + \exp((f_1 - f_2) / T)\right)^{-1}$, 
+and~$p'''= \left(1 + \exp((f_1 - f_3)) / t)\right)^{-1}$, respectively.
+Then, the overall winning probabilities~$p_1$, $p_2$, and~$p_3$ for~$a_1$, 
+$a_2$, and~$a_3$, are given by~\cite{Mah91}:
+%
+\begin{MathTable}
+	p_1	& = &	p' (1-p'') + (1-p')(1-p''')		\\
+	p_2	& = &	p'p''					\\
+	p_3	& = &	(1-p')p'''				\\
+\end{MathTable}
+%
+The main parameters necessary for using Boltzmann selection are the
+initial value~$T_0$ of the temperature, the cooling coefficient~$\alpha$,
+by which the temperature is decreased during the optimization according
+to the rule
+%
+$$	
+	T_{t+1} = \alpha \cdot T_t \quad ,
+$$	
+%
+and the number of function evaluations~$N_f$ to be performed at each
+temperature~$T_t$ (that is, the time to reach equilibrium at any given
+temperature).
+According to Goldberg's suggestion~\cite{Gol90c}, the value of~$\Theta$
+is initially set to~$0.5$ and changed after each selection of an
+individual according to the rule
+%
+\begin{equation}
+	\Theta_i   = \left\{
+	\begin{array}{c@{\hspace{0.5em},\hspace{0.5em}}l}
+		- T \cdot \ln\left( \frac{2}{|p_2 - p_1| + 1} - 1 \right)
+			& \frac{1}{2}(|p_2 - p_1| + 1) < 1 	\\
+		\Theta_{max}		
+			& \frac{1}{2}(|p_2 - p_1| + 1) \geq 1 	\\
+	\end{array} \right.%}
+\end{equation}
+%
+(with~$\Theta_{max}$ being a value large enough to guarantee acceptance).
+
+
+\subsection{Mutation} 
+
+After the new population has been selected, mutation is applied  to  
+each  structure  in  the  new population.
+In addition to the commonly used mutation mechanism as described in
+section~\ref{mutation}, some adaptive mutation schemes are
+also implemented and described in section~\ref{amut}.
+
+\subsubsection{Standard Mutation}\label{mutation}
+
+Each position~$\alpha_i \in \{0,1\}$ of an 
+individual~$a_i = (\alpha_1,\ldots,\alpha_l)$ 
+is given a  chance~$p_m$ (the default value is~$p_m = 0.001$) of 
+undergoing  mutation~\cite{Hol75}.
+If mutation does occur, a random value is chosen from~$\{0,1\}$ for
+the selected position.   
+
+\subsubsection{Adaptive mutation}\label{amut}
+
+The general idea of adaptive mutation is to incorporate the mutation probability
+into the individuals' genotype and to allow for an adaptation of mutation 
+rates by the same mechanisms of selection, recombination, and mutation 
+as used for adaptation of the object variables.
+To do so, {\em each\/} individual is extended by bits encoding either
+one mutation rate (when a pseudoboolean function is to be optimized)
+or~$n$ mutation rates (when a function~$f: \Real^n \longrightarrow \Real$
+is to be optimized).
+Each mutation rate is encoded by~$l_m$ bits (the default is~$l_m = 20$, 
+but the user can change this parameter), and it is allowed for mutation
+rates in the range~$[0,0.5]$.
+In case of a pseudoboolean function, the decoded mutation rate is valid for
+all bits of the individuals' object variables.
+In case of a continuous, $n$-dimensional function, the user can decide to have
+one or~$n$ mutation rates added to the individual.
+If he choses one rate, it is valid for all bits of the object variables,
+but if he choses~$n$ rates, mutation rate~$p_i$ ($i \in \{1,\ldots,n\}$) 
+is applied only to those bits which encode object variable~$x_i$.
+The genetic information of the mutation rates is initialized at random.
+
+Having the individuals extended this way, the user can currently select between
+two different algorithms --- called {\sc Amem} and {\sc Amim} ---
+for adaptive mutations:
+%
+\begin{Itemize}
+%
+\item	{\sc Amem}: {\bf A}daptive {\bf m}utation {\bf e}xcluding 
+	{\bf m}utation rates.						\\
+	First, the mutation rates of the individual are mutated by using 
+	the exogenously given, constant mutation probability~$p_m$.
+	Then, the mutation rates are decoded, and the object variable parts
+	are mutated by applying the corresponding decoded mutation rates.
+%
+\item	{\sc Amim}: {\bf A}daptive {\bf m}utation {\bf i}ncluding 
+	{\bf m}utation rates.						\\
+	First, the mutation rates of the individual are decoded, and 
+	each mutation rate is used for mutating the bits which encode just
+	itself.
+	Then, the mutation rates are again decoded, and the object 
+	variable parts are mutated by applying the corresponding 
+	decoded mutation rates.
+%
+\end{Itemize}
+
+The working mechanisms of both adaptive mutation rate implementations are
+shown in figure~\ref{fig-mut1}, where~$x_1,\ldots,x_n$ denote object 
+variable encoding parts, $p_1,\ldots,p_n$ denote mutation rates, 
+and~$p'_1,\ldots,p'_n$ denote already mutated mutation rates.
+Arrows indicate the application of mutation rates to the bits which
+encode the entity the arrow points to.
+{\sc Amem} is shown in the left part of the graphic, {\sc Amim} in the
+right part.
+Both schemes differ in the first step, while the second one is identical.
+
+\psTwinFigure{fig-mut1}{fig-mut2}{Working mechanisms of adaptive mutation %
+schemes (left: {\sc Amem}, right: {\sc Amim})}
+
+The idea of self-learning strategy parameters this way stems again 
+from Evolution Strategies, where it is used to adapt the step sizes
+and correlations of normally distributed mutations~\cite{Schw88}.
+Results of {\sc Amim} on some test functions can be found in~\cite{Bae91b}.
+
+\subsection{Recombination} 
+
+Among adjacent pairs of the first~$p_c \cdot \lambda$ ($p_c$ denotes
+the recombination rate, $\lambda$ the population size) structures in the
+new population the recombination operator exchanges information (the 
+population is randomly shuffled in the selection procedure).
+Besides the usual {\em one-point crossover\/}~\cite{Hol75}, which exchanges
+information between individuals starting at a position chosen at random, the
+generalizations to {\em $m$-point crossover\/}, {\em uniform crossover\/},
+{\em discrete recombination\/}, and {\em intermediate recombination\/}
+are provided in the software package \GEN.
+The latter two recombination schemes are again taken from Evolution 
+Strategies~\cite{Schw81}.
+
+Recombination operators can not only be applied to bits which constitute the
+object variables of an individual, but also to information which encodes 
+mutation rates (see section~\ref{amut}).
+The recombination type for object variables and strategy parameters
+can be different and can also be disabled for each kind of information.
+In the following sections, the recombination mechanisms are briefly
+described.
+
+\subsubsection{$m$-point crossover}
+
+For $m$-point crossover, $m$ crossover positions~$k_i \in \{1,\ldots,l-1\}$
+are chosen at random and sorted in ascending order (eliminating duplicates).
+Then, the bits between two successive crossover points alternately are 
+exchanged between the individuals or are not exchanged.
+The first segment (between allele positions zero and the first crossover point)
+is not exchanged.
+This working mechanism is indicated in figure~\ref{fig-cross}.
+
+\psFigure{fig-cross}[]{Working mechanism of $m$-point crossover ($m=6$)}
+
+\subsubsection{Uniform crossover}
+
+For {\em uniform crossover\/}~\cite{Sys89} a bitstring mask of 
+length~$l$ is created at random for each pair of individuals undergoing 
+recombination.
+A one bit in the mask indicates that the corresponding allele value has
+to be copied from the first individual, while a zero bit indicates to take
+it from the second parent individual (or vice versa).
+For generating the second offspring individual the inverted mask is used.
+Altogether, for each bit the decision to copy it from the first or second
+parent is made at random.
+
+\subsubsection{Discrete recombination}
+
+{\em Discrete recombination\/}~\cite{Schw81} can be applied only in case of
+a continuous optimization problem, where segments of the genotype encode
+object variables~$x_i \in \Real$.
+Discrete recombination allows for crossover points {\em only\/} at the
+boundaries between the segments encoding object variables.
+For each segment, it is decided at random to copy the complete
+segment either from the first or second parent individual.
+Discrete recombination can this way either be seen as an
+$n$-point crossover ($n$ being the dimension of the objective function)
+having the crossover points restricted to segment boundaries or as an
+uniform crossover working on the segment level (object variable level).
+
+\subsubsection{Intermediate recombination}
+
+{\em Intermediate recombination\/}~\cite{Schw81} works in the decoded 
+space~$\Real^n$ of object variables and is therefore only applicable 
+in case of a continuous problem.
+For both parents~$x_1$ and~$x_2$, the object variables~$x_{j,i}$ 
+($j \in \{1,2\}$) are obtained by decoding the bitstring segments.
+Then, an averaging operation of the form
+%
+\begin{equation}
+	x'_i = x_{2,i} + \chi \cdot (x_{1,i} + x_{2,i})
+\end{equation}
+%
+is performed, where~$\chi$ denotes a uniform random number from the 
+interval~$[0,1]$.
+The object variables~$x'_i$ of the resulting individual are then again 
+binary encoded to yield the new genotype.
+Only one of the parents is substituted by the offspring individual created 
+this way.
+For intermediate recombination, $\chi$ is constant and has the value~$0.5$,
+thus leading to a strict averaging. 
+For {\em random intermediate recombination\/}, $\chi$ is chosen at random.
+
+%}

@@ -1,0 +1,61 @@
+/*                  USERCMD.EXT  for the CFS-C Classifier System.
+
+Declare some variables from USERCMD.DEF for use in DISPLAY.C .
+See the file USERCMDS.H for the #define's used here.
+
+**/
+
+#include  "usercmd.h"
+
+extern unsigned int DemoLev;
+extern short int EchoFlg;
+
+extern struct RTVAddNd
+
+#if  ( INTSZ == 16 )
+{
+    int Code;
+#else
+{
+    short Code;
+#endif
+    char *Addr;
+}
+
+RTVarAdd[];
+
+
+extern struct RTVarNd {
+    char *Name;
+    char *Alias;
+    char Type;
+    char Load;
+    float Low, High;
+    char *Addr;
+};
+
+extern struct RTVarNd *RTVars, *RTVarNxt;
+extern unsigned int RTVarsSz;
+
+#if defined(__STDC__) || defined(__cplusplus)
+# define PRO(s) s
+#else
+# define PRO(s) ()
+#endif
+
+/* usercmd.c */
+int GUserCmd PRO((char CmdPars[]));
+int GetCmdCd PRO((char Command[]));
+VOID Set PRO((char CmdPars[]));
+int SetVar PRO((char *InLine, int CallType));
+struct RTVarNd *FindRTVN PRO((char *Var));
+int SetMuPr PRO((char *AValue));
+int SetDMSh PRO((char *AValue));
+VOID SetLog PRO((char *AValue));
+VOID SetGen PRO((char *AValue));
+VOID SetADInt PRO((struct RTVarNd *NodePtr, char *AValue));
+VOID SetMLL PRO((struct RTVarNd *NodePtr, char *AValue));
+VOID SetDCfL PRO((char Cflist[]));
+int InDsCfL PRO((unsigned int Id));
+
+#undef PRO

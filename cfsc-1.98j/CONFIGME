@@ -1,0 +1,36 @@
+--- $Id: CONFIGME,v 1.1 1993/10/08 16:04:10 joke Exp $
+
+	* HOW TO CONFIGURE CFS-C 1.98j?
+
+   Well, running a C-shell you'd say: "configure --<your-os-type>", e.g.
+"configure --sunos". All this command actually does, is copying the
+appropriate ".cf" file from within the "config" folder into the "src"
+folder, while renaming it to "src/config.h". Thus, on a non-unixoid
+system, e.g. MS-DOG you can do the same with: "copy config\dos.cf
+src\config.h". It's really that easy.
+
+   Currently available ".cf" files are:
+
+ * Atari TOS 2.x: tos.cf (configure --tos)
+ * MS-DOS/PC-DOS/ANY-DOS: dos.cf (configure --dos),
+ * Unix System V: sys5.cf (configure --sys5)
+ * BSD Unix: bsd.cf (configure --bsd)
+ * SunOS/Solaris 1.x: sunos.cf (configure --sunos)
+
+   If your system is not supported (e.g. VMS/AmigaOS/MacOS etc.)
+you have to provide your own; anyway it's really straigtforward,
+so just take a look at any of the given ".cf" files, and you'll
+immediately see what's going on. If you've written such a new file,
+or patched an existent one, please let me know. Any contribbutions
+will be greatly appreciated.
+
+For more information/moral support/research grants contact:
+
+	Joerg Heitkoetter
+       <joke@ls11.informatik.uni-dortmund.de>
+
+    c/o Systems Analysis Research Group, LSXI      ////
+	Department of Computer Science        UNI DO// 
+	University of Dortmund               ___ ////
+	D-44221 Dortmund                     \*\\///
+	Germany                               \\\\/

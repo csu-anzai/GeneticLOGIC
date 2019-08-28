@@ -1,0 +1,54 @@
+Title: Genetic Invariance:
+A New Paradigm for Genetic Algorithm Design
+
+Author:	Joseph Culberson
+
+Date: June 1992
+
+University of Alberta Technical Report TR92-02
+
+Abstract:
+
+This paper presents some experimental results and analyses of the
+gene invariant genetic algorithm(GIGA). Although a subclass of the
+class of genetic algorithms, this algorithm and its variations
+represent a unique approach with many interesting results.  The
+primary distinguishing feature is that when a pair of offspring are
+created and chosen as worthy of membership in the population they
+replace their parents.  With no mutation this has the effect of
+maintaining the original genetic material over time, although it is
+reorganized.
+
+In this paper no mutation is allowed.  The only genetic operator used
+is crossover.  Several crossover operators are experimented with and
+analyzed.  The notion of a family is introduced and different
+selection methods are analyzed.
+
+Tests using simple functions, the De Jong five function test suite
+and several deceptive functions are reported.  GIGA performs as well
+as traditional GAs, and sometimes better.  The evidence indicates
+that this method makes more effective use of the crossover operator,
+in part because it never loses genetic material and thus has greater
+scope for recombination.
+
+A new view of crossover search space structures and approaches to
+analysis are presented.  Traditional methods of analysis for GAs do
+not seem to apply since GIGAs cannot be said to give increased trials
+to the best schemata in the usual sense.  However, the analysis of
+crossover search space structures may have applications in
+traditional GA analysis.
+
+Keywords: genetic algorithms, gene invariance,
+deception analysis, simulation, crossover analysis
+
+See also:
+Michael Lewchuk, Master's Thesis;
+"Genetic Invariance: A New Approach to Genetic Algorithms"
+April 1992 Technical Report TR92-05
+
+Joseph Culberson; "GIGA Program Description and Operation"
+June 1992 Technical Report TR92-06
+
+Anonymous ftp ftp.cs.ualberta.ca pub/TechReports
+
+Queries: email joe@cs.ualberta.ca

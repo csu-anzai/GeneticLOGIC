@@ -1,0 +1,315 @@
+/*		CORE.DEF for the CFS-C Classifier System.
+ 
+Definitions of data structures for the "core" CFS-C classifier system components:
+	the classifiers and classifier list
+	the messages and the message lists (current and new)
+	the 'candidate' classifier structures and list -- these are just classifier nodes now.
+	the 'candidate' matches - triples of pointers to (classifier, message-1, message-2).
+	the effector interface (at least the domain independent part thereof).
+
+NOTE WELL: If you change this file, be sure to change the CORE1.EXT file.
+
+**/
+
+#include	"core.h"   
+
+	/* CycleStp:	Model time clock: the step to be done next.
+		(Incremented at end of major-cycle loop in Classifier() in the CFS-C.C file.)
+	*/
+unsigned int CycleStp = 1;
+
+
+/**
+	MsgNode - structure to store a message and associated attributes. 
+*/
+   
+struct	MsgNode
+{
+	unsigned int	Msg_Id;			/* Id number for the message. */
+	unsigned int	Message[INTPRSTR];	/* The message */
+ 	float           Intensit;		/* Bid payed to post this message. */
+ 	struct CfNode	*Producer;		/* message's producer. */
+ 
+	struct MsgNode	*MtchMsg1;		/* message matching condition-1 of 'Matched' classifier */  
+	struct MsgNode	*MtchMsg2;		/* message matching condition-2 of 'Matched' classifier */
+	struct MsgNode	*NxtEMsg;		/* next message matching an effector. */
+
+	short int		FromDet;		/* Set TRUE if message came from detectors. */
+	short int		IsMsg;			/* Set FALSE if this node is a deleted message (by an effector). */
+	short int		MsgMtchd;		/* Set TRUE if message matches some classifier condition */
+	short int		MsgUsed;		/* Set TRUE if message is used by a classifier. */
+}
+	*DetMsgs[DMSGSSZ];	/* Pointers to messages on CurMsgs (and then OldMsgs) from detectors */
+
+struct MsgNode	*CurMsgs,			/* Start of current message list. */
+				*NextCMsg;			/* next unused node. */
+unsigned int	NmCMsgs   =  0;		/* Number of messages on current message list. */
+unsigned int	NmCMsgIn  =  0;		/* Num. of internally genenerated messages. */
+unsigned int	NmDetMsg  =  0;		/* Num. of messages from detectors. */
+int				LastCMsg  = -1;		/* 'Array' subscript of last msg - allow -1 for empty list */
+
+struct MsgNode	*NewMsgs,			/* Start of new message list. */ 
+				*NextNMsg;			/* next unused node. */
+unsigned int	NmNMsgs   =  0;		/* Number of messages on new message list. */
+unsigned int	NmNMsgIn  =  0;		/* Num. of internally genenerated messages. */
+int				LastNMsg  = -1;		/* 'Array' subscript of last msg - allow -1 for empty list */
+
+struct MsgNode	*OldMsgs,			/* Start of old message list. */
+				*NextOMsg;          /* to next unused node. */
+unsigned int	NmOMsgs   =  0;		/* Number of messages on old message list. */
+unsigned int	NmOMsgIn  =  0;		/* Num. of internally genenerated messages. */
+int             LastOMsg  = -1;		/* 'Array' subscript of last msg - allow -1 for empty list */
+
+unsigned int    NmIMsgMx = 30;		/* max. number of 'internally' generated (non-detector) messages. */
+unsigned int    NmDMsgMx =  2;		/* max. number of detector messages allowed at one step. */
+float           MsgIntDf = 50;		/* Default message intensity. */
+
+unsigned int	TOTMtch  = 0;       /* Total number of 'matches' */
+unsigned int	TOTMsPrd = 0;       /* Total number of new messages produced (before effector conflict resolution) */
+unsigned int	TOTMsPst = 0;       /* Total number of messages posted (after effector conflict resolution) */ 
+unsigned int	TOTDtMsg = 0;       /* Total number of messages from detectors */
+/**/
+/**
+	CfNode  -- structure to store a classifier and associated attributes.
+*/
+ 
+struct  CfNode
+{	unsigned int	Cf_Id;
+
+ 		/*   Condition  1   and 2  */
+
+	unsigned int	Cnd1Bits[INTPRSTR];	/* 0/1 bits -> 0,1  # -> 0 */
+	unsigned int	Cnd1DCs[INTPRSTR];	/* DC #'s   -> 0,   else 1 */
+	short int		Cnd1Type;			/* 0 is match, 1 is not-match */
+	unsigned int	Cnd2Bits[INTPRSTR];	/* As for condition 1 */
+	unsigned int	Cnd2DCs[INTPRSTR];
+	short int		Cnd2Type;
+
+		/* The Action part */
+
+ 	short     int ActType;				/* 0 for stardard pass-through (overlay). */
+	unsigned  int ActBits[INTPRSTR];	/* 0,1 bits -> 0,1  # -> 0 */
+	unsigned  int ActDCs[INTPRSTR];		/* DC #'s -> 1,  else 0 */
+
+		/* Longer-lived variable values */
+
+	float			Strength;			/* Accumulated strength of classifier */
+	float			BidRatio;			/* Number of dont-cares (#'s) */
+	float			Var;				/* variance for goldberg bidding scheme */
+	unsigned int	TotNmBid;			/* Total number of times it bid. */
+	unsigned int	TotMtch;			/* Total number of 'matches' (candidate msgs) */
+	unsigned int	TotProd;			/* Total number of messages produced. */
+	unsigned int	TotPost;			/* Total number of messages posted (AFTER effector conflist resolution.) */
+	unsigned int	TotEMtch;			/* Total number of messages produced that matched effectors. */
+	unsigned int	TotEAct;			/* Total number of messages produced that activated effectors. */
+	unsigned int	TotPosRw;			/* Total number of times activate when SysRew > 0 */
+	unsigned int	TotNegRw;			/* Total number of times activate when SysRew < 0 */
+	unsigned int	TotNmOfs;			/* Total number of offspring */
+
+		/* Temporary variables, for use in bidding by candidates and by bucket brigade. */
+
+	float			ChngStr;			/* Change in strength at last step */
+	float			Support;			/* Sum of Intensities of match msgs */ 
+	float			CfBid;				/* bid made by classifier. */ 
+	float			CfBBid;				/* 'Biased' bid - used to calc. probability of winning */
+	float			BidShare;			/* Share of bid to pay suppliers of matched messages */
+	short int		PstEfMsg;			/* Number of effector messages POSTED by this classifier */
+
+	unsigned int	NmMtch;				/* Number of candidate-matches this cf is in */
+	unsigned int	MMBitsC1[INTPRML];	/* Store 1 bit / message - set bit to 1 when msg matches conditon 1 */
+	short int		NmMMC1;				/* Number of messages that match condition 1 */
+	unsigned int	MMBitsC2[INTPRML];	/* Store 1 bit / message - set bit to 1 when msg matches conditon 2 */
+	short int		NmMMC2;				/* Number of messages that match condition 2 */
+
+	short int  		NmProd;				/* Num. of msgs produced (number BEFORE effector conflict resolution. */
+ 	short int  		NmPost;				/* Num. of msgs AFTER effector conflict resolution--posted to step t+1. */
+	short int  		NmDetMM;			/* Num of Detector Messages used to post NmPost output messages:
+											used to calculate bid share */
+
+		/* Variables for use by 'Discovery' algorithms */
+
+	float			PBiasStr;			/* Biased strength for prob. being a Parent */
+	float			RBiasStr;			/* Biased strength for prob. being a Replaced */
+	short int		EligRpl;			/* TRUE => This is eligible to be replaced this step */
+	short int		ReplFlg;			/* TRUE => This chosen to be in replace-able 'pool' this step */
+	unsigned int	StpCrtd;			/* Step classifier created */
+	unsigned int	StpLBid;			/* Step cf last bid */
+	unsigned int	StpLPrd;			/* Step cf last 'produced' msgs (won the bidding competition) */
+	unsigned int	StpLPst;			/* Step cf last 'posted' msgs (after effector conflict resolution) */
+    unsigned int    StpLActEff;         /* Step cf last activated (after confl resol) an effector */
+
+	short int		NoBBFlg;			/* TRUE => don't apply BB to this classifier. */
+	short int		NoRplFlg;			/* TRUE => don't replace this classifier. */
+	short int		NoPrnFlg;			/* TRUE => don't use as parent */
+
+		/* Pointers for linked lists running through the CfNodes */
+
+	struct CfNode	*NxtCand;			/* next candidate classifier. */ 
+
+	struct CfNode	*NxtReplaceNext;    /* list of rules to replace first */
+    short int       InReplaceNextList;  /* set TRUE if in that list */
+
+	struct CfNode	*PrvStrCf;			/* For 2-way linked list of classifiers, sorted on strength */
+	struct CfNode	 *NxtStrCf;			/* from lower strength (Prev) to higher (Next). StrSrtCf is start. */
+};
+
+struct CfNode	*CfLst    = NULL;		/* Storage for classifier list. */
+struct CfNode	*CurCfs   = NULL;		/* list of current Classifiers. */
+struct CfNode	*NxtFrCf  = NULL;		/* next free node */  
+struct CfNode	*CandCfs  = NULL;		/* list of candidate classifiers. */
+struct CfNode	*LstCndCf = NULL;		/* last on CandCfs list. */
+struct CfNode	*StrSrtCf = NULL;		/* start (low strength) of 2-way list of CfNodes sorted on strength */
+struct CfNode	*HiStrCf  = NULL;		/* end (high str) of 2-way list of CfNodes sorted on strength */
+struct CfNode	*HighestStrCf = NULL;	/* Highest strength cf after call to FindHighLowStrCf() in CFSUTIL.C */
+struct CfNode	*LowestStrCf  = NULL;	/* Lowest strength cf after call ... */
+
+struct CfNode	*ReplaceNext = NULL;    /* list of rules to replace first */
+unsigned  int   NmReplaceNext = 0;
+
+unsigned  int	OneMPerC =  0;			/* 1 => only 1 Msg produced per Classifier */        
+unsigned  int	DelHall  =  0;			/* 1 => delete hallucinations (00... msgs). */
+unsigned  int	MxDupMsg =  0;			/* Max number of duplicate messages allowed (0 => no max) */
+
+unsigned  int	NxtCfId  =  1;			/* Next Cf_Id to use */
+unsigned  int	NmCfs    =  0;			/* Number of classifiers in currently in list. */
+unsigned  int	NmCfsMx  =  CFLSTSZ;	/* Settable maximum number of classifiers */
+unsigned  int	NmCandCf =  0;			/* Number of candidate-producer classifiers. */ 
+unsigned  int	NmCfWon  =  0;			/* Num. classifiers that won in bidding (produced messages). */
+unsigned  int	NmCfPost =  0;			/* Num. classifiers that posted msgs (AFTER effector conflict resolution) */
+
+float			TotCfStr =  0;			/* Total strength for all current classifiers. */
+float			AveCfStr =  0;			/* Average strength for all current classifiers */ 
+float			TotCfBR  =  0;			/* Total bidratio, to calculate average. */
+float			AveCfBR  =  0;			/* Average bidration for all current classifiers */
+
+float			CfStrDf  =  1000;		/* default classifier strength. */ 
+float			CfSuppDf =  100;		/* default support increment for NOTMATCH condition 2 */
+float			CfStrMax =  99999;		/* maximum allowed strength */
+float			CfStrMin =  0.1;		/* minimum allowed strength */
+float			CfBidMin =  0.1;		/* minimum bid allowed */ 
+
+	/*  Variables for generating classifiers by the GnRndCfs() function */
+
+float			GRCFrMC  = 0.95;		/* Fraction of 'match' conditions generated by GnRndCfs() function */
+
+float			GRCFrNSL = 0.20;		/* Fraction of non-specific loci (DON'T CARES) generated by GnRndCfs() function */
+
+	/* Grand total values for a whole run (for all classifiers, since t=0) */
+
+float			TOTBidRa = 0.0;			/* Total bidratio */
+unsigned int	TOTNmBid = 0;			/* Total number of bids */
+unsigned int	TOTNmWin = 0;			/* Total number of winning cfs */
+unsigned int	TOTCfPst = 0;			/* Total number of posting classifiers  (AFTER effector conflict resolution) */
+unsigned int	TOTBGStr = 0;			/* Total number of times bid > strength for cfs with str > 0 */
+unsigned int	TOTActEf = 0;			/* Total numberp of times effectors activated */
+unsigned int	TOTNmPRw = 0;			/* Total number of cfs that got SysRew's > 0 */ 
+unsigned int	TOTNmNRw = 0;			/* Total number of cfs that got SysRew's < 0 */
+unsigned int	TOTSyRwP = 0;			/* Total number of steps with SysRew > 0 */ 
+unsigned int	TOTSyRwN = 0;			/* Total number of steps with SysRew < 0 */
+
+/**
+
+	Variables for handling "matches".
+
+*/
+
+unsigned int	NmMtchs = 0;		/* Total number of matches for one cycle. */
+unsigned int	ORMBits[INTSZ];		/* Use to set/test each bit in the MMBitsC1 and -2 array entries in CfNodes.
+										This is initialized in Init_CFS() in CFS-C. */
+
+unsigned int	NmIEMMx = 0;		/* Max number of Internally generated Effector Msgs */
+unsigned int	NmIEMsgs;			/* number produced during current step */
+unsigned int	NmIIMMx = 0;		/* Max number of Internally generated Internal (non-effector) Msgs */
+unsigned int	 NmIIMsgs;			/* number produced during current step */
+/**/
+/**
+	Special variables for bidding and classifier strength modification.
+*/
+
+short int       UseISysRew = FALSE; /* if TRUE, call ISysRew() in BBLearn to reward indiv rules differently */
+unsigned int	BBType   =  0;		/* Bucket Brigade Type: 0 = Standard, 1 = Pay all Matches */
+									/* 2: k * reward;  3 = VBS (of goldberg) */
+float			Varbeta = 1.35;		/* for VBS */
+float			Varb	= 0.1;		/* for VBS */
+float			SysTreas =  200000.0;	/* System treasury: from taxes, pay for detector msgs, out via SysRew */ 
+float			SysRew   =  0;		/* Global reward to system from Environment. */
+float			FrPayDet =  1.00;	/* Fraction of bid 'paid' for using detector messages */ 
+float			FrPayNEC =  1.0;	/* Fraction of SysRew 'paid' to non-effector msg producers */
+float			DMShare  =  1.0;	/* Share of Bid to detector messages--the rest to produce classifiers */
+float			DMDscnt  =  0.0;	/* DMDscnt = 1 - DMShare; use to calculate BidShare */
+short			ShareRew =  0;		/* Controls how SysRew is distributed. See BBLEARN.C for details. */
+short			AllPayBd =  0;		/* 0 = Pay bid only if "post" msg; 1 = Pay if "produce" msg */
+									/* 2: pay average bid of posters */
+short			SuppBid  =  1;		/* 1 = Support used to calc. bid, else its not used. */
+float			BidPow   =  1.0;	/* biased-bid is bid raised to this power */
+float			Bid_k    =  0.10;	/* bid mulitplier "constant" */
+float			BRPow    =  1.0;	/* Bid Ratio is raised to this power in bid calculation */
+float			EBRPow   =  0;		/* BidRatio raised to this power and factored into 'effective' bid */
+float			BtCSB    = 0;		/* Bias Coupled Stage-setter bid */
+float			BtCMB    = 0;		/* Bias Coupled memory bid */
+float			HeadTax  =  0.0005;	/* Tax (rate) on all classifiers, once/step */
+float			AHeadTax  =  0.000;	/* Tax (abs amount) on all classifiers, once/step */
+float			BidTax   =  0.005;	/* Tax (rate) on bidding classifiers */
+float			FBidTax   =  0.00;	/* Tax (rate) on bidding classifiers that don't win competitio */
+float			PrdTaxMx =  0.000;	/* Maximum Tax (Rate) on classifiers that produce a messages -- once/message. */
+float			PrdTaxPw =  1.50;	/* Power used to bias ProdTax--see BBLEARN.C */
+
+float			TotCCSup;			/* Total support for current candidate classifiers. */
+float			AveCCSup;
+
+float			TotBBid;			/* Total 'biased' bids for current candidate classifiers. */ 
+float			TotCCBid;			/* Total of all bids by current candidates (NOT biased) */
+float			HiCCBid;			/* Highest bid by current candidates (NOT biased)) */
+float			LowCCBid;			/* Lowest bid by current candidates (NOT bissed) */
+
+/**
+	Effector/detector interface objects. 
+**/
+
+struct EffNode 
+{	 unsigned int	Eff_Id;  
+	char			EffName[EFFNAMSZ];	/* The name of the effector */
+
+	unsigned int	ECndBit[INTPRSTR];	/* Condition to control effector. */
+	unsigned int	ECndDCs[INTPRSTR];
+	unsigned int	ECndType;			/* Should be MATCH */
+
+	int				(*Eff_Set)();		/* Function that processes msgs into effector settings */
+	int				(*Eff_Fn)();		/* Function that selects an action and does it, given the settings. */
+	int				(*EQEfAct)();		/* Function that checks for messages not consistant with action. */
+	unsigned int	NmEMtch;			/* Number of new messages that match this effector. */
+	unsigned int	NmEAct;				/* Number of new messages that match msg that activated effector + 1 */
+	unsigned int	CEffFlg;			/* TRUE => apply DscCEffs() to it to generate new classifiers. */    
+	struct  MsgNode	*EffMtch;			/* Pointer to list of candidate msgnodes that satisfy this effector. */
+ 
+	unsigned int	ETotMtch;			/* Cumulative total number of times effector matched */
+	unsigned int	ETotAct;			/* Cumulative Total number of times effector produces behavior */
+} 
+	EffLst[EFFLSTSZ];					/* Storage for effectors. */ 
+
+unsigned int	NmEffs   = 0;			/* Number of effectors. */
+unsigned int	DetectRt = 1;			/* Detector rate - get messages from the environment
+										/*   every DetectRt steps of the major-cycle. */ 
+unsigned int	EffectRt = 1;			/* Effector rate - generate behavior from the message list */
+unsigned int	DetMsgMn = 4;			/* Minimum amount of space on MsgLists reserved for detector-messages. */
+
+unsigned int	TOTEMtch = 0;			/* Total number msgs that matched effectors (before conflict resolution) */
+unsigned int	TOTEAMsg = 0;			/* Total number msgs that activated effectors (after conflict resolution) */
+unsigned int	TOTEAct  = 0;			/* Total number times effectors activated */
+
+unsigned int	MadeMstk = 0;			/* set TRUE by domain-dependent GtSysRew() when mistake is made.
+											This is used by GtSysRew() [domain dependent subroutine] and
+											by DscCEff() in DSC-OPS.C . */
+											
+/**
+	Misc. other variables, global buffers for i/o, etc. 
+**/
+ 
+char			*GMsgBuff = NULL;		/* Global buffer for misc. message display */
+char			*GCfBuff = NULL;		/* Global buffer for misc. classifier display. */
+
+short			DsplMsBl = ON;			/* Flag ON means message-strings displayed with blank every 4 loci */
+short			DsplCfBl = ON;			/* Flag ON means classier-strings displayed with blank every 4 loci */
+
+unsigned int	DsCfLIds[DSCFLSZ];		/* array of Cf_Ids to be selectively displayed */
+short			DsCfLst;				/* is '1' when selective display is on, else is '0' */

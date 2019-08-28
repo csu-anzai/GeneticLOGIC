@@ -1,0 +1,143 @@
+head     1.3;
+branch   ;
+access   ;
+symbols  ;
+locks    ; strict;
+comment  @ * @;
+
+
+1.3
+date     91.02.01.13.33.09;  author whitley;  state Exp;
+branches ;
+next     1.2;
+
+1.2
+date     90.07.28.10.04.54;  author whitley;  state Exp;
+branches ;
+next     1.1;
+
+1.1
+date     90.07.23.16.13.36;  author whitley;  state Exp;
+branches ;
+next     ;
+
+
+desc
+@copyright notice added.
+@
+
+
+
+1.3
+log
+@copyright notice added.
+@
+text
+@
+/*************************************************************/
+/*                                                           */
+/*  Copyright (c) 1990                                       */
+/*  Darrell L. Whitley                                       */
+/*  Computer Science Department                              */
+/*  Colorado State University                                */
+/*                                                           */
+/*  Permission is hereby granted to copy all or any part of  */
+/*  this program for free distribution.   The author's name  */
+/*  and this copyright notice must be included in any copy.  */
+/*                                                           */
+/*************************************************************/
+#include <stdio.h>
+#include "gene.h"
+#include "ga_random.h"
+
+
+/**************************************************************************
+ * FUNCTION: get_mutate_level
+ *
+ * DESCRIBE: determines the appropriate level of mutation for a child
+ *           according to the hamming distance between its two parents;
+ *           the less the difference, the higher the mutation rate.
+ *
+ * INPUT PARAMETERS: number of positions which differ between parents;
+ *                   length of parents;
+ *                   maximum mutation rate;
+ *
+ * RETURN VALUE: mutation level between 0 and maximum mutation rate
+ **************************************************************************/
+
+float
+get_mutate_level (numdiff, length, mutate_rate)
+int              numdiff;
+int              length;
+float            mutate_rate;
+{
+ if (numdiff <= 1) 
+    return (mutate_rate);
+ else 
+    return (mutate_rate / ((numdiff / (float) length) * 100.0));
+}
+
+
+
+/**************************************************************************
+ * FUNCTION: adaptive_mutate
+ *
+ * DESCRIBE: Mutates the input string (a child) according to the hamming
+ *           distance between its two parents.
+ *
+ * INPUT PARAMETERS: character array (child; 1s and 0s);
+ *                   length of array;
+ *                   hamming distance between 2 parents of input child;
+ *                   mutation rate;
+ *
+ * RETURN VALUE: none
+ *
+ * RESULT: The input array is altered by mutation
+ * 
+ * CALLS:
+ *
+ **************************************************************************/
+void 
+adaptive_mutate (buf, length, numdiff, mutate_rate)
+GENE_DATA        buf[];
+int              length;
+int              numdiff;
+float            mutate_rate;
+{
+ int   i;
+ float mutate_level;
+
+ /*
+  * The level of mutation a child undergoes is a function of
+  * the relative number of differences between its two parents;
+  */
+
+ mutate_level = get_mutate_level (numdiff, length, mutate_rate);
+
+ /* mutation of a given position flips the bit */
+
+ for (i=0; i< length; i++) 
+     if (fracrand() < mutate_level)  
+        buf[i] = MUTATE(buf[i]);
+}
+@
+
+
+1.2
+log
+@fixed to REALLY adaptive mutate
+@
+text
+@d1 13
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d72 1
+a72 1
+     if (fracrand() < mutate_rate)  
+@

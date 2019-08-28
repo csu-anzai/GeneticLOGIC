@@ -1,0 +1,30 @@
+This is TeX, C Version 2.93 (preloaded format=lplain 89.10.19)  28 JAN 1991 13:03
+**&/system/common/tools/lib/tex/inputs/lplain ga-startup.tex
+(ga_startup.tex
+LaTeX Version 2.09 <26 Apr 1988>
+(/system/common/tools/lib/tex/inputs/article.sty
+Document Style `article' <16 Mar 88>.
+(/system/common/tools/lib/tex/inputs/art12.sty)
+\c@part=\count78
+\c@section=\count79
+\c@subsection=\count80
+\c@subsubsection=\count81
+\c@paragraph=\count82
+\c@subparagraph=\count83
+\c@figure=\count84
+\c@table=\count85
+)
+No file ga_startup.aux.
+[1
+
+] [2] [3] [4] (ga_startup.aux) 
+Here is how much of TeX's memory you used:
+ 140 strings out of 1508
+ 1396 string characters out of 9041
+ 31850 words of memory out of 65531
+ 2083 multiletter control sequences out of 3000
+ 18996 words of font info for 72 fonts, out of 36000 for 120
+ 14 hyphenation exceptions out of 307
+ 12i,5n,15p,208b,177s stack positions out of 200i,40n,60p,2000b,2000s
+
+Output written on ga_startup.dvi (4 pages, 13328 bytes).

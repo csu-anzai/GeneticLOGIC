@@ -1,0 +1,335 @@
+/*			USERCMD.DEF  for the CFS-C Classifier System.
+
+Define storage for variables used for processing user commands.
+See the file USERCMDS.H for the #define's used here.
+
+NB:	If you change the structure definitions here, then be sure to 
+	change them in USERCMD.EXT, too.
+**/
+
+#include	"usercmd.h"
+
+/**
+	CmdNode, Commands -- structure and storage for ALL user commands.
+**/
+   
+struct	CmdNode
+{
+    int		CmdLen;		/* legnth of full command name (not including min-abbreviation char. */
+    char	*CmdStrng;	/* pointer to command string.   */
+    int		CmdCode;		/* Code for command - see USERCMD.H for these definitions. */
+} 
+    Commands[] =
+  		{	{ 4,	"h|elp",		HELP_CC		},
+			{ 4,	"stop",			STOP_CC		},
+			{ 7,	"loadc|fs",		LOADC_CC	},
+			{ 2,	"lc",			LOADC_CC	},
+			{ 8,	"loadm|sgs",	LOADM_CC	},
+			{ 2,	"lm",			LOADM_CC	},
+			{ 7,	"di|splay",		DISPL_CC	},
+			{ 3,	"set",			SET_CC		},
+			{ 8,	"c|lassify",	CLASS_CC	},
+			{ 4,	"st|ep",		STEP_CC		},
+			{ 9,	"appendc|fs",	APCF_CC		},
+			{ 4,	"appc",			APCF_CC		},
+			{ 10,	"appendm|sgs",	APMSG_CC	},
+			{ 4,	"appm",			APMSG_CC	},
+			{ 8,	"modifyc|f",	MDCF_CC		},
+			{ 2,	"mc",			MDCF_CC		},
+			{ 9,	"modifym|sg",	MDMSG_CC	},
+			{ 2,	"mm",			MDMSG_CC	},
+			{ 7,	"loade|nv",		LOADE_CC	},
+			{ 2,	"le",			LOADE_CC	},
+			{ 7,	"save|sys",		SAVES_CC	},
+			{ 6,	"envc|md",		ECMD_CC		},
+			{ 4,	"ec|md",		ECMD_CC		},
+			{ 10,	"genrandcfs",	GENRC_CC	},    
+			{ 5 ,	"grcfs",		GENRC_CC	},    
+			{ 8 ,	"readcmds",		CMDS_CC		},
+			{ 3 ,	"rc|s",			CMDS_CC		},
+			{ 1 ,	"<",			CMDS_CC		}
+		};
+        
+#define		CCODESZ		(sizeof(Commands) / sizeof(struct CmdNode))
+#define		CCODEMX		CCODESZ-1
+
+
+/**
+	Some flags for auto-display of specific information while in specific routines.
+	NOTE: These are separate from the above flags so that checking them is faster.
+**/
+
+unsigned int	DemoLev  = DEMOFF;	/* Control demonstation-output (off=0) */
+short    int	EchoFlg  = FALSE;	/* Control echoing of user commands. */
+
+/**
+RunTime Variables.
+
+The problem is to link names to addresses of variables in such a way as to
+1) minimize space used--for example, MPWC allows only 32k total global static vars
+2) make it easy to add a new variable
+3) make it easy to dump all variables to be reloaded on a restart
+
+So, the names<->address links will be established as follows:
+1.	A table RTVarAdd will store, for each variable, its address and an associated number.
+	Note that I do not want to just use array indexes as numbers since that will mean
+	either adding new variables to the end and never removing them, or doing renumbers.
+	This will be a global static allocated at compile time.
+2.	A table RTVars will have several fields:
+	Name		char pointer to its name
+	Alias		char pointer to an alias
+	Type		char indicating variable type: S (short), I (int), U (unsigned int), F (float), C (char)
+	Low			float version of lowest value allowed
+	High		float version of highest allowed
+	Load        boolean TRUE if this must be dumped for reload
+	Special		boolean TRUE if this calls special function when value is SET
+	Addr		char pointer (to be re-cast as needed) to variable containing value
+
+
+**/
+
+extern short	EchoFlg, DsplMsBl, DsplCfBl, TestRand;
+extern short	UseISysRew, ShareRew, AllPayBd, SuppBid, CEffSplz, PkPrnWOR;
+extern short	DsCfLst, CDMsgAct;
+
+extern unsigned int AutoDspl, ADCycInt, ADCycFmt, ADCMInt, ADCMFmt, ADDMInt, ADDMFmt;
+extern unsigned int ADCfInt, ADCfFmt, ADVarInt, ADVarFmt, ADEnvInt, ADEnvFmt;
+extern unsigned int SaveInt, SaveFNum, CycleStp, URndSd, DemoLev, DetMsgMn;
+extern unsigned int NmIMsgMx, NmDMsgMx, NmCMsgs, NmOMsgs, NmOMsgIn, NmCfsMx, NmCfs, NxtCfId, DetectRt, EffectRt;
+extern unsigned int NmIEMMx, NmIIMMX, MxDupMsg;
+extern unsigned int TOTDtMsg, TOTMtch, TOTNmBid, TOTNmWin, TOTCfPst, TOTMsPrd, TOTMsPst;
+extern unsigned int OneMPerC, DelHall, BBType;
+extern unsigned int TOTEMtch, TOTEAMsg, TOTEAct, TOTNmPRw, TOTNmNRw, TOTSyRwP, TOTSyRwN;
+extern unsigned int DscDemo, TOTNmOfs, CrowdFac, RandRplc, RplACSBd, NwCfStrV, MxCfCopy, BidFit;
+extern unsigned int RplcXBid, RplcXBidTot;
+extern unsigned int CDMsgs, TotCDM, TotCDMC, TotCDML, CEffs, TotCEf, TotCEfW, TotCEfB;
+extern unsigned int TotMu, TotBkgGA, TotBGASC, TotBGAFC, TotBGANC, TotBGABP, TotACPC;
+extern unsigned int TagLMx, TagRMx, TotCSS, TotCSSR, TotTLB;
+
+extern float  MsgIntDf, CfStrDf, CfSuppDf, CfStrMax, CfStrMin, CfBidMin, BidPow, TotCfStr, TotCfBR;
+extern float  SysTreas, SysRew, FrPayDet, FrPayNEC, Bid_k, BRPow, EBRPow, BtCSB, BtCMB;
+extern float  HeadTax, AHeadTax, BidTax, FBidTax, PrdTaxMx, PrdTaxPw;
+extern float  GRCFrMC, GRCFrNSL, DMShare, Varb, Varbeta;
+extern float  FrNewCfs, NwCfStrF, PrntBPow, RplcBPow, RplACUBd, RplCfUBd; 
+extern float  CDMsgsRt, CEffsRt, BkgGARt, BGASCPr, BGAFCPr, BGANCPr, BGABPPr;
+extern float  MuPrTot, MuPrCnd1, MuPrCnd2, MuPrAct, MuPrCT2, MuPrAT, MuFrNSL;
+extern float  ACPCRt, ACPCt, NwCCStrF, CSSRt, CSSFrM, CSSFrRf, TLBRt, TLBFrE, TLBt;
+
+
+extern char  *SaveSyPa, *SaveSyFN, *LogFName, *MsgInFN, *CfInFN, *EnvInFN;
+extern char  *StdOutFN, *StdInFN, *DisOutFN, *GenFName;
+
+
+struct RTVAddNd
+#if  ( INTSZ == 16 )
+{	int		Code;
+#else
+{	short   Code;
+#endif
+	char	*Addr;
+}
+	RTVarAdd[]	=
+{	{	1,		(char *)	&AutoDspl },
+	{   2,		(char *)	&ADCycInt },
+	{	3,		(char *)	&ADCycFmt },
+	{   4,		(char *)	&ADCMInt },
+	{	5,		(char *)	&ADCMFmt },
+	{   6,		(char *)	&ADDMInt },
+	{	7,		(char *)	&ADDMFmt },
+	{   8,		(char *)	&ADCfInt },
+	{	9,		(char *)	&ADCfFmt },
+	{  10,		(char *)	&ADEnvInt },
+	{  11,		(char *)	&ADEnvFmt },
+	{  12,		(char *)	&SaveInt },
+	{  13,		(char *)	&SaveFNum },
+	{  14,		(char *)	&ADVarInt },
+	{  15,		(char *)	&ADVarFmt },	
+	{ 100,		(char *)    &URndSd	},
+	{ 101,		(char *)	&DemoLev },
+	{ 102,		(char *)	&CycleStp },
+	{ 103,		(char *)	&DsplMsBl },
+	{ 104,		(char *)	&DsplCfBl },
+	{ 105,		(char *)	&DsCfLst },
+	{ 106,		(char *)	&EchoFlg },
+	{ 107,		(char *)    &TestRand },
+
+	{ 115,		(char *)	&NmIMsgMx },
+	{ 116,		(char *)	&NmDMsgMx },
+	{ 117,		(char *)	&MsgIntDf },
+	{ 118,		(char *)	&DetMsgMn },
+	{ 119,		(char *)	&NmCMsgs },
+	{ 120,		(char *)	&NmOMsgs },
+	{ 121,		(char *)	&NmOMsgIn },
+	{ 122,		(char *)	&NmIEMMx },
+	{ 123,		(char *)	&NmIIMMx },
+
+	{ 124,		(char *)	&NmCfsMx },
+	{ 125,		(char *)	&NxtCfId },
+	{ 126,		(char *)	&NmCfs },
+	{ 127,		(char *)	&CfStrDf },
+	{ 128,		(char *)	&CfSuppDf },
+	{ 129,		(char *)	&CfStrMax },
+	{ 130,		(char *)	&CfStrMin },
+	{ 131,		(char *)	&CfBidMin },
+
+	{ 200,		(char *)	&BidPow },
+	{ 201,		(char *)	&OneMPerC },
+	{ 202,		(char *)	&DelHall },
+	{ 203,		(char *)	&MxDupMsg },
+	{ 204,		(char *)	&TotCfStr },
+	{ 205,		(char *)	&TotCfBR },
+	{ 206,		(char *)	&DetectRt },
+	{ 207,		(char *)	&EffectRt },
+	{ 208,		(char *)	&BBType },
+	{ 209,		(char *)	&UseISysRew },
+	{ 210,		(char *)	&Varb },
+	{ 211,		(char *)	&Varbeta },
+
+	{ 241,		(char *)	&SysTreas },
+	{ 242,		(char *)	&SysRew },
+	{ 243,		(char *)	&FrPayDet },
+	{ 244,		(char *)	&Bid_k },
+	{ 245,		(char *)	&BRPow },
+	{ 246,		(char *)	&EBRPow },
+	{ 247,		(char *)	&BtCSB },
+	{ 248,		(char *)	&BtCMB },
+	{ 249,		(char *)	&ShareRew },
+	{ 250,		(char *)	&AllPayBd },
+	{ 251,		(char *)	&SuppBid },
+	{ 252,		(char *)	&DMShare },
+	{ 253,		(char *)	&FrPayNEC },
+	
+	{ 301,		(char *)	&HeadTax },
+	{ 302,		(char *)	&AHeadTax },
+	{ 303,		(char *)	&BidTax },
+	{ 304,		(char *)	&PrdTaxMx },
+	{ 305,		(char *)	&PrdTaxPw },
+	{ 306,		(char *)	&FBidTax },
+	
+	{ 400,		(char *)	&TOTDtMsg },
+	{ 401,		(char *)	&TOTMtch },
+	{ 402,		(char *)	&TOTNmBid },
+	{ 403,		(char *)	&TOTNmWin },
+	{ 404,		(char *)	&TOTCfPst },
+	{ 405,		(char *)	&TOTMsPrd },
+	{ 406,		(char *)	&TOTMsPst },
+	{ 407,		(char *)	&TOTEMtch },
+	{ 408,		(char *)	&TOTEAct },
+	{ 409,		(char *)	&TOTEAMsg },
+	{ 410,		(char *)	&TOTNmPRw },
+	{ 411,		(char *)	&TOTNmNRw },
+	{ 412,		(char *)	&TOTSyRwP },
+	{ 413,		(char *)	&TOTSyRwN },
+
+	{ 600,		(char *)	&GRCFrMC },
+	{ 601,		(char *)	&GRCFrNSL },
+
+	{ 610,		(char *)	&DscDemo },
+	
+	{ 620,		(char *)	&TOTNmOfs },
+	{ 621,		(char *)	&FrNewCfs },
+	{ 622,		(char *)	&CrowdFac },
+	{ 623,		(char *)	&NwCfStrF },
+	{ 624,		(char *)	&NwCfStrV },
+	{ 625,		(char *)	&PkPrnWOR },
+	{ 626,		(char *)	&PrntBPow },
+	{ 627,		(char *)	&RplcBPow },
+	{ 628,		(char *)	&RandRplc },
+	{ 629,		(char *)	&RplCfUBd },
+
+	{ 630,		(char *)	&RplACSBd },
+	{ 631,		(char *)	&MxCfCopy },
+	{ 632,		(char *)	&BidFit },
+	{ 633,		(char *)	&BkgGARt },
+	{ 634,		(char *)	&BGASCPr },
+	{ 635,		(char *)	&BGAFCPr },
+	{ 636,		(char *)	&BGANCPr },
+	{ 637,		(char *)	&BGABPPr },
+	{ 638,		(char *)	&TotBkgGA },
+	{ 639,		(char *)	&TotBGASC },
+	
+	{ 640,		(char *)	&TotBGAFC },
+	{ 641,		(char *)	&TotBGANC },
+	{ 642,		(char *)	&TotBGABP },
+	{ 643,		(char *)	&RplACUBd },
+
+	{ 644,		(char *)	&RplcXBid },
+	{ 645,		(char *)	&RplcXBidTot },
+	
+	{ 700,		(char *)	&MuPrTot },
+	{ 701,		(char *)	&MuFrNSL },
+	{ 702,		(char *)	&MuPrCnd1 },
+	{ 703,		(char *)	&MuPrCnd2 },
+	{ 704,		(char *)	&MuPrAct },
+	{ 705,		(char *)	&MuPrCT2 },
+	{ 706,		(char *)	&MuPrAT },
+	{ 707,		(char *)	&TotMu },
+
+	{ 720,		(char *)	&CDMsgs },
+	{ 721,		(char *)	&CDMsgsRt },
+	{ 722,		(char *)	&TotCDM },
+	{ 723,		(char *)	&TotCDMC },
+	{ 724,		(char *)	&TotCDML },
+	{ 725,		(char *)	&CDMsgAct },
+
+	{ 800,		(char *)	&CEffs },
+	{ 801,		(char *)	&CEffsRt },
+	{ 802,		(char *)	&CEffSplz },
+	{ 803,		(char *)	&TotCEf },
+	{ 804,		(char *)	&TotCEfW },
+	{ 805,		(char *)	&TotCEfB },
+
+	{ 850,		(char *)	&ACPCRt },
+	{ 851,		(char *)	&ACPCt },
+	{ 852,		(char *)	&TotACPC },
+	{ 853,		(char *)	&NwCCStrF },
+	
+	{ 900,		(char *)	&TagLMx },
+	{ 901,		(char *)	&TagRMx },
+
+	{ 920,		(char *)	&CSSRt },
+	{ 921,		(char *)	&TotCSS },
+	{ 922,		(char *)	&CSSFrM },
+	{ 923,		(char *)	&CSSFrRf },
+	{ 924,		(char *)	&TotCSSR },
+
+	{ 940,		(char *)	&TLBRt },
+	{ 941,		(char *)	&TotTLB },
+	{ 942,		(char *)	&TLBFrE },
+	{ 943,		(char *)	&TLBt },
+
+	/* The following are for char * variable address are stored here */
+	/* in CFSC.C, in InitVT(), after space for them */
+	/* allocated from general memory. */
+	
+	{ 1000, /* SaveSyFN */ },
+	{ 1001, /* SaveSyPa */ },
+	{ 1002, /* LogFName */ },  
+ /* { 1003,    not used    }, */
+	{ 1004, /* StdOutFN */ },
+	{ 1005, /* StdInFN */  },
+	{ 1006, /* DisOutFN */ },
+	{ 1007, /* GenFName */ },
+	{ 1008, /* MsgInFN */ },
+	{ 1009, /* CfInFN */ },
+	{ 1010, /* EnvInFN */ },
+
+	{	0,		(char *)	0	}	/* end-of-table mark */
+};
+        
+#define  RTVASZ  (sizeof(RTVarAdd) / sizeof(struct RTVAddNd))
+#define  RTVAMX  RTVASZ-1
+  
+
+struct  RTVarNd
+{	char		*Name;
+	char		*Alias;
+	char		Type;
+	char		Load;
+	float		Low, High;
+	char		*Addr;
+};
+
+struct  RTVarNd		*RTVars;		/* pointer to table, when we allocate it */
+struct  RTVarNd     *RTVarNxt;		/* pointer to place for next one to be loaded */
+unsigned int		RTVarsSz = 0;	/* count of number of variables loaded */

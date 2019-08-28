@@ -1,0 +1,85 @@
+/*		 The FSW1 data structures.
+
+	*** If you change this, change FSW1.EXT ****
+*/
+
+#include "fsw1.h"
+
+struct	StateNd {
+#if ( INTSZ == 16 )
+	unsigned int	Id; 				/* state id, 0...2**16 is plenty of room */
+#else
+	short int		Id;
+#endif
+	short int		NoAttr; 			/* Set TRUE if no attributes for this state */
+	unsigned int	Attrib [INTPRSTR];	/* Binary form of 0,1's specifying state's attributes */
+	struct VLociNd *VarLoci;			/* 0 or more variable loci */
+	float			Payoff; 			/* Payoff function, one per state */
+	unsigned int	VisitCnt;			/* count time spent in each */
+	struct TrNode	*Transits;			/* Transitions from this state */
+	short			NmEffTr;			/* Number of effector values for this state */
+	unsigned int	MaxRInit;			/* Use for random transition */
+#if ( INTSZ == 16 )
+	int 			BestNxt;			/* best next state--set by ecmd */
+#else
+	short int		BestNxt;
+#endif
+	unsigned int	NmBest; 			/* number of times went to best next */
+	unsigned int	NmNeg;				/* number of times went to neg rew state next */
+}
+	*States; 							/* Pointer to StateNd nodes */
+unsigned int	NmStates;				/* actual number of states loaded */
+struct StateNd *CurState, *OldState;	/* current and last state */
+
+struct	VLociNd
+{	short int		VarLocus;			/* Locus (count from 0 left) that is variable */
+	float			Prob1;				/* Probability the value is 1 */
+	struct VLociNd *NxtVL;
+};
+
+struct	TrNode							/* Transitions for one effector setting */
+{	short			EffSet; 			/* Effector setting value */
+	struct PaNode	*Paths; 			/* Possible paths for given setting */
+	struct TrNode	*NxtTrans;			/* Next Transition table node */
+};
+
+struct	PaNode							/* One path from a state, for given effector setting */
+{	float			PathProb;			/* Probability (cummulative) for this path */
+	struct StateNd	*PathDest;			/* Destination state for this path */
+	struct PaNode	*NxtPath;			/* next path in from this state,effsetting */
+};
+
+float			TotSup; 				/* Support for all effector setting values */
+float			EfValSup[EFFVALMX+1];	/* Support for each setting */
+unsigned int	EfValBin;				/* Binary form of effector setting (path) chosen */
+char			EfSetAsc[STRATTSZ+1];	/* ascii form of effector value set */
+unsigned int	EffLoci[STRATTSZ];		/* loci in effector message from which */
+
+unsigned int	EffAttSz = EFFATTSZ;	/* Bits in effector setting */
+unsigned int	EffAttMx = EFFATTMX;
+unsigned int	EffValMx = EFFVALMX;
+unsigned int	StrAttSz = STRATTSZ;	/* Bits in effector string, 2 for each bit in setting */
+unsigned int	StrAttMx = STRATTMX;
+
+short			HiTrRsl = 0;			/* Control how illegal effset values are treated (see PkTrans()) */
+short			DftRand = 0;			/* Control how default effset values are treated (see DftTrans()) */
+short			DftMstk = 0;			/* If 1, and DftTrans() is called, set MadeMstk TRUE. */
+short			ConflictResolution = 0; /* 0 means prop to support, 1 means max */
+
+unsigned int	TotNmDft = 0;			/* Total number of times default effector activated */
+unsigned int	NmInvldE = 0;			/* Number of times EffSet value not valid for current state */
+
+unsigned int	DisCndSz = 33;			/* For DIS Cl,22: Size to reserve for cf cond--see DisCfIE() in FSW1A.C */
+	
+	/* For checking performance */
+
+float			FSWTSR = 0.0;			/* Total SysRew over all steps */
+
+	/* For checking classifier strengths and an upper bound */
+
+unsigned int	FSWNmCfs = 0;
+struct CfNode	*FSWCfs[20];
+float			FSWCSBds[20];
+short			FSWCBdWr[20];
+
+

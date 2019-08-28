@@ -1,0 +1,6 @@
+/* representation.def contains representation definition */
+/* This is a standard double vector representation       */
+
+/* Could define "typedef double *chromType" but it does not make sense */
+/* - will be explicitly using *double as chrom                         */
+

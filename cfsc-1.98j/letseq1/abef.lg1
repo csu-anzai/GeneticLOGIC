@@ -1,0 +1,161 @@
+
+Logging output on 'abef.lg1'.
+
+C-? dis banner
+
+CFC-C Version 1.02.	 Run-Date  01/02/90  (10:35).
+C-? set urndsd=12
+C-? < abef.cm
+; Load the environment:
+le abef.env
+
+Initialize LETSEQ environment.
+Initial letters in STM (most recent last):  a b e f 
+
+Loaded 2 effectors.
+ecmd set lr=800
+ecmd set tr=-200
+ecmd set wr=-200
+ecmd set e=2
+di   env,3
+
+
+Environment status:
+TotNmGsL    0, TotNmGsT    0, TotNmGsW    0  (CycleStp 1) [TotNmDft 0].
+
+Reward for correct letter:	 800.0
+Reward for correct type only: -200.0
+Reward for incorrect guess:   -200.0
+Default guessing is:			 ON.
+Display NULL-Guess message is:   OFF.
+Effector resolution uses:		Prob. Prop. to Support
+
+STM (most-recent on right): a b e f
+
+All Letters (STM on left):
+
+  a b e f
+;
+; Load the classifiers...
+set systreas=1000000
+set cfstrmax=99999
+set cfstrmin=1
+set cfstrdf=400
+set grcFrNSL=0.2
+grcfs 100
+
+Done. Generated 100 random classifiers.
+;
+; **********
+; Set the bid and bucket-brigade parameters:
+set nmimsgmx=4     ; OFF: nmiemmx=4 nmiimmx=4
+
+Max number of msgs is:  32
+Reserved for detectors: 28
+Max internal messages:  4
+set mxdupmsg=0
+set bid_k=0.1
+set bidpow=1
+set brpow=1
+set ebrpow=6
+;
+set headtax=0.0005
+set bidtax=0.005
+set fbidtax=0.02
+set prdtaxmx=0.05 prdtaxpw=1.5
+;
+set frpaydet=1.00 dmshare=1.0
+
+For DMShare 1.000, DMDscnt is 0.000.
+set frpaynec=0.0
+set sharerew=1
+set allpaybd=0
+set cfbidmin=0.10001
+;
+set onemperc=1
+set suppbid=0
+set delhall=1
+;
+; **********
+; Discovery parameters...
+set frnewcfs=0.04
+set nwcfstrf=1.0
+set nwcfstrv=1
+;
+set prntbpow=1.0
+set pkprnwor=0
+set bidfit=0
+; OFF set bgabppr=1.0
+;
+set randrplc=0
+set rplcbpow=2.0  rplcfubd=1.0
+set crowdfac=1
+set mxcfcopy=0  ; OFF
+;
+set cdmsgsrt=1.00 cdmsgs=2 cdmsgact=1
+set ceffsrt=0.25  ceffs=2  ceffsplz=0
+set muprtot=0.05
+
+For MuPrTot 0.050, the Poisson distr. is:
+  i  Prob
+  0  0.9512
+  1  0.9988
+  2  1.0000
+  3  1.0000
+  4  1.0000
+set bkggart=0.08 bgascpr=.0 bgafcpr=.50 bgancpr=1.0
+; OFF set acpcrt=0.1 acpct=0 nwccstrf=0 ; New S same as for other new classifiers
+; OFF set cssrt=0.5  cssfrm=0.0  cssFrRf=0
+;
+;di cl,23
+;
+; **********
+; DORUN
+di time
+
+Time:  10:35:30
+set adenvint=100 adenvfmt=2
+set adcfint=1000  adcffmt=23 dscflst=a advarint=1000
+di time
+
+Time:  10:35:30
+;
+; cl 4000
+cl 100
+
+TotNmGsL   11, TotNmGsT   12, TotNmGsW   77 (CycleStp 100) [TotNmDft 41]
+di vars
+
+System Variables at end of Major-Cycle step #101 : 
+
+Number of classifiers:		  100 (Max 100)
+Num. Candidate-classifiers:	  10;     4 Cfs. won (  1 posted msgs).
+Support for bidders:	      500.0
+Average (Hi,Low) bids:	    21.33 (32.51,12.00)
+Num. candidate matches:	      10
+Number of messages:			   4   (Max-Int 4, Max 32)
+
+High/Low strength Cfs:     5834.6 (150) /    -11.0 (164)
+Total strength (ave):	 41079.5  (410.8)
+Average BidRatio:			0.78
+System treasury:		 124870.4
+Num of bids > strength:     0
+
+TOTNmBid    332  TOTNmWin    302  TOTCfPst    226
+TOTMtch     367  TOTMsPrd    208  TOTMsPst    208
+TOTEMtch    135  TOTEMsg  4294967220  TOTEAct     100
+TOTNmPRw     11  TOTNmNRw    121
+TOTSyRwP     11  TOTSyRwN     89
+TOTNmOfs     83  TotMu	     9  TotBkgGA (BP 0)     11
+TotBGASC      0  TotBGAFC      5  TotBGANC      6
+TotCDM       23  TotCDML     277  TotCDMC      46 (Loci/Cond  6.0)
+TotCEf       38 (Wrg 26, Bd 12)   TotACPC  0   TotCSS 0   TotTLB 0
+;
+; ENDRUN
+di time
+
+Time:  10:35:43
+set dscflst=0
+;di cl,23
+;di cl,2
+C-? stop

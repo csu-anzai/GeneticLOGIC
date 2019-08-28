@@ -1,0 +1,266 @@
+\documentstyle [12pt]{article}
+
+\setlength{\textwidth}{7.25in}
+\setlength{\textheight}{9.25in}
+\setlength{\oddsidemargin}{-.2in}
+\setlength{\evensidemargin}{-.2in}
+\setlength{\topmargin}{-.5in}
+
+\begin{document}
+
+\begin{center}
+\section*{Genitor Command Line Options}
+\end{center}
+
+To get a list of the command line options for the Genitor program,
+simply type `Genitor' with no arguments.  The following usage message
+appears.
+
+\begin{verbatim}
+  USAGE:
+
+  Genitor [-option value]
+  -c file < Config Filename; string >
+  -b 2.0  < Selection Bias; floating point >
+  -d 4500 < Dump Interval; integer>
+  -f file < Final Population Filename; string >
+  -g 124  < Current Generation Number; integer >
+  -i file < Initial Population Filename; string >
+  -l 25   < String Length; integer >
+  -m .15  < Mutation Rate; floating point (0-1.0) >
+  -n file < Node file (TSP only); string>
+  -o file < Output Dump File basename; string >
+  -p 100  < Population Size;  integer >
+  -r 8765 < Random Seed; (long) integer >
+  -s 750  < StatusInterval; integer >
+  -t 9000 < Number Trials; integer >
+\end{verbatim}
+
+Each tag-value pair is associated with a specific parameter of the Genitor
+algorithm.  The following parameters must be explicitly given values: StringLength,
+PopulationSize, NumberTrials.  The remainder of the parameters have default
+settings which may be optionally altered by the user.
+
+Tags and their associated values must always be separated from each other by 
+at least one space.  These command line options may be given in any order.
+However, the Genitor parameters will be set in the order used on the command line.  
+
+The semantics of each parameter are described in detail in the following sections.
+
+
+\subsection*{Configuration Filename (-c)}
+
+An alternative to setting each desired parameter from the command line with
+a tag-value pair is to use the -c option to specify a configuration file.  
+You may specify all parameters in a configuration file, thus the simplest
+possible command line is `Genitor -c ga.config'.  
+
+Additionally, you may override configuration file values by including other
+command line options AFTER the configuration file option.  For example, the
+command line `Genitor -c ga.config -p 300' will first set all values as indicated
+in ga.config (including PoolSize, if present in ga.config), but then override
+any previous value of PoolSize with the 300 specified with the -p option.  
+Conversely, the command line `Genitor -p 300 -c ga.config' would set PoolSize 
+to the value in ga.config (if PoolSize is present in ga.config) rather than
+the 300 specified with the -p option.  Finally, it should be noted that it is
+not necessary to specify all parameters in a configuration file.  The 
+configuration file can give values to an often-used set of parameters in a
+consistent manner while other command line options set parameters which vary
+from experiment to experiment.
+
+The format of a configuration file is as follows:
+
+A configuration file tag is a word beginning with the same character as the
+command line tag. Actually, the configuration file tag may be the character which
+follows the dash of the command line tag; as you like. The configuration file tag
+and its value must appear on the same line and be separated by at least one space.
+Only one tag value pair is allowed per configuration file line.  For example:
+
+\begin{verbatim}
+          PoolSize       120
+          Length_String  25
+          NumberTrials   25000
+          StatusInterval 1500
+          RandomSeed     12345678
+          Bias           1.900000
+          MutateRate     0.000000
+          InitPool       dump.pool
+          FinalPool      final.pool
+\end{verbatim}
+
+
+
+NOTE: the `c' tag is disallowed in the config file since it could cause infinite 
+recursion (and does not make much sense anyway).
+
+
+
+\subsection*{Selection Bias (-b)}
+DEFAULT = 2.0
+
+The Selection Bias is a floating point number used in the selection of 
+two genes (parents) for genetic reproduction (crossover).  This number 
+specifies the amount of preference to be given to the superior individuals
+in a genetic population.  For example, a bias of 2.0 indicates that the
+best individual has twice the chance of being chosen as the mean individual.
+
+
+
+\subsection*{Dump Interval (-d)}
+DEFAULT = 0
+
+When this parameter is given a non-zero value N, the current state of the
+genetic alogrithm will be saved to disk every Nth generation.  The process
+of saving state is as follows:
+
+Two disk files are created of the form `dump.ext' where `.ext' distinguishes
+between the files. dump.config is a regulation configuration file (as described
+above in the c option section) containing all parameter settings used in the
+current experiment.  It sets the Initial Population Filename (i) option
+(see below) to the name of the second file created by a dump, the dump.pool
+file.  dump.pool contains the contents of the genetic pool at the time of
+interrupt.
+
+To restart an experiment from a dump, simply supply the configuration file
+created, `dump.config', on the command line: Genitor -c dump.config. 
+
+
+\subsection*{Final Population Filename (-f)}
+DEFAULT = none
+
+This option allows you to specify a file in which to place the final population
+produced by a Genitor execution.  This file has several potential uses.  One
+use is simply to look at the final population data, rather than just the result:
+the best gene created.  Another possible use is to initialize another experiment's
+population (see option i below), as would be warranted when the final results are 
+not good enough.
+
+
+
+\subsection*{Current Generation Number (-g)}
+DEFAULT = 0
+
+This option is most commonly set in the configuration file generated by a dump
+procedure to indicate the generation of the experiment being processed when an
+interrupt occurred.  For example, if the Trials parameter (see below) of an
+experiment is set to 50,000 and you interrupt after 20,000, the dump configuration
+file will record 20,000 as the value of the Current Generation Number, both for
+your information and for the purposes of a later restart.
+
+
+
+\subsection*{Initial Population Filename (-i)}
+DEFAULT = none
+
+The genetic pool may be intialized randomly, in which case this option is not
+used, or from a data file, which this option allows you to specify.  The data file
+consists of a line for each member of the population, where a line contains an ascii
+representation of the (binary) gene and its associated (floating point) worth.
+
+\begin{verbatim}
+1010101110000 40.0
+	  :         :
+\end{verbatim}
+
+The pool file created by a {\it dump} (see option d above) is in this format, as is
+the pool file created using (option f above).  Additionally, you are free to 
+create this file by any means and use it to initialize your population; this
+last idea seems particularly useful in approaches which comibine the genetic
+alogrithm with other optimization approaches.
+
+
+\subsection*{String Length (-l)}
+REQUIRED PARAMETER
+
+The string length option simply specifies the number of unique positions in each
+gene.  Currently, all genes in an experiment have the same String Length.
+
+
+
+\subsection*{Mutation Rate (-m)}
+DEFAULT = 0.0
+
+Mutation itself consists of randomly altering a gene's data.  Contrary to 
+popular belief, a high rate of mutation has the potential to be a disruptive,
+degrading aspect of search.  Its role in the genetic algorithm has traditionally
+been as a background operator, applied infrequently.  
+
+However, recent research indicates that when a genetic pool begins to converge 
+prematurely, mutation can revive the genetic diversity necessary to sustain search. 
+As such, the Genitor algorithm supports an {\it adaptive} form of mutation in the spirit 
+of maintaining diversity.  The implementation here applies mutation in response to the 
+hamming distance between two parents selected for crossover (a recombination operation 
+in which two high-performance genes interchange information).  The more different
+the parents are, the more likely they are to be mutated, and conversely.
+
+If the mutation rate is set to zero, no mutation occurs whatsoever.  The highest
+rate of mutation recommended is about .20.  When a non-zero mutation rate is 
+specified, each gene's chance of being mutated is between 0 and the mutation rate,
+which increases with its similarity to other population members.
+
+\subsection*{Node File (-n)}
+DEFAULT = none
+
+This parameter is only useful when running a Traveling Salesman Problem (TSP).
+The file contains the x,y coordinates of the ``cities'' (or nodes) to
+be visited in a TSP tour.  The format is two integers per line, separated by
+white space.  The Genitor code package includes routines 
+\footnote{see the {\bf Genitor Code Structure} document {\bf Examples} section
+for a description of these Traveling Salesman Problem utilities.}
+to read this file and construct a table of distances between cities for use 
+by the evaluation function.  Each x,y coordinate set represents one city and
+is assigned a symbolic integer according to its position in this file.  Thus,
+the first x,y pair is city 1, the second city 2, and so on.
+
+\subsection*{Output Dump File Basename (-o)}
+DEFAULT = ``dump''
+
+Dumps are created in one of two ways:  1) the -d option is used to specify
+an interval at which the algorithm is saved automatically or 2) you may
+hits `CTRL Z' when Genitor is executing in the foreground.  A dump does
+two things: 1) print the current status of the population 
+(Best, Worst, Mean, Average) to the screen and 2) save the current state
+to disk file(s).  The disk file basename may be specified with the -o 
+option.
+
+To restart an experiment from a dump, simply supply the configuration file
+created, `dump.config', on the command line: Genitor -c dump.config. 
+
+
+\subsection*{Population Size (-p)}
+REQUIRED PARAMETER
+
+The population size option simply specifies the number of individuals (genes) in
+the genetic pool.  Research has shown that population size is an important parameter
+in effecient, effective genetic search and thus you will probably change this
+parameter's value frequently.
+
+
+
+\subsection*{Random Seed (-r)}
+DEFAULT = system max int
+
+This option allows you to initialize the random number generator used throughout
+the Genitor algorithm.  
+
+
+\subsection*{Status Interval (-s)}
+DEFAULT = 0
+
+When this parameter is given a non-zero value N, a brief report of the
+genetic alogrithm's status will be printed to stdout every Nth generation.
+Status reports are of the following form:
+
+\begin{verbatim}
+gen# | Bst: 21.43000  Wst: 17.53400  Mean: 19.87600  Avg: 19.99301
+\end{verbatim}
+
+\subsection*{Number Trials (-t)}
+REQUIRED PARAMETER
+
+This option is used to indicate the total number of genetic operations cycles 
+executed in a particular experiment.  This parameter, like population size
+(see option p above) must be tuned to achieve successful and efficient optimization.
+
+\end{document}
+\end{article}

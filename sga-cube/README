@@ -1,0 +1,64 @@
+SGA-Cube: A Simple Genetic Algorithm for 
+nCUBE 2 Hypercube Parallel Computers
+
+Jeff A. Earickson
+Alabama Supercomputer Network
+
+Robert E. Smith
+The University of Alabama
+
+and
+
+David E. Goldberg
+The University of Illinois
+
+TCGA Report No. 91005
+The Clearinghouse for Genetic Algorithms
+The University of Alabama
+Department of Engineering Mechanics
+Tuscaloosa, AL 35487
+
+SGA-Cube is a C-language translation of the original
+Pascal SGA code presented by Goldberg (1989)
+with modifications to allow execution on the nCUBE 2 Hypercube Parallel
+Computer. When run on the nCUBE 2, SGA-Cube takes advantage of the 
+hypercube architecture, and is scalable to any hypercube dimension. 
+The hypercube implementation is modular, so that the algorithm for
+exploiting parallel processors can be easily modified.
+In addition to its parallel capabilities, SGA-Cube can be
+compiled on various serial computers via compile-time options.
+In fact, when compiled on a serial computer, SGA-Cube is essentially
+identical to SGA-C (Smith, Goldberg, & Earickson, 1991).
+SGA-Cube has been nominally tested on a Sun 470 workstation, 
+a Vax Ultrix system, a Cray X-MP/24 running UNICOS 5.1, and the nCUBE 2.
+A technical report (in PostScript file sga-cube.ps) 
+is included as a concise introduction to the SGA-Cube distribution.
+It is presented with the assumptions that the reader has a general 
+understanding of Goldberg's original Pascal SGA code, and a good 
+working knowledge of the C programming language. The report begins with 
+an outline of the files included in the SGA-Cube distribution, and 
+the routines they contain. The outline is followed by a discussion of the 
+significant features of SGA-Cube. The report concludes with a
+discussion of routines that must be altered to implement one's own application in SGA-Cube.
+
+The authors are interested in the comments, criticisms, and bug reports
+from SGA-Cube users, so that the code can be refined for
+easier use in subsequent versions.
+Please email your comments to rob@comec4.mh.ua.edu,
+or write to TCGA:
+
+The Clearinghouse for Genetic Algorithms
+The University of Alabama
+Department of Engineering Mechanics
+P.O. Box 870278
+Tuscaloosa, Alabama 35487
+
+
+Goldberg, D.E. (1989). Genetic algorithms in search, optimization, and
+machine learning. Reading, MA: Addison-Wesley. 
+
+Smith, R.E., Goldberg, D. E., & Earickson, J. (1991). SGA-C: A C-language
+implementation of a simple genetic algorithm (TCGA Report No. 91002).
+Tuscaloosa: The University of Alabama, The Clearinghouse for Genetic 
+Algorithms.
+

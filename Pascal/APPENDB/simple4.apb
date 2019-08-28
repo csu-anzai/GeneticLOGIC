@@ -1,0 +1,64 @@
+program simple4;
+{ simple4: a program to roll a pair of dice }
+
+const maxrolls = 36;               { number of dice rolls }
+      dicemin  =  2;               { minimum dice total   }
+      dicemax  = 12;               { maximum dice total   }
+      diemax   = 6;                { single die max       }
+      diemin   = 1;                { single die min       }
+
+type  roll   = record              { record of single throw }
+                 die1, die2:integer
+               end;
+      sequence   = array[1..maxrolls] of roll;
+      sumcount = array[dicemin..dicemax] of integer;
+
+var   play:sequence;    { Keep track of play sequence }
+      totals:sumcount;  { Keep tally of totals        }
+      j, sum:integer;
+
+{ Include random number generator and utilities }
+{$I random.apb}
+
+function die:integer;
+{ Roll a single die}
+begin die := rnd(diemin,diemax) end;
+
+procedure throw(var sum:integer; var rollmemory:roll);
+{ Roll & sum a pair of dice }
+begin
+ with rollmemory do begin
+   die1 := die;  { Roll the dice }
+   die2 := die;
+   sum  := die1 + die2
+  end
+end;
+
+procedure report;
+var j:integer;
+begin
+ writeln(' Plays Report ');
+ writeln(' ------------ '); writeln;
+ for j := 1 to maxrolls do with play[j] do { Print out all plays }
+  writeln(' Roll ', j:3, ': die 1= ', die1, ', die 2=', die2);
+ writeln;
+ writeln(' Rolls Summary');
+ writeln(' -------------'); writeln;
+ for j := 2 to dicemax do begin     { Print out totals }
+   write('[', j:2,'] = ', totals[j]:2, ', ');
+   if j=7 then writeln
+  end
+end;
+
+begin { Main program }
+ for j := dicemin to  dicemax do totals[j] := 0;   { Zero out totals }
+ randomize;  { Setup and seed random number generator }
+ j := 0;     { Zero counter }
+ repeat   { Roll & count }
+   j := j + 1;
+   throw(sum,play[j]);                { Throw the dice }
+   totals[sum] := totals[sum] + 1     { Increment sumth total }
+ until (j=maxrolls);  { Stop at maximum rolls }
+ report               { Report all results }
+end.  { Main program }
+

@@ -1,0 +1,30 @@
+{ utility.sga: contains pause, page, repchar, skip, power }
+
+procedure pause(pauselength:integer);
+{ Pause a while }
+const maxpause = 2500;
+var j,j1:integer;
+    x:real;
+begin
+ for j := 1 to pauselength do
+   for j1 := 1 to maxpause do x := 0.0 + 1.0;
+end;
+
+procedure page(var out:text);
+{ Issue form feed to device or file }
+begin write(out,chr(12)) end;
+
+procedure repchar(var out:text; ch:char; repcount:integer);
+{ Repeatedly write a character to an output device }
+var j:integer;
+begin for j := 1 to repcount do write(out,ch) end;
+
+procedure skip(var out:text; skipcount:integer);
+{ Skip skipcount lines on device out }
+var j:integer;
+begin for j := 1 to skipcount do writeln(out) end;
+
+function power(x,y:real):real;
+{ Raise x to the yth power }
+begin power := exp( y*ln(x) ) end;
+

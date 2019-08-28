@@ -1,0 +1,57 @@
+--- $Id: README,v 1.1 1993/10/08 16:04:10 joke Exp $
+
+CFS-C 1.98j
+-----------
+
+   CFS-C 1.98j is a slightly modified version of Rick Riolo's original
+CFS-C 1.02 system. The original is included in the folder labeled "orig"
+on the topmost level in the distribution of this package. (For a complete
+OVERVIEW refer to the file of the same name on the top level, after
+unpacking.)
+
+   Objectives of the modifications were three:
+
+(1) I wanted to get a feel for this package, because I am working on my
+own implemenation of a CFS called JAZZ-C (pronounced [:jazzy]); and
+already had implemented SCS-C, Goldberg's Simple Classifier System; thus
+I wanted to take a look at the state-of-the-art implementation.
+
+(2) It should look like any freeware UNIX package with the usual conventions.
+[Well, being a long time unix hacker and thus felt that the "PC outfit" doesn't
+make CFS-C look like any state-of-the-art. I thus converted the file
+structure according to good old-fashioned UNIX conventions; i.e. there's
+a genarl purpose classifier-routine library "libCFS.a", which is linked
+against the special purpose environment, you can configure the package for
+various platforms without the struggle it takes with the original version,
+etc.] See the CONFIGME file for more on configuration of the package.
+
+(3) It should run through at least two ANSI-C compilers; for testing I
+used GNU GCC (gcc version 2.4.3) and SUN's acc (SC1.0, 1Mar1991); but
+should remain compilable by "pure" K&R C compilers (bundled Sun-C
+compiler on SunOS 4.1.x).
+
+   NOTE: Rick Riolo wrote in his SAB90 paper that he were about to release
+CFS-C v2.0, which were to be an "ansified" version of 1.0 but now, Oct '93
+he hopes to come out with with a CFS-C++ in 1994/95. Until this time, 1.98j
+will be the only ANSI-C alternative; at least the only one, that we know of.
+
+   CFS-C 1.98j is distributed free of charge and the other terms of the GPL,
+i.e. the GNU General Public License. Refer to the LICENSE file accompanying the
+sources in this distribution to find out what this means for you.
+
+   CFS-C 1.98j is available via ftp from lumpi.informatik.uni-dortmund.de
+(129.217.36.140).  Log in with user name "ftp" and give your full e-mail
+address as password.  The file "cfsc-1.98j.tar.gz" in directory /pub/LCS/src
+contains the complete distribution. (You will need the GNU gzip/gunzip
+packages to uncompress the file(s)).
+
+For more information/moral support/research grants contact:
+
+	Joerg Heitkoetter
+       <joke@ls11.informatik.uni-dortmund.de>
+
+    c/o Systems Analysis Research Group, LSXI      ////
+	Department of Computer Science        UNI DO// 
+	University of Dortmund               ___ ////
+	D-44221 Dortmund                     \*\\///
+	Germany                               \\\\/

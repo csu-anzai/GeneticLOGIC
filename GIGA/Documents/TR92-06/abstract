@@ -1,0 +1,41 @@
+Title: GIGA Program Description and Operation
+
+Author: Joseph Culberson
+
+Date: June 1992
+
+University of Alberta Computing Science Technical Report TR92-06
+
+Abstract:
+
+This document describes the gene invariant genetic algorithm (GIGA)
+program.  This program represents a unique approach to designing GAs
+with many interesting results.  The primary distinguishing feature is
+that when a pair of offspring are created and chosen as worthy of
+membership in the population, they replace their parents.  In the
+absence of mutation, this has the effect of maintaining the original
+genetic material over time, although it is reorganized, and hence the
+``invariant'' in the name.
+
+The source code for the GIGA program, written in the programming
+language C, is available on line.  This document explains how to use
+this program and describes the inputs.  It also discusses the design
+philosophy and indicates several possibilities for future extensions
+and variations.
+
+Keywords: gene invariant genetic algorithm program
+
+See Also:
+
+Michael Lewchuk, Master's Thesis;
+"Genetic Invariance: A New Approach to Genetic Algorithms"
+April 1992 Technical Report TR92-05
+
+Joseph Culberson;
+"Genetic Invariance: A New Paradigm for Genetic Algorithm Design"
+June 1992 Technical Report TR92-02
+
+
+Anonymous ftp ftp.cs.ualberta.ca pub/TechReports
+
+Queries: email joe@cs.ualberta.ca

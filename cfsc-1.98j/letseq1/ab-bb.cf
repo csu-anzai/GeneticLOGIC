@@ -1,0 +1,72 @@
+;  Classifiers to guess arbitrary sequences over {a,b}
+;  which depend on the current letter and any one
+;  of the previous 3 letters.
+;  These 24 classifiers cover all possible combinations of 
+;  values for  current and 3 previous letters (taken two at a time)
+;  for the two relevant guesses, namely guess 'a' or guess 'b'.
+;  At any given step, 6 classifiers should be matched.
+;  All these will post messages (as long as the message-list maximum
+;  size is >= 6). However, since all 6 match the 'Guess-Letter' effector,
+;  a competition will be run and only the winning message will remain
+;  on the message list (and so only its producer will have its strength
+;  modified as a result of the bucket-brigade).
+;
+;  The follwing four classifiers cover these cases:
+;     current = a,  one-before = a /  guess a
+;     current = a,  one-before = a /  guess b
+;     current = a,  one-before = b /  guess a
+;     current = a,  one-before = b /  guess b
+0000000000100001, 0000100000100001//1000000000100001
+0000000000100001, 0000100000100001//1000000001000001
+0000000000100001, 0000100001000001//1000000000100001
+0000000000100001, 0000100001000001//1000000001000001
+;
+;  The follwing four classifiers cover these cases:
+;     current = b,  one-before = a /  guess a
+;     current = b,  one-before = a /  guess b
+;     current = b,  one-before = b /  guess a
+;     current = b,  one-before = b /  guess b
+0000000001000001, 0000100000100001//1000000000100001
+0000000001000001, 0000100000100001//1000000001000001
+0000000001000001, 0000100001000001//1000000000100001
+0000000001000001, 0000100001000001//1000000001000001
+;
+;  The follwing four classifiers cover these cases:
+;     current = a,  two-before = a /  guess a
+;     current = a,  two-before = a /  guess b
+;     current = a,  two-before = b /  guess a
+;     current = a,  two-before = b /  guess b
+0000000000100001, 0001000000100001//1000000000100001
+0000000000100001, 0001000000100001//1000000001000001
+0000000000100001, 0001000001000001//1000000000100001
+0000000000100001, 0001000001000001//1000000001000001
+;
+;  The follwing four classifiers cover these cases:
+;     current = b,  two-before = a /  guess a
+;     current = b,  two-before = a /  guess b
+;     current = b,  two-before = b /  guess a
+;     current = b,  two-before = b /  guess b
+0000000001000001, 0001000000100001//1000000000100001
+0000000001000001, 0001000000100001//1000000001000001
+0000000001000001, 0001000001000001//1000000000100001
+0000000001000001, 0001000001000001//1000000001000001
+;
+;  The follwing four classifiers cover these cases:
+;     current = a,  three-before = a /  guess a
+;     current = a,  three-before = a /  guess b
+;     current = a,  three-before = b /  guess a
+;     current = a,  three-before = b /  guess b
+0000000000100001, 0001100000100001//1000000000100001
+0000000000100001, 0001100000100001//1000000001000001
+0000000000100001, 0001100001000001//1000000000100001
+0000000000100001, 0001100001000001//1000000001000001
+;
+;  The follwing four classifiers cover these cases:
+;     current = b,  three-before = a /  guess a
+;     current = b,  three-before = a /  guess b
+;     current = b,  three-before = b /  guess a
+;     current = b,  three-before = b /  guess b
+0000000001000001, 0001100000100001//1000000000100001
+0000000001000001, 0001100000100001//1000000001000001
+0000000001000001, 0001100001000001//1000000000100001
+0000000001000001, 0001100001000001//1000000001000001

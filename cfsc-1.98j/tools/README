@@ -1,0 +1,331 @@
+--- $Id: README.tools,v 1.1 1993/11/08 15:53:34 joke Exp $
+
+   The following contains the "help messages" of the various data analysis
+tools found in the "~cfsc/tools" folder; they are usually issed when running
+the tools without any option(s). Please note that some tools are specific
+to a certain environment, while some are of general use with CFS-C log files.
+
+
+	* CCLS1?	[LETSEQ1 specific]
+
+   CCLS1 reads log files produced by the CFS-C/Letseq1 system, in which
+classifiers have been displayed one or more times, and produces
+as output a compressed form of each display of the classifier list.
+
+The display is similar to the 'Macro-State' description of classifiers
+as discussed by Stewart Wilson in his article 'Classifier Systems and
+the Animat Problem', Machine Learning 2, p199-228 (1987).
+
+Usage:
+
+ccls1 x001.lg0  s90  c  e
+  Reads from the file x001.lg0
+  Counts as separate 'concepts' each classifier 'type' (i.e.,
+  genotypically alike) for those that have the top 90(the 's90') of the
+  total strength). For each concept, displays number of classifiers,
+  total strength, strength as percent of list, etc.
+  'c' means for each display, calculated a 'convergence' measure
+  (0 = random, 1 = converged).
+  'e' means for each display, calculate an 'entropy' measure (1=random,0=converged).
+  NOTE: To use c or e options, display classifiers in format 23.
+
+ccls1  x001.lg,3  s100 e
+  As above, but collects information from files x001.lg0, x001.lg1, and x001.lg2.
+  Also, doesn't calculate convergences, and collects concepts up to 100573371f
+  total stregth (i.e., all of them).
+
+As an example, a portion of a Letseq1 run could look like this:
+  di env,1 env,2  cl,22
+  ; TEST
+  set dscflst=b adcfint=1 adcffmt=22
+  di env,1
+  step
+  di env,1
+  step
+        ... and so on for a appropriate number of steps...
+  set  dscflst=0 adcfint=1000
+  ; ENDTEST
+Run should continue, displaying full classifier list periodically,
+and then going into the next TEST...ENDTEST region.
+
+Note that TEST commands can be put in another file and the CFS-C '<' command
+used to read them in periodically.
+
+Some limits (which could be compiled into larger values:
+Basic string-size of messages/classifiers: 16
+Size of (displayed) classifier: 256
+Number of concepts in CC file: 400
+Number of display points per run: 50
+
+
+	* CONCNT-1?	[FSW1 specific]
+
+   ConCnt-1 reads log files produced by the CFS-C/FSW1 system, in which
+classifiers have been displayed one or more times, and produces
+as output a compressed form of each display of the classifier list.
+
+The display is similar to the 'Macro-State' description of classifiers
+as discussed by Stewart Wilson in his article 'Classifier Systems and
+the Animat Problem', Machine Learning 2, p199-228 (1987).
+
+Usage:
+concnt-1 x001.lg0  s90  c  e
+  Reads from the file x001.lg0
+  Counts as separate 'concepts' each classifier 'type' (i.e.,
+  genotypically alike) for those that have the top 90% (the 's90') of the
+  total strength). For each concept, displays number of classifiers,
+  total strength, strength as percent of list, etc.
+  'c' means for each display, calculated a 'convergence' measure
+  (0 = random, 1 = converged).
+  'e' means for each display, calculate an 'entropy' measure (1=random,0=converged).
+  NOTE: To use c or e options, display classifiers in formats 1 or 22.
+
+concnt-1  x001.lg,3  s100 e
+  As above, but collects information from files x001.lg0, x001.lg1, and x001.lg2.
+  Also, doesn't calculate convergences, and collects concepts up to 100% of
+  total stregth (i.e., all of them).
+
+As an example, a portion of a FSW1 run could look like this:
+  di env,1 env,2  cl,22
+  ; TEST
+  set dscflst=b adcfint=1 adcffmt=22
+  ecmd cs 0
+  di env,1
+  step
+  ecmd cs 1
+  di env,1
+  step
+        ... and so on for states of interest
+  set  dscflst=0 adcfint=1000
+  ; ENDTEST
+Run should continue, displaying full classifier list periodically,
+and then going into the next TEST...ENDTEST region.
+
+Note that TEST commands can be put in another file and the CFS-C '<' command
+used to read them in periodically.
+
+To use with the Boole-N domains, include the parameter 'b'.
+NOTE ==> 'c' and 'e' measures not currently supported for 'b'.
+
+Some limits (which could be compiled into larger values:
+Basic string-size of messages/classifiers: 16
+Size of (displayed) classifier: 300
+Number of concepts in CC file: 400
+Number of display points per run: 50
+
+
+	* GETDVARS?	[general CFS-C data analysis]
+
+  GETDVARS extracts data from a log file produced by CFS-C program:
+In paritcular, it extracts counts of the activity of various
+discovery algorithms (e.g., total offspring, total mutations, etc.
+The log must have had DISPLAY VARS auto-displayed periodically.
+
+Program should be invoked by:
+  getdvars  logfile f p h
+
+where:
+  logfile   is the name of a file containing the log you
+                        want to analyze. It may also be of the form:
+  log.lg,n  where n is an integer 1..10, in which case data will
+                        extracted from the files log.lg0, log.lg1,...,log.lg(n-1)
+                        and it will be averaged over those files.
+  f              means extract counts for all discovery algorithms.
+
+The data is displayed in columns labeled:
+TotOf   Total offspring               CDML Cover Detector Loci
+TotMu   Total mutations               CDMC Cover Detector Conditions
+BkgGA   Total BkgGA applications      ACPC Asynchr. Couple Profit. Cf
+BP      Number of Bidding Parents     CSS  Couple Stage Setters
+CEf     Cover Effector Count          TLB  Trigger on Low Bids
+CDM     Cover Detector Count
+
+All other parameters are optional.
+
+  p      Include to produce 'plain' output, i.e.,
+         without titles, bars, and lines (for input to some grapher).
+
+  h      Include to echo all lines read until it encounters
+         a line with the string:
+              ; END-HEADER
+         This provides easy way to get runtime parameter settings
+         and pre-run notes.
+
+
+	* GETPERF?	[LETSEQ1 specific]
+
+  Program to extract performance data from log produced by LETSEQ1/CFS-C.
+In paricular, the log must include displays of the environemnt 
+produced by the DISPLAY ENV,2 command.
+
+Usage:
+   getperf  filename.lg0  g
+                Collect data from file filename.lg1 .
+
+        getvc1 filename,3 g
+                as before, but collect data from files filename.lg0,
+                filename.lg1, and filename.lg2 (the '3' could be 1..10).
+                Data is displayed from each file and then an average over all
+                the files is also calculated.
+
+
+	* GETSTR1?	[general CFS-C data analysis]
+
+   GETSTR1 extracts strength data from a log file produced by CFS-C.
+Run must have had DISPLAY CL,2  or CL,22
+
+Usage:
+  getstr1  logfile  p h s e<p> i<id1>,<id2>,...
+
+where:
+  logfile   is the name of a file containing the log you
+                        want to analyze. Logfile could be of the form:
+                           logfile.xx,n
+                        if you want to analyze data from the files:
+                           logfile.xx0
+                           logfile.xx1  ....
+                           logfile.xx(n-1)
+                        Up to 10 can be analyzed and averaged.
+
+  p              Include to produce 'plain' output, i.e.,
+                        without titles, bars, and lines (for input to some grapher).
+
+  h              Include to echo all lines read until it encounters
+                        a line with the string:
+                                ; END-HEADER
+                        This provides easy way to get runtime parameter settings
+                        and pre-run comments include with display of strengths.
+
+  s              Include to extract table of classifier strengths.
+                        Program will prompt for classifier id numbers
+                        (or use i parameter described below).
+
+  i<id1>,.. Specifies list of classifier to include in the table.
+                        If this is not included, the program will prompt for ids.
+                        <id1>,<id2> and so must be unsigned integers, separated by commas.
+                        Do NOT include ANY BLANKS in the id list.
+
+  e<p>    Specifies how much of the end of the run is to be considered
+                        the 'equilibrium' state. By default <p> is 25, i.e., the last
+                        25237351f the run is used to calculate the average performance
+                        at equilibrium.
+
+  cf<f>  Specifies percent of equilibrium rate that meets learning
+                        to criteria. By default <f> is 90, i.e., 90237351f equilibrium.
+
+  cl<s>  Specifies number of steps system must have performance above
+                        <f> * equilibrium rate to meet criteria. By default <s> is 100.
+
+Note that the parameters can be specified in any order, after the logfile name.
+        getstr ab-bb1.log  h p i2,4,5,6,22,33
+The table will be displayed on stdout (which can be redirected, of course).
+The limits:   20 classifiers, displayed 150 times in the run.
+
+
+	* GETVARS?	[general CFS-C data analysis]
+
+   GETVARS extracts data from a log file produced by CFS-C program:
+The log must have had DISPLAY VARS auto-displayed periodically.
+Program should be invoked by:
+  getvars  logfile p h f cfc cfw cfp msgc msgp hs ls as br
+where:
+
+  logfile   is the name of a file containing the log you
+                        want to analyze.It may also be of the form:
+  log.lg,n  where n is an integer 1..10, in which case data will
+                        extracted from the files log.lg0, log.lg1,...,log.lg(n-1)
+                        and it will be averaged over those files.
+All other parameters are optional. For each one included, a
+table of information is produced.  Each table includes a column
+that contains the CycleStep for each display, and one or more
+columns for the variables extracted. The parameters:
+
+  p              Include to produce 'plain' output, i.e.,
+                        without titles, bars, and lines (for input to some grapher).
+
+
+  h              Include to echo all lines read until it encounters
+                        a line with the string:
+                                ; END-HEADER
+                        This provides easy way to get runtime parameter settings
+                        and pre-run comments include with display of strengths.
+
+  f              Extract information as if all the rest of the parameters
+                        had been entered, and list in one multiple column table.
+
+  cfc      Number of candidate classifiers
+  cfw      Number of classifiers that won.
+  cfp      Number of classifier that *posted* messages.
+
+  msgc    Number of candidate messages.
+  msgp    Number of messages posted.
+
+  hs            Highest strength.
+  ls            Lowest strength.
+  as            Average strength.
+
+  br            Average bidratio.
+
+
+	* GETVC?	[FSW1 specific]
+
+GETVC extracts payoffs (performance) data from FSW1 logs.
+The logs must include displays of the environment produced
+by the DISPLAY ENV,1 command (or the equivalent autodisplay of environment).
+
+To get state visit counts and rates from the log, use GETVC1.
+
+Usage:
+   getvc  filename.lg1  m  tr
+                Collect data from file filename.lg1 .
+                'm' menas display marginal values (change since last display)
+                'tr' means display the total reward received by system.
+
+        getvc filename,3   m  tr
+                as before, but collect data from files filename.lg0,
+                filename.lg1, and filename.lg2 (the '3' could be 1..10).
+                Data is displayed from each file and then an average over all
+                the files is also calculated.
+
+Notes:
+1. Include a ' p ' after the 'm' paramater to display things in a 'plain'
+   format, i.e., with no labels or lines.  This is useful to feed the data
+   to a plotting program.
+
+2. Some limits (which could be compiled into larger values:
+   Number of states that can be counted: 32
+   Number of display points per run: 256
+
+
+	* GETVC1?	[FSW1 specific]
+
+   GETVC1 extracts 'visit count' (performance) data from FSW1 logs.
+The logs must include displays of the environment produced
+by the DISPLAY ENV,1 command (or the equivalent autodisplay of environment).
+Use GETVC to extract payoffs totals and rates from the log.
+
+Usage:
+   getvc1  filename.lg0  m  bso  ia12
+                Collect data from file filename.lg1 .
+                'm' menas display marginal values (change since last display)
+                'bso' means display the fraction of times system visited
+                the 'next best state' from any of the states 0..11.
+                Thus for this to work the fsw1/cfsc startup commands must
+                must specify 'next best states' (see the fsw1 documentation).
+                for the states 0..11 ('ia12' means collect from those 12 states.
+
+        getvc1 filename,3   m  bso ia12
+                as before, but collect data from files filename.lg0,
+                filename.lg1, and filename.lg2 (the '3' could be 1..10).
+                Data is displayed from each file and then an average over all
+                the files is also calculated.
+
+Notes:
+1. Include a ' p ' after the 'm' paramater to display things in a 'plain'
+   format, i.e., with no labels or lines.  This is useful to feed the data
+   to a plotting program.
+
+2. Some limits (which could be compiled into larger values:
+   Number of states that can be counted: 32
+   Number of display points per run: 95
+   Number of files that can be averaged: 10

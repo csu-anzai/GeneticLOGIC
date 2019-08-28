@@ -1,0 +1,663 @@
+head     1.2;
+branch   ;
+access   ;
+symbols  ;
+locks    ; strict;
+comment  @ * @;
+
+
+1.2
+date     91.02.01.13.33.39;  author whitley;  state Exp;
+branches ;
+next     1.1;
+
+1.1
+date     90.07.23.16.13.38;  author whitley;  state Exp;
+branches ;
+next     ;
+
+
+desc
+@copyright notice added.
+@
+
+
+
+1.2
+log
+@copyright notice added.
+@
+text
+@
+/*************************************************************/
+/*                                                           */
+/*  Copyright (c) 1990                                       */
+/*  Darrell L. Whitley                                       */
+/*  Computer Science Department                              */
+/*  Colorado State University                                */
+/*                                                           */
+/*  Permission is hereby granted to copy all or any part of  */
+/*  this program for free distribution.   The author's name  */
+/*  and this copyright notice must be included in any copy.  */
+/*                                                           */
+/*************************************************************/
+#include <stdio.h>
+#include <malloc.h>
+#include "ga_random.h"
+#include "gene.h"
+#include "op_edge_recomb.h"
+
+#define ABS(x)       (x<0 ? 0-x : x)
+
+/******************************************************
+ NumberFailures is global, but local to this file.  Use
+ get and set functions to access its value elsewhere.
+ ******************************************************/
+int       NumberFailures=0;
+
+int
+get_number_failures()
+{
+ return (NumberFailures);
+};
+
+void
+set_number_failures(val)
+int                 val;
+{
+ NumberFailures = val;
+};
+
+/***************************************************************************
+ * FUNCTION: get_edge_table
+ *
+ * DESCRIBE:  Allocates space for an array of edge nodes.
+ *
+ * INPUT PARAMETERS: number of points
+ *
+ * RETURN VALUE: pointer to an array of EDGE_NODEs (i.e., an edge table)
+ ****************************************************************************/
+ EDGE_NODE *
+ get_edge_table(num_points)
+ int            num_points;
+ {
+  EDGE_NODE *edge_table;
+
+  /*************************************************
+   malloc one extra location so that nodes numbered
+   1 - N can be indexed directly; 0 will not be used
+   *************************************************/
+
+  if (!(edge_table = (EDGE_NODE *) malloc ((num_points+1)*sizeof(EDGE_NODE))))
+	 fatal_error ("get_edge_table: Malloc failure.\n");
+  
+  return (edge_table);
+ }
+
+/***************************************************************************
+ * FUNCTION: free_edge_table 
+ *
+ * DESCRIBE: deallocates space for integer distance
+ *
+ *           NOTE: use this function only when the EDGE_NODE
+ *                 array was Allocated using get_edge_table
+ *
+ * INPUT PARAMETERS: arrary of edge nodes to free
+ *
+ * RETURN VALUE: none 
+ ****************************************************************************/
+ void
+ free_edge_table(edge_table)
+ EDGE_NODE       edge_table[];
+ {
+  free (edge_table);
+ }
+
+/***************************************************************************
+ * FUNCTION: maketour
+ *
+ * DESCRIBE: Randomly generates a legal "traveling salesman" tour 
+ *           (i.e. where each point is visited only once.)
+ *
+ *           Essentially, this routine fills an array with all possible
+ *           points on the tour and randomly chooses the 'next' city from
+ *           this array.  When a city is chosen, the array is shortened
+ *           and the procedure repeated.
+ *
+ * INPUT PARAMETERS: an empty tour, number of points per tour
+ *
+ * RETURN VALUE: none
+ *
+ * RESULT: fills input tour
+ ****************************************************************************/
+void
+maketour(gene, num_points)
+GENE_DATA gene[];
+int      num_points;
+{
+static int          first_time = 1;
+static GENE_DATAPTR temp;
+int                 remainder;
+int                 next, i;
+
+if (first_time)
+   {
+    if (!(temp = (GENE_DATAPTR) malloc (num_points*sizeof(GENE_DATA))))
+ 	   fatal_error ("maketour: malloc failure\n");
+    first_time = 0;
+   }
+   
+for(i = 0; i < num_points; i++)
+   temp[i] = (GENE_DATA) i+1;
+
+remainder = num_points - 1;
+
+for(i = 0; i < num_points; i++)
+   {
+    next = randomain(remainder, 0);
+    gene[i] = temp[next];
+    temp[next] = temp[remainder];
+    remainder--;
+   }
+} 
+
+/***************************************************************************
+ * FUNCTION: build_edge_table
+ *
+ * DESCRIBE: fills a data structure which represents the set of explicit
+ *           edges between points in the (2) input genes.  
+ *
+ *           NOTE: Assumes circular tours and bidirectional edges.
+ * 
+ *           NOTE: add_edge() will set "shared" edges to negative values
+ *
+ * INPUT PARAMETERS: 2 genes; 
+ *                   number of points/gene; 
+ *                   data structure representing set of edges of 2 genes
+ *
+ * RETURN VALUE: average number edges/city (in range 2.0 - 4.0 where
+ *                                          2.0=homogeneous; 4.0=diverse)
+ *
+ * CALLS: add_edge
+ ****************************************************************************/
+float
+build_edge_table (gene1, gene2, num_points, edge_table)
+GENE_DATA         gene1[],
+                  gene2[];
+int               num_points;
+EDGE_NODE         edge_table[];
+{
+ int i;
+ int city2;
+ int edge_total;  /* total number of unique edges in two genes */
+
+ /*************************************
+  * clear out the edge table's old data 
+  *************************************/
+
+ for (i=1; i<=num_points; i++)
+	 {
+	  edge_table[i].total_edges = 0;
+	  edge_table[i].unused_edges  = 0;
+     }
+
+ /*******************************
+  * fill edge table with new data
+  *******************************/
+
+ edge_total = 0;
+ for (i=0; i<num_points; i++)
+	 {
+	  /**********************************************
+	   * the tour is circular; i.e. 1->2, 2->3, 3->1 
+	   * this operaton maps N back to 1      
+	   **********************************************/
+
+	  city2 = (i+1) % num_points;
+
+      /********************************************
+	   * edges are bidirectional; i.e. 1->2; 2->1 
+	   * call add_edge twice per edge
+	   ********************************************/
+
+	  edge_total += add_edge(gene1[i], gene1[city2], edge_table);
+	                add_edge(gene1[city2], gene1[i], edge_table);
+
+	  edge_total += add_edge(gene2[i], gene2[city2], edge_table);
+	                add_edge(gene2[city2], gene2[i], edge_table);
+	 }
+
+ 
+ /***************************************
+  * return average number of edges / city
+  ***************************************/
+
+ return (((float) (edge_total * 2)/ (float) num_points));
+}
+
+/***************************************************************************
+ * FUNCTION: add_edge
+ *
+ * DESCRIBE: registers edge from point1 to point2 in input edge table.
+ *           NOTE: No assumptions about directionality are made.
+ *                 In other words, it is up to the calling routine to
+ *                 call add_edge twice to make a bi-directional edge
+ *                 between point1 and point2.  Thus, uni-directional
+ *                 edges are possible as well (just call add_edge
+ *                 once with the direction from point1 to point2)
+ *
+ * INPUT PARAMETERS: 2 points,
+ *                   data structure representing set of edges of 2 genes
+ *
+ * RETURN VALUE: 1 if edge was not already registered and was just added;
+ *               0 if edge was already registered and edge_table is unchanged
+ ****************************************************************************/
+int
+add_edge (point1, point2, edge_table)
+GENE_DATA   point1,
+		    point2;
+EDGE_NODE   edge_table[];
+{
+ int i;
+ int edges_so_far;
+
+
+ /*******************************************
+  does the edge point1->point2 already exist?
+  *******************************************/
+
+ edges_so_far = edge_table[point1].total_edges;
+
+ for (i=0; i<edges_so_far; i++) 
+	{
+     if (ABS(edge_table[point1].edge_list[i]) == point2)
+		{
+		 /*****************************
+		  mark shared edges as negative
+		  *****************************/
+		 edge_table[point1].edge_list[i] = 0-point2;
+		 return (0);
+        }
+     }
+
+ /*****************************************************
+  add point1->point2;
+  increment the counter for number of edges from point1
+  *****************************************************/
+
+ edge_table[point1].edge_list[edges_so_far] = point2; 
+ edge_table[point1].total_edges++;
+ edge_table[point1].unused_edges++;
+ return (1);
+}
+
+/***************************************************************************
+ * FUNCTION:  build_tour
+ *
+ * DESCRIBE:  Creates a new tour using edges from the edge table.
+ *            NOTE: priority is given to "shared" edges (i.e. edges which
+ *                  all parent genes possess and are marked as negative
+ *                  in the edge table.)
+ *
+ * INPUT PARAMETERS: data structure representing set of edges of 2 genes
+ *                   empty GENE_DATA array for new tour
+ *                   number of points/gene; 
+ *
+ * RETURN VALUE: 1 upon success; 0 upon failure
+ ****************************************************************************/
+int
+build_tour (edge_table, new_gene, num_points)
+EDGE_NODE   edge_table[];
+GENE_DATA   new_gene[];
+int         num_points;
+{
+ int        i,j,k;
+
+ new_gene[0] = randomain(num_points, 1);
+
+ for (i=1; i<num_points; i++)
+	 {
+	  /************************************
+	   As each point is entered into the
+	   tour, remove it from the edge table.
+	   ************************************/
+
+	  remove_point (new_gene[i-1], edge_table[new_gene[i-1]], edge_table);
+
+      
+	  /***********************************************
+	   Find a destination for the newly entered point.
+	   ***********************************************/
+
+	  if (edge_table[new_gene[i-1]].unused_edges > 0)
+		 {
+	     new_gene[i] = select_point (edge_table[new_gene[i-1]], edge_table);
+		 }
+
+      else
+		 {
+		 /*******************
+		  Failure: handle it!
+		  *******************/
+		  new_gene[i] = handle_failure (new_gene, i-1, edge_table, num_points);
+         }
+
+      /**************************
+	   mark this node as consumed
+	   **************************/
+
+	  edge_table[new_gene[i-1]].unused_edges = -1;
+     }
+
+ return (1);
+}
+
+/*************************************************************************
+ * FUNCTION: select_point
+ *
+ * DESCRIBE:
+ *            NOTE: priority is given to "shared" edges (i.e. edges which
+ *                  both genes possess
+ *
+ * INPUT PARAMETERS: edge_node, edge_table
+ *
+ * RETURN VALUE: point chosen from input edge_node's edge_list
+ *************************************************************************/
+int
+select_point (edge_node, edge_table)
+EDGE_NODE     edge_node;
+EDGE_NODE     edge_table[];
+{
+ int       i;
+ GENE_DATA candidate_pt;
+ int       min_edges;
+ int       min_count;
+ int       rand_pick;
+
+ /*********************************************** 
+  No point has edges to more than 4 other points.
+  Thus, this contrived minimum will be replaced.
+  ***********************************************/
+
+ min_edges = 5;
+
+
+ /***********************************************************
+  Begin considering candidate destination points in edge list
+  ***********************************************************/
+
+ for (i=0; i<edge_node.unused_edges; i++)
+	 {
+	  candidate_pt = edge_node.edge_list[i];
+
+	  /***********************************************
+	   Shared edges are negative and receive priority.
+
+	   NOTE: Since negative edges are caught here, the
+	   remainder of this function need not worry about
+	   converting to absolute values.
+	   ***********************************************/
+
+	  if (candidate_pt < 0)
+		 return (ABS(candidate_pt));
+      
+
+	  /***************************************************************
+	   Give priority to candidates with fewest remaining unused edges.  
+	   Find out what the minimum number of unused edges is (min_edges).
+	   There may be more than one cadidate with the minimum number
+	   of unused edges; keep count of this (min_count);
+	   ***************************************************************/
+	   
+	  if (edge_table[candidate_pt].unused_edges < min_edges)
+		 {
+		  min_edges = edge_table[candidate_pt].unused_edges;
+		  min_count = 1;
+         }
+      else
+	  if (edge_table[candidate_pt].unused_edges == min_edges)
+		  min_count++;
+	 }
+	 
+ /*******************************************************
+  Randomly decide which of the possible candidates to use
+  *******************************************************/
+ rand_pick = randomain (min_count-1, 0);
+
+ 
+ for (i=0; i<edge_node.unused_edges; i++)
+	 {
+	  candidate_pt = edge_node.edge_list[i];
+
+      /*********************************
+	   Return the chosen candidate point 
+	   *********************************/
+	  if (edge_table[candidate_pt].unused_edges == min_edges)
+		 {
+		  min_count--;
+		  if (rand_pick == min_count)
+		      return (candidate_pt);
+         }
+     }
+
+ /********************************** 
+  this point should never be reached
+  **********************************/
+  fatal_error ("select_point: unexplained failure");
+}
+
+/***************************************************************************
+ * FUNCTION: remove_point
+ *
+ * DESCRIBE: Removes input point from edge_table.  Input edge_node is used
+ *           to identify deletion locations within edge table.
+ *
+ * INPUT PARAMETERS: point, edge_node, edge_table
+ *
+ * RETURN VALUE: none
+ ****************************************************************************/
+void
+remove_point (point, edge_node, edge_table)
+GENE_DATA     point;
+EDGE_NODE     edge_node;
+EDGE_NODE     edge_table[];
+{
+ int       i,j;
+ GENE_DATA has_edge;
+ int       pts_remaining;
+
+ /****************************************************
+  For every point known to have an edge to input point
+  (i.e. in edge_list for input edge_node)
+  ****************************************************/
+
+ for (i=0; i<edge_node.unused_edges; i++)
+     {
+	  has_edge = ABS(edge_node.edge_list[i]);
+	  pts_remaining = edge_table[has_edge].unused_edges;
+
+      /****************************************************
+	   Find the input point in all edge_lists and delete it
+	   ****************************************************/
+	  for (j=0; j<pts_remaining; j++)
+		 {
+		  if (ABS(edge_table[has_edge].edge_list[j]) == point)
+			 {
+			  edge_table[has_edge].unused_edges--;
+			  edge_table[has_edge].edge_list[j] = 
+			   edge_table[has_edge].edge_list[pts_remaining-1];
+			  break;
+			 }
+         }
+	 }
+}
+
+/***************************************************************************
+ * FUNCTION: handle_failure
+ *
+ * DESCRIBE: 
+ *
+ * INPUT PARAMETERS: existing tour,
+ *                   number of points in tour thus far,
+ *                   edge_table,
+ *                   total number of points
+ *
+ * RETURN VALUE: id of point to transition to 
+ ****************************************************************************/
+GENE_DATA
+handle_failure (gene, last_point, edge_table, num_points)
+GENE_DATA       gene[];
+int             last_point;
+EDGE_NODE       edge_table[];
+int             num_points;
+{
+ int i;
+ GENE_DATA stranded;
+ int       edges_remain=0;
+ int       total_four=0;
+ int       rand_pick;
+
+ NumberFailures++;
+
+ stranded = gene[last_point];
+
+ /************************************************************* 
+  Find out how many edges remain.  In particular, keep track of
+  how many points with four total (initial) edges remain...
+  *************************************************************/
+  
+ for (i=1; i<=num_points; i++)
+	 {
+	  if (edge_table[i].unused_edges != -1
+		  && 
+		  i != stranded)
+		 {
+		  edges_remain++; 
+		  if (edge_table[i].total_edges == 4)
+			 total_four++;
+		 }
+	 }
+
+
+ /********************************************
+  randomly choose one of the points with edges
+  remaining (and whose total_edges = 4)
+  ********************************************/
+
+ if (total_four)
+	{ rand_pick = randomain (total_four-1, 0);
+	  for (i=1; i<=num_points; i++)
+		 {
+		  if (i != stranded
+			  &&
+			  edge_table[i].unused_edges != -1
+			  &&
+			  edge_table[i].total_edges==4)
+		    {
+		     total_four--;
+		     if (rand_pick == total_four)
+		         return (i);
+            }
+		 }
+
+	  warning ("handle_failure(1): Cannot find an edge.\n");
+	}
+
+ /******************************************************
+  randomly choose one of the points with edges remaining
+  ******************************************************/
+
+ else
+ if (edges_remain)
+	{ rand_pick = randomain (edges_remain-1, 0);
+	  for (i=1; i<=num_points; i++)
+		 {
+		  if (i != stranded
+			  && 
+			  edge_table[i].unused_edges != -1)
+		    {
+		     edges_remain--;
+		     if (rand_pick == edges_remain)
+		         return (i);
+            }
+		 }
+
+	  warning ("handle_failure(2): Cannot find an edge.\n");
+    }
+
+ /********************************************************
+  The edge table appears empty; this happens sometimes on
+  the last point due to the fact that the first point is
+  removed from the table even though only one of its edges
+  has been determined. 
+  ********************************************************/
+
+ else
+	{ 
+     /***************************************************** 
+	  Since this occurs only at the last point in the tour,
+	  simply look for the point which is not yet used
+	  *****************************************************/
+
+	 for (i=1; i<=num_points; i++)
+		 if (edge_table[i].unused_edges >= 0)
+			return (i);
+		 
+	  warning ("handle_failure(3): Cannot find an edge.\n");
+	}
+
+ /*****************************
+  should never reach this point 
+  *****************************/
+
+ fatal_error ("handle_failure: unexplained failure.\n");
+}
+
+
+/************************
+ Routines below this line
+ Useful for DEBUG
+ ************************/
+
+#define ERR_OUT stderr
+
+print_edge_table (edge_table, num_points)
+EDGE_NODE         edge_table[];
+int               num_points;
+{
+ int i,j;
+
+ fprintf (ERR_OUT, "\nEDGE TABLE\n");
+ 
+ for (i=1; i<=num_points; i++)
+   {
+   fprintf (ERR_OUT, "%d :", i);
+   for (j=0; j<edge_table[i].unused_edges; j++)
+		fprintf (ERR_OUT, " %d", edge_table[i].edge_list[j]);
+   fprintf (ERR_OUT, "\n");
+   }
+
+ fprintf (ERR_OUT, "\n");
+}
+
+print_gene(name, gene, num_points)
+char      *name;
+GENE_DATA  gene[];
+int        num_points;
+{
+ int i;
+ fprintf (ERR_OUT, "%s:", name);
+ for (i=0; i<num_points; i++)
+	fprintf (ERR_OUT, " %d", gene[i]);
+ fprintf (ERR_OUT, "\n");
+}
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d1 13
+@

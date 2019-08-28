@@ -1,0 +1,15 @@
+	
+	README			GENEsYs 1.0, Ba, 02.Jul.92
+
+==============================================================================
+
+	This directory contains the documentation of GENEsYs 1.0 as LaTeX
+	as well as postscript version.  To rebuild the documentation, you
+	should type
+			make dvi
+			make dvi
+
+	(two times !).
+	If you follow the instructions given  in the documentation on ex-
+	tending the software by additional test functions, the documenta-
+	tion will be kept up-to-date each time you run the makefile.

@@ -1,0 +1,7 @@
+program simple1;
+{ simple1: print out a message }
+begin
+ writeln(' Bullwinkle is a dope ');
+ writeln(' No Rocky, not that message ')
+end.
+

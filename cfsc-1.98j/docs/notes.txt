@@ -1,0 +1,211 @@
+This file contains notes about the CFS-C, including:
+
+    a. New features to (perhaps) add to the system.
+    b. Changes to (perhaps) make to the the system.
+    c. Comments about the systems features, behavior, interpretation of
+       the system, possible domains, and so on.
+
+See NEW.TXT for a description of new features/changes actually made to 
+the CFS-C system.  
+
+
+1. Discovery: Cross-over defined over full cf length     (MAR 86)
+
+   This would be an obvious alternative to the current method, i.e.,
+   crossover single 'string parts' (conditions or actions) of two classifiers.
+   Perhaps the 'background' operator selected probabilistically, i.e.,
+   pick parents, and then select either:
+     a) cross within a string-part
+     b) cross full classifiers
+     c) no crossover (just copy the originals)
+   the selection controlled by some user-settable variables. 
+
+
+2. Discovery: Cover-Detector Messages generation.        (MAR 86)
+
+   When a detector message is not matched, system currently generates a new
+   classifier by picking 1 high-strength cf as a parent, crossing the 
+   un-matched message with a string of all #'s, and then using the two products
+   of that cross as the condition of the new classifier. 
+
+   The broad 'goal' for the mechanism is to link the message into things
+   the system already knows:
+   1. Most useful things    (strength)
+   2. Most relevant things  (support, number of matches)
+   3. Most similar things   (some near-match measure)
+   It would probably be best to generalize as little as possible, too.
+
+   Proposal:  Try to pick a cf that "nearly matches" the un-matched detector
+   message and then generalize the condition(s) of that cf so that it would
+   have matched the message.  
+
+   Some possible plausible learning mechanisms:
+   1. Try to subsume novel message into some situtation the cfsys already knows about.
+      That is, search for a high-strength classifier that nearly matches it
+      (the already known) and generalize its conditions to match novel message.
+
+      If the condition selected for generalization already matched a detector
+      message that is nearly the same as the novel one, this is mechansism
+      designed to handle variance is details of detector messages, e.g.,
+      to cover truism that organism never sees exactly the same situation 
+      more than once.
+
+   2. Try to associate novel message with other messages being processed at t.
+      That is, modifiy classifiers that are active at t so that they also 
+      match the novel message. 
+       
+      This is an attempt to associate external information about the world
+      to internal models (as represented by non-detector messages at t).
+
+   Some possible 'parent' cf selection criteria:
+   1. Cfs that bid/won at t (all on the CandCfs list), ordered by bid.
+   2. Cfs that match detector messages (left bits 00 by convention):
+      a. One condition match detector message, one not.
+      b. Both match detector messages.
+   3. High strength cfs.
+   Note that Support and the number of messages matching each condition
+   are collected even for classifiers that have only one condition matched,
+   so these values can be used to bias selection of classifiers.
+
+   On metrics for near miss  (see Booker in Proc. Intrntl. Conf. on GA, 1985). 
+   Ley  l  = string length
+        n  = number of matched 0's and 1's 
+        n1 = number of mismatched 0's and 1's
+
+   M1 = | 0    if not match
+        | n/l  (this is "specificity")
+
+   M2 = | M1   for a matched message
+        |
+        | (n + 3/4 * (l - n)) / l**2
+
+   M3 = | M1   if matched
+        |
+        | (l - n1) / l**2    (a Hamming distance)
+
+   Note that the l**2 terms make the unmatched scores generally much less
+   than matches that involve fewer specific loci.
+
+   A first cut Match-Score for a message vs. a condition:
+ 
+      M4 = n + 3/4 ( l - n ) 
+
+   That is, 1 point for each matched loci, 3/4 for #'s and nothing for mismatches.
+   Note that there is no need to divide by l**2 (or even by l), since this
+   is being calculated ONLY for messages vs. conditions that don't match it.
+
+   An example mechanism:
+   
+      if ( are active cfs )
+         if ( active cf matches detector and Match-score > lowerbound )
+            copy and generalize to match new message
+         fi
+         'Cross' novel message with high bidder:
+             cond1, cond2 / action   =>   msg , cond2 / action
+             msg ,  msg  / action   =>  cond1,  msg  / action
+      fi     
+      if ( non-active cf matches detector & Match-score > lowerbound )
+          copy and generalize to match new message
+          [Note:  Matchscore is max score from unmatched conditions.]
+          If  one condition is matched by some message at t or by new msg then
+             just generalize the one unmatched condition.
+          If neither condition is matched then generalize both ????
+      fi
+
+   I'm not sure exactly what message I will use, but it will be at least
+   something like this.
+
+ 
+3. Discovery:  Pick classifiers to be replaced.        MAY 86.
+
+   Convergence seems to be a problem in early experiments.
+
+   Several alternatives should be tried:
+
+   1. Pick a set of candidates for replacement (as usual, prob = 1 strength**2 
+      or whatever), and then actually replace only some of those.
+      Choose from the candidates a classifier that is "closest to"
+      the new classifier that will replace it, where "closest to" is a measure
+      of number of common alleles.
+      This is one way to reduce the 'premature convergence' problem that
+      often plagues the GA (with small populations).
+
+      Methods like this have been used by DeJong and Goldberg.
+
+   2. Share the reward from the environnment.
+      In this way a limit on the 'carrying capacity' of a 'niche'
+      established by the rewards from the environment is established.
+      (Note that the bid of a classifier is already shared, thus establishing
+      a limit its 'carrying capacity.')
+      
+      Methods like this have been used by Booker and Wilson.
+
+   3. Other ways to control what classifiers are selected as candidates.
+      The current protection of high-strength classifiers is rather rigid.
+      Is it necessary?  Should the probability function be made steeper instead?
+      
+  
+
+4.  Picking Parents:  Incest.
+
+    Bill Hamilton says mechanisms to avoid incest are found all over
+    in nature.  The CFS-C system should also avoid incest.
+    To do so, it PckPrnts() should return unique parents each time it is called.
+
+
+5.  "Covering" Effectors.
+
+    Just as there is a need to keep the classifiers linked to the
+    detectors, there is also a need to keep them linked to the effectors.
+    There is also a need to avoid convergence of the types of
+    effector-actions generated by the system, i.e., to avoid covergence
+    in the action-parts of classifiers that send messages that match effectors.
+ 
+    An example algorithm:
+
+    if ( Something-bad-happened ) then
+        if ( Did-Action-1 ) 
+            generate cf that would have done some other action.
+        if ( Did-Nothing ) 
+            generate cf that would have done something.
+    fi
+
+    if ( Not-Done-Anything-for-a-while )
+        generate cf that would do something.
+
+    These are just first cut ideas on how to generate classifiers that
+    activate effectors.  I will have to think about the general principles
+    that are involved (and reflected in the above examples) a bit more
+    before I implement this mechanism.
+
+
+6. Other LETSEQ representations.                    (AUG 86)
+
+   Following a suggestion of John Holland, I plan to implement the
+   letter sequence (letter predictor) domain using other representations.
+   Basically, that means changing the way letters seen are mapped into
+   detector messages and changing how messages that match effectors
+   are mapped into a prediction. 
+
+   For example, one way to implement detector messages would be
+   to map the past 3 letters seen into 1 message. Each letter could be
+   mapped into a 5 bit string (eliminating the vowel/consonant bits),
+   leaving the left-most bit of the message for a "0" to indicate the
+   source of the message.
+
+   More importantly, I think, would be changes to the way effectors are 
+   implemented.  In particular, the 'granularity' of the messages
+   (with respect to actions) should be reduced.  That is, currently
+   one message specifies one and only one letter as a prediction.
+   Another approach would be to consider each message to the effectors
+   as supporting the settings of certain attributes.  After all messages
+   sent to effectors are processed, each attribute is set to 1 or 0 depending
+   on the number (and bid-sizes) of the messages sent to the effector.
+   Then the attribute settings are mapped into a prediction.
+   The important features of a scheme like this are (1) each message to
+   an effector may only partially specify a prediction and (2) each message
+   may support subsets of the possible predictions (i.e, all predictions
+   that have certain attributes).
+
+
+

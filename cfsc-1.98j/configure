@@ -1,0 +1,58 @@
+#! /bin/csh -f
+# Script to `configure' CFS-C
+# $Id: configure,v 1.1 1993/02/15 17:21:53 joke Exp $
+#
+set package="CFS-C 1.98j"
+set default=sunos
+set ostype=$default
+set configdir=../config
+set incdir=./include
+#
+top:
+if ($#argv > 0) then
+    switch ($1:q)
+
+    case --*:
+	set ostype = "$1:q"
+	shift
+	goto top
+
+    default:
+	goto usage
+    endsw
+endif
+
+rm -f $incdir/config.h
+if ("$ostype" == "--sunos") then
+    ln -s $configdir/sunos.cf $incdir/config.h
+    echo "$package configured for SunOS."
+    goto done
+endif
+
+if ("$ostype" == "--solaris") then
+    ln -s $configdir/sunos.cf $incdir/config.h
+    echo "$package configured for SunOS/Solaris."
+    goto done
+endif
+
+if ("$ostype" == "--unix") then
+    echo "try either: configure --bsd, or: configure --sys5"
+    goto done
+endif
+
+if ("$ostype" == "--sys5") then
+    ln -s $configdir/sys5.cf $incdir/config.h
+    echo "$package configured for generic unix system V."
+    goto done
+endif
+
+if ("$ostype" == "--bsd") then
+    ln -s $configdir/bsd.cf $incdir/config.h
+    echo "$package configured for generic BSD unix."
+    goto done
+endif
+
+usage:
+    echo "usage: configure --<os-type>	(eg. configure --sunos)"
+
+done:

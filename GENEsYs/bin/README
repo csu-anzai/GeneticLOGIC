@@ -1,0 +1,74 @@
+	
+	README			GENEsYs 1.0, Ba, 02.Jul.92
+
+==============================================================================
+
+	As usual, binaries go here:
+
+		ga		Genetic Algorithm 
+				Try: 	ga -h | more 	for online-help
+		report		Report generator, automatically invoked by ga
+		setup		Interactive parameterization progam for ga
+		gapl		Shell scripts useful for data visualization
+		gacols
+	
+	The file gapl is a shell script which can be used for quick visua-
+	lization of the results of GA runs. In order to do so, the program
+	gnuplot is needed with a special extension capable of reading from
+	pipes. 
+	The script gapl is used in most cases as follows:	
+
+		gapl -d best -l <dir-name>
+
+	Here <dir_name> is the directory where ga has placed you data in.
+	-d best indicates that you want  to see the best value behaviour,
+	-l creates a  logarithmic plot on  the y-axis.  You can pass more
+	than one <dir_name> to the script, separated by blanks.
+
+	gacols is used by gapl for column extraction from rpt and var files.
+
+	You can obtain the gnuplot program by anonymous ftp from
+
+		walhalla.germany.eu.net (192.76.144.129)
+
+	as follows:
+
+ftp walhalla
+Connected to walhalla.
+220 walhalla FTP server (Version 6.12 Thu Jan 30 16:41:31 GMT-0100 1992) ready.
+Name (walhalla:heitkoet): ftp
+331 Guest login ok, send e-mail address as password.
+Password:
+230-Next time please use your e-mail address as your password
+230-        for example: joe@lucky.Informatik.Uni-Dortmund.DE
+230-
+230-Welcome to the anonymous FTP service of the German EUnet Backbone 
+230-at the University of Dortmund. Local time is Thu Jul  2 17:25:34 1992. 
+230-Please restrict your use of this facility to times outside
+230-the normal working hours, i.e., 8:00 - 18:00, local time.
+230-
+230-This archive is now mounted from our new archive machine which is an
+230-IBM RS/6000 running AIX 3.2. That machine was kindly sponsored by
+230-IBM Germany. The current archive size is ~ 2 GB.
+230-
+230-This server is now the official X11R5 server for Germany.
+230-
+230-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+230-* The /pub/documentation directory is being restructured. *
+230-* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+230-
+230-Please read the file README
+230-  it was last modified on Fri May 15 13:19:01 1992 - 48 days ago
+230 Guest login ok, access restrictions apply.
+ftp> cd pub/gnu
+250 CWD command successful.
+ftp> mget gnuplot-3.2*
+mget gnuplot-3.2.tar.Z? y
+200 PORT command successful.
+150 Opening ASCII mode data connection for gnuplot-3.2.tar.Z (536587 bytes).
+226 Transfer complete.
+local: gnuplot-3.2.tar.Z remote: gnuplot-3.2.tar.Z
+539424 bytes received in 7.7 seconds (69 Kbytes/s)
+ftp> bye
+221 Goodbye.
+

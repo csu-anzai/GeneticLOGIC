@@ -1,0 +1,140 @@
+/*===================================================
+       file : mga.ext
+ 
+    purpose : external global variables
+ 
+  developed : 1991
+   
+     author : Kalyanmoy Deb
+=====================================================*/
+
+#include <stdio.h>
+#include <math.h>
+#include "mga.def"
+
+/*  see mga.h for variable description */
+
+typedef int INDV_ID, GENE_ID, ALLELES, BOOLEAN;
+
+extern struct GENE {
+	GENE_ID     genenumber;
+	ALLELES     allele;
+	struct GENE  *nextgene;
+};
+
+extern  struct INDIVIDUAL {
+	struct GENE  *firstgene;
+	struct GENE   *lastgene;
+	unsigned     *fullchrom;
+	unsigned      *fullgene;
+	int            chromlen;
+	int             genelen;
+	double          fitness;
+};
+extern struct INDIVIDUAL *oldpop,*newpop,best_indv;
+
+extern int era;
+extern int max_era;
+extern int order;
+extern int problem_length;
+extern int *copies;
+extern long popsize;
+extern int bytesize;
+extern int *bytelimit;
+extern unsigned *template;
+extern double function_evaluations;
+extern float stopfactor;
+extern double prop_bestindv;
+extern double templatefitness;
+
+extern double **chromfitness;
+extern GENE_ID **genesets;
+extern int *str_length;
+extern int *table_id;
+extern BOOLEAN *taborfunc;
+extern float *scale;
+extern int numsubfunc;
+extern double avgfitness, maxfitness, minfitness, avgstrlen;
+
+extern double cut_prob;
+extern double splice_prob;
+extern double allelic_mut_prob;
+extern double genic_mut_prob;
+extern int init_select_gen;
+extern int cutpop_gen;
+extern int prim_gen;
+extern int maxgen;
+extern INDV_ID *shuffle;   
+extern int gen;
+extern INDV_ID pick;
+extern int juxtpopsize;
+extern int cut_every_other_gen;
+extern long allelicmutation;
+extern long genicmutation;
+extern int thres;
+extern shuffle_num;
+
+extern int numpartition;
+extern int *partition_len;
+extern GENE_ID **partition_genes;
+
+extern int nextpopstatgen;     
+extern int countpopstatgen;
+extern int *sortpopstatgen;
+
+extern int gencount;
+
+extern double *oldrand;
+extern int jrand;
+extern double randomseed;
+
+extern struct STACKTYPE {
+	struct INDIVIDUAL genefirst;
+	struct STACKTYPE   *nextmem;
+};
+typedef struct STACKTYPE *STACKPTR;
+extern struct STACKTYPE *chrom_stack;
+extern struct STACKTYPE *newchrom_stack;
+
+extern FILE *fin;
+
+extern BOOLEAN cutpopflag;
+extern BOOLEAN thresholdingflag;
+extern BOOLEAN tiebreakingflag;
+extern BOOLEAN traceflag;
+extern BOOLEAN levelmgaflag;
+extern BOOLEAN partitionflag;
+extern BOOLEAN maximizationflag;
+extern BOOLEAN popprintflag;
+extern BOOLEAN plotstatflag;
+extern BOOLEAN stopmgaflag;
+extern BOOLEAN r_initpop_flag;
+extern BOOLEAN extrapopflag;
+
+extern char Inputfilename[];
+extern char Erafilename[];
+extern char Objfilename[];
+extern char Templatefilename[];
+extern char Partinfilename[];
+extern char Outputfilename[];
+extern char Poprinfilename[];
+extern char Poproutfilename[];
+extern char Partoutfilename[];
+extern char Plotfilename[];
+extern char Extrafilename[];
+
+extern void statistics(), reportpop(), reallocate_memory(), copy_chrom();
+extern void shuffle_pop(), storepop(), freenewpop(), fill_chrom();
+extern void cut_and_splice(), mutation(), push_stack();
+extern void delete_chrom(), print_error(), get_string();
+extern void primordial(), juxtapositional();
+extern void partition_info(), poprec_info(), partitionprop();
+extern void initialize_pop(), initpop(), objfunc_info(), read_subfunction();
+extern void genestructure_info(), setup_popsize(), get_template();
+extern void general_rep(), plot_rep(), writefullchrom(), writepop();
+extern void cut(), splice(), next_allele_comb(), extra_pop();
+extern int ones(), rnd();
+extern BOOLEAN parity(), pop_stack(), pop_stack(), flip();
+extern double decode(), objfunc(), get_func_val(), random();
+extern INDV_ID select_pop();
+extern ALLELES pickallele();

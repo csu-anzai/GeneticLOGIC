@@ -1,0 +1,7 @@
+
+PopSize	=  100	# This is a comment
+Tau=0.5		# Just is another comment
+	  	# This is a comment, too, followed by an empty line !!
+
+Seed=123
+

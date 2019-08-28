@@ -1,0 +1,7 @@
+set echo=1 log=x001.lg1
+dis banner
+set urndsd=47269
+< x001.cm
+savesys x001.sv1
+stop
+

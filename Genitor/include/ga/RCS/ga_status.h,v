@@ -1,0 +1,103 @@
+head     1.3;
+branch   ;
+access   ;
+symbols  ;
+locks    ; strict;
+comment  @ * @;
+
+
+1.3
+date     91.02.01.13.39.18;  author whitley;  state Exp;
+branches ;
+next     1.2;
+
+1.2
+date     90.07.27.11.57.30;  author whitley;  state Exp;
+branches ;
+next     1.1;
+
+1.1
+date     90.07.23.16.16.38;  author whitley;  state Exp;
+branches ;
+next     ;
+
+
+desc
+@@
+
+
+1.3
+log
+@copyright notice added.
+@
+text
+@
+/*************************************************************/
+/*                                                           */
+/*  Copyright (c) 1990                                       */
+/*  Darrell L. Whitley                                       */
+/*  Computer Science Department                              */
+/*  Colorado State University                                */
+/*                                                           */
+/*  Permission is hereby granted to copy all or any part of  */
+/*  this program for free distribution.   The author's name  */
+/*  and this copyright notice must be included in any copy.  */
+/*                                                           */
+/*************************************************************/
+extern float
+avg_pool (/* POOLPTR pool */);
+
+extern void
+print_pool (/* FILE *fp, 
+			   POOLPTR pool
+			   int start_pt
+			   int count
+		   */);
+
+extern void
+show_progress(/* FILE * fp, 
+				 POOLPTR pool
+			 */);
+
+extern void
+show_progress_brief(/* FILE * fp, 
+				 POOLPTR pool
+			 */);
+
+extern void
+final_pool (/* char filename[],
+			   POOLPTR pool 
+		   */);
+
+extern void
+dump_status(/* POOLPTR pool,
+               char dump_base[];
+		   */);
+
+extern void
+fatal_error(/* char *mssg */);
+
+extern void
+warning(/* char mssg[] */);
+
+extern void
+pause_it();
+@
+
+
+1.2
+log
+@added declaration for show_status_brief().  (Tim Starkweather)
+@
+text
+@d1 13
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d17 5
+@

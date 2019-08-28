@@ -1,0 +1,178 @@
+\documentstyle[12pt]{article}
+\textwidth=6.0in
+\textheight=9.5in
+\hoffset=-0.5in
+\voffset=-1.0in
+\parskip=0.1in
+\raggedright
+\begin{document}
+
+\title{Parallel Genesis User's Guide}
+\author{Michael C. van Lent}
+\date{21 August 1992}
+
+\maketitle
+
+\section{Introduction}
+
+This User's Guide is for use with the Parallel Implementation of Genesis which
+runs on the CM-200.  Described here will be the differences between Parallel
+Genesis and standard Serial Genesis, how to use Parallel Genesis, and current
+bugs and ideas for future improvements to Parallel Genesis.  It is assumed
+that the user is familiar with Serial Genesis, C* and knows how to operate 
+the Connection
+Machine.  Instructions on using the NRL Connection Machine can be found in
+the report entitled {\it Using the NRL CM-200}.  This guide also does not
+comment on the implementation details of Parallel Genesis.  These are discussed
+in the report {\it Parallelizing Genetic Algorithms}.
+
+\section{Differences between Genesis and Parallel Genesis}
+
+Parallel Genesis is an implementation of Genesis on the Connection Machine that
+attempts to retain as much of the semantics and behavior of Serial Genesis as
+possible while still providing maximum performance.  The sole difference 
+between the semantics of Parallel and Serial Genesis is the manner in which 
+random numbers are generated.  Theoretically if the parallel random number
+generator were controlled to match the serial random number generator both
+versions of Genesis would give identical reports(with the exception of 
+Offline performance as mentioned below).  
+This means that population statistics from a run of Parallel Genesis
+and a run of Serial Genesis can be compared directly.
+
+Other minor, non-semantic differences are
+\begin{itemize}
+\item Parallel Genesis always evaluates every member of the population each
+generation even if a member's genotype has not changed.  This is equivalent
+to having the {\tt a} flag always on in Serial Genesis.  Note that Parallel
+Genesis pays no time penalty for this.
+
+\item Parallel Genesis calculates Offline Performance slightly differently.
+Since the entire population is evaluated at once Offline Performance is
+always calculated with the best member of the population.  Serial Genesis
+evaluates the population one at a time and therefore can only use the best
+member found so far to calculate Offline Performance.
+
+\item The order in which the best members are chosen for inclusion into the
+{\tt min} file is slightly different however the fitnesses of the values in
+the {\tt min} file will be the same.  For example if there are 11 members with
+optimal genes then Parallel Genesis and Serial Genesis may not choose the
+same subset of 10 to store in {\tt min}.
+
+\item The internal representations have been changed to remove the need for
+dynamically allocated structures.  This has been done to speed the parallel
+implementation and to avoid difficulties in the C* memory management.
+The effects of this change are explained in Section 3.
+\end{itemize}
+
+In addition to these differences Parallel Genesis has been expanded to include
+a number of new options.  One of these new options, local selection, is
+specifically oriented towards the parallel implementation while the others
+are applicable to both Parallel and Serial Genesis(see the report 
+{\it Modifications to Serial Genesis}).
+
+\section{Using Setup}
+
+As mentioned before Parallel Genesis has been modified to remove all dynamic
+memory allocation.  Instead the {\tt setup} program creates a file called
+{\tt parameters.h} which defines the constants necessary to allocate the
+structures statically.
+
+The only effect this has on the user is that the program must be recompiled 
+whenever one of the following parameters is changed.
+\begin{itemize}
+\item Population Size
+\item Number of Genes
+\item Structure Length
+\item Scaling Window
+\item Structures Saved
+\end{itemize}
+The {\tt setup} program will automatically notify the user to recompile
+whenever one of these parameters is changed.
+
+Some techniques to avoid frequent compilation are
+\begin{enumerate}
+\item Run {\tt setup} before compiling a version for the first time.
+\item Save executables in a subdirectory with their {\tt parameters.h} file so
+that that configuration will not have to be built again.
+\end{enumerate}
+
+\section{Parallel Fitness Functions}
+
+To be used with Parallel Genesis a fitness function must be written in C* and
+use the following header.
+
+\begin{verbatim}
+double:physical Peval(str, length, vect, genes)
+char:physical str[];	
+int length;	
+double:physical vect[];
+int genes;
+\end{verbatim}
+
+The character string {\tt str} will be of length {\tt length} and the vector
+array {\tt vect} will have {\tt genes} positions from 0 to {\tt genes}-1.
+As usual the fitness function must also use the {\tt .cs} extension with its
+file name.
+
+\section{Compiling Parallel Genesis}
+
+Once the fitness function is ready and {\tt setup} has been run, Parallel 
+Genesis can be compiled using the {\tt make} command.
+
+{\tt make f=}{\it fitness function} {\tt ga.}{\it fitness function}
+
+For example if the fitness function were named {\tt F1.cs} then the {\tt make}
+command to compile Parallel Genesis would be,
+
+{\tt make f=F1 ga.F1}
+
+{\bf Note:} The {\tt make} utility seems to have some trouble keeping
+track of the C* files and it may be necessary to explicitly move or remove
+any executables or {\tt .o} file that need to be recompiled.
+
+\section{New Options}
+
+\begin{description}
+
+\item[a] This option tells Serial Genesis to evaluation the entire population
+every generation.  Parallel Genesis always does this and ignores this flag.
+
+\item[n] This is the Neighborhood Selection flag which directs Parallel
+Genesis to have each member select its parent probabilistically from its
+four neighbors.  The poplation is placed on a torus and each member of the
+population interacts only with its North, East, West, and South neighbors.
+
+\item[p] This is the Probabilistic Selection flag which directs Parallel
+Genesis to do selection probabilistically as opposed to using the Baker
+Stochastic Selection Algorithm.
+
+\item[T] This is the Time flag which directs Parallel Genesis to print timing
+information on each of it various parts as it runs.  Times are printed in
+seconds.
+
+\item[u] This is the Uniform Crossover flag which directs Parallel Genesis to
+use uniform crossover as opposed to two point crossover.
+
+\end{description}
+
+\section{Bugs and Future Work}
+
+{\large Bugs and Minor Fixes:}
+\begin{itemize}
+\item Reset defaults in {\tt setup} program.
+\item Include dynamic allocation in Parallel Genesis.
+\end{itemize}
+{\bf Note:} Parallel Genesis has not been extensivly tested and may contain
+undetected bugs.
+
+\medskip
+
+{\large Future Work:}
+\begin{itemize}
+\item Add a parasites option per Hillis.
+\item Add a local selection radius parameter.
+\item Allow local selection on other topologies.
+\item Add a Punctuated Equilibria option.
+\end{itemize}
+
+\end{document}

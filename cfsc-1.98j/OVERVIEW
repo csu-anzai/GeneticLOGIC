@@ -1,0 +1,230 @@
+--- $Id: OVERVIEW,v 1.1 1993/11/08 16:04:45 joke Exp $
+
+             |-CONFIGME     
+             |-LICENSE     
+             |-Makefile     
+             |-OVERVIEW     
+             |-README       
+             |-README.tools 
+             |-TODO         
+             |
+             |              |-bsd.cf        
+             |              |-compiler.h    
+             |-config-------|-dos.cf        
+             |              |-sunos.cf      
+             |              |-sys5.cf       
+             |              |-tos.cf        
+             |-configure    
+             |
+             |              |-cfsc.dvi      
+             |              |-changes.txt   
+             |              |-files.txt     
+             |              |-fsw1.dvi      
+             |-docs---------|-intro.txt     
+             |              |-letseq1.dvi   
+             |              |-notes.txt     
+             |              |-readme.txt    
+             |              |-vars.txt      
+             |
+             |              |-fsw1.c        
+             |              |-fsw1.def      
+             |              |-fsw1.ext      
+             |              |-fsw1.h        
+             |              |-fsw1a.c       
+             |              |-gref1.env     
+             |              |-gref1.ld      
+             |-fsw1---------|-init.cfs      
+             |              |-tst-grf1.cm   
+             |              |-x001.cm       
+             |              |-x001.cm0      
+             |              |-x001.cm1      
+             |              |-x001.cm2      
+             |              |-x001.cm3      
+             |              |-x001.cm4      
+             |
+             |              |-Makefile      
+             |-ga-----------|-README        
+             |              |-sa2.c         
+             |              |-sa2.h         
+             |
+             |              |-bblearn.h     
+             |              |-cfmsgio.h     
+             |              |-cfops.def     
+             |              |-cfops.ext     
+             |              |-cfops.h       
+             |              |-cfsc.h        
+             |              |-cfsio.def     
+             |              |-cfsio.ext     
+             |              |-cfsio.h       
+             |              |-cfsutil.h     
+             |              |-config.h      
+             |              |-core.def      
+             |-include------|-core.ext      
+             |              |-core.h        
+             |              |-display.h     
+             |              |-dsclearn.def  
+             |              |-dsclearn.ext  
+             |              |-dsclearn.h    
+             |              |-dscops.h      
+             |              |-dscops2.h     
+             |              |-grandcfs.h    
+             |              |-usercmd.def   
+             |              |-usercmd.ext   
+             |              |-usercmd.h     
+             |              |-utility.h     
+             |
+             |              |-README        
+             |              |-ab-bb.cf      
+             |              |-ab-bb.cm1     
+             |              |-ab-bb.env     
+             |              |-ab-bb.lg1     
+             |              |-ab-bb.lg1x286 
+             |              |-ab-bb.r       
+             |              |-ab-bb.rx286   
+             |              |-abef.cm       
+             |              |-abef.cm0      
+             |              |-abef.cm1      
+             |-letseq1------|-abef.cm2      
+             |              |-abef.cm3      
+             |              |-abef.cm4      
+             |              |-abef.env      
+             |              |-abef.lg0      
+             |              |-abef.lg0x286  
+             |              |-abef.lg1      
+             |              |-abef.rx286    
+             |              |-init.cfs      
+             |              |-letseq1.c     
+             |              |-letseq1.def   
+             |              |-letseq1.h     
+             |              |-tst.cfs       
+             |
+             |-lib----------|-init.cfs      
+             |
+             |              |-CHANGES       
+             |              |-INTRO.TXT     
+             |              |-README.TXT    
+             |              |
+             |              |-cfsc----------|-CHANGES     
+             |              |               |-bblearn.c   
+             |              |               |-bblearn1.c  
+             |              |               |-cfmsgio.c   
+             |              |               |-cfops.c     
+             |              |               |-cfsc.c      
+             |              |               |-cfsio.c     
+             |              |               |-cfsrand.c   
+             |              |               |-cfsrand.h   
+             |              |               |-cfsutil.c   
+             |              |               |-core.c      
+             |              |               |-css.c       
+             |              |               |-display.c   
+             |              |               |-dsclearn.c  
+             |              |               |-dscops.c    
+             |              |               |-dscops2.c   
+             |              |               |-grandcfs.c  
+             |              |               |
+             |              |               |-include-----|-cfops.def    
+             |              |               |             |-cfops.ext    
+             |              |               |             |-cfops.h      
+|-cfsc-1.98j-|              |               |             |-cfsio.def    
+             |              |               |             |-cfsio.ext    
+             |              |               |             |-cfsio.h      
+             |              |               |             |-compiler.h   
+             |              |               |             |-core.def     
+             |              |               |             |-core.ext     
+             |              |               |             |-core.h       
+             |              |               |             |-dsclearn.def 
+             |              |               |             |-dsclearn.ext 
+             |              |               |             |-dsclearn.h   
+             |              |               |             |-usercmd.def  
+             |              |               |             |-usercmd.ext  
+             |              |               |             |-usercmd.h    
+             |              |               |             |-utility.h    
+             |              |               |-init.cfs    
+             |              |               |-mkcfsc.bat  
+             |              |               |-usercmd.c   
+             |              |               |-utility.c   
+             |              |-cfsc.dvi      
+             |              |-changes.txt   
+             |              |-files.txt     
+             |              |
+             |              |-fsw1----------|-concnt-1.c  
+             |              |               |-fsw1.c      
+             |              |               |-fsw1.def    
+             |              |               |-fsw1.ext    
+             |              |               |-fsw1.h      
+             |              |               |-fsw1a.c     
+             |              |               |-getvc.c     
+             |              |               |-getvc1.c    
+             |-orig---------|               |-gref1.env   
+             |              |               |-gref1.ld    
+             |              |               |-x001.cm     
+             |              |               |-x001.cm0    
+             |              |               |-x001.cm1    
+             |              |               |-x001.cm2    
+             |              |               |-x001.cm3    
+             |              |               |-x001.cm4    
+             |              |-fsw1.dvi      
+             |              |
+             |              |               |-Makefile    
+             |              |               |-ab-bb.cf    
+             |              |               |-ab-bb.cm1   
+             |              |               |-ab-bb.lg1   
+             |              |               |-ab-bb.r     
+             |              |               |-abef.cm     
+             |              |               |-abef.cm0    
+             |              |               |-abef.cm1    
+             |              |               |-abef.cm2    
+             |              |               |-abef.cm3    
+             |              |               |-abef.cm4    
+             |              |               |-abef.env    
+             |              |               |-abef.r      
+             |              |-letseq1-------|-ccls1.c     
+             |              |               |-getdvars.c  
+             |              |               |-getperf.c   
+             |              |               |-getperf.exe 
+             |              |               |-getstr1.c   
+             |              |               |-getvars.c   
+             |              |               |-letseq1.c   
+             |              |               |-letseq1.def 
+             |              |               |-letseq1.exe 
+             |              |               |-letseq1.h   
+             |              |               |-makelet.bat 
+             |              |               |-makelet.lnk 
+             |              |               |-mklets1.bat 
+             |              |               |-mklets1.lnk 
+             |              |-letseq1.dvi   
+             |              |-vars.txt      
+             |
+             |              |-bblearn.c     
+             |              |-cfmsgio.c     
+             |              |-cfops.c       
+             |              |-cfsc.c        
+             |              |-cfsio.c       
+             |              |-cfsutil.c     
+             |-src----------|-core.c        
+             |              |-display.c     
+             |              |-dsclearn.c    
+             |              |-dscops.c      
+             |              |-dscops2.c     
+             |              |-grandcfs.c    
+             |              |-usercmd.c     
+             |              |-utility.c     
+             |
+             |              |-Makefile      
+             |              |-README        
+             |              |-ccls1.c       
+             |              |-ccls1.h       
+             |              |-concnt-1.c    
+             |              |-concnt-1.h    
+             |              |-getdvars.c    
+             |              |-getdvars.h    
+             |-tools--------|-getperf.c     
+                            |-getperf.h     
+                            |-getstr1.c     
+                            |-getstr1.h     
+                            |-getvars.c     
+                            |-getvars.h     
+                            |-getvc.c       
+                            |-getvc.h       
+                            |-getvc1.c      
+                            |-getvc1.h      

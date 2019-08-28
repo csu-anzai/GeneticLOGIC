@@ -1,0 +1,52 @@
+set echo=1
+set log=ab-bb.lg1
+dis banner
+;
+;   AB-BB   Start with 24 known classifiers, 
+;           which cover all possible combinations of values
+;           for the current and 3 previous letters (taken two at a time)
+;           for two guesses 'a' and 'b'.
+;           Using only bucket brigade, the most correct
+;           classifiers should rise to the top.
+;
+;  The bid and bucket-brigade parameters:
+;
+set headtax=0.0005
+set bidtax=0.0
+set prdtaxmx=0.0
+set FrPayDet=0.90
+set cfstrdf=1000
+set cfstrmax=20000
+set cfstrmin=1
+;
+lc  ab-bb.cf
+;
+;  Environment:
+;
+le  ab-bb.env
+ecmd set lr=100             ; 100 reward for right letter
+ecmd set tr=20              ;  20 reward for wrong letter, but right type
+ecmd set wr=0               ;   0 reward otherwise
+di env,3
+;
+;  Discovery parameters:
+;     
+;     OFF
+;
+;  Display parameters:
+;
+set adcfint=100 adcffmt=2 advarint=100  adenvint=50 adenvfmt=2
+display  vars,2  cl,21
+;
+di time
+cl 200
+di time
+cl 300
+di cl,21
+set adcfint=250 advarint=250
+cl 200
+cl 300
+di cl,21
+; that's 1000 steps
+di time
+stop

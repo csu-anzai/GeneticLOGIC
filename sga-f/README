@@ -1,0 +1,28 @@
+
+        |-Makefile     
+        |-README       
+        |-crossover.f  
+        |-decodeparm.f 
+        |-flip.f       
+        |-frist.f      
+        |-gdecode.f    
+        |-generation.f 
+        |-initialize.f 
+        |-initpop.f    
+        |-initreport.f 
+        |-movepop.f    
+        |-mutation.f   
+|-sga-f-|-objfunc.f    
+        |-prescale.f   
+        |-ran2.f       
+        |-random.f     
+        |-randomize.f  
+        |-report.f     
+        |-rnd.f        
+        |-runti.f      
+        |-scalepop.f   
+        |-select.f     
+        |-sga.f        
+        |-sgatest.f    
+        |-statistics.f 
+        |-storegen.f   

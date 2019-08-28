@@ -1,0 +1,17 @@
+	
+	README			GENEsYs 1.0, Ba, 02.Jul.92
+
+==============================================================================
+
+	doc	Contains the LaTeX-documentation of GENEsYs 1.0
+
+	bin	Binaries go here
+
+	src	Source files (C)
+
+
+	It is suggested to read the documentation first.
+	To install the system, go to directory src and type make:
+
+			cd src
+			make

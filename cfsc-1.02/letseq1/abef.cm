@@ -1,0 +1,79 @@
+; Load the environment:
+le abef.env
+ecmd set lr=800
+ecmd set tr=-200
+ecmd set wr=-200
+ecmd set e=2
+di   env,3
+;
+; Load the classifiers...
+set systreas=1000000
+set cfstrmax=99999
+set cfstrmin=1
+set cfstrdf=400
+set grcFrNSL=0.2
+grcfs 200
+;
+; **********
+; Set the bid and bucket-brigade parameters:
+set nmimsgmx=4     ; OFF: nmiemmx=4 nmiimmx=4
+set mxdupmsg=0
+set bid_k=0.1
+set bidpow=1
+set brpow=1
+set ebrpow=6
+;
+set headtax=0.0005
+set bidtax=0.005
+set fbidtax=0.02
+set prdtaxmx=0.05 prdtaxpw=1.5
+;
+set frpaydet=1.00 dmshare=1.0
+set frpaynec=0.0
+set sharerew=1
+set allpaybd=0
+set cfbidmin=0.10001
+;
+set onemperc=1
+set suppbid=0
+set delhall=1
+;
+; **********
+; Discovery parameters...
+set frnewcfs=0.04
+set nwcfstrf=1.0
+set nwcfstrv=1
+;
+set prntbpow=1.0
+set pkprnwor=0
+set bidfit=0
+; OFF set bgabppr=1.0
+;
+set randrplc=0
+set rplcbpow=2.0  rplcfubd=1.0
+set crowdfac=1
+set mxcfcopy=0  ; OFF
+;
+set cdmsgsrt=1.00 cdmsgs=2 cdmsgact=1
+set ceffsrt=0.25  ceffs=2  ceffsplz=0
+set muprtot=0.05
+set bkggart=0.08 bgascpr=.0 bgafcpr=.50 bgancpr=1.0
+; OFF set acpcrt=0.1 acpct=0 nwccstrf=0 ; New S same as for other new classifiers
+; OFF set cssrt=0.5  cssfrm=0.0  cssFrRf=0
+;
+di cl,23
+;
+; **********
+; DORUN
+di time
+set adenvint=100 adenvfmt=2
+set adcfint=1000  adcffmt=23 dscflst=a advarint=1000
+di time
+;
+cl 4000
+;
+; ENDRUN
+di time
+set dscflst=0
+di cl,23
+di cl,2

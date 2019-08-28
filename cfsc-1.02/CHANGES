@@ -1,0 +1,25 @@
+
+ Fall, 1990
+
+ I moved the psedu-random number generator source from utility.c to cfsrand.c
+
+
+
+ 25 Feb 1991
+
+ Add necessity auction to system:
+ BBType	Meaning
+ 0		std
+ 1		pay for all matching messages (not just those used to produce a message)
+ 2		sysrew biased by k
+ 3		goldberg's vsb
+
+ AllPayBd
+ 0		Std
+ 1		pay for all messages produced (even if conflict resolution deleted some)
+ 2		pay average (holyoak etal approach)
+ 3		goldberg's necessity auction (pay second highest bid)
+
+ But how to do NA when there are multiple winners and bidders?
+
+

@@ -1,0 +1,40 @@
+
+  DGENESIS 1.0
+
+  Erick Cantu-Paz
+  ecantu@lamport.rhon.itam.mx
+  Instituto Tecnologico Autonomo de Mexico - ITAM
+  (c) 1993
+
+
+DGENESIS is a distributed implementation of a Parallel Genetic Algorithm.
+It is based on John Grefenstette's GENESIS 5.0. Each subpopulation is
+handled by a UNIX process and communication between them is handled
+with Berkeley sockets.
+
+DGENESIS has been tested on DECstations 5000, microVAXen 3100, Sun
+workstations and PCs running 386BSD 0.1. Porting to other systems using
+the Berkeley socket interface should be easy.
+
+The user can set the migration rate, the migration interval and the
+topology of communication between subpopulations.
+
+The documentation is in subdirectory doc in PostScript and ascii
+formats. Read the documentation for installation procedures and
+operation of DGENESIS.
+
+Comments on the system and bug reports are welcomed. 
+
+If you want to be added to DGENESIS user's list, please send me a
+e-mail message to the address listed above. I'll send changes/upgrade 
+information to people on this list.
+
+
+----------------------------------------
+
+Known problems:
+
+1 - If you get an "Interrupted system call" message you can safely
+    ignore it. It is a select function call in migrate.c that will be
+    repeated.
+

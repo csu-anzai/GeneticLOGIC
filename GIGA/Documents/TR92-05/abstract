@@ -1,0 +1,42 @@
+Title: Genetic Invariance: A New Approach to Genetic Algorithms
+
+      Master's Thesis
+
+Author: Michael Lewchuk
+
+Date:  April 1992
+
+Abstract:
+
+Genetic algorithms are adaptive search algorithms which generate and
+test a population of individuals, where each individual corresponds to
+a solution.  They then adapt to the information obtained from testing,
+seeking superior solutions by selecting and combining solutions of
+above average value.  As the number of superior individuals in the
+population increases, the number of inferior individuals decreases.
+This thesis introduces Genetic Invariance, a similar family of generate
+and test problem solvers which uses a different selection and
+replacement strategy. In the best case, it achieves superior solutions
+without eliminating inferior characteristics.   Although
+characteristics may initially be associated with inferior solutions,
+they may prove to be superior when combined with other particular
+characteristics.  Mathematical analysis of lower bounds of Genetic
+Invariance on a simple function is given, and several properties of
+Genetic Invariance are explained using this analysis.  A comparison and
+contrast is done to show how the two selection strategies achieve
+optimization in different ways.  An analysis of the assumption and
+strategies of each system explains likely beneficial and detrimental
+effects of each system, while empirical analysis is given which
+demonstrates these effects.  Together, they show each system's features
+and drawbacks.
+
+Keywords: genetic algorithms, gene invariance, one max function analysis
+
+See Also:
+
+Joseph Culberson; "GIGA Program Description and Operation" June 1992
+Technical Report TR92-06
+
+Joseph Culberson; "Genetic Invariance: A New Paradigm for Genetic Algorithm
+Design" June 1992 Technical Report TR92-02
+

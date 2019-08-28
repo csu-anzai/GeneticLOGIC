@@ -1,0 +1,83 @@
+# LICE configuration file
+#
+
+# run		=	default
+
+#----------------------------------------------------------------------
+# logfile: a file containing one line per generation
+
+# logfile		=	stdout
+
+logfile		=	sphere.log
+
+#----------------------------------------------------------------------
+# popsize: number of individuals in the population
+
+popsize		=	50
+
+#----------------------------------------------------------------------
+# vars: dimension of the problem
+
+vars		=	30
+
+#----------------------------------------------------------------------
+# sigmas: number of step sizes to evolve. Should be either 1 or n
+
+sigmas		=	n
+
+# sigmas	=	30
+
+#----------------------------------------------------------------------
+# reco: recombination type
+
+reco_x		=	discrete
+reco_s		=	geometric
+
+#----------------------------------------------------------------------
+# select: selection scheme
+
+select		=	comma
+
+#----------------------------------------------------------------------
+# children: no of children per parent to select from 
+
+children	=	6
+
+#----------------------------------------------------------------------
+# nbsize: neighborhood radius to select from 
+
+nbhsize		=	5
+
+
+#----------------------------------------------------------------------
+# tau0, taui: variances for mutating the step sizes
+
+tau0		=	0.1
+taui		=	0.3
+
+#----------------------------------------------------------------------
+# ranges for initial x_i and sigma_i
+
+min_init_x	=	1e10
+max_init_x	=	1e10
+min_init_s	=	1e-8
+max_init_s	=	1e8
+
+#----------------------------------------------------------------------
+# smin, smax: lower and upper boundaries for step sizes
+
+smin		=	1e-50
+smax		=	1e50
+
+#----------------------------------------------------------------------
+# maxgen, maxcalls: maximum number of generations or functions calls.
+
+maxgen		= 	300
+
+# maxcalls	=	500000
+
+
+#----------------------------------------------------------------------
+# dmpint: dump the entire population every <dmpint>th generation.
+#         When zero, don't dump at all.
+dmpint		=	0

@@ -1,0 +1,36 @@
+/*                  USERCMD.EXT  for the CFS-C Classifier System.
+
+Declare some variables from USERCMD.DEF for use in DISPLAY.C .
+See the file USERCMDS.H for the #define's used here.    
+
+**/
+
+#include  "usercmd.h"
+
+extern  unsigned int  DemoLev;
+extern  short    int  EchoFlg;
+
+extern struct RTVAddNd
+#if  ( INTSZ == 16 )
+{	int		Code;
+#else
+{	short   Code;
+#endif
+	char	*Addr;
+}
+	RTVarAdd[];
+        
+
+extern struct  RTVarNd
+{	char		*Name;
+	char		*Alias;
+	char		Type;
+	char		Load;
+	float		Low, High;
+	char		*Addr;
+};
+
+extern struct  RTVarNd		*RTVars, *RTVarNxt;
+extern unsigned int		RTVarsSz;
+
+struct RTVarNd *FindRTVN();
