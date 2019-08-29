@@ -1,0 +1,13 @@
+From: mikew@wyse.wyse.com (Mike Wexler)
+Newsgroups: comp.sources.x
+Subject: v02i072:  A demo of continuous graphics in a Toolkit window, Part01/02
+Message-ID: <1960@wyse.wyse.com>
+Date: 4 Jan 89 17:59:27 GMT
+
+Submitted-by: moraes@csri.toronto.edu (Mark Moraes)
+Posting-number: Volume 2, Issue 72
+Archive-name: life/part01
+
+-- 
+Mike Wexler(wyse!mikew)    Phone: (408)433-1000 x1330
+Moderator of comp.sources.x

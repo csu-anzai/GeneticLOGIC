@@ -1,0 +1,8 @@
+rm td/break.*
+rm gb1/*.gen
+rm gb1/*.tmp
+cp gb1/0073gen.vir gb1/0073.gen
+cp gb1/0080gen.vir gb1/0080.gen
+rm core_out
+rm soup_out
+rm tierra.log

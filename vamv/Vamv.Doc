@@ -1,0 +1,697 @@
+		   VAMV - Video Alpha Mosaic Virus
+			Author: Rick McGowan
+1. Overview
+
+VAMV is a crude experiment in program evolution and population
+dynamics.  (Actually, probably only applicable to the study of
+itself...) It should run on most terminals and windows that support
+ANSI cursor positioning sequences.  It is intended as a fore-runner to
+develop genetic machinery and principles for a longer-term project.
+This is a description of Version 1.0.  Copyright 1990 Rick McGowan.
+
+Basically, VAMV works by building an "environment" of positions (one
+for each screen position within bounds).  Each position may have an
+amount of "food" located at it (indicated by "." on the screen) and/or
+an "organism" (indicated by an upper-case alphabetic character).  If
+both food and an organism occupy a position, only the organism is
+displayed; if the organism moves away, the food is re-displayed.  As
+VAMV runs, it displays on the screen, changes in locations, food, and
+the organisms that occupy the "space".  In another file (stderr) it
+can keep running statistics if various options are enabled.
+
+An "organism" consists of some "preferences" (registers) and 64 bytes
+of instruction space.  Taken together, the instruction space and the
+registers constitute the genetic (and behavioral) machinery of the
+organism.  Each organism is a program in a very simple byte-oriented
+assembly language that is interpreted by the VAMV program.  When an
+organism is "born" out of nothing, its program counter is set to zero
+and its instructions are random.  If it is produced by division of
+another organism, it inherits its PC, preferences, some "strength", and
+program instructions (genes) from its parent.  When an organism
+divides, various mutations may take place in the genes of the new one
+(to make things more interesting, things tend to mutate rather
+drastically).
+
+The system is bootstrapped by "pumping".  First, "food" is generated
+pseudo-randomly (let's say "randomly" for brevity); up to 16 units of
+food are dropped at 15% of the locations (by default; see below).  A
+number of random organisms are created and dropped randomly into the
+environment.  A clock is started, and on each clock tick, each living
+organism executes one instruction.  On every 50 clock ticks (called the
+"major cycle") a statistical snapshot is taken, and each organism
+receives a score.  The system may require several (or many) pump
+attempts before generating organisms that are viable enough to divide
+and increase to a stable level.  Several factors may lead to premature
+"expiration" of an organism: it may fail to eat, its PC may overflow,
+it may branch to a non-existent address (suicide), it may be eaten by
+another organism, etc.  If the population density is high enough,
+culling can take place (under parametric control) to reduce density.
+Normally, mutations occur only when an organism divides, but this can be
+controlled via the command-line option "-m", which causes the
+middle-ranked 1/3 of living organisms to be mutated on every major
+cycle.  After the scoring for each major cycle, the scores and counts
+of items are reset, so scores represent how well an organism did during
+only one cycle, not overall; if scores were cumulative, then certain
+organisms would always do very well, leaving virtually no chance for
+young organisms to catch up.
+
+The screen is arranged so that the right boundary is contiguous with
+the left boundary, and the top is contiguous with the bottom.  Organisms
+that move off one side will re-appear back at the other, and so forth.
+
+2. Preferences
+
+As mentioned, each organism has some "preferences".  They are:
+
+JOIN	This is the organism's "type" (0-15, printed as A-P).  The JOIN
+	preference is used for JOIN instructions, and to determine the
+	edibility/friendliness of another organism.
+
+EAT	This is the organism's preferred amount of food to eat.  If a
+	location contains less than this amount, then it is considered
+	"inedible".  (In this version, there are actually two preferred
+	EAT types; one criteria of which must be met in order for the
+	food to be considered edible.)
+
+PICK	This is the preferred amount of food to "pick up" and hold in
+	the organism's "holdings" (storage) bin.   If a location contains
+	less than this amount, then it cannot be picked up.
+
+DEP	This is the amount of held food that can be "deposited" at a
+	location.  It is used for the DEP and SYNTH instructions.
+
+3. Tunable Parameters
+
+A file of parameters ("Lim.File") is read when VAMV is started up.
+The file (in a very specific format) contains a list of parameters
+that can be changed within various bounds.  (Notes: I have NOT tested
+these at various extreme settings, especially those that are really
+out-of-bounds.)  Lines that have "#" in the first column are
+comments.  Blank lines are disallowed.  The non-comment lines of
+Lim.File contains sets of numbers, usually four or five per line,
+and the comments immediately preceding them tell what the numbers
+correspond to.  These controls are interpreted as follows:
+
+nseed		The number of original organisms to create at startup
+		time.  A high number increases the chances of creating
+		a "somewhat viable" organism very early.
+
+nreseed		When the number of organisms falls below "mindens",
+		a re-seeding takes place.  "Nreseed" is the number
+		of organisms to reseed.  A number higher than mindens
+		is desirable, otherwise reseeding happens frequently
+		when there might actually be enough viable organisms
+		to keep things running.
+
+mindens		The minimum number of organisms (density) before
+		automatic reseeding takes place.  I generally keep it
+		rather low, to see how the given population performs.
+		(Some populations stabilize for long periods at very
+		low densities.)
+		
+STARVE		This is the maximum age allowed since last eating
+		before an organism expires (i.e., if it hasn't eaten
+		in a certain number of instructions, it expires).
+		An organism can live by successful synthesis without
+		ever actually executing EAT or FOOD instructions
+		successfully, because if organisms synthesize food, they
+		get credit for having eaten.
+
+MAXFOOD		Each location can contain food; this is the maximum food
+		allowed per location before it "rots away" to 0.  Low
+		values help keep food scarce.  High values contribute
+		to higher population densities by keeping food availability
+		high.
+
+bestinstr
+goodinstr	These two haven't much effect (they're more for future use
+		when more different assembly instructions are added)
+		and should be left generally alone.  They are to give
+		organisms a "bonus" for using a larger variety of
+		instructions.  "Bestinstr" is the minimum number of
+		instruction types to use before receiving a bonus;
+		"goodinstr" is the minimum number to use in order to
+		receive a much smaller bonus.
+
+crowded		This is the "local density" (number of organisms in
+		the surrounding 8 locations) considered "too crowded"
+		for division to occur successfully.  Its values are 0-8.
+
+macrowded	This is the "global density" (empty squares per organism)
+		at and below which there is an automatic 50% failure rate
+		imposed on division attempts.  Setting it low allows
+		for more crowding; setting it high keeps populations low.
+		Generally leaving "macrowded" higher than "culdens" keeps
+		populations in check without having to cull them.
+
+maxldiv		This is the maximum local density at which division gives
+		a "success" score; over this density division attempts
+		fail to achieve the score.  Local density must be
+		less than or equal to "maxldiv" in order for division to
+		succeed.  ("Macrowded" is checked before "maxldiv".)
+		Keeping maxldiv low helps keep organisms well-spaced;
+		leaving it at 7 or 8 tends to let them cluster very tightly.
+
+elbow		The minimum number of squares per organism at which
+		division succeeds in any case.  (It's a strict limit on
+		population growth; in fewer than "elbow" squares/organism
+		division will always fail; this can keep a highly
+		reproductive population low enough to keep the program
+		running "quickly".)  Global density (elbow room) is
+		calculated at the beginning of every instruction cycle,
+		before the organisms make moves.  Throughout that
+		instruction cycle, the same calculated value is used for
+		all organisms.  At the end of a major cycle, that
+		calculated global density is displayed as "SQ/O" in the
+		statistical output, with the "real" current value at the
+		end of the major cycle (sometimes somewhat different)
+		displayed in parentheses.
+
+culdens		The minimum number of squares per organism before
+		automatic culling of 1/3 of the population takes place.
+		Culling only happens on each major cycle after the
+		score is tallied, when the squares per organism is LESS
+		than culdens.  Keeping "culdens" very low (< 15 or so)
+		allows populations to grow significantly if they happen
+		to be virulent.  Keeping culdens high keeps the population
+		well in check.  It may also contribute to the speed of
+		evolution:  if culdens is set at say 50 in a situation
+		where a large population is generated and there are usually
+		far fewer than 50 squares/organism, it will tend to make
+		things mutate very quickly as organisms continue to divide
+		and 1/3 of them are culled on every major cycle.
+
+divstr		The minimum "strength" needed to divide.  (Strength is
+		achieved by eating, picking things up, or synthesizing food.)
+		Raising this makes it more "expensive" to reproduce.
+		At the moment, there is no penalty for having "negative"
+		strength; organisms just can't reproduce in that case.
+
+synstr		The "strength" gained from food synthesis.  Making this
+		higher generally allows food production to go up and helps
+		make it easier to divide.  Quite a bit can be achieved
+		simply by changing values of "synstr" and "divstr", as they
+		tend to have large covert effects on how well organisms
+		perform in other areas (e.g., if "synstr" is very low,
+		compared to divstr, then organisms will evolve *away* from
+		food synthesis, even if their scores would be raised thereby,
+		because they can't reproduce).
+
+convert		The amount of items that must be held in order to be
+		automatically converted to "food" during a PICKUP action.
+		(See below.)
+
+initfood	The percentage of locations that initially have some
+		amount of food.  Normally 15%, but it can be changed here.
+
+ifoodmax	The maximum number of food items at each location initially.
+		(This becomes a limiter on the size of a pseudo-random
+		number generated at "initfood" percent of the locations.)
+		The default limit is 16.
+
+neisave		This may be set to 0 or 1.  If set to 1, it causes a neigbor
+		organism to switch places with an organism of the same type
+		that "moves" to its location.  If set to 0, it allows
+		any organism to be "squashed" by an organism that moves
+		to its location.  The 0 setting runs much more quickly
+		than the 1 setting.  Significant differences can be obtained
+		by merely changing this variable, all other things remaining
+		the same.
+
+After the parameters in Lim.File, there are 16 other parameters for the
+scoring system.  Note that score differences really only come into
+play when culling takes place and the lowest 1/3 of the population are
+culled.  If the culling threshold is set very low, many small populations
+will never need to be culled, hence the score will not affect things.
+
+Examples:  Given a similar scoring matrix in Lim.File, the following
+two settings tend to produce slightly different populations.  These
+examples were each executed with the random seed set to 6969 (for
+comparison purposes).
+
+	A type:	150 70 15		Scores:	5  2  2  2
+		140 100 9 7			0  0  2  2
+		6 13 7 9			2  5  2  0
+		8 2 2 10			0  5  2  2
+		15 16 1
+
+	B type:	150 70 45		Scores:	9  3  5  2
+		120 150 8 6			0  0  2  2
+		5 7 8 7				2  9  2  0
+		7 5 7 10			0  9 15  5
+		15 16 0
+
+With "neisave" enabled, the A type produces a very small, tightly
+clustered, roving, long-lived (shall we say "immortal") population
+usually of one organism type; they may actually exhaust food
+resources.  I've seen similar populations maintain stability over 5000
+major cycles with very long lived organisms.  The population generally
+becomes small and quick-moving, eating little and dividing infrequently
+(no available food!).  Under domination by other specific organisms,
+these populations may consistently exhaust food supplies and population
+will dwindle to extinction (if not re-seeded, which also helps provide
+extra food resources!).  A division into C and B types can be seen
+about the 17th major cycle, and the population seems to be running
+toward high levels.  By the 28th cycle or so, it is completely
+dominated by type B.
+
+If neisave is turned off in Lim.File (set to 0), by cycle 16 I is
+dominant and completely takes over.  By cyc 30 a small population of,
+I, J, and H is dominant, and reseeding is frequent as they begin to
+exhaust food supplies.  By cycle 112, E, and N are dominant at low
+population levels.  By cycle 140, the population is stabilizing at a
+higher level.  There seems to be a significant difference between these
+in the percentage of EAT and JOIN instructions.
+
+The B type (note with "neisave" disabled) is a medium-to-high
+population of relative diversity, generally loosely clustered or
+unclustered.  It tends to be relatively self-sustaining over a long
+period, fluctuating from about 50-100 living organisms (15-30
+squares/organism). Over a period of a few minutes in a run that had
+been going for a couple of hours previously,  I've seen this
+configuration split into two major populations generally occupying two
+halves of the space; one side (E) with much available food, one side
+(H) with almost none; the H side then invaded the E side and spread
+eastward, "pushing" the E population (which was making food) ahead of
+it; in the wake of the H population (an area of little leftover food),
+an L population sprang up briefly, was overtaken by the E population
+and died out (or was eaten).  The H population eventually split up into
+several separate smaller (A, M, and B) populations that clustered
+together.  Some 50% of the environment was still dominated by the
+food-producing E population.
+
+In the B example as given, the dominance of F types begins early and
+is still sustained by cycle 32.  The population is quite dense at
+about 8 sq/o.  By cycle 48, some rather successful A types are on the rise
+and some successful C type scan be seen moving in from the west.
+By cycle 60, the population is noticeably more diverse.
+
+3. Mutation
+
+As mentioned above, normally organisms are genetically stable in
+themselves, and mutations only occur when they breed, in the "new"
+organism.  Division takes place by copying an organism, then mutating
+the copy.  If VAMV is executed with the "-m" option, then 1/3 of the
+living population is automatically mutated on every major cycle.
+(The highest scoring 1/3 are not mutated, the second 1/3 are mutated
+and the lowest 1/3 may be culled, if automatic culling happens due to
+the "culdens" setting.)
+
+"Automatic" mutation consists of two phases.  First, the "join" subroutine
+(the same one used for the JOIN instruction) is performed on organisms
+that are adjacent in the sorted list.  Then, a mutation routine is
+performed on each resulting organism.
+
+The mutation routine works as follows.  First, preferences are
+mutated.  There is a 15% probability of two preferences being swapped
+and a 20% probability of a preference being randomized.  After this,
+the 64 genes of the organism may mutate, according to some
+probabilities.  Three executions of a 75% probability of "bit-flip" in
+one (random) gene are performed.  Following this, there is a 60%
+probability that several bits change in one gene.  Then, there is a 25%
+probability of a gene being lost (packed out) and replaced at the 64th
+location with a new random gene; in 15% of the cases where this occurs,
+no further mutations occur.  Then there is a 35% probability of two
+genes being swapped, and in 20% of these cases, no further mutations
+occur.  Then there is a 25% probability of a single gene being
+randomized.
+
+Mutation (especially percentages of the various types) really should be
+under parametric control, and in the future probably will be.
+
+4. Assembly Language
+
+The assembly language is very simple.  Most instructions are two bytes
+(a one-byte opcode with a one-byte argument).  Most arguments divide
+into an "x/y" type, indicating a location relative to the organisms's
+location, "-1,3" for example, is an offset of -1 in the X dimension and
+3 in the Y dimension.  (Due to an unfortunate early programming error
+having to do with cursor positioning row/column order, X and Y are
+actually reversed on the display.)  The "x,y" type arguments are
+interpreted as four-bit signed quantities.  There is no even/odd
+addressing scheme, so organisms do evolve that use "arguments" as
+instructions and vice versa, depending on their branch and jump
+instructions:  I've seen successful organisms use several instructions
+on even addresses, branch back to an odd address and "re-use" the data
+as instructions and instructions as data before jumping back to the
+original even-address loop.  Organisms do tend to stay within a very
+small instruction space -- they do *not* generally make full use of
+their available space.  Since most organisms are created by division
+of other organisms, not all organisms even need to have successful
+"bootstrap" instructions beginning at address zero.  (It might be
+interesting to experiment with situations where organisms needed
+successful bootstrap instructions, e.g., by setting the PC to zero
+on new organisms produced by division; see the "-b" option below.)
+
+SYNTH x,y	Synthesizes food by adding its "preferred amount to eat"
+		to what it finds at x,y.  It requires both some "holding"
+		and some "strength" to succeed, but also adds to the
+		producer's strength ("synstr").  Reduces "holdings" by one.
+
+PICKUP x,y	Picks up "food" and holds it without consuming it.  It
+		may be later deposited somewhere.  On a pickup, if the
+		organism ends up with more than the number of items
+		specified by the "convert" variable, then that number
+		of items is "converted" to food and consumed.  Normally,
+		it increases the organism's holdings by one.  Succeeds only
+		if the amount of "food" at the location is at least its
+		preferred amount to pick up.
+
+DEP x,y		Deposits its "preferred" number of items (food; if it has
+		enough "holdings") at x,y.  Reduces "holdings" by one.
+
+EAT x,y		Eats another organism at x,y if it is NOT of the same
+		"type" (visual symbol is equated with type).  The organism
+		receives strength equivalent to the "success" score for
+		EAT, and the score as well.  Cannibalism can be allowed
+		by using the "-c" option; this option disables the normal
+		check for an organism's type before allowing another to
+		eat it.
+
+FOOD x,y	If there is food at x,y and it is "edible" (by the
+		criteria mentioned above), then the preferred amount
+		of food is eaten (subtracted from location).  If it
+		eats, the organism receives a successful score and
+		strength points equivalent to the score awarded.
+
+BR m		Branches to PC+m (relative to the current PC).  May be
+		a positive or negative offset.  Non-scoring.
+
+JUMP m		Jumps to an absolute address.  Non-scoring.
+
+MOVE x,y	Move to the location offset by x,y from current location.
+		If the target location contains an organism of the same
+		type, then their positions are swapped.  If the target
+		location contains any other organism, it is destroyed
+		and the move is accomplished.
+
+MOVQ x,y	Move as in MOVE if x,y is an unoccupied location.
+
+MOVI x,y	If location offset x,y from the current location has
+		food, then moves to x,y as in MOVE.
+
+JOIN x,y	Trades instructions (genetic material) with another
+		organism at x,y if they're of the same "type".
+
+DIVI x,y	If safe to do so, and x,y is unoccupied, then this
+		divides into two organisms.  If x,y is occupied or
+		density is too crowded, then the organism FAILS to divide,
+		but receives a score for dividing and loses "divstr"
+		points in strength.
+
+DIVQ x,y	This divides, "squishing" any organism at x,y.  If
+		there is an organism of the same type at x,y then it
+		doesn't divide (but doesn't get the score either).
+
+BRNNE x,y m	If there is a neighbor at x,y and it is NOT edible
+		(i.e., is of one's own type), then branch to PC+m.
+		Non-scoring.
+
+BRINE x,y m	If the amount of food at x,y is LESS than the preferred
+		amount to eat (is "inedible"), then branches to PC+m.
+		Non-scoring.
+
+TRADE x,y	Trades material with the organism at x,y relative to
+		current location, under the following conditions.  If
+		the other organism (P) has less strength than the self
+		(O), then the combined strength of O and P is divided
+		equally between them (if P has none and O has 1, then
+		P gets it).  In any case if x,y is occupied, O receives
+		a success score even if it didn't "split the goods".
+		O also receives "holdings" equivalent to whatever P is
+		holding ("profit by trade").
+
+The instructions marked "non-scoring" actually are not added to an
+organism's score in this version, even though they have a score
+indicated in the scoring array in Lim.File (in the distributed Lim.File
+these are set to zero).
+
+Some moves add to an internal tally for "bad moves".  Examples of such
+are a move to the same location, JUMP to a non-existent memory
+location, an attempt to synthesize food without adequate strength, an
+attempt to divide while too weak, and so forth.  The tally for bad
+moves is subtracted from each organism's score before they are compared
+and ranked at the end of each major cycle; this helps differentiate
+scores for nearly identical organisms and rank the actual "more
+successful" organisms higher.
+
+4. Invocation & Options
+
+It is *imperative* when running VAMV with any statistical or
+assembly-language options enabled (i.e., -a, -s, -S) that the stderr
+file descriptor always be redirected to a file (or another window)
+because statistics are generated on the stderr file; if invoked with
+-s, for example "vamv -s 2>junk" (or whatever file) is preferred.  VAMV
+produces statistics at each major cycle, picks the highest-scoring
+organism, and (if -a is enabled) tracks the assembly code actually
+executed by the last "most successful" organism during the next major
+cycle. (If invoked with "-S" and/or "-a", users should be aware that
+VAMV will generate megabytes of statistics & assembly code per hour;
+far fewer statistics - one line per major cycle - are generated by the
+"-s" option alone.)
+
+Currently supported options are:
+
+-m	Turns on the mutation of the middle 1/3 rank of the population
+	on each major cycle.  Normally, mutations only take place when
+	organisms divide.
+
+-a	This shows, in the statistics file, the assembly code executed
+	by the organism last ranked as the most successful (with the
+	highest score in the previous major cycle).  On the first
+	cycle, it is arbitrarily organism zero, the first one created.
+
+-A N	The "-A" option turns on the "-a" option after N major cycles
+	have been completed, then turns it off again after three cycles.
+	It is only effective if the "-s" or "-S" options are also
+	in effect.
+
+-s	Short statistics option.  Produces one line of statistics
+	per major cycle.  A sample line is:
+		C    1  N=  13  SQ/O= 128 ( 118) STB=   0
+	The numbers are, from left to right, the major cycle number,
+	the number of organisms alive, the number of squares per
+	organism (global density), and in parentheses the "real"
+	number of squares per organism at the end of the major cycle,
+	and a count (STB or "stability") of the number of major
+	cycles since reseeding took place.  Every 5 major cycles,
+	an additional line of "census" statistics is printed, which
+	tells (for types A-P) how many of each type were living at
+	the end of the major cycle.  Example:
+		POP: A:78 D:1 G:7 J:5 K:1 O:2
+
+-S	Produces long statistics that are relatively self explanatory.
+	The first line includes the lines above; this is followed by
+	statistics indicating the number of each type of instruction
+	executed during the major cycle.
+
+	At the end of a run (when the user depresses the DEL key to
+	kill the process), a set of final statistics are generated
+	showing the total numbers of each instruction executed, the
+	number of organisms created over the life of the run, and
+	the average number of each instruction executed by organisms.
+	These statistics are generated whether the -s or -S options
+	are given (but not if neither -s nor -S is specified).
+
+-z	Stops the run (aborts) if the population reaches zero, rather
+	than automatically reseeding it.  If statistical options are
+	turned on, then final statistics are also generated automatically
+	upon termination.
+
+-c	Allows "cannibalism" by disabling a check for "same type" when
+	an EAT instruction is executed.  Normally, it is disallowed
+	(without pentalty) to eat an organism of the same type.
+
+-r N	As we all know, random number generators are only pseudo-random,
+	and given the same "seed", they always generate the same sequence of
+	numbers; it is in seeding them appropriately that differences are
+	gained (e.g., by setting from the system clock).  This option
+	initializes the pseudo-random number generator with the given
+	number (N), instead of taking the seed from the system clock.
+	This allows completely identical runs to be made for experimental
+	purposes.  (In the statistics file, the seed number is always
+	reported.)  Normally, no two runs will be exactly the same
+	(unless the time happens to be the same); this option allows
+	repetition of runs, perhaps with different command line options
+	for gathering statistics and so forth.  It may be useful when
+	testing the effects of different parameters in Lim.File, to see
+	their effect given idential circumstances and probabilities.
+	The same seed will generate the same sequence of probabilities,
+	and a different evolutionary path will be chosen at exactly one
+	point of departure from the previous run; runs can be compared
+	for the long-term results of a single change in parameters.
+
+-b	Causes the PC of organisms to be initialized to zero when they
+	are created by division, instead of executing from the current
+	PC of the "parent" at creation time.
+
+-v	Takes a "visual snapshot" of the screen (copies the environment
+	as you see it) and puts it into the statistics file on every
+	5th major cycle (when census statistics are printed).  This
+	allows one to very easily see what was happening at any given
+	point and may be useful for tracking dominance patterns.
+	This option is only effective if "-s" or "-S" is also in effect.
+
+If a non-option argument is given to VAMV, it is taken to be the
+length of the major cycle.  By default, the major cycle is 50 ticks
+long, but it may be made any length.  The "usage" of VAMV is currently:
+
+		vamv [-maSszxcbv] [-A n] [-r n] cyclen
+
+4.1 Planned (Unimplemented) Options.
+
+One potentially useful feature is a special signal (e.g., SIGQUIT)
+that could be generated from the keyboard to produce a single
+snapshot in the statistics file without interrupting the flow.
+Other possibilities:
+
+-x	Not yet implemented.  Would allow a run to be automatically
+	stopped if food were to be completely exhausted (complete
+	extinction).
+
+-q N	Not yet implemented.  Would allow a single snapshot to be taken
+	after a specified major cycle (number N).
+
+-Q N	Not yet implemented.  As in q, but stops the run after taking
+	the snapshot.
+
+-L f	Not yet implemented.  Puts statistics in the file named by "f"
+	rather than putting them on the stderr file (works by internally
+	redirecting stderr to the named file, which it creates).
+
+4.2 ".LastRun" File
+
+Once in a while, I've had the experience, while developing this
+program, of seeing something very interesting happen, but, alas, none
+of the statistical options were on, so I wasn't able to find out what
+the exact situation was (e.g., the random seed).  To facilitate
+recovery from this disappointment, a special file called ".LastRun" is
+created every time VAMV is invoked.  The ".LastRun" file contains the
+same information as the header of the statistics that would normally be
+generated.  Since the file is re-created on every run, it only contains
+valid information for the last run.  The information looks like this
+(below), and can be used to re-create the "Lim.File" conditions as well
+as the random seed, so the same run can be done again.
+
+4.3. Compilation Alternatives
+
+The source code is set up for three different board sizes.  By default
+it is compiled for a 22 by 70 board, to fit a standard terminal.  It
+can also be compiled with a 48 by 32 board -- these two sizes generate
+respectively 1540 and 1536 locations, so they behave very similarly
+without Lim.File modifications.  Other sizes are, of course, possible
+by changing "prog.h".  For low speed connections (e.g., 1200 baud)
+there is another compilation option (defining LOWSPEED in "prog.h").
+Given exactly the same conditions and exactly the same seed number,
+the different board sizes will produce slightly different results.
+
+5. Aims of VAMV, and Lessons Learned in Programming.
+
+The "purpose" of VAMV rather evolved as it was being developed, but
+fundamentally is was to build a system of evolving little programs
+that adapted themselves to their environment.  The form this finally
+took was that of populations that "adapt" by "natural selection"
+and disperse themselves through the environment by breeding more
+quickly than other organisms.  To maintain their dominance, they
+have to perform certain actions.  If food supplies run low, for
+example, they cannot as easily divide as if there were adequate
+supplies; so, the population over a few generations might tend to
+become dominated by food-producing organisms rather than by those
+that merely consume what is lying around.  The trick to achieving
+a stable population that keeps itself at acceptable levels has been
+in "tuning" the parameters to achieve a balance between food consumption,
+synthesis, and breeding population.  Not every tuning will tend to
+produce balanced populations or "reasonable" ecologies, and finding
+one that does so is rather like the proverbial needle in a haystack.
+I hope it's been made easy to twiddle the parameters, re-check old
+results, and "re-run" favorite programs.
+
+The original scoring system gave various point scores for attempting
+an instruction (such as eating), even if the instruction didn't
+actually succeed.  Under these conditions, organisms quickly learned to
+profit greatly by accomplishing nothing, and interesting populations
+didn't tend to develop.  It tended to develop wildly, become over
+populated, and never really change in quality.  I quickly scratched
+that method and hit upon allotting two points (one point would have
+sufficed) for attempting any "scoring" instruction, and allowing a
+tunable number of points for success of those instructions.  Results
+are much better.  The idea of not adding JUMP and BRANCH instructions
+to the score is to keep the rank low for organisms that do nothing but
+branch and jump while accomplishing nothing else.  The current method
+generates results much closer to those originally intended.  The
+results are even now much better whether or not culling actually takes
+place.  The strength needed to reproduce, the available food supplies,
+synthesis needs, and so forth can be all tuned for various results.
+
+The parameter file greatly increases the flexibility of the program,
+and allows a variety of stable and unstable environments to be
+created.  I struggled for a long time attempting to "balance" the
+environment with hard-coded values.  It would have saved much effort to
+have begun with as much parameterization as possible, so that I could
+have more quickly experimented without having to constantly recompile
+the program.
+
+There were some early bugs in the program that -- true to the old addage
+about the opportunism of evolution -- the organisms themselves found
+for me.  The first versions had no prohibition on cannibalism, and
+organisms quickly learned (under some other early rules) that they
+could profit greatly by doing nothing but eating each other and
+dividing like crazy.  When the TRADE instruction was first implemented,
+it had the bug that it didn't prohibit trading with the organism at
+location 0,0 relative to the self (i.e, an organism's own location) --
+they evolved VERY quickly to rack up tens of thousands of points by
+trading vigorously with themselves; this also led me to lower the
+inherent "profit margin" for the TRADE instruction.  They also quickly
+found a bug that allowed them to join with themselves (and caused core
+dumps).  They also discovered bugs that allowed them to divide without
+eating, eat themselves, divide on top of themselves.  The earliest
+versions had locations only occupied with at most one item of a
+specified food value (which caused much starvation); under that
+regime, some organisms also discovered how to deposit a thing and
+then eat it back from the same location and score twice -- which was
+easy because "deposit" instructions weren't decrementing an organism's
+holdings!  Some other rules now prohibit certain other forms of
+"cheating" -- such as attempting to pick up (and profit by) zero
+items or picking up the same amount as deposited (now, the preferences
+for DEP and PICK are forced to be different because PICK won't work
+if they're the same, so those organisms are bred out).  It is also
+prohibited to score by eating zero items (that is, organisms that
+prefer to eat zero items will never score points for eating).
+
+Early versions all had NOP (no-operation) instructions in the
+repertoire, instead of the SYNTH instruction.  Eventually I eliminated
+these in favor of the SYNTH instruction.  I discovered that at high
+population densities, things seemed to move very slowly.  Investigation
+revealed that organisms had adopted the technique of executing large
+numbers of no-op instructions (up to 50%!), apparently as a survival
+mechanism; they didn't have to do much in order to survive.
+
+6. Further Steps
+
+The point of all this was to develop some techniques for programming
+organisms to interact with an environment and make decisions about
+behavior based on their current status and that of the local
+environment.  Instructions like BRINE and BRNNE can be used by them in
+various subtle ways.  BRNNE for example, can actually be used to detect
+a potential "enemy" organism, and branch to another "phase" of the
+current program.  In practice, organisms do not perform much (if any)
+of this "intelligent" processing, it seems.  Next plans are to develop
+16 more instructions to bring the full set to 32 (or even more).  I
+would hope to add instructions that would allow organisms to more
+intelligently weigh possibilities in the environment, and react in
+varying ways to threats, availability of food, and so forth.  In
+particular, instructions allowing self-modification of programs and use
+some program space for data storage (like registers), and a stack for
+data storage and perhaps CALL/RETURN sequences are currently planned
+for a future version.
+
+For further information, suggestions, questions, or comments, please
+write:
+	Rick McGowan
+	upheisei!rick@attunix.att.COM
+	{Sun.COM, Apple.COM, Xerox.COM}!attunix!upheisei!rick
+
+If you can't reach that, contact:
+	xdos!doug@Apple.COM
+	Sun.COM!pyramid!xdos!doug
+	Apple.COM!xdos!doug

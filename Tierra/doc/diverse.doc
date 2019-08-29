@@ -1,0 +1,312 @@
+====== DIVERSE DOCUMENTATION =================================================
+
+Usage:  The diverse tool will prompt you for input parameters.
+        Start by typing "diverse" to the prompt.
+        To accept default values, hit Enter.
+
+What Diverse Does:
+
+     Diverse reads the files of birth and death records (break.X) that are
+written to disk by the Tierra simulator, and prepares new files that
+contain several indices of diversity.  These indices may be recomputed and
+output after each birth or death, or they may be averaged over an interval
+of your choice and output at the end of each interval (this keeps the volume
+of output down to reasonable levels).
+
+Diverse reads the break.1 ... break.X files that are written to the \td
+directory, and outputs files whose default names are averages, divdat.X,
+divrange and brkrange.  The files divdat.X contain eight parameters
+related to diversity and turn over of size classes and genotypes in the soup.
+
+The file divrange contains the ranges and averages of the eight variables for
+the entire run.  The file brkrange contains the ranges of the variables for
+each of the divdat.X files.  Diverse takes a long time to run, so it prints a
+statement after every million Tierran instructions processed, just to let you
+know it is still ticking.  Diverse does a lot of floating point calculations,
+so it will be very slow if it is run on any machine without a math
+co-processor.
+
+To compile diverse on a Unix system: cc diverse.c -lm -o diverse
+
+There are two basic dialog scenarios:
+
+input file (default: break.1) = 
+threshold (default: 2) = 
+Frequency for Average Output (default: 1000000) = 
+output birth death records: y or n (default: n) = 
+
+and:
+
+input file (default: break.1) = 
+threshold (default: 2) = 
+Frequency for Average Output (default: 1000000) = 
+output birth death records: y or n (default: n) = y 
+output file (default: divdat.1) = 
+output format: binary or ascii (default: binary) = 
+break size (default: 4096) = 
+
+In both scenarios, you must respond to the first four questions:
+
+input file (default: break.1) = 
+threshold (default: 2) = 
+Frequency for Average Output (default: 1000000) = 
+output birth death records: y or n (default: n) = y 
+
+If you choose to output diversity indices for each birth and death, then
+you must answer three more questions:
+
+output file (default: divdat.1) = 
+output format: binary or ascii (default: binary) = 
+break size (default: 4096) = 
+
+====== DIVERSE ===============================================================
+
+     The following is an explanation of each of the lines of the dialog:
+
+input file (default: break.1) = 
+
+     The name of the file containing the birth and death records, which
+will be read by the diverse program.  The default is break.1, which is
+the default name of the file output by the Tierra program.
+
+threshold (default: 2) = 
+
+     The threshold for including size or genotype classes in the calculations
+of the diversity indices.  The default is 2, which means that genotypes for
+which there is only a single individual (probably mostly inviable mutants)
+will not be included in the calculations.
+
+Frequency for Average Output (default: 1000000) = 
+
+     If this parameter is non-zero, averages for the diversity indices will
+be calculated over the interval indicated, and output only at then end of
+each interval.  The default is once every million instructions.
+
+output birth death records: y or n (default: n) =
+
+     This line asks if diversity indices should be output for each record of
+birth and death.  The default is no because this generates a huge volume
+of data.  The file produced by this option will be about four times the
+size of the break files used as input.
+
+output file (default: divdat.1) = 
+
+     If one chooses to output diversity indices for each birth and death
+record, this option allows you to specify the name of the output file(s).
+The default is divdat.1.
+
+output format: binary or ascii (default: binary) = 
+
+     There are two possible file formats for the file containing diversity
+indices for each birth and death record: binary and ascii.  The default is
+binary, because the binary format is more compact than the ascii format.  This
+is important because the even the binary output file (divdat.X) will be about
+four times as large as the input file (break.X).
+
+break size (default: 4096) = 
+
+     If diversity indices are output for each birth and death, they will be
+broken into a series of files, and this variable specifies the size of the
+files in K (1024 bytes).  The default size is 4 Mb.  If there is more than
+4 Mb of output, the file will be broken into pieces.
+
+====== DIVERSE OUTPUT FORMATS ================================================
+
+from divdat.1:
+
+11 0.0
+0 1 1 0 0 1 0 0
+33a 2 1 0 33a 1 0 33a
+62c 3 1 0 966 1 0 966
+ac 4 1 0 a12 1 0 a12
+b6e 5 1 0 1580 1 0 1580
+57 6 1 0 15d7 1 0 15d7
+...
+34f 341 32 1.98219 20795c 163 4.43486 72ed46
+216 342 32 1.99079 207b72 164 4.44187 724167
+70 343 32 1.98692 207be2 165 4.44885 72aa9b
+2 342 32 1.99079 207be4 165 4.44592 72aa9d
+21e 343 32 1.98692 207e02 165 4.43891 72acbb
+2 342 32 1.98663 207e04 165 4.445 72acbd
+41e 341 32 1.99052 208222 164 4.438 724837
+
+from divdat.2:
+
+11 12472882.0
+56 342 32 1.98663 208278 164 4.44095 72488d
+1e3 341 32 1.97801 20845b 163 4.43394 7299d8
+d26 342 32 1.97415 209181 164 4.44095 730fc0
+2 341 32 1.96972 209183 163 4.43394 739114
+355 340 32 1.9736 2094d8 162 4.42689 73252f
+1a1 339 32 1.97749 209679 162 4.42544 7326d0
+...
+50 362 27 2.17167 3e4a3d 156 4.35437 a084a7
+6a 363 27 2.16879 3e4aa7 156 4.34815 a08511
+376 362 27 2.16406 3e4e1d 155 4.34112 a09769
+0 363 27 2.16879 3e4e1d 156 4.34815 a08882
+76 364 27 2.16591 3e4e93 157 4.35515 9fd231
+2 363 27 2.16118 3e4e95 156 4.34815 a0a811
+5a 362 27 2.16406 3e4eef 156 4.34803 a0a86b
+
+     Note that each divdat.X file begins with a line that specifies the
+format and starting time of that file.  The first byte specifies if the
+file is binary (0) or ascii (1).  The second byte specifies if the file
+contains data on genotype diversity (1) or size diversity only (0).  After
+the two format bytes, there is a double precision floating point number
+which specifies the start time, in Tierran instructions of this file
+(actually the end time of the previous divdat.X file, or zero for the first
+file).
+
+     The following code writes the format line of the divdat.X files:
+
+    if(format) /* ASCII format */
+    {   ouf = fopen(ofile,"w");
+        if(genotypes)
+            fprintf(ouf,"11 %.1lf\n", totals.time);
+        else
+            fprintf(ouf,"10 %.1lf\n", totals.time);
+    }
+    else /* binary format */
+    {   ouf = fopen(ofile,"wb");
+        c = (char) format;
+        fwrite(&c,sizeof(char),1,ouf);
+        c = (char) genotypes;
+        fwrite(&c,sizeof(char),1,ouf);
+        fwrite(&totals.time,sizeof(double),1,ouf);
+    }
+
+     After the format line, the divdat.X files contain an eight column data
+stream (if genotypes are included), or a five column output if only size
+class data is included.  A typical output line from an ASCII file looks like
+the following:
+
+34f 341 32 1.98219 20795c 163 4.43486 72ed46
+
+     The first column (Time) is the time increment since the last birth or
+death in hexadecimal format.  In order to determine the actual time associated
+with a particular output line, the values in the first column must be summed.
+
+     The second column (NumCell) is the total population, the number of cells,
+in decimal format.  The third column (NumSize) is the number of size classes,
+in decimal format.  The fourth column (SizeDiv) is the size diversity as a
+floating point number.  Size diversity is the negative sum of p log p, where
+p is the proportion of the population occupied by a particular size class,
+summed over all size classes.  The fifth column (AgeSize) is the average age
+of the size classes, as a hexidecimal number.  When a new size class appears,
+or an extinct size class reappears, its age is set to zero.  The age then
+increments with time.  At each time increment, the age of all size classes
+is summed, and divided by the number of size classes to compute the average
+age of size classes.
+
+     If genotype data is displayed, the the sixth column (NumGeno) contains
+the number of genotypes as a decimal number.  The seventh column (GenoDiv)
+contains the genotype diversity as a floating point number.  Genotype
+diversity is the negative sum of p log p, where p is the proportion of the
+population occupied by a particular genotype class, summed over all genotype
+classes.  The eighth column (AgeGeno) contains the average age of the
+genotypes as a hexidecimal number.  When a new genotype class appears, or an
+extinct genotype class reappears, its age is set to zero.  The age then
+increments with time.  At each time increment, the age of all genotype classes
+is summed, and divided by the number of genotype classes to compute the
+average age of genotype classes.
+
+     The code that produces the data lines in the divdat.X files follows:
+
+struct siz {
+    long   Time;
+    long   NumCell;
+    long   NumSize;
+    float  SizeDiv;
+    long   AgeSize;
+    } si;
+
+struct gen {
+    long   NumGeno;
+    float  GenoDiv;
+    long   AgeGeno;
+    } ge;
+
+    if(format) /* ASCII format */
+    {   if(genotypes)
+            fsize += 1 + fprintf(ouf,"%lx %ld %ld %g %lx %ld %g %lx\n",
+            rlo.itime, totals.TotPop, divdat.NumSize, divdat.SizeDiv,
+            (Ulong) AgeSize, divdat.NumGeno, divdat.GenoDiv,
+            (Ulong) AgeGeno);
+        else fsize += 1 + fprintf(ouf,"%lx %ld %ld %g %lx\n",
+            rlo.itime, totals.TotPop, divdat.NumSize, divdat.SizeDiv,
+            (Ulong) AgeSize);
+    }
+    else /* binary format */
+    {   si.Time = rlo.itime;
+        si.NumCell = totals.TotPop;
+        si.NumSize = divdat.NumSize;
+        si.SizeDiv = divdat.SizeDiv;
+        si.AgeSize = (Ulong) AgeSize;
+        fwrite(&si, sizeof(struct siz), 1, ouf);
+        fsize += sizeof(struct siz);
+        if(genotypes)
+        {   ge.NumGeno = divdat.NumGeno;
+            ge.GenoDiv = divdat.GenoDiv;
+            ge.AgeGeno = (Ulong) AgeGeno;
+            fwrite(&ge, sizeof(struct gen), 1, ouf);
+            fsize += sizeof(struct gen);
+        }
+    }
+
+from brkrange:
+
+     divdat.1 0 0 0 0 0 0 0 0
+     divdat.1 12472882 351 32 2.01064 3456383 166 4.45098 7989488
+     divdat.2 23007672 456 36 2.27044 4583906 212 4.78146 10726890
+     divdat.3 32218752 456 43 2.71956 5252442 240 5.19617 14721618
+     divdat.4 41767554 465 51 2.95793 7448691 240 5.19617 20849185
+     divdat.5 48183196 467 51 2.95793 7722602 242 5.19617 22182141
+
+     The brkrange file contains lines with the same eight numeric columns
+as the lines in the divdat.X files.  However, in the brkrange file, all
+columns are expressed in decimal format (no hexidecimal), and each entry
+represents the cumulative maximum value of the corresponding entry at the
+end of the divdat.X file named in the first column.  An exception is that
+there are two lines for the divdat.1 file, the first line represents the
+values of the eight variables at the beginning of the file, while the
+second line represents the maximum values of each variable at the end
+of the file.  Another exception is that the first numeric column represents
+the cumulative time at the end of the file (not the maximum time increment).
+The data is provides so that individual divdat.X files can be plotted, and
+the user can know the range of the variables when configuring the plot.
+
+from divrange:
+
+           Minimum      Maximum      Average Number
+
+Time             0    103717758              226162
+NumCell          0          374        262.2 226162
+NumSize          0           21          9.9 226162
+SizeDiv   0.000000     2.503943     1.177503 226162
+AgeSize          0     26892940   12170879.1 226162
+NumGeno          0           92         56.8 226162
+GenoDiv   0.000000     4.346522     3.372861 226162
+AgeGeno          0      6710709    3274868.8 226162
+
+     The divrange file is fairly self explanatory.  It lists the minimum,
+maximum and average values for each of the eight variables computer by
+the diversity tool.  The last column shows the sample size (the number of
+births and deaths that went into the computation).
+
+from averages:
+
+       Time NumCell NumSize SizeDiv    AgeSize NumGeno GenoDiv    AgeGeno
+
+    1001395   230.7     1.7    0.05     436052    13.9    0.86     321276
+    2000507   279.0     5.9    0.27     925677    32.4    1.63     823193
+    3000940   274.8     6.8    0.35    1354576    36.8    1.83    1220080
+    4001155   276.5     5.3    0.34    2059764    38.8    1.96    1524246
+    5000097   274.8     7.4    0.52    2147820    35.4    1.86    1681769
+    6000879   274.8     7.3    0.79    2476165    36.6    2.08    1841812
+    7000084   277.1     6.8    0.96    3315557    39.7    2.30    1713698
+    8001588   304.5     8.1    0.97    3324491    40.6    2.32    1676695
+
+     The averages file is also self-explanatory.  It lists the average
+value of each parameter over a user defined interval.  The time at the
+end of the interval is shown in the first column.  All numbers are expressed
+in decimal format.

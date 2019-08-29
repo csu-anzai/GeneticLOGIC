@@ -1,0 +1,15 @@
+cp error..c error.c
+cp debug..c debug.c
+cp gcamera..c gcamera.c
+cp glight..c glight.c
+cp gmisc..c gmisc.c
+cp gobject..c gobject.c
+cp gscene..c gscene.c
+cp gstage..c gstage.c
+cp gwindow..c gwindow.c
+cp indexlist..c indexlist.c
+cp misc..c misc.c
+cp pw..c pw.c
+cp interact..c interact.c
+cp food..c food.c
+cp critter..c critter.c

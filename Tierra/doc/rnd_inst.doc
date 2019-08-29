@@ -1,0 +1,135 @@
+                        TIERRA Opcode Map Scrambler 
+                              - RND_INST -
+                            by Daniel Pirone
+
+
+PURPOSE:
+
+   This document describes a software tool that aids in the creation of 
+ pseudo-random opcode # to instruction mnemonic mappings for the Tierra 
+ Artificial Life Simulation (1). 
+
+THE INTERFACE:
+
+   The rnd_inst user interface is a simple command line driven system. 
+ All of the menu options are Case Sensative (Turn Caps Lock Off).
+ Running rnd_inst with no options will produce the following help message:
+   
+> syntax - rnd_inst infile outfile [op1 op2 hamm_dist] [op3 op4 hamm_dist]...
+> 	infile, outfile can be '-' for stdin, stdout
+> 	op1, op2 are mnemonics, 
+> 	& hamm_dist is the desired Hamming distance between op1 and op2
+
+ From this we see that you must provide at least 2 parameters:
+
+   - infile , the first param, specifying an existing path and opcode filename 
+     ( eg opcode.map ).
+   - outfile , the second param, specifying the path and scrambled opcode 
+     filename ( eg mix1.map ).
+
+ The most common use of rnd_inst might be the following:
+
+> rnd_inst opcode.vir opcode.map nop_0 nop_1 1
+
+ This will produce a randomized mapping of opcodes to mnemonics, but one in
+ which the two nops are separated by a single bit flip.  This command reads
+ the virgin map, and writes the randomized version to opcode.map, which is
+ file read by arg and other tools, and the default file read by tierra.
+
+ Remeber to reassemble the genomes with arg, before you try to run tierra with
+ a new opcode map!
+
+ In place of either the infile or outfile, you may specify a dash '-',
+ meaning to use the standard input ( keyboard, < ) and standard output
+ ( screen, > ).  An example where we take a normal Tierra map file and 
+ scramble it, printing to the screen is:
+
+> rnd_inst opcode.map -
+ 
+ Which produces:
+
+>     {0x00, "sub_ac", math, psub_ac},
+>     {0x01, "adrb", adr, padrb},
+>     {0x02, "pop_ax", pop, ppop_ax},
+>     {0x03, "jmp", adr, ptjmp},
+>     {0x04, "ret", pop, pret},
+>     {0x05, "zero", movdd, pzero},
+>     {0x06, "inc_b", math, pinc_b},
+>     {0x07, "pop_bx", pop, ppop_bx},
+>     {0x08, "inc_a", math, pinc_a},
+>     {0x09, "shl", shl, pshl},
+>     {0x0a, "pushax", push, ppushax},
+>     {0x0b, "or1", or1, por1},
+>     {0x0c, "pop_cx", pop, ppop_cx},
+>     {0x0d, "pushdx", push, ppushdx},
+>     {0x0e, "call", tcall, ptcall},
+>     {0x0f, "divide", divide, pdivide}
+>     {0x10, "pushcx", push, ppushcx},
+>     {0x11, "nop_0", nop, pnop},
+>     {0x12, "moviab", movii, pmoviab},
+>     {0x13, "adrf", adr, padrf},
+>     {0x14, "pop_dx", pop, ppop_dx},
+>     {0x15, "nop_1", nop, pnop},
+>     {0x16, "dec_c", math, pdec_c},
+>     {0x17, "inc_c", math, pinc_c},
+>     {0x18, "mov_cd", movdd, pmov_dc},
+>     {0x19, "mov_ab", movdd, pmov_ba},
+>     {0x1a, "sub_ab", math, psub_ab},
+>     {0x1b, "pushbx", push, ppushbx},
+>     {0x1c, "if_cz", if_cz, pif_cz},
+>     {0x1d, "mal", malchm, pmal},
+>     {0x1e, "jmpb", adr, ptjmpb},
+>     {0x1f, "adr", adr, padr},
+> 
+
+   Please note that Tierra has strict opcode map file syntax. All spacing
+ and punctuation are important. Tierra will accept partial map files though
+ ( less than 32 , or out of order op - inst maps).
+
+   Following the infile and outfile parameters is an optional triplet.  
+ This triplet must have the form:
+
+   - mnemonic_1 mnemonic_2 int_hamm_dist
+
+ Where  mnemonic_1 & 2 are valid instruction names ( eg dec_c , mal ),
+ and int_hamm_dist is a non-negative integer in the range 1 - 5, usually 1
+ or 2, representing the desired Hamming distance between the two specified
+ instructions. ( Hamming distance = number of bits different )
+ A common use for this can be seen below:
+
+>  rnd_inst opcode.map - nop_1 nop_0 2
+
+ Producing ...
+
+> 
+>     {0x00, "adr", adr, padr},
+>     {0x01, "jmp", adr, ptjmp},
+>     {0x02, "moviab", movii, pmoviab},
+>     {0x03, "shl", shl, pshl},
+>     {0x04, "nop_0", nop, pnop},
+>     {0x05, "pop_bx", pop, ppop_bx},
+>     {0x06, "adrb", adr, padrb},
+>     {0x07, "sub_ac", math, psub_ac},
+>     {0x08, "nop_1", nop, pnop},
+>     {0x09, "inc_b", math, pinc_b},
+>     {0x0a, "pushbx", push, ppushbx},
+>     {0x0b, "sub_ab", math, psub_ab},
+> ...
+
+   Note that the instructions nop_0 and nop_1 are in fact 2 bits apart.
+ Normally it is desirable to have these template instructions close,
+ to take full advantage of mutation.  It is probably best that nop_0 and
+ nop_1 have a hamming distance of 1. 
+
+   Please send bug reports to : tierra-bug@life.slhs.udel.edu
+
+-----------------------------------------------------------------------------
+
+(1) Tierra is available by anonymous ftp from:
+
+tierra.slhs.udel.edu ( 128.175.41.33 )
+
+or by mail on disk from Virtual Life, P.O. Box 625, Newark, DE 19715.
+Make check for $65 payable to Virtual Life, and specify 3.5" or 5.25" disks.
+
+-----------------------------------------------------------------------------

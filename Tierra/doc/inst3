@@ -1,0 +1,62 @@
+Instset #3  Based on a design suggested and implemented by Tom Ray.  This
+    includes certain features of the RPN Hewlett-Packard calculator.
+
+No Operations: 2
+
+nop0
+nop1
+
+Memory Movement: 11
+
+rollu  (roll registers up:   AX = DX, BX = AX, CX = BX, DX = CX)
+rolld  (roll registers down: AX = BX, BX = CX, CX = DX, DX = AX)
+enter  (AX = AX, BX = AX, CX = BX, DX = CX, DX is lost)
+exch   (AX = BX, BX = AX)
+movdi  (move from BX to ram [AX])
+movid  (move from ram [BX] to AX)
+movii  (move from ram [BX] to ram [AX])
+push   (push AX onto stack)
+pop    (pop from stack into AX)
+put    (write AX to output buffer, three modes:
+         #ifndef ICC: write AX to own output buffer
+         #ifdef ICC:  write AX to input buffer of cell at address BX,
+           or, if template, write AX to input buffers of all creatures within
+           PutLimit who have the complementary get template)
+get    (read AX from input buffer)
+
+Calculation: 9
+
+inc    (increment AX)
+dec    (decrement AX)
+add    (AX = BX + AX, BX = CX, CX = DX))
+sub    (AX = BX - AX, BX = CX, CX = DX))
+zero   (zero AX)
+not0   (flip low order bit of AX)
+not    (flip all bits of AX)
+shl    (shift left all bits of AX)
+rand   (place random number in AX)
+
+Instruction Pointer Manipulation: 5
+
+ifz  (if   AX == 0 execute next instruction, otherwise, skip it)
+iffl (if flag == 1 execute next instruction, otherwise, skip it)
+jmp  (jump to template, or if no template jump to address in AX)
+jmpb (jump back to template, or if no template jump back to address in AX)
+call (push IP + 1 onto the stack; if template, jump to complementary templ)
+
+Biological and Sensory: 5
+
+adr    (search outward for template, put address in AX, template size in BX,
+           and offset in CX, start search at offset +- BX)
+adrb   (search backward for template, put address in AX, template size in BX,
+           and offset in CX, start search at offset - BX)
+adrf   (search forward for template, put address in AX, template size in BX,
+           and offset in CX, start search at offset + BX)
+mal    (allocate amount of space specified in BX, prefer address at AX,
+           if AX < 0 use best fit, place address of allocated block in AX)
+divide (cell division, the IP is offset by AX into the daughter cell, the
+           values in the four CPU registers are transferred from mother to
+           daughter, but not the stack. If !CX genome will be ejected from
+           the simulator)
+
+Total: 32

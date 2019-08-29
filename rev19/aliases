@@ -1,0 +1,1 @@
+alias	makemake	'cc -P -cckr makefile.c ; mv makefile.i makefile'

@@ -1,0 +1,68 @@
+# tierra core: 6-7-92 
+
+# observational parameters:
+
+BrkupSiz = 1024      size of output file in K, named break.1, break.2 ...
+CumGeneBnk = 1    Use cumulative gene files, or overwrite
+debug = 0               0 = off, 1 = on, printf statements for debugging
+DiskOut = 1            output data to disk (1 = on, 0 = off)
+GeneBnker = 1   turn genebanker on and off
+GenebankPath = gb3/  path for genebanker output
+hangup = 0            0 = exit on error, 1 = hangup on error for debugging
+Log = 1		0 = no log file, 1 = write log file
+MaxFreeBlocks = 800     initial number of structures for memory allocation
+OutPath = td/  path for data output
+RamBankSiz = 20000 array size for genotypes in ram, use with genebanker
+SaveFreq = 25       frequency of saving core_out, soup_out and list
+SavMinNum = 3     minimum number of individuals to save genotype
+SavThrMem = .02  threshold memory occupancy to save genotype
+SavThrPop = .02  threshold population proportion to save genotype
+WatchExe = 0     mark executed instructions in genome in genebank
+WatchMov = 0     set mov bits in genome in genebank
+WatchTem = 0     set template bits in genome in genebank
+
+# environmental variables:
+
+alive = 2000      how many generations will we run
+DistFreq = -.3     frequency of disturbance, factor of recovery time
+DistProp = .2      proportion of population affected by distrubance
+DivSameGen = 0 cells must produce offspring of same genotype, to stop evolution
+DivSameSiz = 0 cells must produce offspring of same size, to stop size change
+DropDead = 5 stop system if no reproduction in the last x million instructions
+GenPerBkgMut = 8 mutation rate control by generations ("cosmic ray")
+GenPerFlaw = 6       flaw control by generations
+GenPerMovMut = 4    mutation rate control by generations (copy mutation)
+IMapFile = opcode.map map of opcodes to instructions, file in GenebankPath
+MalMode = 1 0 = first fit, 1 = better fit, 2 = random preference,
+# 3 = near mother's address, 4 = near dx address, 5 = near top of stack address
+MalReapTol = 1  0 = reap by queue, 1 = reap oldest creature within MalTol
+MalTol = 20 multiple of avgsize to search for free block
+MateProb = 0.0  probability of mating at each mal
+MateSearchL = 5 multiple of avgsize to search 0 = no limit
+MateSizeEp = 2 size epsilon for potential mate
+MateXoverProp = 1.0 proportion of gene to secect for crossover point
+MaxMalMult = 3        multiple of cell size allowed for mal()
+MemModeFree = 0  read, write, execute protection for free memory
+MemModeProt = 2 rwx protect mem: 1 bit = execute, 2 bit = write, 4 bit = read
+MinCellSize = 12       minimum size for cells
+MinTemplSize = 1       minimum size for templates
+MovPropThrDiv = .5       minimum proportion of daughter cell filled by mov
+new_soup = 1          1 = this a new soup, 0 = restarting an old run
+NumCells = 2      number of creatures and gaps used to inoculate new soup
+PhotonPow = 1.5         power for photon match slice size
+PhotonWidth = 8   amount by which photons slide to find best fit
+PhotonWord = chlorophill  word used to define photon
+PutLimit = 10 distance for intercellular communication, mult of avg creat siz
+ReapRndProp = .3 top prop of reaper que to reap from
+SearchLimit = 5 distance for template matching, mult of avg creat siz
+seed = 0 seed for random number generator, 0 uses time to set seed
+SizDepSlice = 0  set slice size by size of creature
+SlicePow = 1    set power for slice size, use when SizDepSlice = 1
+SliceSize = 25    slice size when SizDepSlice = 0
+SliceStyle = 2   choose style of determining slice size
+SlicFixFrac = 0   fixed fraction of slice size
+SlicRanFrac = 2   random fraction of slice size
+SoupSize = 60000 size of soup in instructions
+
+space 30000
+0093aaa

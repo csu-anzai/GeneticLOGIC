@@ -1,0 +1,24 @@
+
+
+	MLayer = Monitoring communications Layer.
+
+
+- pairs replies to requests (notion not present in alcomm)
+- does flow control when initiating requests
+
+- data flow (in) with data routines
+- queries (in) with query routines
+- state changes (in) with state routines
+- assoc. with each clink, a table indicating which data flows (out) requested
+- table of init routines for each data flow (out)
+
+
+
+MInitialise
+MOpenLink
+MGenRequestAndReply
+MGenRequestNoReply
+
+MRegisterDatahandler
+MRegisterQueryhandler
+MRegisterStatehandler

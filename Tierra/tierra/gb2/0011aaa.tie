@@ -1,0 +1,19 @@
+
+format: 3  bits: 3
+genotype: 0011aaa  parent genotype: 0666god
+ploidy: 1  track: 0
+comments: non-replicating program written to test get with template.
+
+track 0: prot
+          xwr
+ifz     ; 010 000 01   0
+nop0    ; 010 000 01   0
+nop0    ; 010 000 01   0
+get     ; 010 000 01   0
+nop1    ; 010 000 01   0
+nop0    ; 010 000 01   0
+nop1    ; 010 000 01   0
+jmpb    ; 010 000 01   0
+nop1    ; 010 000 01   0
+nop1    ; 010 000 01   0
+ifz     ; 010 000 01   0

@@ -1,0 +1,15 @@
+rm error.c
+rm debug.c
+rm gcamera.c
+rm glight.c
+rm gmisc.c
+rm gobject.c
+rm gscene.c
+rm gstage.c
+rm gwindow.c
+rm indexlist.c
+rm misc.c
+rm pw.c
+rm interact.c
+rm food.c
+rm critter.c

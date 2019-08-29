@@ -1,0 +1,73 @@
+.TH xantfarm 1 "16 October 1991"
+.SH NAME
+xantfarm - displays a simulated ant hill in the root window
+.SH SYNOPSIS
+.B xantfarm
+.RB [ -n
+.IR num ]
+.RB [ -c
+.IR cycles ]
+.RB [ -i ]
+.RB [ -display
+.IR name ]
+.SH DESCRIPTION
+.PP
+.I Xantfarm
+simulates an ant hill and displays it in the root window.
+.PP
+There are three
+.B Elements
+in the ant world: 
+.BR Air ,
+.BR Dirt ,
+and
+.BR Sand .
+Ants move through
+.BR Air ,
+dig up
+.BR Dirt ,
+and drop it as
+.BR Sand .
+Ants have three
+.BR Behaviors :
+.BR Wandering ,
+.BR Carrying ,
+and
+.BR Panic .
+There are a few simple probabilities built in to the program
+that control the transitions between
+.B Wandering
+and
+.BR Carrying .
+To see them
+.BR Panic ,
+try poking the ants with the cursor.
+.SH OPTIONS
+.TP
+.B -n
+Specifies how many ants to simulate.
+The default is 10.
+.TP
+.B -n
+Specifies how often the simulation runs, in cycles per second.
+The default is 15.
+If you specify 0, it runs continuously.
+.TP
+.B -i
+Forks a background process and prints the process-id to stdout.
+Useful if you want to make a menu command to kill
+.IR xantfarm .
+.SH "BUGS / DEFICIENCIES"
+.PP
+It really needs a control panel to adjust probabilities without
+having to recompile and restart.
+.SH "SEE ALSO"
+.IR xsetroot (1)
+.SH AUTHOR
+Copyright (C) 1991 by Jef Poskanzer
+.\" Permission to use, copy, modify, and distribute this software and its
+.\" documentation for any purpose and without fee is hereby granted, provided
+.\" that the above copyright notice appear in all copies and that both that
+.\" copyright notice and this permission notice appear in supporting
+.\" documentation.  This software is provided "as is" without express or
+.\" implied warranty.

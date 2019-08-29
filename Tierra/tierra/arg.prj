@@ -1,0 +1,2 @@
+arg.c      (tierra.h, declare.h, arginst.h, configur.h, portable.h)
+arg_inc.c    (portable.c, genio.c, tierra.h, extern.h)

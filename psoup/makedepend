@@ -1,0 +1,16 @@
+#!/bin/sh
+set -x
+rm -f foo
+for FILE in *.c
+do
+	/lib/cpp -M $* $FILE >> foo
+done
+sed -e '/# DO NOT REMOVE/s/#/#/
+		t end
+		b
+		:end
+		r foo
+		q' Makefile > Makefile.tmp
+mv -f Makefile Makefile.bak
+mv -f Makefile.tmp Makefile
+rm -f foo

@@ -1,0 +1,665 @@
+Version 1.0 Sun Apr 19 04:42:04 PDT 1992
+------------------------------------------------------------------------------
+TABLE OF CONTENTS:
+
+COPYRIGHT                What you can and can't do with this code.
+ACKNOWLEDGEMENTS         Credit where credit is due.
+RELEASE NOTES            Stuff about this release of Primordial Soup.
+GETTING STARTED          Tells you how to compile and start running psoup.
+OVERVIEW                 Description of the overall structure of the program.
+MONITOR COMMAND SUMMARY  Detailed explanation of the monitor commands.
+THE "SHOW" UTILITY       The genealogy/genome database query program.
+ASSEMBLY LANGUAGE        The language in which the organisms are written.
+
+------------------------------------------------------------------------------
+
+COPYRIGHT
+
+Primordial Soup
+Written January 1992 by Marc de Groot.
+Copyright (c) 1992 by Marc de Groot.
+All rights reserved.
+
+You may use this code without the author's permission if you don't make
+money with it.  All other uses require written permission from the author.
+
+If you make a copy of this code, in whole or in part, you must include
+this copyright notice in its entirety.
+
+How to get in touch with me:
+
+Marc de Groot
+4487 23rd Street # 2
+San Francisco, CA 94114
+(415) 824-9321
+
+marc@kg6kf.ampr.org  (Internet)
+
+------------------------------------------------------------------------------
+
+ACKNOWLEDGEMENTS
+
+	I am indebted to Thomas S. Ray of the University of Delaware.  Mr. 
+Ray is the author of a similar program called Tierra.  Some of the features
+in Primordial Soup were suggested by his work.
+
+	Tierra is available for anonymous FTP from life.slhs.udel.edu.  It's
+worth a look.
+
+------------------------------------------------------------------------------
+
+RELEASE NOTES
+Version 1.0
+	Some changes to README, final cleanup for release.
+
+Version 0.5
+	User interface spiffed up somewhat.
+
+Version 0.4
+	Rewritten to allow compilation with older-style (non-ANSI)
+	compilers.
+
+Version 0.3d
+	
+Version 0.3
+	This is the first version of the code that is, IMHO, polished enough
+to release.  This is a beta-test version.  If you fix bugs, please let
+me know.
+	Conditional compilation is provided for UNIX and MS-DOS although only 
+the UNIX port has been tested.  The code has been compiled on a Sun-2/120
+running SunOS 3.5 and on a SparcStation 1+ running SunOS 4.1.1.
+	The MS-DOS code is for Borland C.
+
+
+------------------------------------------------------------------------------
+
+GETTING STARTED
+
+Edit the Makefile for your hardware platform and C compiler.
+
+Currently only the UNIX port is known to run correctly.  The MS-DOS code
+has not been tested.  I have compiled and run successfully under SunOS 
+3.5 and 4.1.1, and System V r 4 (on an HP workstation).  
+
+Type "make depend".  This builds the file dependencies that appear at the end
+of the Makefile.  If make depend fails, edit the Makefile and simply
+delete all lines that appear after the following line:
+# DO NOT REMOVE THIS LINE - USED BY MAKE DEPEND
+
+Type "make".  This makes psoup, mkorg, and show.
+
+Type "mkorg".  This produces the file org.out which contains a proto-
+organism.  (NOTE: There are two other organisms provided, in the
+files neworg.c and shortorg.c)
+
+Type "psoup".  This starts the interpreter.  It takes a little while
+to fill the soup with random numbers -- be patient.
+
+You will get the monitor prompt, which looks like this:
+
+Instructions = 0.  Type ? at the monitor prompt for help.
+---- Monitor >
+
+The commands are explained in detail in the COMMAND SUMMARY section
+of this document.
+
+The instructions immediately following are for starting up with
+an organism seeding the soup.  If you want to spontaneously generate life
+in the soup, skip to the section STARTING WITH A STERILE SOUP below.
+
+You may type "b" at this point.  This turns on the genome/genealogy
+database recording and is optional.  You will need to do this
+to use the "show" utility.  I recommend that you leave database
+recording turned off for the first run.
+
+Type "r org.out".  This reads in the file org.out, putting it at location
+0 in the soup.  A message prints, which reads "xx bytes read".
+
+If you want, you can disassemble the organism with "u 0" which stands
+for "unassemble from location 0".
+
+Type "n 0 xx", where xx is the number of bytes read by the "r" command.
+This spawns a new organism with its PC set to 0, and records a new
+genome that is xx bytes long.
+
+Type "g".  This exits the monitor and starts the psoup interpreter.
+
+The organism at location 0 will spawn many children, which will quickly
+fill the process table.  The program can be left to run for a little
+while, to allow the creatures to evolve.
+
+To re-enter the monitor, send a SIGINT to the program.  This is usually
+done on UNIX machines by typing ctrl/c or DEL.  On MS-DOS machines, just hit
+the Enter key.  You will get the monitor prompt once again.
+ 
+At this point, type "o".  The array of organisms, or process table is
+printed.  Here's a sample entry from the array of organisms, with
+an explanation.  If you have not turned on genome/genealogy database
+recording, the genome will not be listed.
+
+Org # /Init PC / Genome : Curr PC  HBt LfT    R1       R2       R3       R4
+  2023/000F5F60/aaaa.46 : 000F5F86  36 454 000F5F8D 000F5F60 0000002E 00000000
+
+    ^  Initial   Genome   Current  ^   ^   Register Register Register Register
+    |    PC                 PC     |   |      1        2        3        3
+    |                              |   |
+    |                              |   Lifetime down-counter
+    Organism #                     |    
+                                   Heartbeat down-counter
+
+Now that you are looking at the array of organisms, you can choose one
+and disassemble the code.  The sample above shows organism 2023.  You will
+want to start disassembling from its initial PC, which is F5F60, so type 
+"u f5f60".  How does it look?  Has it mutated from the original?
+For a description of the instructions from which the organism is built,
+see the ASSEMBLY LANGUAGE section in this document.
+
+You can use the "s" command to print births, deaths, number of instructions
+executed, etc.  Here's what the output looks like:
+
+Instructions interpreted: 206470
+Population:               50
+Births:                   487
+Deaths:                   437
+Initial Lifetime:         500
+Initial Heartbeat:        50
+Mutation interval:        20
+Tell after age:           501
+Adjust_population() is turned off.
+Genealogy database recording is turned off.
+
+Mutations occur through a mechanism that simulates background radiation.
+Every so many instructions, the interpreter randomly flips (complements) 
+one bit in the soup.  The bit-flipping rate is controlled by the "m"
+command.  Typing "m 10" sets the rate at one bit-flip every ten instructions.
+You can see the current value of the bit-flipping rate by using the "s"
+command.  It's the Mutate: value.
+
+If you started the program with an organism seeding the soup, skip
+the following section.
+
+STARTING WITH A STERILE SOUP
+
+You may type "b" at this point.  This turns on the genome/genealogy
+database recording and is optional.  You will need to do this
+to use the "show" utility.  I recommend that you leave database
+recording turned off for the first run.
+
+Type "a".  This turns on the adjust_population routine.  When
+the number of organisms in the soup falls below a low-water mark
+new organisms are spawned with their program counters set at
+random.  Organisms are spawned until their number reaches the
+high-water mark.
+
+Type "h 100".  This sets the maximum number of instructions
+that each organism may execute between spawns.
+
+Type "m 1".  This turns the background radiation to its highest level.
+
+Type "g".  This exits the monitor and starts the psoup interpreter.
+
+You will see messages that alternate between telling you that the
+number of processes has reached the low-water mark, and that the
+number of processes has reached the maximum.  When the number of
+processes reaches the maximum and stays that way for a number of
+minutes, it is likely that there are self-reproducing organisms
+in the soup.  At this point you can re-enter the monitor and
+examine the soup.
+
+To re-enter the monitor, send a SIGINT to the program.  This is usually
+done on UNIX machines by typing ctrl/c.  On MS-DOS machines, just hit
+the Enter key.  You will get the monitor prompt once again.
+
+At this point, type "o".  The array of organisms, or process table is
+printed.  Here's a sample entry from the array of organisms, with
+an explanation.  If you have not turned on genome/genealogy database
+recording, the genome will not be listed.
+
+Org # /Init PC / Genome : Curr PC  HBt LfT    R1       R2       R3       R4
+  2023/000F5F60/aaaa.46 : 000F5F86  36 454 000F5F8D 000F5F60 0000002E 00000000
+
+    ^  Initial   Genome   Current  ^   ^   Register Register Register Register
+    |    PC                 PC     |   |      1        2        3        3
+    |                              |   |
+    |                              |   Lifetime down-counter
+    Organism #                     |    
+                                   Heartbeat down-counter
+
+Now that you are looking at the array of organisms, you can choose one
+and disassemble the code.  The sample above shows organism 2023.  You will
+want to start disassembling from its initial PC, which is F5F60, so type 
+"u f5f60".  How does it look?  Has the organism mutated from the original?
+For a description of the instructions from which the organism is built,
+see the section ASSEMBLY LANGUAGE in this document.
+
+You can use the "s" command to print births, deaths, number of instructions
+executed, etc.  Here's what the output looks like:
+
+Instructions interpreted: 206470
+Population:               50
+Births:                   487
+Deaths:                   437
+Initial Lifetime:         500
+Initial Heartbeat:        50
+Mutation interval:        20
+Tell after age:           501
+Adjust_population() is turned off.
+Genealogy database recording is turned on.
+
+Mutations occur through a mechanism that simulates background radiation.
+Every so many instructions, the interpreter randomly flips (complements) 
+one bit in the soup.  The bit-flipping rate is controlled by the "m"
+command.  Typing "m 10" sets the rate at one bit-flip every ten instructions.
+You can see the current value of the bit-flipping rate by using the "s"
+command.  It's the Mutate: value.
+
+-----------------------------------------------------------------------------
+
+OVERVIEW
+
+	Primordial Soup is an artificial life program.  Organisms in the
+form of computer software loops live in a shared memory space (the "soup")
+and self-reproduce.  The organisms mutate and evolve, behaving in
+accordance with the principles of Darwinian evolution.
+	The program may be started with one or more organisms seeding the
+soup.  Alternatively, the system may be started "sterile", with no
+organisms present.  Spontaneous generation of self-reproducing organisms
+has been observed after runs as short as 15 minutes.
+	Each organism is a software loop which block-copies itself to another
+place in the soup and starts a new organism, or process, executing
+at the start of the copied block.
+	The loops are written in a pseudo-assembly language.  The
+assembly language is executed by a multitasking interpreter.  One instruction
+is executed from each organism in turn, so that the organisms effectively
+run simultaneously.
+	The organisms are in a completely shared memory space, and so
+multiple organisms may have their program counters pointing at the
+same block of code, executing the same program.  Organisms may also
+overwrite one another freely.  This allows for a limited form of sexual
+reproduction: the organisms share genes by the mechanism of one partially
+overwriting another.
+	Another source of mutation besides sexual reproduction is provided.
+It is a simulation of background radiation.  Every so many instructions
+one bit in the soup is complemented at random.  The rate at which the
+bit-flips occur is controllable by the user.
+	The program "psoup" is the interpreter, and comprises the bulk of
+the code in this package.  Psoup contains a monitor which allows interactive
+manipulation and examination of the soup and organisms. Running psoup
+consists of alternating between running the interpreter (which runs the
+organisms) and running the monitor to examine the contents of the soup.
+The commands for the monitor are described in detail in the COMMAND 
+SUMMARY section of this document.
+	Psoup has a facility for recording the genotype (the subroutine code)
+and the genealogy (the family tree) of each organism.  The genealogy
+is put in the family.tre file.  The genotypes are stored in the genomes.*
+files.  Each genome file holds genomes of a particular length, i. e.
+genomes.18 holds all the genomes that are 18 bytes long.
+	The program "show" is used to print various summaries of the information
+in the database.  I recommend redirecting the output of "show" to a file,
+and using grep to sift through the information.  There is more information
+on "show" in THE SHOW UTILITY section of this document.
+	The program "mkorg" is a small C program that creates a file, org.out.
+Org.out contains an organism that is used to seed the soup on start-up.
+See the file "mkorg.c" for an explanation of the organism's code.
+See the ASSEMBLY LANGUAGE section for a detailed description of the
+instructions.  Two other programs "anotherorg" and "neworg" work like
+mkorg but write slightly different organisms in org.out.
+
+-----------------------------------------------------------------------------
+
+MONITOR COMMAND SUMMARY
+
+?
+This command prints out a short summary of the monitor commands.
+
+(A)djust
+Toggles on and off the adjustment of the population in the soup.
+If Adjust is on, and the population in the soup falls below 
+LOW_WATER (defined in soup.h), new organisms with random initial
+PCs are spawned in the soup until the population reaches HIGH_WATER.
+When Adjust is on, messages will print alternately, telling the user
+that the low water mark has been reached, and that the maximum
+population has been reached.  This is particularly useful for monitoring
+progress when attempting to create life from a sterile soup.
+
+data(B)ase
+Toggles on and off the recording of the organisms into the 
+genealogy/genome database.  Recording can only be turned on
+before organisms are spawned, and cannot be turned back on
+once it is turned off.
+
+(C)lear
+Clears the process table.  All organisms are killed.
+
+(D)ump addr
+Does a hex dump of 128 bytes of the soup, starting at addr.
+
+(F)ollow organism
+Provides a trace of the execution of the chosen organism.  Every
+time the chosen organism executes an instruction, a line is printed
+on the terminal.  Here's an example, with labels for the fields:
+0000FEBC 00000077 00000012 000003B8 -- 000003C5: ADD2
+ Reg 1    Reg 2    Reg 3    Reg 4         PC     Current instruction
+	
+(G)o
+Restart the interpreter.  Exits the monitor and resumes execution of
+the organisms.  To get back to the monitor, type ctrl/c on Unix systems,
+or hit Enter on MS-DOS systems.
+
+(H)eartbeat nn
+Changes the number of instructions that may execute between successful
+SPWN instuctions.  If organisms don't execute successful SPWN instructions,
+they die much sooner, which clears the soup of "uninteresting"
+organisms.
+
+(K)ill organism
+Marks an organism as dead, freeing up a slot in the process table.
+This is useful for adding an organism to an ongoing run when the
+process table is full.
+
+(L)ifetime nn
+Changes the number of instructions the organism may execute before
+dying of old age.  You will want to use the (T)ell command when
+you issue the (L)ifetime command.
+
+(M)utate nn
+Changes the number of instructions executed by the interpreter
+between random bit-flips in the soup.  The lower the number,
+the higher the mutation rate.
+
+(N)ew addr len
+Spawns a new organism with its PC set to addr and its length set to len.
+A message is printed telling whether the spawn was successful or not.
+The spawn will fail if the process table is full.  See the (K)ill command.
+
+(O)rganism [nn]
+Without the optional argument, prints the array of organisms
+(the process table).  This is a sample entry from the array, 
+with the column headings.  If you have not turned on genome/genealogy
+database recording, the genome will not be listed.
+Org # /Init PC / Genome : Curr PC  HBt LfT    R1       R2       R3       R4
+  2023/000F5F60/aaaa.46 : 000F5F86  36 454 000F5F8D 000F5F60 0000002E 00000000
+
+    ^  Initial   Genome   Current  ^   ^   Register Register Register Register
+    |    PC                 PC     |   |      1        2        3        3
+    |                              |   |
+    |                              |   Lifetime down-counter
+    Organism #                     |    
+                                   Heartbeat down-counter
+
+If the optional argument is supplied, one organism is dumped.
+Here is an example:
+---- Monitor > o 451
+Organism #     451
+Initial PC     0009b640
+Genome         aaaa.46
+Current PC     0009b648
+Lifetime       48
+Heartbeat      126
+Parent         404
+Birth tick     187730
+R1             0009b640
+R2             006adf10
+R3             0000002e
+R4             00000000
+
+(Q)uit
+Exits psoup.
+
+(R)ead file
+Reads file into the soup starting at location 0.  Prints a message
+telling how many bytes were read.
+
+(S)tats
+Prints various interesting numbers.  Here's a sample:
+---- Monitor > s
+Instructions interpreted: 206470
+Population:               50
+Births:                   487
+Deaths:                   437
+Initial Lifetime:         500
+Initial Heartbeat:        50
+Mutation interval:        20
+Tell after age:           501
+Adjust_population() is turned off.
+Genealogy database recording is turned on.
+
+The first four lines are self-explanatory.
+Initial Lifetime is the value set by the (L)ifetime command.
+Initial Heartbeat is the value set by the (H)eartbeat command.
+Mutation Interval is the value set by the (M)utate command.
+Tell after age is the value set by the (T)ell command.
+Adjust_population() is turned off -- Change with (A)djust.
+Genealogy database recording is turned on -- Change with data(B)ase.
+
+(T)ell nn
+Tell the user when an organism is at least nn instructions old.  A
+sample message follows:
+
+*** Organism     68 is  55 instructions old. pc=00003D0F  population= 50
+
+This lets you know that organisms are still being spawned, and that they
+have executed for some part of their full lifetime.  This is an indication
+that the organisms have not degenerated.  If the argument to the "t" 
+command is lifetime+1, no messages are printed.
+
+(U)nassemble addr
+Disassemble the program in the soup starting at addr.  The mnemonics
+for the op-codes are printed.
+
+(W)rite file
+Write the entire soup to file.
+
+-----------------------------------------------------------------------
+
+THE "SHOW" UTILITY
+
+"show" is used to view the output of the genealogy/genome database.
+Note that the data(B)ase monitor command must be used to turn on
+recording of the organisms and genomes in the database.
+
+"show" currently has the following uses:
+
+show aaxy.18               - print the genome aaxy.18
+show 344                   - print organism 344 (with genome disassembly)
+show organisms             - print all organisms (without genome disassembly)
+show census [nn]           - print the number of organisms that represent
+			     each genome.  If the numeric argument nn is
+                             given, it specifies a minimum number of organisms,
+			     below which the genome is not printed.
+show lineage nn [genomes]  - Print the organism, its parent, its grandparent,
+			     etc.  If the argument "genomes" is given, only
+			     the most-recently born ancestor for each genome
+			     change is printed.
+
+-----------------------------------------------------------------------
+
+ASSEMBLY LANGUAGE
+
+Each organism contains four 32-bit registers and a 16-level 32-bit wide
+stack.  Register 1 is the destination register for adds and subtracts.
+Registers 1 and 2 may be used as memory pointers for register-indirect
+operations.  Registers 1, 2, and 3 are used by the SPWN (spawn)
+instruction.
+
+The instructions are one or two bytes long.  
+Two-byte instructions contain an operand in the second byte.
+
+There are six addressing modes used in the assembly language:
+register, register-indirect, PC-relative, immediate, content,
+and content-indirect addressing.
+
+Register addressing:
+The digit in the mnemonic indicates the register in which
+the addressed value resides.
+
+Register-indirect addressing:
+The digit in the mnemonic indicates a register whose contents
+are taken to be a memory address.  The byte at the memory address is 
+the value addressed.
+
+PC-relative addressing:
+The byte operand to the instruction is taken to be an offset from
+the memory address of the operand itself.  The addressed value
+is the byte at memory location a+o where a is the address of the
+offset operand and o is the operand.
+
+Immediate addressing:
+The byte operand to the instruction is the addressed value.  If
+it is loaded into a 32-bit register, it is padded left with zeroes.
+
+Content addressing:
+The byte operand to the instruction is taken to be a byte value
+which is searched for in memory.  The addressed value is the byte
+that is found.  Forward searches start one byte after the operand
+to the current instruction.  Backward searches start one byte before
+the opcode of the current instruction.
+
+Content-indirect addressing:
+The digit in the mnemonic is a register whose contents are taken
+to be a memory address.  The second byte of the instruction is
+searched for in memory and the address is left in the specified
+register.  The specified register is preincremented or predecremented
+for forward or backward searches respectively, so the search starts
+one byte before or after the initial search address.
+
+The assembly language consists of four-character mnemonic names
+for each of the instructions.  They are listed by category below.
+Mnemonics that contain a digit refer to one of the four registers.
+Mnemonics that contain two digits refer to two of the registers,
+the first being the source register and the second being the destination
+register.  R1R2 means copy the contents of register 1 to register 2.
+
+The spawn instruction:
+SPWN
+This instruction allows an organism to give birth to a child.
+SPWN does a block copy in memory, and starts a new organism executing
+at the beginning of the copied block.  Register 1 is the source address,
+register 2 is the destination address, and register 3 is the length
+in bytes for the block copy.  Only the eight least significant bits
+of register 3 are used, so the maximum length is 255 bytes.  The
+block of memory starting where register 1 points is copied to where
+register 2 points, for the number of bytes given by register 3.  A
+new organism is started where register 2 points.  None of the register
+contents are changed by this instruction.
+If SPAWNCOST is defined at compile time, when the block copy is done
+the length of the copy (the 8 LSB of r3) is subtracted from the 
+lifetime counter, so organisms that spawn shorter offspring live longer.
+If the lifetime counter is <= 0 after the subtract, the organism is 
+killed and the spawn fails.
+The spawn will fail if any of the following are true:
+- The 8 LSB of register 3 are zero.
+- Register 1 = register 2
+- The lifetime counter is decremented to zero before the spawn.
+- The number of organisms is at the maximum.
+The heartbeat counter is reset if the spawn fails because the 
+number of organisms is at the maximum.  For all other failures,
+the heartbeat counter is not reset.
+If the spawn fails, it acts like a NOOP.
+
+Register-register moves:
+R1R2 R1R3 R1R4 R2R1 R3R1 R4R1 PCR1 PCR2 PCR3 PCR4
+The first register specified is the source register, and the second
+register is the destination register.  The contents of the source
+register is copied to the destination register.  If the source
+register is PC, the program counter is copied to the destination
+register.
+
+Register-memory moves:
+R2M1 R3M1 R4M1 R1M2 R3M2 R4M2 M1R2 M1R3 M1R4 M2R1 M2R3 M2R4
+Rn specifies the contents of a register. Mn specifies the byte
+pointed at by register n.  In the case of a register-to-memory
+move, the least sigificant byte of the register is copied to
+the byte in memory pointed to by the destination register.
+In the case of a memory-to-register move, the byte pointed
+to by the source register is copied to the least sigificant
+byte of the destination register, padded left with zeroes to
+thirty two bits.
+
+Add and subtract:
+ADD1 ADD2 ADD3 ADD4 SUB1 SUB2 SUB3 SUB4
+The digit in the instruction specifies the source register for
+an add or subtract operation.  The destination register is always
+register 1.  For an add instruction, the source register is added
+to register 1 and the sum is stored in register 1.  For a subtract
+instruction, the source register is subtracted from register 1 and
+the difference is stored in register 1.
+
+Increment and decrement:
+INC1 INC2 INC3 INC4 DEC1 DEC2 DEC3 DEC4
+The increment and decrement instructions add or subtract 1, respectively,
+from the specified register.
+
+Register-immediate moves:
+NNR1 NNR2 NNR3 NNR4
+These are two-byte instructions.  The second byte is an operand
+that is copied into the specified register, padded left with
+zeroes to thirty two bits.
+	NNR3	0x1a	/* Load 1a hex into r3 */
+
+Unconditional jump:
+JUMP JMPF JMPB
+These are two-byte instructions.  JUMP uses PC-relative addressing.  The
+byte operand is sign-extended to 32 bits and added to its own memory address,
+and the program counter is set to the result modulo the soup length.
+JMPF and JMPB use content addressing.  The operand is searched for,
+forward or backward in memory, respectively, and the program counter
+is set to the first address where it is found.  Forward searches start
+one byte past the operand.  Backward searches start one byte before the
+op-code.
+	JUMP	0xf0	/* Jump backward */
+	JMPB	PCR1	/* Jump backward to PCR1 instruction */
+	JMPF	0x99	/* Jump forward to first occurrence of 99 hex */
+
+Conditional jump:
+JPZ1 JPZ2 JPZ3 JPZ4
+These are two-byte instructions.  They use PC-relative addressing.
+If the specified register equals zero, the operand is added to its
+own address, and the program counter is set to the result modulo
+the soup length.
+Example:
+	JPZ1	0x05	/* Jump forward if r1 is zero */
+
+Pushes and pops:
+PSHP PSH1 PSH2 PSH3 PSH4 POP1 POP2 POP3 POP4
+PSHn pushes the specified register onto the stack.  PSHP pushes the
+program counter.  POPn pops the top number on the stack into the
+specified register.
+
+Calls and returns:
+CLLF CLLB RETN
+These are two-byte instructions.  They use content addressing. 
+The operand is searched for, forward or backward in memory, 
+respectively, and the program counter is set to the first address 
+where it is found.  Forward searches start one byte past the operand.  
+Backward searches start one byte before the op-code.  After the program
+counter is loaded the address of the instruction after the call is
+pushed on the stack.
+RETN pops the top of the stack into the program counter.
+Example:
+	CLLF PSH2	/* Search forward for PSH2 instruction, call
+			 * subroutine there.
+			 */
+	CLLB 0x88	/* Search backward for 88 hex, call subroutine there */
+	RETN		/* Return from subroutine */
+
+Search forward and backward:
+SCF1 SCF2 SCF3 SCF4 SCB1 SCB2 SCB3 SCB4
+These are two-byte instructions.  They use content-indirect addressing.
+For forward searches, the operand is searched for in memory, starting
+at the address in the specified register plus one.
+For backward searches, the operand is searched for in memory, starting
+at the address in the specified register minus one.
+Example:
+	SCF1 0x76	/* Search for 76 hex, leave addr in r1 */
+	SCB3 PCR1	/* Search for PCR1 instruction, leave addr in r3 */
+
+Labels:
+LBL0 LBL1 LBL2 LBL3 LBL4 LBL5 LBL6 LBL7 LBL8 LBL9
+These instructions are used as the target for content-addressing
+jumps, calls, and searches.  They act like no-ops when executed.
+
+No operation:
+NOOP
+No operation.  The program counter is incremented to point
+to the next instruction.  No other action occurs.

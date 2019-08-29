@@ -1,0 +1,74 @@
+
+format: 3  bits: 3  EX      TC      TP      MF      MT      MB      
+genotype: 0061aag  parent genotype: 0061aal
+1st_daughter:  flags: 0  inst: 0  mov_daught: 0          breed_true: 1
+2nd_daughter:  flags: 0  inst: 1  mov_daught: 0          breed_true: 1
+Origin: InstExe: 748,0  clock: 0  Sat Jul 14 11:23:54 1990
+MaxPropPop: 0.0  MaxPropInst: 0.0 mpp_time: 0,0 
+ploidy: 1  track: 0
+comments: this hyper-parasites dominates at the time that the first
+social creatures appear.
+
+track 0: prot
+          xwr
+nop1    ; 010 000 01   0
+nop1    ; 010 000 01   1
+nop0    ; 010 000 00   2
+adrb    ; 010 000 1c   3
+nop0    ; 010 000 00   4
+nop0    ; 010 000 00   5
+nop1    ; 010 000 01   6
+sub_ac  ; 010 000 07   7
+movab   ; 010 000 19   8
+adrf    ; 010 000 1d   9
+nop0    ; 010 000 00  10
+nop0    ; 010 000 00  11
+nop0    ; 010 000 00  12
+zero    ; 010 000 04  13
+zero    ; 010 000 04  14
+sub_ab  ; 010 000 06  15
+mal     ; 010 000 1e  16
+call    ; 010 000 16  17
+nop0    ; 010 000 00  18
+nop0    ; 010 000 00  19
+nop1    ; 010 000 01  20
+nop1    ; 010 000 01  21
+divide  ; 010 000 1f  22
+jmpb    ; 010 000 15  23
+nop0    ; 010 000 00  24
+nop0    ; 010 000 00  25
+nop1    ; 010 000 01  26
+jmp     ; 010 000 14  27
+nop1    ; 010 000 01  28
+zero    ; 010 000 04  29
+ifz     ; 010 000 05  30
+nop1    ; 010 000 01  31
+nop1    ; 010 000 01  32
+nop0    ; 010 000 00  33
+nop0    ; 010 000 00  34
+pushax  ; 010 000 0c  35
+pushcx  ; 010 000 0e  36
+pushcx  ; 010 000 0e  37
+nop1    ; 010 000 01  38
+nop0    ; 010 000 00  39
+nop1    ; 010 000 01  40
+nop0    ; 010 000 00  41
+movii   ; 010 000 1a  42
+dec_c   ; 010 000 0a  43
+ifz     ; 010 000 05  44
+jmpb    ; 010 000 15  45
+nop1    ; 010 000 01  46
+nop0    ; 010 000 00  47
+nop0    ; 010 000 00  48
+inc_a   ; 010 000 08  49
+inc_b   ; 010 000 09  50
+jmpb    ; 010 000 15  51
+nop0    ; 010 000 00  52
+nop1    ; 010 000 01  53
+nop0    ; 010 000 00  54
+nop1    ; 010 000 01  55
+ifz     ; 010 000 05  56
+popbx   ; 010 000 11  57
+nop1    ; 010 000 01  58
+nop1    ; 010 000 01  59
+nop1    ; 010 000 01  60

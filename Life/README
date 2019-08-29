@@ -1,0 +1,136 @@
+This is a new version of my ancient LIFE program, significantly hacked and
+added to.  It is by no means in a final state, but it since no one else has
+presented a nice LIFE environment, it will have to do.  Some example input
+files have been provided as well, in a new (not another!) macro language
+that I hacked together one day many days ago.  It requires operation from
+the CLI.
+
+First, let's run it.  Simply change directories to the life directory on
+the disk, and type, for instance,
+
+	life xmp/r
+
+That's all there is to it!  Hit Q, ESC, X, or ^C to exit.  Some other
+sample command lines are:
+
+	life -h xmp/acorn
+	life -o -t -p2 xmp/bomb
+	life -r100 -h xmp/bcity  ; be patient!
+
+The rest of this documentation has three parts:  an explanation of the
+command line arguments, an explanation of the keyboard command keys during
+the run of the program, and an explanation of the macro language.  This
+is the usage line of the program.  Note that all parameters must not be
+separated from their option letter by a space; use -h352 instead of -h 352.
+
+	life [-h[n]] [-r[n]] [-pn] [-o] [-t] [-v[n]] [-s] [infile]
+
+-h	This option sets hires mode.  The optional parameter sets the
+	horizontal resolution to something other than 640; it must be
+	a multiple of 16.  Actually, if the parameter is less than 400,
+	low res is assumed.
+
+-r	Set a cell randomly every generation.  If a parameter is supplied,
+	it indicates how long to delay in generations before setting each
+	cell; -r10 sets a random cell every 10 generations.
+
+-p	Set the number of bitplanes to use.
+
+-o	Orify; this option allows cells to leave `tracks', so you can trace
+	the glider guns and the like.  You *must* use at least -p2 with this
+	option.
+
+-t	Wrap the screen as in a torus.
+
+-v	Set the vertical resolution.  If the supplied parameter is greater
+	than 300, the screen is set to interlace.
+
+-s	Do not start computing until the appropriate keyboard key is hit.
+
+Which brings us to the keyboard command options.  These keys should be hit
+during the programs execution.
+
+Q, X,	Exit the program.  Because the explanation is so simple but there
+^C, ESC	are so many keys, I need to add this nonsense sentence so the docs
+	documentation looks pretty.
+
+0, G	Go!  Run at full speed.
+
+S	Stop.  Wait for one of the keystroke commands to continue.
+
+SPACE	Execute a single generation and then stop.  Useful for single-stepping.
+
+1, 2,	Insert a delay between generations; slow things down enough so you
+3, 4,	can watch comfortably.  The actual delay inserted can be calculated
+5, 6,	by the formula (2^n)/50, in seconds, where n is the key pressed.
+7, 8,	This allows delays from 1/25 of a second between generations, all the
+9	way to 10.24 seconds between generations.
+
+Ahh, now we get to the hard part, documenting the macro language which is
+used to set up initial generations.  This command language is based somewhat
+on Logo (remember multitasking Color Computer Logo?)  All whitespace is
+ignored.  All caps are converted to lowercase.  Comments are enclosed in
+< and >.  The turtle starts in the middle of the screen, facing up, with
+the pen down.  The basic commands are:
+
+f	Move forward one cell, setting the current cell if the pen is down.
+r	Turn towards the right.
+l	Turn towards the left.
+b	Turn facing the other direction.
+u	Lift the pen off the paper.
+d	Put the pen on the paper.
+
+The commands take a single argument, as well.  For instance,
+
+	10 f
+
+moves forward 10 times, setting cells if the pen is down.
+
+Parentheses group actions, which can be repeated.  For instance,
+
+	10 ( f r f l )
+
+with the pen down draws a staircase pattern, by moving forward, then right,
+then forward, then left, 10 times.  This grouping is nestable.
+
+x	Go to the x location supplied as a parameter.
+y	Go to the y location supplied as a parameter.
+-	Flip left and right.  If executing again, things go back to normal.
++	Make right be the normal right, undoing any effects of the above.
+.	Move forward without setting any cells, ignoring the current pen.
+*	Move forward, setting the current cell, ignoring the current pen.
+
+Brackets ([]) push and pop a location stack.  The things saved and restored
+are the x and y location, the direction, whether `right' means a real right
+or a left (from the - command), and the pen state.  Thus, you can do things
+like:
+
+	10 ( [ 10 * ] r . l )
+
+to draw a 10 by 10 filled block.  That `r . l' sequence occurs often enough
+that the command `,' is used for it.  This way, you can draw pictures in
+your editor.  To draw a glider, you might use:
+
+	[.*.],
+	[..*],
+	[***]
+
+Easy enough, eh?  One last thing.  You can even define single-character
+macros!  If you use that glider often enough, you can make it a macro by
+simply using the `=' command.  You must assign it to something grouped in
+parenthesis.  So,
+
+= g ( [
+   [.*.],
+   [..*],
+   [***]
+   ] )
+
+sets `g' to be a glider macro.  Each time you use g in your script file, a
+glider will be drawn.  Note that it is good practice to enclose your macro
+definitions with [ and ], hence the brackets above.
+
+There is a handful of examples provided.  No apologies are made for the
+cryptic command language or the single character macros supplied.
+
+Enjoy!  Bugs to Tomas Rokicki, Box 2081, Stanford, CA  94309.

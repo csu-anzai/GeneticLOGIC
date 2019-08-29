@@ -1,0 +1,21 @@
+                            xantfarm
+                     Distribution of 16oct91
+                   Previous distribution NONE
+
+Xantfarm animates the X11 root window with a simulated ant hill.
+
+Files in this distribution:
+
+    README		this
+    Imakefile		guess
+    xantfarm.c		main routine
+    xantfarm.man	manual entry
+
+To compile: do an xmkmf, make depend, make.
+
+Feedback is welcome - send bug reports, enhancements, checks, money orders,
+gold bullion, drugs, etc. to the addresses below.
+
+    Jef Poskanzer
+    jef@well.sf.ca.us
+    {ucbvax, apple}!well!jef

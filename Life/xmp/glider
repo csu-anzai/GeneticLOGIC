@@ -1,0 +1,48 @@
+<-
+ -   Diagonal to right move
+ ->
+= e
+(
+  u f r f l d
+)
+<-
+ -   Block
+ ->
+= c
+(
+  [
+    d f l f l f u
+  ]
+)
+<-
+ -   Glider gun
+ ->
+= a
+(
+  [
+    c
+    11 f
+    [
+      d r f b f f
+      e e r e e
+      d [ f r f f ]
+      r f f e e r e
+    ]    
+    10 f
+    [
+      [ f d 3 f r f ]
+      l f r
+      [ d 3 f ]
+      l f r
+      [ d u 3 f d ]
+      l f r
+      [ d 3 f ]
+      l f r f
+      [ d 3 f l f ]
+    ]
+    13 f l 2 f r c
+  ]
+)
+
+50 x 20 y
+r a b f f f - a

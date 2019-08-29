@@ -1,0 +1,69 @@
+Instset #4 Based on a design suggested by Walter Tackett of Hughes Aircraft,
+    and implemented by Tom Ray.
+
+No Operations: 2
+
+nop0
+nop1
+
+Memory Movement: 13
+
+movdi  (move from BX to ram [AX + CX])
+movid  (move from ram [BX + CX] to AX)
+movii  (move from ram [BX + CX] to ram [AX + CX])
+pushax (push AX onto stack)
+pushbx (push BX onto stack)
+pushcx (push CX onto stack)
+pushdx (push DX onto stack)
+popax  (pop from stack into AX)
+popbx  (pop from stack into BX)
+popcx  (pop from stack into CX)
+popdx  (pop from stack into DX)
+put    (write DX to output buffer, three modes:
+         #ifndef ICC: write DX to own output buffer
+         #ifdef ICC:  write DX to input buffer of cell at address CX,
+           or, if template, write DX to input buffers of all creatures within
+           PutLimit who have the complementary get template)
+get    (read DX from input port)
+
+Calculation: 7
+
+inc    (increment CX)
+dec    (decrement CX)
+add    (CX = CX + DX)
+sub    (CX = CX - DX)
+zero   (zero CX)
+not0   (flip low order bit of CX)
+shl    (shift left all bits of CX)
+
+Instruction Pointer Manipulation: 5
+
+ifz    (if   CX == 0 execute next instruction, otherwise, skip it)
+iffl   (if flag == 1 execute next instruction, otherwise, skip it)
+jmp    (jump to template, or if no template jump to address in AX)
+jmpb   (jump back to template, or if no template jump back to address in AX)
+call (push IP + 1 onto the stack; if template, jump to complementary templ)
+
+Biological and Sensory: 5
+
+adr    (search outward for template, put address in AX, template size in DX,
+           and offset in CX, start search at offset +- CX)
+adrb   (search backward for template, put address in AX, template size in DX,
+           and offset in CX, start search at offset - CX)
+adrf   (search forward for template, put address in AX, template size in DX,
+           and offset in CX, start search at offset + CX)
+mal    (allocate amount of space specified in CX, prefer address at AX,
+           if AX < 0 use best fit, place address of allocated block in AX)
+divide (cell division, the IP is offset by CX into the daughter cell, the
+           values in the four CPU registers are transferred from mother to
+           daughter, but not the stack.  If !DX genome will be ejected from
+           the simulator)
+
+Total: 32
+
+Instset #4 Based on a design suggested by Walter Tackett of Hughes Aircraft,
+    and implemented by Tom Ray.  The special features of this instruction
+    set are that all movement between registers of the cpu takes place via
+    push and pop through the stack.  Also, all indirect addressing involves
+    an offset from the address in the CX register.  Also, the CX register
+    is where most calculations take place.

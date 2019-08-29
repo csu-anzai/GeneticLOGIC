@@ -1,0 +1,10 @@
+Name : simplest
+Initial_Reserves : 1 0 0 0
+Trading_Resource : a
+Uptake_Mask : 1000
+Offense_Tag : a
+Defense_Tag : a
+Mating_Tag : a
+Combat_Condition : a
+Trade_Condition : a
+Mating_Condition : a

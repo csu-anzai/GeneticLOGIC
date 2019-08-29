@@ -1,0 +1,10 @@
+# 'b' is a shell command (an executable file) which calls 			
+# breeder with the time as a parameter to seed its random number	
+# generator.  It passes the time (so to speak) in the order		
+# seconds, minutes, hours so that the generator will get very 		
+# different seeds even	b is executed twice in fairly rapid 		
+# succession.														
+
+breeder `date "+%S%M%H"`
+
+

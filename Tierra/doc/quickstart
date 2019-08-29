@@ -1,0 +1,145 @@
+
+4)  QUICK START 
+
+     The steps required to run the system on DOS and UNIX are slightly
+different, so there are two sets of instructions listed below.
+
+  4.1) DOS QUICK START
+
+     If you obtained the Tierra software on disk, the installation program
+will take care of steps 1 - 3, so you can skip to step 4.  If you
+obtained the software over the net, start with step 1. 
+
+      step 1)  You should have a directory containing the executables and
+source code and five subdirectories: td, gb1, gb2, gb3, and gb4.  The td
+directory is where a record of births and deaths will be written.  The gb
+directories contain the initial genomes used to innoculate the soup and the
+opcode maps.  The genebanker will save new genomes to the gb directories.
+There is a gb directory for each of the four instruction sets.
+
+      step 2)  You must compile the assember/disassembler, arg, and the
+simulator, tierra.  We include the two Turbo C V 2.0 project files:
+tierra.prj and arg.prj.  If you are using a more recent version of the
+compiler, such as Borland C++, you must use the Borland project tool to
+create a binary project file.  Just list the files listed in the two ascii
+project files that are provided.  Compile these projects using the large
+memory model.  Put the executables in the path.
+
+      step 3)  You must assemble the initial genomes, as binaries are not
+portable.  To do this, go into the gb1 directory and type:
+
+arg c 0080.gen 80 0080aaa.tie
+
+This will create the binary file 0080.gen which contains a creature that you
+can use to innoculate the soup, the ancestor 0080aaa.  You can check to see if
+this worked by disassembling the genome, by typing:
+
+arg x 0080.gen aaa
+
+This will create the ascii file 0080aaa.  Compare it to the original,
+0080aaa.tie (it will not be exactly the same).  Before you start a run, copy
+0080.gen to 0080gen.vir, in order to have a virgin copy for use later when
+you start another run.
+
+copy 0080.gen 0080gen.vir
+
+     You can do the same for each of the four gb directories (gb1, gb2, gb3,
+and gb4).  Be sure to assemble the genomes listed at the ends of the
+corresponding soup_in files (soup_in1, soup_in2, soup_in3, soup_in4).
+
+      step 4)  Go back to the source code directory and examine the file
+soup_in1.  This file contains all of the parameters that control the run.  It
+is currently set up to innoculate the soup with one cell of genotype 0080aaa,
+and to run for 500 million instructions in a soup of 50,000 instructions.  You
+will need a text editor if you want to modify this file.  If you use a regular
+word processor, be sure that you write the file back out as a plain ASCII text
+file.
+
+      step 5)  Run the simulator by typing: tierra
+
+      step 6)  When the run is over, if you want to start a new run, you
+should clean up the genebank, because the simulator will read in all genomes
+in the genebank at startup.  The best way to do this is to use the batch files
+that are provided for this purpose: clr1.bat, clr2.bat, clr3.bat and clr4.bat.
+Since we are discussing a run of instruction set 1, use clr1.bat, by typing
+clr1 to the DOS prompt.  The batch file will take care of the cleanup.
+
+     If you wish to use a cumulative genebank in successive runs, use the
+corresponding cumulative clear batch files: cclr1.bat, cclr2.bat, cclr3.bat,
+and cclr4.bat.
+
+  4.2) UNIX QUICK START
+
+      step 1)  You should have a directory containing the source code and five
+subdirectories: td and gb1, gb2, gb3 and gb4.  The td (tiedat) directory is
+where a record of births and deaths will be written.  The gb (genebank)
+directories contain the initial genomes used to innoculate the soup and the
+opcode map, and the genebanker will save new genomes to these directories.
+
+      step 2)  You must compile the assember/disassembler, arg, and the
+simulator, tierra.  There is a Makefile included to perform the compilation.
+This Makefile needs to be edited to comment in the lines for your particular
+hardware.  It has been tested on Sun 3, Sun 4, IBM RS6000, Silicon Graphics
+Personal Iris and Indigo, DEC DS5000, and NeXT.  If you can use the Makefile,
+type: make, and follow instructions.
+
+      step 3)  You must assemble the initial genome, as binaries are not
+portable.  To do this, go into the gb1 directory and type:
+
+../arg c 0080.gen 80 0080aaa.tie
+
+This will create the binary file 0080.gen which contains a creature that you
+can use to innoculate the soup, the ancestor 0080aaa.  You can check to
+see if this worked by disassembling the genome, by typing:
+
+../arg x 0080.gen aaa
+
+This will create the ascii file 0080aaa.  Compare it to the original,
+0080aaa.tie (they will not be exactly the same).  Before you start a run,
+copy 0080.gen to 0080gen.vir, in order to have virgin copies for use later
+when you start another run.
+
+cp 0080.gen 0080gen.vir
+
+     You can do the same for each of the four gb directories (gb1, gb2, gb3,
+and gb4).  Be sure to assemble the genomes listed at the ends of the
+corresponding soup_in files (soup_in1, soup_in2, soup_in3, soup_in4).
+
+      step 4)  Go back to the source code directory and examine the file
+soup_in1.  This file contains all of the parameters that control the run.  It
+is currently set up to innoculate the soup with one cell of genotype 0080aaa,
+and to run for 500 million instructions in a soup of 50,000 instructions.
+
+      step 5)  Run the simulator by typing:
+           tierra
+       or: tierra > /dev/null &  (to run it in the background
+			         a Log file can be created by setting
+			         the soup_in variable Log = 1)
+
+     In order to run tierra in the background, you must compile it with:
+
+#define FRONTEND STDIO
+
+     If you will run Tierra in the foreground, we recommend that you use:
+
+#define FRONTEND BASIC
+
+     These definitions are made in the configur.h file.
+
+      step 6)  When the run is over, if you want to start a new run, you
+should clean up the genebank.  The best way to do this is to use the
+Unix script files that have been provided for this purpose (clr1, clr2,
+clr3 and clr4).  You must make the clr# files executable by changing their
+protection:
+
+chmod +x clr1
+
+     Then all you have to do is type ``clr1'' to the prompt, and the
+shell script will take care of the cleanup.
+
+     If you wish to use a cumulative genebank in successive runs, use the
+cumulative clear files (cclr1, cclr2, cclr3, cclr4).  You must also make
+sure that they are executable:
+
+chmod +x cclr1
+

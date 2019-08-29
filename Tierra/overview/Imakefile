@@ -1,0 +1,24 @@
+#ifdef BandAidCompiler
+#include BandAidCompiler
+#endif
+
+             CC = cc
+
+    CDEBUGFLAGS = -g
+      CCOPTIONS = -I../alcomm/inc -I../tierra
+      LDOPTIONS = -L/usr/X/lib -L../alcomm
+      USRLIBDIR = /usr/lib
+
+	 OVSRCS = overview.c ovxiface.c ov_gfx.c ovstats.c ovmemmap.c	\
+		    ovexpose.c
+	 OVOBJS = overview.o ovxiface.o ov_gfx.o ovstats.o ovmemmap.o	\
+		    ovexpose.o
+
+LOCAL_LIBRARIES = XawClientLibs
+        DEPLIBS = XawClientDepLibs
+
+AllTarget(ov)
+
+NormalProgramTarget(ov,$(OVOBJS),$(DEPLIBS),$(LOCAL_LIBRARIES),-lm -lalcom -lresolv)
+
+DependTarget()

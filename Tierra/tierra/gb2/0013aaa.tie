@@ -1,0 +1,21 @@
+
+format: 3  bits: 3
+genotype: 0013aaa  parent genotype: 0666god
+ploidy: 1  track: 0
+comments: non-replicating program to test put with template.
+
+track 0: prot
+          xwr
+inc     ; 010 000 01   0
+inc     ; 010 000 01   0
+nop0    ; 010 000 01   0
+nop0    ; 010 000 01   0
+inc     ; 010 000 01   0
+put     ; 010 000 01   0
+nop0    ; 010 000 01   0
+nop1    ; 010 000 01   0
+nop0    ; 010 000 01   0
+jmpb    ; 010 000 01   0
+nop1    ; 010 000 01   0
+nop1    ; 010 000 01   0
+ifz     ; 010 000 01   0

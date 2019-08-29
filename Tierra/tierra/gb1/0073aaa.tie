@@ -1,0 +1,79 @@
+
+format: 3  bits: 3
+genotype: 0073aaa  parent genotype: 0666god
+
+track 0: prot
+          xwr
+nop1    ; 010 000 00  00 beginning marker
+nop1    ; 010 000 00  00 beginning marker
+nop1    ; 010 000 00  00 beginning marker
+nop1    ; 010 000 00  00 beginning marker
+adrb    ; 010 000 00  00 get (backward) address of beginning marker -> ax
+nop0    ; 010 000 00  00 complement to beginning marker
+nop0    ; 010 000 00  00 complement to beginning marker
+nop0    ; 010 000 00  00 complement to beginning marker
+nop0    ; 010 000 00  00 complement to beginning marker
+sub_ac  ; 010 000 00  00 subtract cx from ax, result in ax
+movab   ; 010 000 00  00 move ax to bx, bx now contains start address of mother
+adrf    ; 010 000 00  00 get (forward) address of end marker -> ax
+nop0    ; 010 000 00  00 complement to end marker
+nop0    ; 010 000 00  00 complement to end marker
+nop0    ; 010 000 00  00 complement to end marker
+nop1    ; 010 000 00  00 complement to end marker
+inc_a   ; 010 000 00  00 increment ax, to include dummy instruction at end
+sub_ab  ; 010 000 00  00 subtract bx from ax to get size, result in cx
+nop1    ; 010 000 00  00 reproduction loop marker
+nop1    ; 010 000 00  00 reproduction loop marker
+nop0    ; 010 000 00  00 reproduction loop marker
+nop1    ; 010 000 00  00 reproduction loop marker
+mal     ; 010 000 00  00 allocate space (cx) for daughter, address to ax
+call    ; 010 000 00  00 call template below (copy procedure)
+nop0    ; 010 000 00  00 copy procedure complement
+nop0    ; 010 000 00  00 copy procedure complement
+nop1    ; 010 000 00  00 copy procedure complement
+nop1    ; 010 000 00  00 copy procedure complement
+divide  ; 010 000 00  00 create independent daughter cell
+jmp     ; 010 000 00  00 jump to template below (reproduction loop)
+nop0    ; 010 000 00  00 reproduction loop complement
+nop0    ; 010 000 00  00 reproduction loop complement
+nop1    ; 010 000 00  00 reproduction loop complement
+nop0    ; 010 000 00  00 reproduction loop complement
+ifz     ; 010 000 00  00 dummy instruction to separate templates
+nop1    ; 010 000 00  00 copy procedure template
+nop1    ; 010 000 00  00 copy procedure template
+nop0    ; 010 000 00  00 copy procedure template
+nop0    ; 010 000 00  00 copy procedure template
+pushbx  ; 010 000 00  00 push bx (mom) onto stack
+pushcx  ; 010 000 00  00 push cx (size) onto stack
+nop1    ; 010 000 00  00 copy loop template
+nop0    ; 010 000 00  00 copy loop template
+nop1    ; 010 000 00  00 copy loop template
+nop0    ; 010 000 00  00 copy loop template
+movii   ; 010 000 00  00 move contents of [bx] to [ax] (copy one instruction)
+dec_c   ; 010 000 00  00 decrement cx (size)
+ifz     ; 010 000 00  00 if cx == 0 perform next instruction, otherwise skip it
+jmp     ; 010 000 00  00 jump to template below (copy procedure exit)
+nop0    ; 010 000 00  00 copy procedure exit complement
+nop1    ; 010 000 00  00 copy procedure exit complement
+nop0    ; 010 000 00  00 copy procedure exit complement
+nop0    ; 010 000 00  00 copy procedure exit complement
+inc_a   ; 010 000 00  00 increment ax (address in daughter to copy to)
+inc_b   ; 010 000 00  00 increment bx (address in mother to copy from)
+jmp     ; 010 000 00  00 bidirectional jump to template below (copy loop)
+nop0    ; 010 000 00  00 copy loop complement
+nop1    ; 010 000 00  00 copy loop complement
+nop0    ; 010 000 00  00 copy loop complement
+nop1    ; 010 000 00  00 copy loop complement
+ifz     ; 010 000 00  00 this is a dummy instruction to separate templates
+nop1    ; 010 000 00  00 copy procedure exit template
+nop0    ; 010 000 00  00 copy procedure exit template
+nop1    ; 010 000 00  00 copy procedure exit template
+nop1    ; 010 000 00  00 copy procedure exit template
+popcx   ; 010 000 00  00 pop cx off stack (size)
+popbx   ; 010 000 00  00 pop bx off stack (start address of mother)
+ret     ; 010 000 00  00 return from copy procedure
+nop1    ; 010 000 00  00 end template
+nop1    ; 010 000 00  00 end template
+nop1    ; 010 000 00  00 end template
+nop0    ; 010 000 00  00 end template
+ifz     ; 010 000 00  00 dummy instruction to separate creature

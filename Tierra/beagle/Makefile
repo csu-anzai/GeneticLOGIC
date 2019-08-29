@@ -1,0 +1,152 @@
+# Makefile_sccsid: %W%	%G%
+
+## edit the following variables to tailor this Makefile to the system
+## you want to install tierra on. (hint: if your `make' complains
+## about missing values for any variable that is commented out, just
+## give it a null value, ie: VAR =<Return>
+
+## Destination: set as appropriate for your system. it currently assumes
+## you are building the system in a directory called ./
+#
+DEST	      = ./
+
+
+## Tools: uncomment the following lines as appropriate to build tools
+## TIERRADIR is the path to the tierra source directory
+#
+TIERRADIR     = ../tierra/
+TOOLSDIR      = $(DEST)
+
+
+## OS type: uncomment the set of lines for the operating system
+## and/or machine type most closely resembling yours, if you port
+## tools to a system significantly different from any of these or 
+## one marked "not tested", please send us any changes you needed to
+## make to get it working.
+#
+#
+# Sun Workstations: choose Sun3 or Sun4
+# other systems running Berkeley 4.2 or 4.3: choose bsd 4.3
+#
+# SGI Iris: choose IRIX
+# AT&T SysIII: choose Sys3 (not tested)
+# AT&T SysV: choose SysV   (not tested)
+#
+# IBM RS/6000: choose RS6000
+
+## Sun3 -------------------------------------
+#
+# OSFLAGS	= -fswitch
+# LIBS	= -lm 
+#
+## Sun4 -------------------------------------
+#
+# OSFLAGS	= 
+LIBS	= -lm 
+#
+## next -------------------------------------
+#
+# OSFLAGS	= 
+# LIBS	= -lm 
+#
+## bsd 4.3 ----------------------------------
+#
+# OSFLAGS	=
+# LIBS	= -lm 
+
+## IRIX -------------------------------------
+#  only use BSD_SIGNALS for irix < 4.0
+# OSFLAGS	= -D_BSD_SIGNALS	
+# LIBS	= -lm -lsun 
+#
+## Sys3 -------------------------------------
+#  (untested)
+# OSFLAGS	= -D_BSD_SIGNALS
+# LIBS	= -lm 
+#
+## SysV -------------------------------------
+#  (untested)
+# OSFLAGS	= -D_BSD_SIGNALS
+# LIBS	= -lm 
+
+## DEC 5000  -----------------------------------
+#
+# OSFLAGS	= -D_BSD_SIGNALS 
+# LIBS	= -lm 
+#
+
+## RS6000 -----------------------------------
+#
+# OSFLAGS	= -D_BSD_SIGNALS -D__TRS6000__
+# LIBS	= -lm 
+#
+##
+## Optimization: set as appropriate for your compiler
+## for debugging you should (usually) set this to -g
+## to perform code optimization this setting is (usually) -O or -O<digit>
+#
+OPTIMIZ	= -O
+
+## Flags to be passed to the linker (usually cc). Add any special requirements
+## for your system. this is hopefully oniform enough that there is no need
+## to include all of the possibilities under the OS section. if you are using
+## optimization, you may want to add -s to strip symbol tables and thus create 
+## a smaller binary.
+#
+LDFLAGS = $(OPTIMIZ)
+
+## you shouldn't have to change anything below this line.
+## (if you are lucky, and the gods of technology aren't angry with you...)
+
+CFLAGS	= -w $(OPTIMIZ) $(OSFLAGS) -I$(TIERRADIR)
+
+CC            = cc
+LINKER	      = cc 
+
+MAKEFILE      = Makefile
+
+all:;
+	@echo "   "
+	@echo " Analysis Tools for the    "
+	@echo "   "
+	@echo " Tierra Artificial Life system "
+	@echo "   "
+	@echo " Please edit this Makefile, "
+	@echo " un-commenting the line(s) for your machine type / OS. "
+	@echo " and choice of options. "
+	@echo "   "
+	@echo " Then say:  " 
+	@echo " make programs  " 
+	@echo "   " 
+
+
+
+probe:;			cc $(CFLAGS) probe.c $(LIBS) -o $(DEST)/probe
+rdn_inst:;		cc $(CFLAGS) rnd_inst.c $(LIBS) -o $(DEST)/rnd_inst
+tieout:;		cc $(CFLAGS) tieout.c $(LIBS) -o $(DEST)/tieout
+
+
+clean:;		rm -f *.o  probe rnd_inst tieout
+
+depend:;	mkmf -f $(MAKEFILE) PROGRAM=$(PROGRAM) DEST=$(DEST)
+
+index:;		ctags -wx $(HDRS) $(SRCS)
+
+install:	$(PROGRAM)
+		install -s $(PROGRAM) $(DEST)
+
+print:;		$(PRINT) $(HDRS) $(SRCS)
+
+programs:       probe rnd_inst tieout
+
+tags:           $(HDRS) $(SRCS); ctags $(HDRS) $(SRCS)
+
+update:		$(DEST)/$(PROGRAM)
+
+#distrib:	$(SRCS) $(HDRS) $(DOCS) arg.c Makefile
+#		cp $(SRCS) $(HDRS) $(DOCS) arg.c Makefile $(DEST)/src/distrib
+#		cd $(DEST)/src/distrib; 
+
+$(DEST)/$(PROGRAM): $(PROGRAM)
+		@make -f $(MAKEFILE) DEST=$(DEST) install
+

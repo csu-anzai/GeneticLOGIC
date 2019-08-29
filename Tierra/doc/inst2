@@ -1,0 +1,82 @@
+
+Instset #2  Based on a design suggested by Kurt Thearling of Thinking Machines,
+    and implemented by Tom Ray.
+
+No Operations: 2
+
+nop0
+nop1
+
+Memory Movement: 12
+
+ax     (make ax R0, R1 = R0, R2 = R1, R3 = R2, R3 is lost)
+bx     (make bx R0, R1 = R0, R2 = R1, R3 = R2, R3 is lost)
+cx     (make cx R0, R1 = R0, R2 = R1, R3 = R2, R3 is lost)
+dx     (make dx R0, R1 = R0, R2 = R1, R3 = R2, R3 is lost)
+movdd  (move R1 to R0)
+movdi  (move from R1 to ram [R0])
+movid  (move from ram [R1] to R0)
+movii  (move from ram [R1] to ram [R0])
+push   (push R0 onto stack)
+pop    (pop from stack into R0)
+put    (write R0 to output buffer, three modes:
+         #ifndef ICC: write R0 to own output buffer
+         #ifdef ICC:  write R0 to input buffer of cell at address R1,
+           or, if template, write R0 to input buffers of all creatures within
+           PutLimit who have the complementary get template)
+get    (read R0 from input port)
+
+Calculation: 8
+
+inc    (increment R0)
+dec    (decrement R0)
+add    (R2 = R1 + R0)
+sub    (R2 = R1 - R0)
+zero   (zero R0)
+not0   (flip low order bit of R0)
+shl    (shift left all bits of R0)
+not    (flip all bits of R0)
+
+Instruction Pointer Manipulation: 5
+
+ifz  (if   R1 == 0 execute next instruction, otherwise, skip it)
+iffl (if flag == 1 execute next instruction, otherwise, skip it)
+jmp  (jump to template, or if no template jump to address in R0)
+jmpb (jump back to template, or if no template jump back to address in R0)
+call (push IP + 1 onto the stack; if template, jump to complementary templ)
+
+Biological and Sensory: 5
+
+adr    (search outward for template, put address in R0, template size in R1,
+           and offset in R2, start search at offset +- R0)
+adrb   (search backward for template, put address in R0, template size in R1,
+           and offset in R2, start search at offset - R0)
+adrf   (search forward for template, put address in R0, template size in R1,
+           and offset in R2, start search at offset + R0)
+mal    (allocate amount of space specified in R0, prefer address at R1,
+           if R1 < 0 use best fit, place address of allocated block in R0)
+divide (cell division, the IP is offset by R0 into the daughter cell, the
+           values in the four CPU registers are transferred from mother to
+           daughter, but not the stack.  If !R1, eject genome from soup)
+
+Total: 32
+
+Instset #2  Based on a design suggested by Kurt Thearling of Thinking Machines,
+    and implemented by Tom Ray.  The novel feature of this instruction set
+    is the ability to reorder the relative positions of the registers, using
+    the ax, bx, cx and dx instructions.  There are in essence, two sets of
+    registers, the first set contains the values that the instruction set
+    operates on, the second set points to the first set, in order to determine
+    which registers any operation will act on.
+
+    Let the four registers containing values be called ax, bx, cx and dx.
+    Let the four registers pointing to these registers be called R0, R1, R2
+    and R3.  When a virtual cpu is initialized, R0 points to ax, R1 to bx,
+    R2 to cx and R3 to dx.  The instruction "add" does the following:
+    (R2 = R1 + R0).  Therefore cx = bx + ax.  However, if we execute the dx
+    instruction, the R0 points to dx, R1 to ax, R2 to bx and R3 to cx.  Now
+    if we execute the add instruction, we will perform: bx = ax + dx.  If we
+    execute the dx instruction again, R0 points to dx, R1 to dx, R2 to ax,
+    and R3 to bx.  Now the add instruction would perform: ax = dx + dx.
+    Now the registers can be returned to their original configuration by
+    executing the following three instructions in order: cx, bx, ax.

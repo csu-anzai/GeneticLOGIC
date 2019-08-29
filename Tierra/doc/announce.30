@@ -1,0 +1,220 @@
+                             TIERRA UPDATE:
+  (Mailing lists, Source code, abstract, publications, lectures, new results)
+
+This message contains:
+
+1) Announcement of Tierra mailing lists
+2) Major Tierra upgrade, and Beagle now available
+3) Availability of Tierra source code
+4) Abstract describing Tierra
+5) List of related publications and upcoming lectures
+6) Some interesting new and unpublished results
+
+     Due to your interest in the Tierra software, you have been placed on
+a mailing list.  To have yourself removed, send a message to:
+tierra-request@life.slhs.udel.edu, requesting that you be removed.
+
+     There is a mailing list for Tierra users. (actually 3, but you only want
+to be on one of them).  The first list is for people who only want to get the
+official announcements, updates and bug-fixes. The other two will carry the 
+official postings, and are intended for discussion of tierra by users.  One 
+of these is distributed in digest form, when there is enough material; the
+other is set up as a mail reflector--postings will go out to the whole list
+immediately.  The lists are:
+
+tierra-announce    official updates, patches and announcements only
+tierra             discussion, updates, etc. (immediate delivery)
+tierra-digest      same as above (once per day digest form)
+
+The addresses are: 
+
+tierra-request@life.slhs.udel.edu   the list administrator. to be added,
+                                    removed, or complain about problems with
+                                    any of these lists.
+tierra@life.slhs.udel.edu   or
+tierra-digest@life.slhs.udel.edu    to post to the list.
+
+tierra-bug@life.slhs.udel.edu       for bug-reports or questions about the
+                                    code or installation.
+
+2) Major Tierra upgrade, and Beagle now available
+
+     A major rework of the genebank manager has been largely completed and
+is now available in the ftp site.  The work was done mostly by Tom Uffner,
+with a little help from Tom Ray (many thanks to Tom U!).  If you picked up
+the original release, it would be well worth your while to pick up the new
+version.  Also, a DOS executable of the Beagle program, and documentation,
+are available in the /tierra/beagle directory of the ftp site.
+
+3) Availability of Tierra source code
+
+     The source code is available now, although it is under rapid development
+and major improvements always underway.  If you use the software, be sure
+to pick up new versions soon from the ftp site.  The source in the ftp site
+will be replace on a roughly weekly or monthly basis.
+
+     The complete source code for the Tierra simulator is
+available by anonymous ftp at:
+
+tierra.slhs.udel.edu [128.175.41.34] and
+  life.slhs.udel.edu [128.175.41.33]
+
+in the directories /tierra and /tierra/beagle.
+
+to get it, ftp to tierra or life, log in as user "anonymous" and give your
+real name (eg. tom@udel.edu) as a password.
+
+then give the command `cd tierra', to get a list of files type `dir'.
+
+you will see the following files:
+
+README.T1		A detailed description of tierra and how to use it.
+README.T2		    in two parts
+Part01			the source code in shar format
+ ...			    in seven parts
+Part07
+announce    		this announcement
+tierra1.tex		Parts 1 & 2 of a manuscript describing Tierra,
+tierra2.tex		    in LaTeX format.
+
+The shar files contain the README files, so if you want the source code,
+you don't need to copy README separately.  To unpack the shar files, use
+`unshar', or `sh'.
+
+     The version released includes significant contributions from
+Tom Uffner, Dan Pirone and Marc Cygnus.  The software remains copyrighted
+("all rights reserved"), and is not being placed in the public domain.
+However, it will be made available free of charge and may be freely
+distributed.  The intent is that it not be used for profit making activities
+unless some royalty arrangement is entered into with the authors.
+
+     A DOS version of the Tierra software with a decent frontend will be ready
+for sale ($70) by November.  Note however, that the version of the source
+code in the ftp site will compile with Turbo C, and run under DOS.
+
+4) Abstract describing Tierra
+
+[deleted]
+
+5) List of related publications and upcoming lectures
+
+[deleted]
+
+6) Some interesting new and unpublished results
+
+Below is a report of an interesting result that is not described in
+any of the publications listed above:
+
+A COMPLEX ADAPTATION
+
+The adaptation described below is a classic example of intricate design in
+evolution.  One wonders how it could have arisen through random bit flips,
+as every component of the code must be in place in order for the algorithm
+to function.  Yet the code includes a classic mix of apparent intelligent
+design, and the chaotic hand of evolution.  The optimization technique is a
+very clever one invented by humans, yet it is implemented in a mixed up but
+functional style that no human would use (unless perhaps very intoxicated).
+
+The arms race described in the manuscripts took place over a period of
+a billion instructions executed by the system.  Another run was allowed to
+continue for fifteen billion instructions, but was not examined in detail.
+A creature present at the end of the run was examined and found to have
+evolved an intricate adaptation.  The adaptation is an optimization technique
+known as ``unrolling the loop''.
+
+The central loop of the copy procedure performs the following operations:
+1) copies an instruction from the mother to the daughter, 2) decrements the
+cx register which initially contains the size of the parent genome, 3) tests
+to see if cx is equal to zero, if so it exits the loop, if not it remains
+in the loop, 4) increments the ax register which contains the address in the
+daughter where the next instruction will be copied to, 5) increments the
+bx register which contains the address in the mother where the next instruction
+will be copied from, 6) jumps back to the top of the loop.
+
+The work of the loop is contained in steps 1, 2, 4 and 5.  Steps 3 and 6 are
+overhead.  The efficiency of the loop can be increased by duplicating the
+work steps within the loop, thereby saving on overhead.  The creature from
+the end of the long run had repeated the work steps three times within the
+loop, as illustrated below.
+
+The unrolled loop is an example of the ability of evolution to produce an
+increase in complexity, gradually over a long period of time.  The interesting
+thing about the loop unrolling optimization technique is that it requires more
+complex code.  The resulting creature has a genome size of 36, compared to its
+ancestor of size 80, yet it has packed a much more complex algorithm into less
+than half the space.
+
+Below I include the assembler code for the central copy loop of the ancestor
+(80aaa) and decendant after fifteen billion instructions (72etq).  Within
+the loop, the ancestor does each of the following operations once: copy
+instruction (51), decrement cx (52), increment ax (59) and increment bx (60).
+The decendant performs each of the following operations three times within
+the loop: copy instruction (15, 22, 26), increment ax (20, 24, 31) and
+increment bx (21, 25, 32).  The decrement cx operation occurs five times
+within the loop (16, 17, 19, 23, 27).  Instruction 28 flips the low order
+bit of the cx register.  Whenever this latter instruction is reached, the
+value of the low order bit is one, so this amounts to a sixth instance of
+decrement cx.  This means that there are two decrements for every increment.
+
+The reason for this is related to another adaptation of this creature.  When
+it calculates its size, it shifts left (12) before allocating space for the
+daughter (13).  This has the effect of allocating twice as much space as
+is actually needed to accomodate the genome.  The genome of the creature
+is 36 instructions long, but it allocates a space of 72 instructions.
+This occurred in an environment where the slice size was set equal to the
+size of the cell.  In this way the creatures were able to garner twice as
+much energy.  However, they had to compliment this change by doubling the
+number of decrements in the loop.
+
+nop_1    ; 01  47 copy loop template      COPY LOOP OF 80AAA
+nop_0    ; 00  48 copy loop template
+nop_1    ; 01  49 copy loop template
+nop_0    ; 00  50 copy loop template
+mov_iab  ; 1a  51 move contents of [bx] to [ax] (copy instruction)
+dec_c    ; 0a  52 decrement cx
+if_cz    ; 05  53 if cx = 0 perform next instruction, otherwise skip it
+jmp      ; 14  54 jump to template below (copy procedure exit)
+nop_0    ; 00  55 copy procedure exit compliment
+nop_1    ; 01  56 copy procedure exit compliment
+nop_0    ; 00  57 copy procedure exit compliment
+nop_0    ; 00  58 copy procedure exit compliment
+inc_a    ; 08  59 increment ax (point to next instruction of daughter)
+inc_b    ; 09  60 increment bx (point to next instruction of mother)
+jmp      ; 14  61 jump to template below (copy loop)
+nop_0    ; 00  62 copy loop compliment
+nop_1    ; 01  63 copy loop compliment
+nop_0    ; 00  64 copy loop compliment
+nop_1    ; 01  65 copy loop compliment (10 instructions executed per loop)
+
+
+shl     ; 000 03  12 shift left cx        COPY LOOP OF 72ETQ
+mal     ; 000 1e  13 allocate daughter cell
+nop_0   ; 000 00  14 top of loop
+mov_iab ; 000 1a  15 copy instruction
+dec_c   ; 000 0a  16 decrement cx
+dec_c   ; 000 0a  17 decrement cx
+jmpb    ; 000 15  18 junk
+dec_c   ; 000 0a  19 decrement cx
+inc_a   ; 000 08  20 increment ax
+inc_b   ; 000 09  21 increment bx
+mov_iab ; 000 1a  22 copy instruction
+dec_c   ; 000 0a  23 decrement cx
+inc_a   ; 000 08  24 increment ax
+inc_b   ; 000 09  25 increment bx
+mov_iab ; 000 1a  26 copy instruction
+dec_c   ; 000 0a  27 decrement cx
+or1     ; 000 02  28 flip low order bit of cx
+if_cz   ; 000 05  29 if cx == 0 do next instruction
+ret     ; 000 17  30 exit loop
+inc_a   ; 000 08  31 increment ax
+inc_b   ; 000 09  32 increment bx
+jmpb    ; 000 15  33 go to top of loop (6 instructions per copy)
+nop_1   ; 000 01  34 bottom of loop    (18 instructions executed per loop)
+
+                             Tom Ray
+                       University of Delaware
+                  School of Life & Health Sciences
+                      Newark, Delaware  19716
+                        ray@brahms.udel.edu
+                         302-451-2281 (FAX)
+                            302-451-2753

@@ -1,0 +1,127 @@
+                         EVOLUTION4, by R.R.YOST
+                              29 JULY, 1989
+
+	Evolution4 is a "final" revision and upgrading of Evolution3
+that was included in BUGS3.ARC.  It now incorporates improvements added
+by Delta Research, Phil Burk and Mike Haas and also (in Bugs3)
+incorporated a number of ideas suggested by a similar program,
+JITTER, by Don Reble and Chris Gray, downloaded from USENET, and
+also available on CompuServe and Fred Fish Disk #201. The basic
+idea for the program was conceived by Michael Palmiter, a high
+school teacher from Temple City, CA.  It was described by A. K.
+Dewdney in his column, Computer Recreations, in Scientific
+American, May, 1989.
+
+	A few words on the background of Evolution4:  The program
+simulates evolution (or adaptation).  "Bugs" move around the
+computer screen, eating "Bacteria", which gives them "energy" for
+motion.  Each bug has 6 "genes", which determine the bug's
+response to a "turn stimulation" signal applied before each step
+of motion.  The turn stimulation is a random number and the set of
+genes determine the relative probability that the bug will react
+to the stimulation by changing its direction of travel by 0, 60,
+120, 180, 240, or 300 degrees. A bug's genes do not change, but if
+he survives long enough (measured in terms of the moves he has
+made) and has accumulated enough energy, he splits into two
+"children", whose genes are copied from their parent, but are
+slightly altered.  One child has a random one of his 6 genes cut
+in half, while the other has a random (probably different) gene
+doubled.  These modifications may make a child better adapted at
+finding bacteria, enabling him to survive and pass on his genes to
+his offspring.
+
+	A bug always starts with 40 energy units, and gains 40 each
+time he "eats" a bacterium.  Each move costs him 1 energy unit. He
+is mature enough to split if he has completed 200 moves and is
+strong enough if his energy is greater than 400 units.  He is
+limited to 600 energy units.
+
+	He dies if his energy reaches zero, or if his "age" exceeds
+2000 moves.  The bugs are maintained in a circularly linked list
+that requires a minimum of two bugs, so the last two bugs do not
+die when their energy reaches zero, and their subsequent movements
+do not cost them any energy.  As will be seen below, when the
+number of bugs is small, an excess of bacteria are supplied, so
+the population of two bugs will eventually grow.
+
+	The bacteria are scattered uniformly over the screen in the
+"normal" mode, but in a "Garden of Eden" mode, they are
+concentrated in one area.  With the uniform distribution, bugs
+evolve that tend to move straight ahead, or (occasionally seen)
+have a nearly equal chance of turning 60 or 300 ( - 60) degrees. 
+This occurs because a twirling bug soon eats all the bacteria in
+his neighborhood, then cannot move to more remote areas.  In the
+Garden of Eden mode, the bugs survive better if they stay near the
+high concentration, so bugs evolve that tend to turn one
+direction, or else by 180 degrees.
+
+	Bacteria are supplied at a controllable rate per total
+movements of all the bugs.  The default rate is 1 per twice the
+number of bugs in existence.  As a bug must capture 1 bacterium
+each 40 moves, the default feed rate will support about 20 bugs,
+but the number of bugs on the screen will fluctuate considerably.
+
+	My version of this program was written in a version of the
+Forth computer language,  JForth Professional V2.0, for the Amiga
+A2000 with AmigaDOS V1.3.  JForth is available from Delta
+Research, PO Box 1051, San Rafael, CA 94915, (415)-485-6867.  The
+load module, Evolution4, has been stripped of all JForth
+proprietary matter and IS FREELY DISTRIBUTABLE, with appropriate
+credit given to the author.  THE SOURCE FILE IS SIMILARLY NON-
+PROPRIETARY AND IS HEREBY RELEASED IN THE PUBLIC DOMAIN.
+
+	To run the program, from the CLI or Shell, type the name,
+EVOLUTION4  followed by pressing the <return> key.  The program can
+also be run from the WorkBench by clicking on its icon.  750 bacteria
+will first be scattered over the screen, then ten bugs will appear
+and start moving about.  A bug's color indicates the state of his
+energy, as follows:  White indicates the energy is 120 units or
+higher, red indicates an energy level between 40 and 120, while
+black indicates an energy level less than 40 units, possibly
+foretelling approaching death.  Offspring will usually immediately
+turn black, making splitting fairly easy to detect.
+
+[Note: The colors indicated may be different on your screen, depending
+on the settings in your preferences file.]
+
+	The screen includes 3 "buttons", white rectangles labelled Inc.,
+Dec., and Uniform/Conc. Clicking once in these rectangles has the
+following effects:
+
+     Inc. : Increases the rate at which bacteria are added. The number
+            of bugs that can be supported at the survival level by the
+            added bacteria is reported on the screen.
+
+     Dec. : Decreases the rate at which bacteria are added.
+
+     Uniform/Conc : Toggles between the uniform distribution mode and
+                    the "Garden of Eden" mode.
+
+
+    The program can be exited by clicking in the close
+gadget in the upper left corner of the display screen.
+
+	In the Garden of Eden mode, bacteria are deposited in a
+pseudo-Rayleigh distribution (x and y are generated by summing 12
+uniformly distributed random numbers) in the center of the window. 
+If a selected position is occupied by another bacterium or a bug,
+another location is tried.  However, after 10 tries, the attempt
+to place a bacterium is abandoned.  Thus, when the area gets
+painted solid, the rate of supply falls off. Apparently for this
+reason, it seems to be better to use the Inc. button  to
+increase the bacteria supply rate in the Garden of Eden mode.
+No bacteria are fed to the rest of the screen.
+
+	When a button is clicked and also when a split or death occurs,
+the number of bugs on the screen is reported, and the averages of their
+six genes are listed, under headings of the corresponding degrees (ccw)
+of turn.  The genes are reported as decimals that add to 1.0.
+(Actually, the genes are stored in the bug structure as 6 accumulations
+of integers and their total; the probability of a given turn is related
+to the difference between the corresponding gene as stored and the
+preceding gene;this approach permits integer processing and enhances
+processing speed.)
+
+	The bacteria feed rate is also listed.  The distribution mode
+is evident from the pattern of the bacteria.
+

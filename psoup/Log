@@ -1,0 +1,403 @@
+
+Sun Jan 26 00:13:29 PST 1992
+Sealed release 0.3.  The code is in /usr/src/archive/psoup0.3.tar and
+/usr/src/archive psoup0.3.shar
+
+Sun Jan 26 00:14:23 PST 1992
+Started 0.3a.
+Changed some printfs to use %ld instead of %d.
+
+Sun Jan 26 00:25:37 PST 1992
+Started 0.3b.  Added the "search-forward" and "search-backward"
+jump instructions.  Made disassemble call itself recursively to
+handle disassembly of the operands to JMPF and JMPB.  Added a flag
+to the calling arguments of disassemble() to support disassembly of
+an opcode without its operand.
+
+Sun Jan 26 16:04:42 PST 1992
+Added PSHn, POPn, CLLB, CLLF, RETN, SCFn, SCBn, and LBLn
+instructions.
+
+Mon Jan 27 05:40:06 PST 1992
+Added makedepend shell script and the depend: entry in the Makefile.
+
+Mon Jan 27 06:32:40 PST 1992
+Started 0.3c.
+Added an error message to the data(B)ase command if the user tries
+to start recording after organisms have been spawned.  Modified README
+to reflect the change.
+Changed the initial heartbeat to 50.
+
+Mon Jan 27 20:15:22 EST 1992
+Added code that subtracts the byte count for a SPWN
+from the lifetime down counter of an organism.  Code
+conditionally compiles if SPAWNCOST is defined.
+
+Tue Jan 28 23:41:41 EST 1992
+Psoup creates life from a sterile soup!  Here's the code:
+000fb390: PCR1
+000fb391: NNR3 0x0E
+000fb393: SCB2 0x76 (NOOP)
+000fb395: SPWN
+000fb396: 0xF3 (NOOP)
+000fb397: SPWN
+000fb398: SPWN
+000fb399: SUB3
+000fb39a: CLLB PCR1
+000fb39c: SUB1
+000fb39d: 0xED (NOOP)
+000fb39e: SPWN
+000fb39f: 0xC4 (NOOP)
+000fb3a0: 0xD9 (NOOP)
+000fb3a1: 0xE6 (NOOP)
+I froze the version of the code (0.3c) that created life.
+
+Thu Jan 30 05:28:27 EST 1992
+I stopped the run of psoup that generated life.  Here's the stats:
+Instructions interpreted: 331290337
+Births: 1370370  Deaths: 1370320  Population: 50
+Heartbeat: 100  Lifetime: 500  Mutate: 2  Notify: 501
+Adjust_population() is turned on.
+Genealogy database recording is turned off.
+
+Here's one of the organisms that I found at the end of the run:
+000ab929: JUMP 0x000AB930
+000ab92b: 0x65 (NOOP)
+000ab92c: 0xB5 (NOOP)
+000ab92d: 0xA9 (NOOP)
+000ab92e: R2R1
+000ab92f: 0x49 (NOOP)
+000ab930: 0xA1 (NOOP)
+000ab931: 0x74 (NOOP)
+000ab932: 0x50 (NOOP)
+000ab933: NNR1 0x6A
+000ab935: SCB2 NNR3 
+000ab937: 0xC3 (NOOP)
+000ab938: PCR1
+000ab939: 0x92 (NOOP)
+000ab93a: 0xF1 (NOOP)
+000ab93b: INC4
+000ab93c: LBL0
+000ab93d: M1R4
+000ab93e: POP3
+000ab93f: NNR3 0x51
+000ab941: 0x4E (NOOP)
+000ab942: 0x85 (NOOP)
+000ab943: 0x53 (NOOP)
+000ab944: 0xD9 (NOOP)
+000ab945: 0x4B (NOOP)
+000ab946: PCR1
+000ab947: 0xA4 (NOOP)
+000ab948: JMPF 0xA4 (NOOP)
+000ab94a: 0x79 (NOOP)
+000ab94b: 0x53 (NOOP)
+000ab94b: 0x53 (NOOP)
+000ab94c: DEC3
+000ab94d: PCR1
+000ab94e: R4R1
+000ab94f: 0xCA (NOOP)
+000ab950: 0xDD (NOOP)
+000ab951: M1R4
+000ab952: R3M2
+000ab953: DEC3
+000ab954: 0x71 (NOOP)
+000ab955: 0x4E (NOOP)
+000ab956: 0x85 (NOOP)
+000ab957: 0x53 (NOOP)
+000ab958: 0xC9 (NOOP)
+000ab959: 0x67 (NOOP)
+000ab95a: 0xCC (NOOP)
+000ab95b: 0xA2 (NOOP)
+000ab95c: PSH4
+000ab95d: 0xA4 (NOOP)
+000ab95e: 0x79 (NOOP)
+000ab95f: 0x53 (NOOP)
+000ab960: DEC3
+000ab961: 0xC2 (NOOP)
+000ab962: R1R2
+000ab963: 0x8A (NOOP)
+000ab964: 0x62 (NOOP)
+000ab965: 0xE2 (NOOP)
+000ab966: 0x73 (NOOP)
+000ab967: SCB1 JUMP 
+000ab969: 0x56 (NOOP)
+000ab96a: 0x7C (NOOP)
+000ab96b: 0xC3 (NOOP)
+000ab96c: 0x79 (NOOP)
+000ab96d: 0xA2 (NOOP)
+000ab96e: DEC2
+000ab96f: 0xA4 (NOOP)
+000ab970: 0x4A (NOOP)
+000ab971: SCB2 0x60 (NOOP)
+000ab973: SPWN
+000ab974: SPWN
+000ab975: SPWN
+000ab976: SPWN
+000ab977: CLLB SCB2
+000ab979: SCB1 0x59 (NOOP)
+000ab97b: 0xA8 (NOOP)
+
+I restarted psoup with mutate=1, heartbeat=100, and (A)djust on.  No 
+organisms were read in.
+
+Thu Jan 30 07:58:31 EST 1992
+Found self-reproducing organisms in the soup.  About 22 million instructions
+executed.  Here's one of the organisms:
+000fb7a4: SCB2 SCB2
+000fb7a6: LBL9
+000fb7a7: PCR1
+000fb7a8: POP3
+000fb7a9: 0x87 (NOOP)
+000fb7aa: 0xC1 (NOOP)
+000fb7ab: 0x78 (NOOP)
+000fb7ac: 0x6E (NOOP)
+000fb7ad: 0xC9 (NOOP)
+000fb7ae: 0x8C (NOOP)
+000fb7af: 0x8D (NOOP)
+000fb7b0: 0xF2 (NOOP)
+000fb7b1: 0xBF (NOOP)
+000fb7b2: 0x8A (NOOP)
+000fb7b3: 0xD1 (NOOP)
+000fb7b4: 0x7A (NOOP)
+000fb7b5: DEC1
+000fb7b6: 0x83 (NOOP)
+000fb7b7: 0x83 (NOOP)
+000fb7b8: 0xAC (NOOP)
+000fb7b9: LBL3
+000fb7ba: 0xD4 (NOOP)
+000fb7bb: SPWN
+000fb7bc: 0xEB (NOOP)
+000fb7bd: NNR2 0x99
+000fb7bf: SCB2 0x8D (NOOP)
+000fb7c1: ADD4
+000fb7c2: 0x77 (NOOP)
+000fb7c3: 0x73 (NOOP)
+000fb7c4: 0xCF (NOOP)
+000fb7c5: DEC1
+000fb7c6: 0xE6 (NOOP)
+000fb7c7: 0x58 (NOOP)
+000fb7c8: 0xAE (NOOP)
+000fb7c9: 0x61 (NOOP)
+000fb7ca: SCB3 R3M1
+000fb7cc: 0x6B (NOOP)
+000fb7cd: 0xE2 (NOOP)
+000fb7ce: 0xEF (NOOP)
+000fb7cf: 0xD7 (NOOP)
+000fb7d0: DEC2
+000fb7d1: M1R3
+000fb7d2: 0x54 (NOOP)
+000fb7d3: 0xC7 (NOOP)
+000fb7d4: 0xA6 (NOOP)
+000fb7d5: 0x61 (NOOP)
+000fb7d6: SCB2 0x80 (NOOP)
+000fb7d8: 0x4F (NOOP)
+000fb7d9: 0xC5 (NOOP)
+000fb7da: 0xE3 (NOOP)
+000fb7db: SUB4
+000fb7dc: DEC1
+000fb7dd: 0x55 (NOOP)
+000fb7de: SCB2 JPZ3 
+000fb7e0: SPWN
+000fb7e1: JUMP 0x000FB7DE
+000fb7e3: 0x47 (NOOP)
+000fb7e4: 0xE7 (NOOP)
+000fb7e5: 0xDE (NOOP)
+000fb7e6: 0x92 (NOOP)
+
+Started another run with h=100, m=1 and (A) on.
+
+Thu Jan 30 15:49:22 EST 1992
+Psoup generates life spontaneously again.
+000f5037: PCR1
+000f5038: SPWN
+000f5039: SCB2 0xAA (NOOP)
+000f503b: PCR3
+000f503c: 0x98 (NOOP)
+000f503d: SPWN
+000f503e: SPWN
+000f503f: SPWN
+000f5040: JMPB PCR1
+000f5042: 0x68 (NOOP)
+000f5043: POP3
+000f5044: SUB3
+000f5045: 0x95 (NOOP)
+000f5046: PCR1
+000f5047: R3R1
+
+
+Fri Jan 31 09:07:09 EST 1992
+Added the section on assembly language to README.
+
+Sat Feb  8 17:21:09 PST 1992
+Started ver 0.3e.
+Changed record_birth() to speed up the genome search.
+
+Sat Feb  8 17:24:48 PST 1992
+Did a run of 0.3d.  Started with the following organism:
+       0: LBL5
+       1: LBL1
+       2: CLLF LBL2
+       4: CLLF LBL3
+       6: CLLF LBL4
+       8: JMPB LBL1
+       A: LBL3
+       B: PSH1
+       C: PCR1
+       D: SCB1 LBL5
+       F: ADD2
+      10: NNR2 0xF0
+      12: ADD2
+      13: R1R2
+      14: POP1
+      15: RETN
+      16: LBL4
+      17: SPWN
+      18: RETN
+      19: LBL2
+      1A: PSH2
+      1B: PCR1
+      1C: NNR2 0x05
+      1E: ADD2
+      1F: SCF1 LBL6
+      21: PCR2
+      22: SCB2 LBL5
+      24: SCB2 LBL5
+      26: PSH2
+      27: SUB2
+      28: INC1
+      29: R1R3
+      2A: POP1
+      2B: POP2
+      2C: RETN
+      2D: LBL6
+After 116083255 instructions, this organism predominated:
+       0: LBL5
+       1: 0x76 (NOOP)
+       2: SCF2 LBL2
+       4: SCF2 CLLF 
+       6: LBL2
+       7: POP1
+       8: INC1
+       9: PSH4
+       A: CLLF LBL2
+       C: SCF2 0xE9 (NOOP)
+       E: SPWN
+       F: SPWN
+      10: CLLB LBL2
+      12: PSH2
+      13: PCR1
+      14: NNR2 0x05
+      16: ADD2
+      17: SCF1 LBL6
+      19: PCR2
+      1A: 0x47 (NOOP)
+      1B: LBL5
+      1C: SCB2 LBL5
+      1E: PSH2
+      1F: SUB2
+      20: INC1
+      21: R1R3
+      22: POP1
+      23: POP2
+      24: RETN
+      25: LBL6
+
+
+Sun Feb 23 21:01:50 PST 1992
+Rewrote the code so it will compile with normal cc.  Started version
+0.4.
+
+Mon Feb 24 09:43:32 PST 1992
+Now working on version 0.4a.  Started a run of 0.4a sterile.  Now
+going to work.  Mutate is set to 1.
+
+Mon Feb 24 22:48:13 PST 1992
+Stopped the run started in entry above.  Following organism found
+in soup after 156000000 instructions:
+000f9f5f: PCR1
+000f9f60: SPWN
+000f9f61: SPWN
+000f9f62: 0xE3 (NOOP)
+000f9f63: SPWN
+000f9f64: NNR3 0x14
+000f9f66: SCB2 0xCA (NOOP)
+000f9f68: SPWN
+000f9f69: JMPB PCR1
+Continuing the run overnight.
+
+
+Tue Feb 25 14:47:03 PST 1992
+Brought the code to work.  Running on a HP with System V.  Changed the
+code to work with Sys V signal-handling. Added conditional compilation
+for System V.
+
+Started a sterile run.  Set mutate to 1 and heartbeat to 500.  After
+536M instructions, found this in soup:
+000ffabf: PSHP
+000ffac0: SUB4
+000ffac1: 0x83 (NOOP)
+000ffac2: NNR3 0x1F
+000ffac4: 0xC2 (NOOP)
+000ffac5: 0x47 (NOOP)
+000ffac6: R4R1
+000ffac7: 0x62 (NOOP)
+000ffac8: ADD2
+000ffac9: POP1
+000ffaca: 0x7F (NOOP)
+000ffacb: 0x48 (NOOP)
+000ffacc: 0xC5 (NOOP)
+000ffacd: 0x77 (NOOP)
+000fface: 0x94 (NOOP)
+000ffacf: 0xBD (NOOP)
+000ffad0: SCB2 PSH4
+000ffad2: SPWN
+000ffad3: SPWN
+000ffad4: SPWN
+000ffad5: JMPB SCB2
+000ffad7: 0xEA (NOOP)
+000ffad8: 0x58 (NOOP)
+000ffad9: 0xB8 (NOOP)
+000ffada: 0xB5 (NOOP)
+000ffadb: 0xF0 (NOOP)
+000ffadc: 0xB1 (NOOP)
+000ffadd: SCB1 SCB2
+000ffadf: INC3
+000ffae0: 0x53 (NOOP)
+
+
+Wed Feb 26 23:25:17 PST 1992
+Got ver 0.4b code back home from work.  Minor changes to make file.
+
+Sat Feb 29 02:00:00 PST 1992
+Changed the monitor prompt and added the ? command to print help.
+Added printed messages to Mutate, Lifetime, Heartbeat, and Tell commands.
+Added message in init_soup().
+Changed printing of # of instructions to unsigned in dump_stats().
+
+Sat Feb 29 03:47:08 PST 1992
+Started 0.4c.
+Changed organisms.c to organism.c.  Changed anotherorg.c to shortorg.c.
+
+Sat Feb 29 16:56:32 PST 1992
+Changed the output of the s command.
+
+Sat Feb 29 19:27:24 PST 1992
+Started 0.5.  Added printing of number of instructions to
+adjust_population messages.
+
+Sun Mar  1 10:34:04 PST 1992
+Started a sterile run of 0.5 last night.  Found this in the soup after 93M
+instructions(h=500, l=500, m=10):
+000d1dee: PCR1
+000d1def: SPWN
+000d1df0: SPWN
+000d1df1: SPWN
+000d1df2: SPWN
+000d1df3: SPWN
+000d1df4: SPWN
+000d1df5: SCB2 0xC5 (NOOP)
+000d1df7: INC3
+000d1df8: JMPB PCR1
+
+Sun Apr 19 05:21:22 PDT 1992
+Final changes before release of 1.0.  

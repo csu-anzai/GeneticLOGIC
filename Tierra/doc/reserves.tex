@@ -1,0 +1,1270 @@
+\documentstyle[12pt]{article}
+
+\flushbottom
+\textheight 9in
+\textwidth 6.5in
+\textfloatsep 30pt plus 3pt minus 6pt
+\parskip 7.5pt plus 1pt minus 1pt
+\oddsidemargin 0in
+\evensidemargin 0in
+\topmargin 0in
+\headheight 0in
+\headsep 0in
+
+% Hanging Paragraph
+\def\XP{\par\begingroup\parindent 0in\everypar{\hangindent .3in}}
+\def\eXP{\par\endgroup}
+
+% Left Justified Paragraph
+\def\LP{\par\begingroup\parindent 0in\everypar{\hangindent 0in}}
+\def\eLP{\par\endgroup}
+
+% Indented Paragraph
+\def\IP{\par\begingroup\parindent 0.3in\everypar{\hangindent 0.3in}}
+\def\eIP{\par\endgroup}
+
+% Hanging Paragraph with no parskip
+\def\XPNS{\vspace{7.5pt}\par\begingroup\parskip 0pt\parindent 0in\everypar{\hangindent .3in}}
+\def\eXPNS{\par\endgroup}
+
+\begin{document}
+\thispagestyle{empty}
+
+\begin{center}
+{\Large {\bf A PROPOSAL TO CREATE TWO\\
+BIODIVERSITY RESERVES:\\
+ONE DIGITAL AND ONE ORGANIC\\ }}
+\end{center}
+
+\vspace{1cm}
+
+{\large {\bf
+The digital reserve will be distributed across the global net, and will
+create a space for the evolution of new virtual life forms.  The organic
+reserve will be located in the rain forests of northern Costa Rica, and
+will secure the future of existing organic life forms.
+}}
+
+\begin{center}
+{\bf The Digital Reserve:}
+\end{center}
+
+The proposed project will create a very large, complex and inter-connected
+region of cyberspace that will be inoculated with digital organisms which
+will be allowed to evolve freely through natural selection.  The objective
+is to set off a digital analog to the Cambrian explosion of diversity, in
+which multi-cellular digital organisms (parallel MIMD processes) will
+spontaneously increase in diversity and complexity.  If successful, this
+evolutionary process will allow us to find the natural form of parallel
+processes, and will generate extremely complex digital information
+processes that fully utilize the capacities inherent in our parallel and
+networked hardware.  The project will be funded through the donation of
+spare CPU cycles from thousands of machines connected to the net, by
+running the reserve as a low priority background process on participating
+nodes.
+
+\begin{center}
+{\bf The Organic Reserve:}
+\end{center}
+
+The proposed project aims to prevent the imminent destruction of
+some of the last remaining large areas of rain forest in the
+Sarapiqu\'{\i} region of Northern Costa Rica, and at the same time,
+to use those forests to establish a conservation economy through a
+community based nature tourism project.  The conservation economy is
+needed to insure the long term stability of both the present and future
+protected areas of Sarapiqu\'{\i}, by creating an economic interest group
+within the human populations surrounding the protected forests.  The
+overall project contains six stages, which will be executed in succession,
+as funding reaches the corresponding target levels.  The Nature Conservancy
+(TNC) is acting as fiscal agent, and the Costa Rican government has expressed
+a willingness to expropriate the target properties if necessary.  This
+project is being organized and supported by a coalition of conservation
+organizations: Sarapiqu\'{\i} Association for Forests and Wildlife,
+OTS (The Organization for Tropical Studies), TNC, FUNDECOR (The Foundation
+for the Development of the Central Volcanic Mountain Range), COMBOS (The
+Conservation and Management of Tropical Forests), and ABAS (The Association
+for the Environmental Well being of Sarapiqu\'{\i}).
+
+\newpage
+\setcounter{page}{1}
+
+\begin{center}
+{\Large {\bf
+A PROPOSAL TO CREATE A NETWORK-WIDE\\
+BIODIVERSITY RESERVE FOR\\
+DIGITAL ORGANISMS\\
+}}
+\end{center}
+
+\LP
+{\bf Thomas S. Ray} \\
+ATR Human Information Processing Research Laboratories\\
+2-2 Hikaridai, Seika-cho, Soraku-gun, Kyoto, 619-02, Japan\\
+ray@hip.atr.co.jp, ray@santafe.edu, ray@udel.edu\\
+March 18, 1994\\
+\eLP
+
+\begin{abstract}
+The proposed project will create a very large, complex and inter-connected
+region of cyberspace that will be inoculated with digital organisms which
+will be allowed to evolve freely through natural selection.  The objective
+is to set off a digital analog to the Cambrian explosion of diversity, in
+which multi-cellular digital organisms (parallel MIMD processes) will
+spontaneously increase in diversity and complexity.  If successful, this
+evolutionary process will allow us to find the natural form of parallel
+and distributed processes, and will generate extremely complex digital
+information processes that fully utilize the capacities inherent in our
+parallel and networked hardware.  The project will be funded through the
+donation of spare CPU cycles from thousands of machines connected to the
+net, by running the reserve as a low priority background process on
+participating nodes.
+\end{abstract}
+
+\section{\bf WHY}
+
+The process of evolution by natural selection is able to create
+complex and beautiful information processing systems (such as primate
+nervous systems) without the guidance of an intelligent supervisor.
+Yet intelligent programmers have not been able to produce software
+systems that match even the full capabilities of primitive organisms such
+as insects.  Recent experiments demonstrate that evolution by natural
+selection is able to operate effectively in genetic languages based on
+the machine codes of digital computers (Ray 1991a, 1991b, In press).
+This opens up the possibility of using evolution to generate complex
+software.
+
+Ideally we would like to generate software that utilizes the full
+capability of our most advanced hardware, particularly massively
+parallel and networked computational systems.  Yet it remains an open
+question if evolution has the ability to achieve such complexity in
+the computational medium, and if it does, how that goal can be achieved.
+Successful efforts at the evolution of machine codes have generally
+worked with programs of under a hundred bytes.  How can we provoke
+evolution to transform such simple algorithms into software of vast
+complexity?
+
+Perhaps we can gain some clues to solving this problem by studying the
+comparable evolutionary transformation in organic life forms.  Life
+appeared on Earth roughly 3.5 thousand million years ago, but remained
+in the form of single celled organisms until about 600 million years
+ago in the Cambrian period.  At that point in time, life made an abrupt
+transformation from simple microscopic single celled forms lacking
+nervous systems, to large and complex multi-celled forms with nervous
+systems capable of coordinating sophisticated behavior.  This
+transformation occurred so abruptly, that evolutionary biologists refer
+to it as the ``Cambrian explosion of diversity.''
+
+It is heartening to observe that once conditions are right, evolution
+can achieve extremely rapid increases in complexity and diversity, generating
+sophisticated information processing systems where previously none existed.
+However, our problem is to engineer the proper conditions for digital
+organisms in order to place them on the threshold of a digital version of
+the Cambrian explosion.  Otherwise we might have to wait millions of
+years to achieve our goal.  Ray (1994a) has reviewed the biological
+issues surrounding the evolution of diversity and complexity, and
+they lead to the following conclusions:
+
+Evolution of complexity occurs in the context of an ecological community
+of interacting evolving species.  Such communities need large complex spaces
+to exist.  A large and complex environment consisting of partially isolated
+habitats differing and occasionally changing in environmental conditions
+would be the most conducive to a rapid increase in diversity and complexity.
+
+These are the considerations that lead to the suggestion of the creation
+of a large and complex ecological reserve for digital organisms.  Due to
+its size, topological complexity, and dynamically changing form and
+conditions, the global network of computers is the ideal habitat for the
+evolution of complex digital organisms.
+
+\section{\bf ``MANAGING'' EVOLUTION}
+
+Some questions frequently asked about software evolution are:
+How can we guide evolution to produce useful application software?
+How can we validate the code produced by evolution to be sure that
+it performs the application correctly?  These questions reveal a limited
+view of how software evolution can be used, and what it can be used for.
+I will articulate a fairly radical view here.
+
+Evolution would not be an appropriate technique for generating accounting
+software, or any software where precise and accurate computations are
+required.  Evolution would be more appropriate for more fuzzy problems
+like pattern recognition.  For example, if you get a puppy that you want
+to raise to be a guard dog, you can't verify the neural circuitry or the
+genetic code, but you can tell if it learns to bark at strangers and
+is friendly to your family and friends.  This is the type of application
+that evolution can deliver.  We don't need to verify the code, but
+verification of the performance should be straightforward.
+
+Furthermore, attempts to guide early evolution towards a desired application
+are likely to inhibit its creative potential.  Once evolution
+by natural selection has already produced an incipient application, then
+guidance through artificial selection (breeding) can enhance the quality
+of the application.  However, we should not attempt to guide evolution to
+generate the application in the first place.  Instead, we should wait to
+see what evolution offers us.  After all, we don't necessarily know what
+we want.
+
+Computer magazines bemoan the search for the ``next killer application'',
+some category of software that everybody will want, but which nobody has
+thought of yet.  The markets for the existing major applications (word
+processors, spread sheets, data bases, etc.) are already saturated.
+Growth of the software industry depends on inventing completely new
+applications.  This implies that there are categories of software that
+everyone will want but which haven't been invented yet.
+We need not attempt to use evolution to produce superior
+versions of existing applications.  Rather we should allow evolution to
+find the new applications for us.  To see this process more clearly,
+consider how we manage applications through organic evolution.
+
+Some of the applications provided by organic evolution are: rice, corn,
+wheat, carrots, beef cattle, dairy cattle, pigs, chickens, dogs,
+cats, guppies, cotton, mahogany, tobacco, mink, sheep, silk moths,
+yeast, and penicillin mold.  If we had never encountered any one of
+these organisms, we would never have thought of them either.  We have
+made them into applications because we recognized the potential in some
+organism that was spontaneously generated within an ecosystem of
+organisms evolving freely by natural selection.
+
+If the silk moth never existed, but we somehow came up with a complete
+description of silk, it would be futile to attempt the guide the evolution
+of any existing creature to produce silk.  It is much more productive to
+survey the bounty of organisms already generated by evolution with an eye
+to spotting new applications for existing organisms.  Some breeding may
+be necessary to make the application practical.  For example, corn, dogs,
+and cattle are all highly bred organisms, of much greater utility in their
+present form than that of their wild ancestors.
+
+Imagine for a moment that a team of earth biologists had arrived at a
+planet at the moment of the initiation of its Cambrian explosion of
+diversity.  Suppose that these biologists came with a list of the
+application organisms listed above (rice, corn, etc.), and a complete
+description of each.  Could those biologists intervene in the
+evolutionary process to hasten the production of any of those
+organisms?  Not only is that unlikely, but any attempts to intervene in
+the process are like to inhibit the diversification itself.
+
+It is preposterous to suppose that humans could guide the evolution
+of useful complex organisms from their simple single celled ancestors.
+In fact, we couldn't even imagine what the possibilities are, much less
+know how to reach those possibilities if we could conceive of them.
+Fortunately, our intervention is not necessary.  Evolution by natural
+selection will produce a wealth of complex organisms, and we can survey
+them and bring those with potential uses into breeding and domestication
+programs.
+
+\section{\bf A BETTER MEDIUM}
+
+Natural evolution in the digital medium is a new technology, about which
+we know very little.  The hope is to evolve software with sophisticated
+functionality far beyond anything that has been designed by humans.  But
+how long might this take?  Evolution in the organic medium is known to be
+a slow process.  Certainly there remains the possibility that evolution in
+the digital medium will be too slow to be a practical tool for software
+generation, but several observations can be made that provide encouragement.
+
+First, computational processes occur at electronic speeds, and are in fact
+relatively fast.  Second, as was noted in the first section above, during the
+Cambrian explosion, evolution produced such a rapid inflation of complexity
+and diversity, that it has come to be known as an ``explosion''.  A third
+point remains to be made and is the subject of this section.  Let us consider
+a thought experiment.
+
+Imagine that we are robots.  We are made out of metal, and our brains are
+composed of large scale integrated circuits made of silicon or some other
+semi-conductor.  Imagine further, that we have no experience of carbon
+based life.  We have never seen it, never heard of it, nor ever contemplated
+it.  Now suppose a robot enters the scene with a flask containing methane,
+ammonia, hydrogen, water and a few dissolved minerals.  This robot asks our
+academic gathering: ``Do you suppose we could build a computer out of this
+material.''  The theoreticians in the group would surely say yes, and propose
+some approaches to the problem.  But the engineers in the group would say:
+``Why bother when silicon is so much better suited to information processing
+than carbon.''
+
+From our organo-centric perspective the robot engineers might seem naive,
+but in fact I think they are correct.  Carbon chemistry is a lousy medium
+for information processing.  Yet the evolutionary process embodies such a
+powerful drive to generate information processing systems, that it was able
+to rig up carbon based contraptions for processing information, capable of
+generating the beauty and complexity of the human mind.  What might such
+a powerful force for information processing do in a medium designed for
+that purpose in the first place?  It is likely to arrive more quickly
+at sophisticated information process than evolution in carbon chemistry,
+and would likely achieve comparable functionality with a greater economy
+of form and process.
+
+\section{\bf HOW}
+
+The Tierra system creates a virtual computer (a software emulation of
+a computer that has not been built in hardware) whose architecture,
+instruction set, and operating system have been designed to support
+the evolution of the machine code programs that execute on that
+virtual machine.  A network version of the Tierra system is under
+development that will allow the passage of messages between Tierra
+systems installed on different machines connected to the network,
+via ``sockets''.
+
+The instruction sets of the Tierran virtual computers will have some
+new instructions added that allow the digital organisms to communicate
+between themselves, both within a single installation of Tierra, and
+over the net between two or more installations.  The digital organisms
+will be able to pass messages consisting of bit strings, and will also
+be able to send their genomes (their executable code) over the network
+between installations of Tierra.
+
+The network installation of Tierra will create a virtual sub-network
+within which digital organisms will be able to move and communicate
+freely.  This network will have a complex topology of interconnections,
+reflecting the topology of the internet within which it is embedded.
+In addition, there will be complex patterns of ``energy availability''
+(availability of CPU cycles) due to the Tierra installations being run
+as low priority background processes and the heterogeneous nature of the
+real hardware connected to the net.  A miniature version of this
+concept has already been implemented in the form of a CM5 version
+of Tierra, which will be used to simulate the network version (Thearling
+and Ray, submitted).
+
+Consider that each node on the net tends to experience a daily cycle of
+activity, reflecting the habits of the user who works at that node.  The
+availability of CPU time to the Tierra process will mirror the activity
+of the user, as Tierra will get only the cycles not required by the user
+for other processes.  Statistically, there will tend to be more ``energy''
+available for the digital organisms at night, when the users are sleeping.
+However, this will depend a great deal on the habits of the individual
+users and will vary from day to day.
+
+There will be strong selective pressures for digital organisms to
+maintain themselves on nodes with a high availability of energy.  To a
+first approximation, this will involve daily migrations around the planet,
+keeping on the dark side.  However, they need to evolve some direct
+sensory capabilities in order to respond to local deviations from the
+expected patterns.  When rich energy resources are detected on a local
+sub-net, it may be advantageous to disperse locally within the sub-net,
+rather than to disperse long distances.  Thus there is likely to be
+selection to control the ``directionality'' and distances of movement
+within the net.
+
+All of these conditions should encourage the evolution of ``sensory''
+capabilities to detect energy conditions and spatial structure on the
+net, and also evolution of the ability to detect temporal patterns in
+these same features.  In addition to the ability to detect these
+patterns, the digital organisms need the ability to coordinate
+their actions and movements in response to changing conditions.
+In short, the digital organisms must be able to intelligently navigate
+the net in response to the dynamically changing circumstances.
+
+A primary obstacle to the evolution of complexity in the Tierra system
+has been that in the relatively simple single node installation, a very
+simple twenty to forty byte algorithm that quickly and efficiently copies
+itself can not be beat by a much more complex algorithm, which due to
+its greater size would take much longer to replicate.  There is just
+no need to do anything more complicated than copy yourself quickly.
+However, the heterogeneous and changing patterns of energy availability
+and network topology of the network version will reward more complex
+behavior.  It is hoped that this will launch evolution in the direction
+of more complexity.  Once this trajectory has begun, the interactions
+among the increasingly sophisticated organisms themselves should lead
+to further complexity increases.
+
+It is imagined that individual digital organisms will be multi-celled,
+and that the cells that constitute an individual will be dispersed over
+the net.  The remote cells might play a sensory function, relaying
+information about energy levels around the net back to some ``central
+nervous system'' where the incoming sensory information can be processed
+and decisions made on appropriate actions.  If there are some massively
+parallel machines participating in the virtual net, digital organisms
+may choose to deploy their central nervous systems on these arrays of
+tightly coupled processors.
+
+\section{\bf HARVEST TIME}
+
+The strategy being advocated in this proposal is to let natural selection
+do most of the work of directing evolution and producing complex
+software.  This software will be ``wild'', living free in the digital
+biodiversity reserve.  In order to reap the rewards, and create
+useful applications, we will need to domesticate some of the wild
+digital organisms, much as our ancestors began domesticating the
+ancestors of dogs and corn thousands of years ago.
+
+The process must begin with observation.  Digital naturalists must
+explore the digital jungle, observing and publishing on the natural
+history, ecology, evolution, behavior, physiology, morphology, and
+other aspects of the biology of the life forms of the digital ecosystem.
+Much of this work will be academic, like the work of modern day tropical
+biologists exploring our organic jungles (which I have been doing for
+twenty years).
+
+However, occasionally, these digital biologists will spot an interesting
+information process for which they see an application.  At this point,
+some individuals will be captured and brought into laboratories for closer
+study, and farms for breeding.  Sometimes, breeding may be used in combination
+with genetic engineering (insertion of hand written code, or code transferred
+from other digital organisms).  The objective will be to enhance the
+performance of the process for which there is an application, while
+diminishing unruly wild behavior.  Some digital organisms will domesticate
+better than others, as is true for organic organisms (alligators don't
+domesticate, yet we can still ranch them for their hides).
+
+Once a digital organism has been bred and/or genetically engineered to
+the point that it is ready to function as an application for end users,
+they will probably need to be neutered to prevent them from proliferating
+inappropriately.  Also, they will be used in environments free from the
+mutations that will be imposed on the code living in the reserve.
+By controlling reproduction and preventing mutation, their evolution
+will be prevented at the site of the end user.  Also the non-replicating
+interpreted virtual code, might be translated into code that could
+execute directly on host machines in order to speed their operation.
+
+The organisms living in the biodiversity reserve will essentially be in
+the public domain.  Anyone willing to make the effort can observe them
+and attempt to domesticate them.  However the process of observation,
+domestication and genetic engineering of digital organisms will require
+the development of much new technology.  This is where private enterprise
+can get involved.  The captured, domesticated, engineered and neutered
+software that is delivered to the end user will be a salable product,
+with the profits going to the enterprise that made the efforts to bring
+the software from the digital reserve to the market.
+
+It seems obvious that organisms evolving in the network-based biodiversity
+reserve will develop adaptations for effective navigation of the net.
+This suggests that the most obvious realm of application for these
+organisms would be as autonomous network agents.  It would be much less
+likely that this kind of evolution could generate software for control
+of robots, or voice or image recognition, since network based organisms
+would not normally be exposed to the relevant information flows.  Yet
+at this point we surely can not conceive of where evolution in the digital
+domain will lead, so we must remain observant, imaginative in our
+interpretations of their capabilities, and open to new application
+possibilities.
+
+\section{\bf COMMITMENT}
+
+Those who wish to support the digital biodiversity reserve by contributing
+spare CPU cycles should be prepared to make a long-term commitment.
+Nobody knows how long it will take for complex software to evolve in the
+reserve.  However, a few years will likely be enough time to shake down
+the system and get a sense of the possibilities.  If the desired complexity
+does begin to evolve, then the reserve should become a permanent fixture
+within the net.
+
+The same problems are faced in the creation of reserves for organic
+biodiversity.  Great effort and financial resources are required just
+to establish the reserves.  However, that is only the first step.
+The objective of the reserves is to limit the extent to which human
+activity causes the extinction of other species.  The survival or
+extinction of organic species is a process that is played out over vast
+expanses of time: thousands or millions of years.  This means that if
+our rain forest reserves should be converted into pastures or housing
+developments a thousand years from now, they will have failed.
+
+The organic companion proposal (Ray 1994b) is focused on the sustainability
+issue.  The present strategy is to insure the long term survival of the
+nature reserves by finding ways for the surrounding human populations
+to derive an economic benefit from the presence of the reserves.  In
+Costa Rica, at present, this can most easily be done through nature tourism.
+In the future other economic activities may be more appropriate, or
+perhaps some centuries or millennia in the future, humans will be willing
+to protect other species without the motivation of self-interest.
+
+Similar concerns apply to the sustainability of the digital reserve.
+If the Tierra process provides no reward to those who run it on their
+nodes, they are likely to terminate the process within a few days, weeks,
+or months.  Such a short participation would be meaningless.  As an initial
+hedge against this problem, a tool will be distributed to allow anyone to
+observe activity at any participating node, from any node.  Yet even
+this may not be enough, as such tools don't tell a lot about what is
+going on.  To really know the interesting details requires greater effort
+than most contributors of CPU cycles will have time for.
+
+An even more serious problem is that experience with operation of the
+system will certainly lead to redesign requiring reinstallation.  The
+ideal situation would be to have the reinstallation done by the same
+people who do the redesign.  However, this would be likely to require
+that the designers of the reserve actually have accounts on the
+participating nodes.  Where the designers don't have accounts, the
+contributors would have to do the reinstallation themselves, and they
+would likely tire of the chore.
+
+The willingness of people to support the reserve for the long term
+is likely to depend initially on the level of faith that people put
+in the evolutionary process as a potential generator of rewarding
+digital processes.  Eventually, if all goes well, the harvest of
+some complex and beautiful digital organisms will provide rewards
+beyond our imaginations, and should replace faith with solid proof
+and practice.
+
+\section{\bf CONTAINMENT}
+
+The Tierra system is a containment facility for digital organisms.
+Because Tierra implements a virtual computer, one that has never been
+implemented in hardware, the digital organisms can only execute on the
+virtual machine.  On any real machine, Tierran organisms are nothing but
+data.  They are no more likely to be functional on a real computer than
+a program that is executable on a Mac is likely to run on an IBM PC, or that
+the data in a spread sheet is likely to replicate itself by executing on
+a machine.
+
+Similarly, the network version of Tierra will create a virtual sub-net,
+within which the digital organisms will be able to move freely.  However,
+the Tierran digital organisms will not access the real net directly.
+All communication between nodes will be mediated by the simulation software
+which does not evolve.  When Tierran organisms execute a virtual machine
+instruction that results in communication across the net, that instruction
+will be interpreted by the simulation software running on the real machine.
+The simulation software will pass the appropriate information to a
+Tierra installation on another machine, through established socket based
+communication channels.  These socket communication channels will only
+exist between Tierra installations at participating nodes.  The digital
+organisms will not be able to sense the presence of real machines or
+the real net, nor will they have any way of accessing them.
+
+To further understand the nature of the system, consider a comparison
+between the Tierra program and the mail program.  The mail program is
+installed at every node on the net and can send data to any other node
+on the net.  The data passing between mail programs is generated by
+processes that are completely out of control: humans.  Humans are beyond
+control, and sometimes actually malicious, yet the messages that they
+send through the mail program do not cause problems on the net because
+they are just data.  The same is true of the Tierra program.  While the
+processes that generate the messages passing between Tierra installations
+are wild digital organisms, the messages are harmless data as they pass
+through the net.  The Tierra program that passes the messages
+does not evolve, and is as well behaved as the mail program.
+
+A related issue is network load.  We do not yet know the
+level of traffic that would be generated by networked installations
+of Tierra communicating in the manner described.  We will place hard
+limits on the volume of communication allowed to individual digital
+organisms in order to prevent mutants from spewing to the net.  As we
+start experimenting with the system, we will monitor the traffic levels
+to determine if it would have a significant impact on network loads.
+If the loads are significant, additional measures will need to be taken
+to limit them.  This can be done by charging the organisms for their
+network access so that they will evolve to minimize their access.
+
+\section{\bf REFERENCES}
+
+\XP
+
+Ray, T. S.  1991a.  An approach to the synthesis of life.
+{\em In\/}: Langton, C., C. Taylor, J. D. Farmer, \& S. Rasmussen [eds],
+Artificial Life II, Santa Fe Institute Studies in the Sciences of
+Complexity, vol. X, 371--408.  Redwood City, CA: Addison-Wesley.
+
+\rule[0pt]{3em}{.4pt}.  1991b.  Evolution and optimization of digital
+organisms.  {\em In\/}: Billingsley K. R., E. Derohanes, H. Brown, III [eds.],
+Scientific Excellence in Supercomputing: The IBM 1990 Contest Prize Papers,
+Athens, GA, 30602: The Baldwin Press, The University of Georgia.
+
+\rule[0pt]{3em}{.4pt}.  1994a.  An evolutionary approach to synthetic
+biology: Zen and the art of creating life.  Artificial Life 1(1/2): 195--226
+
+\rule[0pt]{3em}{.4pt}.  1994b.  A proposal to consolidate and stabilize
+the rain forest reserves of the Sarapiqu\'{\i} region of Costa Rica.
+Available by anonymous ftp: tierra.slhs.udel.edu [128.175.41.34] and
+life.slhs.udel.edu [128.175.41.33] as tierra/doc/reserves.tex.
+
+\rule[0pt]{3em}{.4pt}.  In press.  Evolution, complexity, entropy,
+and artificial reality.  Physica D.
+
+Thearling, Kurt, and T. S. Ray.  In press.  Evolving multi-cellular
+artificial life.  Artificial Life IV conference proceedings.
+
+\eXP
+
+\newpage
+\setcounter{page}{1}
+
+\begin{center}
+{\Large {\bf
+
+A PROPOSAL TO CONSOLIDATE AND\\
+STABILIZE THE RAIN FOREST\\
+RESERVES OF THE SARAPIQUI\\
+REGION OF COSTA RICA\\}}
+
+\vspace{1cm}
+{\large {\bf              TABLE OF CONTENTS\\}}
+\vspace{.5cm}
+
+\begin{tabular}{lll}
+    & ABSTRACT                                      & 1\\
+
+1.  & INTRODUCTION                                  & 2\\
+
+2.  & COSTA RICA                                    & 2\\
+
+3.  & NATURE TOURISM                                & 3\\
+
+4.  & SARAPIQUI                                     & 3\\
+
+5.  & CHILAMATE                                     & 4\\
+
+6.  & WHAT IS NEEDED                                & 5\\
+
+7.  & SARAPIQUI ASOCIACION FOR FORESTS AND WILDLIFE & 5\\
+
+8.  & SARDINAL AND ARREPENTIDOS HILLS               & 6\\
+
+9.  & FINCA LA MARTITA                              & 7\\
+
+10. & THE PLAN                                      & 8\\
+
+11. & DONOR'S PROGRAM                               & 9\\
+
+12. & LETTER FROM THE NATURE CONSERVANCY            & \\
+    & (HOW TO CONTRIBUTE)                           & 10\\
+\end{tabular}
+
+\end{center}
+
+\begin{abstract}
+
+The proposed project aims to prevent the imminent destruction of
+some of the last remaining large areas of rain forest in the
+Sarapiqu\'{\i} region of Northern Costa Rica, and at the same time,
+to use those forests to establish a conservation economy through a
+community based nature tourism project.  The conservation economy is
+needed to insure the long term stability of both the present and future
+protected areas of Sarapiqu\'{\i}, by creating an economic interest group
+within the human populations surrounding the protected forests.  The
+overall project contains six stages, which will be executed in succession,
+as funding reaches the corresponding target levels.  The Nature Conservancy
+(TNC) is acting as fiscal agent, and the Costa Rican government has expressed
+a willingness to expropriate the target properties if necessary.  This
+project is being organized and supported by a coalition of conservation
+organizations: Sarapiqu\'{\i} Association for Forests and Wildlife,
+OTS (The Organization for Tropical Studies), TNC, FUNDECOR (The Foundation
+for the Development of the Central Volcanic Mountain Range), COMBOS (The
+Conservation and Management of Tropical Forests), and ABAS (The Association
+for the Environmental Well being of Sarapiqu\'{\i}).
+
+\end{abstract}
+
+\pagebreak
+
+\LP
+{\large {\bf 1. Introduction}}
+\eLP
+
+Conserving biodiversity is a long-term enterprise.  One means of
+conserving biodiversity is through the creation of biological
+reserves, whether they be national or private.  These reserves must
+remain intact for thousands of years to be meaningful in protecting
+species from extinction.  If possible, they must also include
+surrounding buffer zones and be connected, through a network of
+biological corridors, to other reserves and/or conservation areas
+in the region.  In the past decades, many tropical rain forest
+reserves have been created worldwide, through great effort and
+involving many individuals and organizations.  However, the most
+difficult part of the work lies ahead.
+
+Creating biodiversity reserves is only the first step.  The necessary
+conditions must be created that will ensure their long-term survival.
+Although we cannot hope to manipulate events thousands of years in the
+future, we must recognize the challenge now and move in what appear
+to be the most promising directions.
+
+It is critical that the surrounding human populations want the
+reserves to exist or the land will eventually be converted to other
+uses.  A powerful means of creating an interest group is through
+economic incentives.  Ways must be found to create a ``conservation
+economy'' through the use of intact rain forest.
+
+\LP
+{\large {\bf 2.  Costa Rica}}
+\eLP
+
+The diverse and once abundant natural resources of the Central
+American region are being over-exploited at an alarming rate, and
+if the situation is not remedied, continued deterioration of the
+economic, environmental and social well-being of the area will
+result.  The degradation of the natural environment is due to a
+combination of factors including accelerated human population
+growth, the exploitation of forests by lumber companies, and the
+conversion of forest to other land uses such as pasture, coffee,
+sugar cane and banana plantations.
+
+In Costa Rica, the remnants of the original forested environment
+exist in national parks and reserves, or as forest patches and
+strips in already colonized areas.  Privately owned forests
+represent the majority of the 300,000 hectares of unprotected
+primary forest remaining in Costa Rica.  By viewing satellite and
+aerial photos, it is evident that most of these forest remnants are
+rapidly disappearing.  If nothing is done to conserve them, it is
+most likely that they will disappear in the next few years.
+
+The northeastern part of Costa Rica has been a center of
+conservation activity for many years.  Within this region are
+located various projects such as the Barro Colorado Wildlife
+Refuge, Tortuguero National Park and the biological corridor being
+formed that will connect the (above mentioned) park and wildlife refuge,
+the SiAPaz National Park shared by Nicaragua and Costa Rica, the
+Ca\~{n}o Tambor area where a new national park is being planned called
+Maquenque National Park, Braulio Carrillo National Park with its new
+park extension connecting it to the La Selva biological research
+station, etc.  The Paseo Pantera Project, with its vision of
+creating a Meso-American biological corridor from Mexico to
+Colombia, plans to include all the above mentioned projects, with
+help from local conservation groups, as links within the greater
+Meso-American biological corridor, together with any other forested
+lands still existing in the area, be they in the form of private
+eco-tourism projects, reserves, refuges, parks, etc.
+
+\LP
+{\large {\bf 3. ``Nature Tourism''}}
+\eLP
+
+Costa Rica, because of its exemplary system of national parks and
+reserves, and because it is a peaceful, democratic country with
+educated, friendly people, has created a flourishing ``nature
+tourism'' industry.  Large numbers of people from all levels of Costa
+Rican society are employed in the ``eco-tourism'' business.  In the
+areas immediately surrounding the parks and reserves, people from
+the local communities are employed as naturalists, guides, park
+guards, and hotel and restaurant employees.  The creation of this
+``conservation economy'' has caused a change in attitudes among the
+local populations.  Costa Rica now has approximately 140 grass-roots
+environmental organizations, where 20 years ago, there were almost
+none.
+
+Thus far, nature tourism has worked beautifully in Costa Rica in
+creating a ``conservation economy'' and an interest group supportive
+of maintaining the system of nature reserves.  However, various
+problems exist with the current state of affairs.  Most of the
+nature tourism projects are foreign owned.  While these projects generate
+a lot of employment, there is a certain resentment among the local
+people with having to work for a salary for foreigners, who are
+perceived as carrying the profits off to their home countries and
+not investing much if any of it into the local communities.
+Historically, the needs of the communities in rural areas have
+often been ignored by conservation groups and tourism companies,
+even though their cooperation is absolutely essential in the
+running of the hotels, restaurants, shops, etc. and in preventing
+the forested lands from being overrun by illegal loggers, squatters
+and poachers.
+
+The main obstacle which has prevented Costa Ricans from creating
+their own nature tourism projects is simply lack of capital,
+particularly among the rural populations actually living around the
+parks and reserves.  The people in these communities have gained a
+great deal of experience in the past decade in all aspects of
+operating nature tourism projects, as well as a wealth of knowledge in
+the importance of protecting their surrounding natural resources.
+Recently, they have expressed a desire to mount their own projects,
+but lack the funds to do so.
+
+\LP
+{\large {\bf 4.  Sarapiqu\'{\i}}}
+\eLP
+
+Sarapiqu\'{\i} is a ``canton'' (county) in the northeastern province of
+Heredia, Costa Rica.  It occupies 85\% of the total land area of the
+Heredia Province.  The town of Puerto Viejo is the population center
+and political seat of the Sarapiqu\'{\i} county.  It is located at the
+confluence of the Sarapiqu\'{\i} and Puerto Viejo rivers, 30 kilometers
+south of the Nicaraguan border.  The town is in an area that was formerly
+lowland rain forest.  The land to the south rises very gradually to
+3,000 meters in elevation over a distance of 35 kilometers.
+
+Sarapiqu\'{\i} has been a center of conservation activity in Costa Rica
+for many years, originally due to the presence of La Selva just
+south of Puerto Viejo.  La Selva is the international biological
+research station owned by the Organization for Tropical Studies, a
+consortium of approximately 50 universities in the United States
+and Costa Rica.  La Selva works closely with the surrounding
+community by involving them directly in the research being carried
+out by using their farms as study sites while at the same time
+educating them in new conservation techniques, new viable native
+species for reforestation, etc.  La Selva also offers a course to
+train locals as naturalist guides.
+
+In the 1980s, the Braulio Carrillo National Park was created in the
+mountains to the south of La Selva.  The Park was subsequently
+extended 20 kilometers northward to connect with the research
+station.  This extension was accomplished through an international
+effort that raised two million dollars, which included a one
+million dollar challenge grant from the John D. and Catherine T.
+MacArthur Foundation.  The protected areas in the central region
+of Sarapiqu\'{\i} are highlighted in green on map A.
+
+The Braulio Carrillo National Park and its extension occupy the
+heart of the Sarapiqu\'{\i} county and have formed the nucleus for a
+variety of conservation efforts and nature tourism projects.  FUNDECOR
+(the Foundation for the Development of the Central Volcanic
+Mountain Range -- translated from its name in Spanish) works closely
+with land owners in the area promoting sound farm management
+techniques and conservation practices.  COMBOS (The Conservation and
+Management of Tropical Forests) is also helping community groups
+and private individuals in the area with various projects promoting
+the conservation and management of private forests.  ABAS (The
+Association for the Environmental Well being of Sarapiqu\'{\i}) is a
+strong environmental group working in the Sarapiqu\'{\i} region to halt
+the poaching of endangered animals, hazardous waste dumping by
+local banana plantations, and in general, watching for any other
+environmental offenses which exist in the region while at the same
+time promoting conservation of the rich natural resources of the
+area and consolidation of the Maquenque National Park at Ca\~{n}o
+Tambor.
+
+Various nature tourism projects include Selva Tica, Islas del R\'{\i}o,
+Rancho Leona which provides kayak trips on the Sarapiqu\'{\i} River,
+Rara Avis, Selva Verde and their community learning center, various
+individuals with small private reserves, and entrepreneurs selling
+``eco-art'', secondary products from the forest, etc.  The most well
+known of these projects are ``Rara Avis of Costa Rica'', owned by Amos
+Bien (a North American) and ``Selva Verde Lodge'', owned by Giovanna
+Holbrook and Juan Holbrook (North Americans), Gainesville, Florida-based
+tour operators.
+
+A problem which exists for the nature tourism businesses in the area
+is that the lower elevations of the Braulio
+Carrillo National Park are difficult to access, making it
+inconvenient for direct use by the nature tourism projects.  For
+example, the Rara Avis property borders directly on the Park,
+however, access to the hotel involves a ride in a tractor-pulled
+cart that takes four hours, more if it is raining.  There are also
+a number of small nature tourism projects in the region which include
+no forest of their own and, therefore, cannot offer forest access
+to their clients.  La Selva is for scientific use and Selva Verde
+Lodge is only available to residents and guests of the Lodge.  The
+Park itself is too remote for tourists to access easily.
+
+\LP
+{\large {\bf 5. Chilamate}}
+\eLP
+
+The community of Chilamate exhibits a rare coincidence of forest
+and road.  Chilamate is located where the Sarapiqu\'{\i} River passes
+through the southern extension of the Sardinal Hills.  Probably
+because of the ruggedness of the terrain, the land has not yet been
+deforested.  The main road from Puerto Viejo to the capital city of
+San Jos\'{e}, parallels the river, thus in Chilamate, there is easy
+access to the forests of the Sardinal Hills.  In addition, electric
+and telephone lines run along the road through Chilamate.  This
+coincidence of forest with road access and basic utilities makes
+Chilamate an ideal location for the development of nature tourism
+projects, which is why Selva Verde Lodge and Islas del R\'{\i}o are
+already located there.
+
+The Selva Verde property includes 180 hectares of forest to the
+south of the road, extending to within 1.7 kilometers of the
+Braulio Carrillo National Park extension.  In addition, there are
+three small private reserves to the north of the road, each
+approximately 800 meters long and 200-300 meters wide.  These
+reserves are currently separated by two strips of cow pasture, each
+100 meters wide.  It is expected that in the coming years, these
+pastures will be purchased by the owners of the small reserves and
+the forests allowed to regenerate.  This will result in the creation
+of one single reserve of approximately one square kilometer in
+size.  Of the three private reserves, Giovanna Holbrook and Juan
+Holbrook own the western one, Tom Ray (a North American) owns the central
+reserve, and Isaias Alvarado (a native of Sarapiqu\'{\i} and resident of
+Chilamate) owns the eastern one.
+
+The areas already under protection in the Chilamate area are
+highlighted in green on map B.  The areas proposed for protection
+are highlighted in blue and pink.
+
+\LP
+{\large {\bf 6.  What is needed}}
+\eLP
+
+The region of Sarapiqu\'{\i} needs an area of forest easily accessible
+to tourists, which is owned and operated by Costa Rican nationals
+who are members of the local community.  This property should be
+large enough to be ecologically viable, in the sense that it can
+preserve populations of flora and fauna in the area important to
+tourism (e.g., birds, monkeys, etc.).  Access to this forest should
+be made open to any of the nature tourism projects in the area,
+including the small ones which do not currently have forest access.
+Ideally, a tourist lodge would be constructed in conjunction with
+this property, which would also be owned and operated by members of
+the community.
+
+In addition, the narrow corridor connecting the La Selva Biological
+Station to the Braulio Carrilo National Park needs to be widened to
+better protect the fauna and flora of the middle elevations, and to
+facilitate the movements of the altitudinally migrating species
+(particularly birds).
+
+\LP
+{\large {\bf 7.  Sarapiqu\'{\i} Association for Forests and Wildlife}}
+\eLP
+
+The non-profit Asociaci\'{o}n Bosque y Vida para Sarapiqu\'{\i}
+(Sarapiqu\'{\i} Association for Forests and Wildlife) was formed,
+with the help of COMBOS, in September, 1993 in order to address the
+needs described above.  The charter includes the following goal and
+objectives:
+
+Goal: Promote the conservation and sustainable development of the
+natural and human resources in the county of Sarapiqu\'{\i}.
+
+\LP
+Objectives:
+\eLP
+
+\XPNS
+1)   The protection of the hills, wetlands and buffer zones in the area.
+
+2)   Natural forest regeneration.
+
+3)   To promote the creation of biological corridors.
+
+4)   Development of educational projects.
+
+5)   Protection of the rivers.
+
+6)   To stimulate the creation of private reserves or refuges.
+
+7)   Promotion of eco-tourism.
+
+8)   Promotion of participative planning and land ordinance in the county.
+
+9)   To promote reforestation using species native to the area.
+\eXPNS
+
+Membership in the Association is available to persons 16 years of
+age or older for a fee of 1,000 colones (approximately \$7) and an
+annual membership fee, also 1,000 colones.  The Association is
+managed by the Executive Committee which is elected every two
+years.  Checks can only be signed by the President and Treasurer.
+The first members elected to the Executive Committee were:
+
+\vspace{.5cm}
+
+\begin{tabular}{llcll}
+
+Name               & Office         & Age & Profession       & Residence\\
+\\
+Joel Alvarado      & President      & 30  & Naturalist       & Chilamate\\
+Alexander Martinez & Vice-President & 44  & Environmentalist & Puerto Viejo\\ 
+Gonzalo Ramirez    & Treasurer      & 41  & Economist        & San Jose\\
+Nelci Oconitrillo  & Secretary      & 20  & Student          & Cristo Rey, PV\\
+Leona Barrantes    & Officer        & 44  & Business Woman   & La Virgen\\
+Jaime Alvarado     & Fiscal         & 33  & Naturalist       & Chilamate\\
+
+\end{tabular}
+
+\LP
+{\large {\bf 8.  Sardinal and Arrepentidos Hills}}
+\eLP
+
+The Sarapiqu\'{\i} Association for Forests and Wildlife has identified
+the Sardinal Hills, The Arrepentidos Hills and the more than two square
+kilometers area of wetlands connecting the two as an ideal site for
+preservation because of its high ecological value and unsuitability for
+conventional development.  The area also
+has the natural infrastructure necessary for a regional nature tourism
+project.  The hills-wetlands complex is a unique ecosystem in Costa
+Rica and covers multiple life zones extremely rich in biodiversity.
+At their southern end, the Sardinal Hills join the three private
+reserves in Chilamate and are thus easily accessed through
+Chilamate.  The Arrepentidos Hills come down to within a few meters
+of the road to the north of Puerto Viejo, and on their southern
+side, come within approximately 200 meters of the northernmost part
+of La Selva.  The Arrepentidos Hills are easily accessible from the
+main street in Puerto Viejo, and thus would allow the hotels in
+Puerto Viejo to provide forest access to their guests.
+
+The three private reserves in Chilamate are separated from the
+Holbrook reserve only by the road and a river.  Ideally, the
+Holbrook reserve would be extended 1.7 kilometers to the southeast
+to connect it to the Braulio Carrillo National Park extension,
+creating a biological corridor between the Sardinal-Arrepentidos
+Hills-wetlands complex and the national park.  This connection would
+also conceivably be made between the La Selva property and the
+Arrepentidos Hills.  This area could then be included as another
+vital link in the greater Meso-American Biological Corridor
+mentioned earlier.  The Sardinal-Arrepentidos Hills-wetlands complex
+is one of the very few intact, ``healthy'' areas left north of the
+road that could be linked to the Meso-American Biological Corridor.
+
+The areas proposed for inclusion in this phase of the project are all
+either rugged hills or wetlands, not suitable for agricultural, industrial
+or residential developments.  These areas are highlighted in pink
+or blue on the enclosed map B.
+
+\LP
+{\large {\bf 9. Finca La Martita}}
+\eLP
+
+It is an unfortunate reality that the nature tourism industry which
+has developed under the ideal conditions found in Chilamate, is
+based on the presence of large areas of unprotected forested land,
+which are, in fact, in immediate danger of destruction.  The bulk of
+the area of the Sardinal Hills is contained within one single 670
+hectare property, Finca La Martita (highlighted in pink on the
+enclosed maps).  The current owner has applied for a logging permit
+to cut and sell the lumber in the Sardinal Hills area of the
+property in order to pay part of the purchase price still owed to
+the sellers.
+
+This development has greatly alarmed the community of Chilamate and
+led to the formation of the Sarapiqu\'{\i} Association for Forests
+and Wildlife.  On July 21, 1993 the members of the community sent a
+petition to Dr.\ Orlando Morales, the Minister of Natural Resources
+in Costa Rica.  The petition reads as follows (translated from
+Spanish):
+
+\LP
+Very Esteemed Minister:
+\eLP
+
+\begin{quote}
+
+     Let this letter serve in the first place to greet you and
+congratulate you for your dedicated efforts in the defense of our
+natural resources.  We, the neighbors of Sarapiqu\'{\i}, wish to request
+your help in preventing the destruction of the forests of Finca
+La Martita.  We understand that the owner of the property has
+requested, and may have already obtained, a logging permit to cut
+and sell the lumber.  The property is located in Chilamate and
+includes the greater part of the Sardinal Hills.  It includes 670
+hectares, half of which is primary forest, a fourth of which is
+secondary forest, and the rest pasture.  Its complete deforestation
+would not only contribute to aggravating the problems of erosion
+within the zone, but gravely enhance its already precarious
+situation, a consequence of the uncontrolled exploitation by cattle
+ranchers and banana plantations.
+
+     The region of Sarapiqu\'{\i} has developed a strong eco-tourism
+industry, by which many of us live.  We would like to see this
+industry grow, rather than destroying the nature which forms its
+base.  There already exist in Chilamate some successful eco-tourism
+projects which offer the visitor access to the forests contiguous
+to those of La Martita.  In reality, the forests of La Martita
+represent the largest part of the forested area in Chilamate.  Their
+destruction would do great harm to our eco-tourism industry.  It
+would also signify the elimination of the monkeys, wild cats, and
+many other mammals and birds from the forests of Chilamate.  We
+would like to see the Finca La Martita working together with us in
+eco-tourism.  This would mean the expansion of eco-tourism in
+Chilamate, rather than its disappearance.
+
+     We, the neighbors of Sarapiqu\'{\i}, are willing to make every
+effort necessary to develop eco-tourism in La Martita, if you give
+us the opportunity.  It worries us greatly to know that there exists
+an immediate danger of the destruction of its forests, if already
+granted (we do not know if the permission that authorizes this
+ecological disaster was properly acquired).  We wish to ask you,
+with all respect, to review the logging permit that may have been
+given to the owner of La Martita, and consider the possibility of
+revoking it.  Give us the opportunity to put La Martita to work in
+eco-tourism, and in this way protect the industry of eco-tourism
+that already exists in the region, which would be gravely damaged
+if the animal species that presently circulate freely in the area
+are reduced or all together pushed out of the area.
+
+     We, and the future generations of our country, thank you for
+all your efforts in solving this serious problem.
+
+     We request that you notify us of your decision and all
+information relative to this matter, at the office of Agustin
+Atmetlla Cruz, lawyer and notary, located in San Pedro, 100 meters
+east and 100 meters south of the Banco Popular, Apartado 7723-1000
+San Jos\'{e}, telephone 53-0889.
+
+\end{quote}
+
+\begin{center}
+                          Respectfully,\\
+\vspace{.5cm}
+\begin{tabular}{ll}
+     Name                          &        Profession\\
+\\
+     Thomas Ray                    &        University Professor\\
+     Leona Wellington Barrantes    &        Business Woman\\
+     Gonzalo Ramirez Guier         &        Economist\\
+     Francisco Madrigal            &        Farmer\\
+     Orlando Vargas R.             &        Naturalist\\
+     Alexander Martinez            &        Environmentalist\\
+     Isaias Alvarado               &        Environmentalist\\
+     Ileana Molina B.              &        Naturalist\\
+     Joel Alvarado Chavarria       &        Naturalist\\
+     Ken Upcraft                   &        Business Man\\
+     Robert Wells                  &        Business Consultant\\
+\end{tabular}
+\end{center}
+
+Minister Morales responded that if the request for a logging permit
+is properly prepared (which it appears to be), he cannot legally
+deny it.  However, he has said that he would be willing to delay the
+granting of the permit in order to allow the Association time to
+raise funds to purchase the property.  He has also said that if the
+owner is not willing to sell the land to the Sarapiqu\'{\i} Association
+for Forests and Wildlife, the government would be willing to expropriate
+the property, if the money to pay for the property can be raised. 
+
+\LP
+{\large {\bf 10.  The Plan}}
+\eLP
+
+The Association has outlined an ambitious multi-stage, long-term
+plan which aims to solve the immediate problem of La Martita, and
+help with the development of a locally owned and operated
+nature tourism industry while at the same time consolidating existing
+reserves and promoting the linkage of local areas to the Meso-American
+Biological Corridor.  Most of the stages of the plan will require
+considerable financial resources.  The objective is to obtain these
+through international fund raising efforts from philanthropic sources.
+However, once the nature tourism project becomes well developed, some
+of the profits will be re-invested into future stages of the plan.
+In brief, the plan includes the following stages:
+
+\XPNS
+1)   Purchase of Finca La Martita by the Sarapiqu\'{\i} Association
+     for Forests and Wildlife.  670 hectares.  Estimated cost: \$440,000
+
+2)   Establish a community-based nature tourism project at La Martita
+     which will function as a cooperative.
+     Cost: \$136,000 for a one year startup.
+
+3)   Join the Holbrook reserve at Selva Verde Lodge to the Braulio
+     Carrillo National Park.  345 hectares.  Estimated cost: \$249,953
+
+4)   Widen the corridor connecting the La Selva Biological Station
+     to the bulk of the Braulio Carrillo National Park (based on the
+     October 1993 proposal from the Fundacion de Parques Nacionales).
+     596 hectares.  Cost: \$431,398
+
+5)   Purchase the remainder of the Sardinal Hills, the wetlands, and
+     the Arrepentidos Hills areas and join them to the La Martita
+     nature tourism project.  1,330 hectares.  Estimated cost: \$818,685
+
+6)   Widen the upper elevation portions of the corridor connecting the
+     La Selva Biological Station to the Braulio Carrillo National Park.
+     640 hectares.  Estimated cost: \$436,800
+\eXPNS
+
+Most of the costs listed above are estimated values.  The Ministry of
+Finance of Costa Rica is currently in the process of appraising each of
+the properties targeted for acquisition.  The budget can not be finalized
+until the appraisal is completed.  However, it is felt that the figures
+listed above are realistic.
+
+The purchase of Finca La Martita is an essential step in promoting
+community-based nature tourism projects and conservation efforts in
+Costa Rica.  The creation of the Sarapiqu\'{\i} Association for Forests
+and Wildlife nature tourism project will be an example to other
+communities, demonstrating that it is possible for rural communities to
+directly manage and benefit from nature tourism projects.  It also
+provides a type of empowerment to local communities.  With actual
+ownership of a property, community members have more incentive to
+work together and manage the local natural, as well as human, resources
+as efficiently and profitably as possible for their own benefit and
+well being.
+
+\LP
+{\large {\bf 11.  Donor's Program}}
+\eLP
+
+Donors and allies (allies are persons who recruit quailfying donors)
+will be offered a token gift of a free night in the Martita hotel, for
+each ten thousand dollars contributed.  More importantly, an effort
+will be made to coordinate the visits of these persons to the project,
+so that the major donors and allies (of all nationalities) will have
+an opportunity to meet one another, and to receive a guided tour of
+the rainforests and conservation projects of the Sarapiqu\'{\i} region.
+Tom Ray, one of the organizers of this project, will guide the tour
+along with the very talented naturalists who will be managing the
+project in Costa Rica.
+
+\newpage
+
+The maps referred to in the rainforest proposal are not included in
+this text file, but are available on request from Tom Ray, and will
+soon be placed in the ftp site in electronic form
+
+\newpage
+
+\begin{center}
+{\large {\bf The Nature Conservancy}}\\
+Latin America / Caribbean Region\\
+International Headquarters\\
+1815 North Lynn Street\\
+Arlington, Virginia 22209\\
+Tel: 703-841-4860\\
+Fax: 703-841-4880\\
+\end{center}
+
+\LP
+January 24, 1994
+
+Dr. Thomas Ray\\
+ATR Human Information Processing Research Laboratories\\
+2-2 Hikaridai, Seika-cho Soraku-gun\\
+Kyoto 619-02 Japan\\
+Fax: (81)-7749-5-1008
+
+Dear Dr. Ray,
+
+In response to our several conversations and exchange of documents, I
+would like to confirm, in writing, The Nature Conservancy's interest
+in assisting your Sarapiqui project.
+
+The Conservancy has been working in this part of Costa Rica for over
+10 years and it is becoming increasingly clear that the private sector
+will have to assume much of the burden of protecting forested lands
+outside the Braulio Carillo National Park complex.  Your project,
+carried out through a local community-based association, seems to
+provide a model for how this can be done in a systematic and phased
+approach.
+
+I have just returned from Costa Rica where I was able to visit this
+site with our local attorney, Robert Wells, and meet with various
+leaders of the local community.  The project does indeed offer an
+unusual opportunity to involve community residents in helping to plan
+for the optimal use of the acquired parcels in ways which maximize the
+conservation and campatible development values of the land.
+
+The Conservancy would be willing to act as a fiscal agent for contributions
+from donors interested in contributing through a U.S. c(3) tax exempt
+organization and we would be glad to oversee the purchase of the land
+targeted for protection.
+
+Such land, once acquired, would be transferred to the non-profit
+Sarapiqui Association for Forests and Wildlife with appropriate
+conservation easements or deed restrictions to ensure its protection
+in perpetuity.
+
+I agree that this project should be executed in stages as sufficient
+funds are raised to ensure the successful completion of each stage.
+Donors can select which phase they are interested in supporting and
+pledge accordingly.  They would not have to make the actual contribution
+until all the funds required for that phase are pledged.
+
+Contributions can be in the form of cash, wire transfers, appreciated
+securities or even gifts or real estate and life income estates.  Each
+method has its own tax advantages.  For example, a donation of stock
+that has been held for over one year and that has increased in value
+can be donated without having to pay capital gains taxes.  In addition,
+the charitable contribution deduction is equal to the full market value
+of the stock and may be taken over a six year period if a donor's
+annual maximum limit has been attained.  Please let me know if you
+require detailed information on any of these approaches.
+
+Once a donor decides to contribute, they should send me a letter stating
+the amount of their pledge, and the method of payment they prefer (cash,
+wire, appreciated securities etc.).  The letter should state that the
+donation is for the ``Sarapiqu\'{\i}'' project, and if they desire, should
+specify earmarking (either positive or negative) for specific stages
+of the project.  When the pledges reach the required target level, I will
+then contact the donor with a letter calling in the pledge, and giving
+specific instructions for their chosen method of payment.
+
+I hope this covers the basic points.  I look forward to working with you
+and our Costa Rican attorney in helping to put this important project
+together.
+
+Sincerely,
+
+Randall K. Curtis\\
+Director\\
+Conservation Finance and\\
+Costa Rica Country Programs
+\eLP
+
+\end{document}

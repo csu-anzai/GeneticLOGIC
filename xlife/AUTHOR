@@ -1,0 +1,15 @@
+(Message inbox:688)
+Return-Path: moraes@church.csri.toronto.edu
+Received:  by wyse.wyse.com (5.58/Wyse master/5-13-88)
+	id AA07721; Sat, 31 Dec 88 03:05:38 PST
+Received: from [128.100.1.6] by uunet.UU.NET (5.59/1.14) 
+	id AA14417; Sat, 31 Dec 88 02:48:26 EST
+Received: by church.csri.toronto.edu id 487; Sat, 31 Dec 88 02:48:59 EST
+From: Mark Moraes <moraes@csri.toronto.edu>
+To: mikew@wyse.wyse.com
+Subject: xlife
+Message-Id: <88Dec31.024859est.487@church.csri.toronto.edu>
+Date: 	Sat, 31 Dec 88 02:48:48 EST
+
+A demo of continuous graphics in a Toolkit window, using SIGIO to process
+events. Reasonably entertaining game too - exploring Life is always fun.

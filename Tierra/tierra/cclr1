@@ -1,0 +1,5 @@
+rm td/break.*
+rm gb1/*.tmp
+rm core_out
+rm soup_out
+rm tierra.log

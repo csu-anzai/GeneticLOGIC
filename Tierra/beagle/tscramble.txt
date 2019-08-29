@@ -1,0 +1,176 @@
+/*-----------------------------------------------------------------------*/
+extern void PrintInstDist P_((I32s n));
+extern void Scramble P_((void));
+extern void ScanSoup P_((void));
+
+
+/*-----------------------------------------------------------------------*/
+void ScanSoup()
+{
+   I32s si ,p;
+
+   for(si = 0; si < INSTNUM; InstD[si++]=0);	/* clean struct bzero ? */
+   InstD[INSTNUM] = -1;	/* max hits */
+   for(si = 0; si < SoupSize; si++)
+      {
+#if PLOIDY == 1
+      if((InstD[soup[si].inst]++) > InstD[INSTNUM]);
+	    InstD[INSTNUM] = InstD[soup[si].inst];
+#else /* PLOIDY > 1 */
+      for(p = 0; p < PLOIDY; p++)
+	 {
+         if((InstD[soup[si][p].inst]++) > InstD[INSTNUM]);
+	    InstD[INSTNUM] = InstD[soup[si][p].inst];
+
+	 }
+#endif /* PLOIDY > 1 */
+      }
+}
+/*-----------------------------------------------------------------------*/
+void PrintInstDist(n)
+I32s n;	/* number of lines to print */
+{
+I32s di,siz,ci,y,total,n_star;
+total = 0;
+siz = ( n > INSTNUM ) ? INSTNUM : n ;	
+siz = ( siz > fe_lines-2 ) ? fe_lines-2 : siz ;	
+
+for (y = MSG_Y,di = 0; di < INSTNUM; di++)
+   {
+
+	 if (InstD[di] < 0) break;
+	 if ((di > 0) && !(di % siz) ) 
+	    {
+	    y=MSG_Y;
+	    FEPrintf(HLP_X,HLP_Y,1,"Press any key for more ...\n");
+	    FEGetc(); 
+	    }
+	 total += InstD[di];
+	 y = MSG_Y + (di % siz);
+	 n_star =  1 + (I32s) ((fe_width-15) *
+	   ( (float)(InstD[di])
+	    /(float)(InstD[INSTNUM])));	/* max count */
+	 FEPrintf(MSG_X,y,0,"%7.7s %2.2x %6d|",
+	       id[di].mn, id[di].op, InstD[di]);
+	 for (ci = 0; ci < n_star; ci++)
+	     FEPrintf(MSG_X+18+ci,y,0,"*");
+	FEPrintf(MSG_X+18+ci,y,0,"\n");
+    }
+FEPrintf(MSG_X,y+1 ,0,"Total  --> %6ld\n",total);
+FEClrmsg(y+2);
+   
+}
+/*-----------------------------------------------------------------------*/
+void Scramble()
+{
+/* things to do:
+	make sure dropdead = 0 -> ignore ...
+	turn genebanker off ...
+	find prop of SoupSize	(remember ploidy )
+	for each soup[] place down a piece 
+*/
+I32s si,i,p,tssiz;
+float rr,id_prop[INSTNUM];
+
+if (GeneBnker) 
+  {
+  FEError(-110,NOEXIT,NOWRITE,"Can't Scramble soup with GeneBnker on !");
+  return;
+  }
+
+sprintf(mes[0],
+"About to Scramble Soup - are you willing to exercise this control ?"
+);
+FEMessage(1,mes);
+if (FEGetc() != 'y') return;
+
+DropDead = 0;
+sprintf(mes[0],
+"Scrambling Soup - come on!, baby needs a new pair of shoes !..."
+);
+FEMessage(1,mes);
+
+tssiz = PLOIDY * SoupSize;
+
+/* calc proportions for redistribution ... */
+for(p = 0; p < INSTNUM ; p++)
+   {
+   id_prop[p] = ((float)  InstD[p]) / ( (float )tssiz); /* anal ... */
+   if(p) id_prop[p] += id_prop[p - 1];
+   }
+
+   for(si = 0; si < SoupSize; si++)
+      {
+      soup[si].write = tlrand() % 2;
+      } 
+   for(si = 0; si < SoupSize; si++)
+      {
+#if PLOIDY > 1
+      for(p = 0; p < PLOIDY; p++)
+	 {
+#endif /* PLOIDY > 1 */
+      rr = (float)tdrand();
+      for(i = 0; i < INSTNUM; i++)
+      {   if(rr < id_prop[i]) break;
+      }
+#if PLOIDY ==  1
+      soup[si].inst = (int) i;
+#else
+      soup[si][p].inst = (int) i;
+	 }
+#endif /* PLOIDY > 1 */
+      }
+}
+/*-----------------------------------------------------------------------*/
+/*-----------------------------------------------------------------------*/
+void query_bits(bstr)
+I8s bstr[32];
+{
+I32s si,gi,num_hits;
+
+if(!GeneBnker) return;
+if ((Bits = (BitsType *) thcalloc((NumGenotype+1) , sizeof(BitsType) )) 
+    == (BitsType *) NULL)
+   {
+   FEError(-170,NOEXIT,NOWRITE,
+      "Not enough memory to create bits table");
+    return;
+   }
+
+for(num_hits=0,si=0;si < siz_sl; si++)	/* for all sizes */
+   {
+   if ((I32s)sl[si]->g < 4) continue;
+   for(gi=0;si < sl[si]->num_c; gi++)	/* for all geneotypes */
+      {
+      if ((I32s)sl[si]->g[gi] < 4) continue;
+      if (IsInBitSet(bstr,sl[si]->g[gi]->bits))
+	 {
+	 Bits[num_hits].size = si;
+	 Bits[num_hits].lbl = gi;
+	 Bits[num_hits].bits = sl[si]->g[gi]->bits;
+	 num_hits++;
+	 }
+
+      }
+
+   }
+}
+/*-----------------------------------------------------------------------*/
+void IsInBitSet(bstr,bits)
+I8s bstr[32];
+I32s bits;
+{
+I32s b,p;
+/* WARNING first 2 bits are not watch bits! */
+for(b=1,p=0; p < 32;p++, b = b >> 1;)
+   {
+   if ((bstr[p] == '?') ||
+       (bstr[p] == '1' && (b&bits)) ||
+       (bstr[p] == '0' && !(b&bits)) )
+       continue;
+   return 0;
+   }
+return 1;
+}
+/*-----------------------------------------------------------------------*/
+

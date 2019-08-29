@@ -1,0 +1,40 @@
+# vamv, version 1.0 sample Lim.File
+#
+# nseed		150	# number of original organisms to create
+# nreseed	70	# number to reseed with when norgs < mindens
+# mindens	15	# minimum # organisms (density) before reseeding
+170 75 15
+# STARVE	140	# max age allowed w/out eating before expire
+# MAXFOOD	100	# max food per location before rotting away to 0
+# bestinstr	9	# min types of instr executed to enhance score
+# goodinstr	7	# min types of instr to enhance score at 1/2 value
+120 100 9 7
+# crowded	6	# loc density considered too crowded to divide (0-8)
+# macrowded	13	# global dens at & below which 50% prob of exp on div
+# maxldiv	7	# max local density at which div gives success score
+# elbow 	9	# min squares/organism at which div gives success
+7 15 7 13
+# culdens	8	# min squares/org before 1/3 culling takes place
+# divstr	2	# strength needed to divide
+# synstr	2	# strength gained from food synthesis
+# convert	10	# min number holding to convert to food
+12 4 6 9
+# initfood	15	# percentage of locations with food initially
+# ifoodmax	16	# max items randomly distributed at locs initially
+# neisave	0	# set to 1 or 0
+20 25 0
+#
+# There follow (optional) point scores for various instructions
+# 5 2 2 2
+# 0 0 2 2
+# 2 5 2 0
+# 0 5 2 2
+#
+# SYNTH PICKUP EAT DEP
+2 2 9 2
+# BRANCH JUMP MOVE MOVQ
+0 0 2 2
+# JOIN DIVI MOVI BRNNE
+2 7 2 0
+# BRINE DIVQ TRADE FOOD
+0 2 8 2

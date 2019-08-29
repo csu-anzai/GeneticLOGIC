@@ -1,0 +1,16 @@
+mkdir ../rev20
+cp *.[hC] ../rev20
+cp makefile* ../rev20
+cp ground.obj ../rev20
+cp critter.obj ../rev20
+cp worldfile* ../rev20
+cp *.wf ../rev20
+cp to. ../rev20
+cp rm. ../rev20
+cp dependencies ../rev20
+cp dependfile ../rev20
+cp newrev ../rev20
+cp *.o ../rev20
+cp README ../rev20
+cp readme.exp.tmplt ../rev20
+cp readme.exp.tmplt ../rev20/README.experiments

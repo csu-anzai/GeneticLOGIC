@@ -1,0 +1,2777 @@
+% In order to run latex on the oji.tex file, you must first break it
+% up into five files:
+% 
+% espart.sty
+% espart12.sty
+% thp.sty
+% theorem.sty
+% oji.tex
+%
+% Unfortunately there seems to be something wrong with these sty files,
+% because the bibliography functions do not number the citations.
+% 
+% In order to find out where to break it up, look for the scissors:
+
+%                                  O /
+% ================================= x -------------------------------------
+% 				  o \
+
+%%%%%%%%%% espart.sty %%%%%%%%%%
+% Document-style collection for journals published by
+% Elsevier Science Publishers. Version 5.3: 12 November 1992
+% To be used with LaTeX version 2.09 (14 January 1992).
+%
+%
+% Copyright (C) 1992 by Elsevier Science Publishers. All rights reserved.
+%
+% IMPORTANT NOTICE:
+%
+% You are not allowed to change this file. You may however copy this file 
+% to a file with a different name and then change the copy. 
+% 
+% You are NOT ALLOWED to distribute this file alone. You are NOT ALLOWED 
+% to take money for the distribution or use of this file (or a changed 
+% version) except for a nominal charge for copying etc. 
+% 
+% You are allowed to distribute this file under the condition that it is 
+% distributed together with all files mentioned in readme.esp. 
+% 
+% If you receive only some of these files from someone, complain! 
+% 
+%
+
+\def\@journal{Elsevier Science Publishers}
+\def\@JOURNAL{ELSEVIER SCIENCE PUBLISHERS}
+\def\@issn{0}
+
+\typeout{Elsevier Science Publishers
+         preprint document style.  Released 12 November 1992}
+
+\def\partname{Part}
+\def\contentsname{Contents}
+\def\listfigurename{List of Figures}
+\def\listtablename{List of Tables}
+\def\refname{References}
+\def\indexname{Index}
+\def\figurename{Fig.}
+\def\tablename{Table}
+\def\abstractname{Abstract}
+
+\def\@ptsize{2}
+
+\def\ds@twoside{\@twosidetrue
+                \@mparswitchtrue}  % default is `true'
+\def\ds@oneside{\@twosidefalse
+                \@mparswitchfalse} % default is `true'
+
+\@twocolumnfalse                   % and initialized to `false'.
+\newif\if@TwoColumn                % This flag is used by the
+\def\ds@onecolumn{\@twocolumnfalse
+                  \@TwoColumnfalse}
+\def\ds@twocolumn{\@twocolumnfalse
+                  \@TwoColumntrue}
+
+\@TwoColumnfalse                   % Default formatting is in one column
+\@twosidefalse                     % and on one side of the page.
+
+\@namedef{ds@10pt}{}               % options `10pt'
+\@namedef{ds@11pt}{}               %         `11pt'
+\def\ds@fleqn{}                    % and     `fleqn'
+
+\def\@docty{XX}
+\def\ds@proc{\def\@docty{PP}}      % Default: \@docty=XX
+
+\newif\if@draft \@draftfalse       % Default: no draft
+\def\query{}                       %          no author queries
+\def\ds@draft{%
+\@drafttrue                        % Set flag to true,
+\def\query{\marginpar{???}}%       % mark author queries in proof
+\overfullrule 5pt}                 % to indicate overfull boxes
+
+\newif\if@capcas \@capcasfalse
+
+\let\cchk@title\relax
+\let\cchk@subtitle\relax
+\let\cchk@openauthor\relax
+\let\cchk@closeauthor\relax
+\let\cchk@opencollab\relax
+\let\cchk@closecollab\relax
+\let\cchk@firstauthor\relax
+\let\cchk@authorgroup\relax
+\let\cchk@openaddress\relax
+\let\cchk@closeaddress\relax
+\let\cchk@addressgroup\relax
+\let\cchk@oid\@gobble
+\let\cchk@orf\@gobble
+\let\cchk@abstract\relax
+\let\cchk@openhist\relax
+\let\cchk@received\relax
+\let\cchk@revised\relax
+\let\cchk@histmisc\relax
+\let\cchk@closehist\relax
+
+
+\newif\if@seceqn
+\@seceqnfalse                     % Default: equation numbering is not
+\def\ds@seceqn{\@seceqntrue}      % reset at beginning of each section
+
+\newif\if@secthm
+\@secthmfalse                     % Default: theorem numbering is not
+                                  % not reset at beginning of each section
+\def\ds@secthm{\@secthmtrue}      % Reset at beginning of each section
+
+
+\newif\if@nfss
+\@ifundefined{selectfont}{\@nfssfalse}{\@nfsstrue}
+
+
+
+\let\@@rightleftharpoons\rightleftharpoons
+\let\@@angle\angle
+\let\@@hbar\hbar
+\let\@@sqsubseteq\sqsubseteq
+\let\@@sqsupseteq\sqsupseteq
+\let\@@widehat\widehat
+\let\@@widetilde\widetilde
+
+\@options
+
+\input espart1\@ptsize.sty\relax
+
+
+\def\left@label#1{{#1}\hss}
+\def\right@label#1{\hss\llap{#1}}
+\def\thick@label#1{\hspace\labelsep #1}
+
+\newdimen\extraitemindent  \extraitemindent\z@
+
+\newcount\@maxlistdepth
+\@maxlistdepth=1
+\def\labelenumi{(\roman{enumi})}    \def\theenumi{\roman{enumi}}
+\def\labelitemi{--}
+\def\labelitemii{$\cdot$}
+\def\labelenumii{(\alph{enumii})}   \def\theenumii{\alph{enumii}}
+
+\def\enumerate{\ifnum \@enumdepth >\@maxlistdepth \@toodeep\else
+  \advance\@enumdepth \@ne
+  \edef\@enumctr{enum\romannumeral\the\@enumdepth}%
+  \list{\csname label\@enumctr\endcsname}%
+       {\usecounter{\@enumctr}%
+       \advance\itemindent\extraitemindent\let\makelabel\left@label}\fi}
+
+\def\itemize{\ifnum \@itemdepth >\@maxlistdepth \@toodeep\else
+  \advance\@itemdepth \@ne
+  \edef\@itemitem{labelitem\romannumeral\the\@itemdepth}%
+  \list{\csname\@itemitem\endcsname}%
+       {\advance\itemindent\extraitemindent \let\makelabel\left@label}\fi}
+
+\def\verse{\let\\=\@centercr
+  \list{}{\itemsep\z@ \itemindent -1.5pc\listparindent\z@
+          \rightmargin\z@ \leftmargin\z@}\item[]}
+\let\endverse\endlist
+
+\def\quotation{\list{}{\itemindent\z@
+  \leftmargin\z@ \rightmargin\z@
+  \parsep 0pt plus 1pt}\small\it \item[]}
+\let\endquotation=\endlist
+
+\def\quote{\list{}{\itemindent\z@
+  \leftmargin\z@ \rightmargin\z@}\small\it \item[]}
+\let\endquote=\endlist
+
+
+\def\descriptionlabel#1{\hspace\labelsep \bf #1}
+\def\description{\list{}{\labelwidth\z@ \itemindent-\leftmargin
+  \advance\itemindent\extraitemindent \let\makelabel\descriptionlabel}}
+\let\enddescription\endlist
+
+
+
+\def\operatorname#1{\mathop{\mathrm{#1}}\nolimits}
+
+\def\lefteqn#1{\hbox to\z@{$\displaystyle {#1}$\hss}}
+
+
+\newskip\eqnbaselineskip % Standard interline spacing in an {eqnarray}
+\newskip\eqnlineskip     % Minimal space between the bottom of
+                         % a line and the top of the next line.
+\newdimen\eqnglue        % Stretch component of previous two.
+
+\jot 3pt \eqnbaselineskip \@bls \eqnlineskip 1pt \eqnglue\z@ 
+
+\def\[{\relax\ifmmode\@badmath
+  \else\bgroup\@beginparpenalty\predisplaypenalty
+  \@endparpenalty\postdisplaypenalty
+  \begin{trivlist}\@topsep \eqntopsep       % used by first \item
+   \@topsepadd \eqntopsep                   % used by \@endparenv
+  \item[]\leavevmode
+  \hbox to\linewidth\bgroup$ \displaystyle
+  \hskip\mathindent\bgroup\fi}
+\def\]{\relax\ifmmode \egroup $\hfil \egroup
+  \end{trivlist}\egroup \else \@badmath \fi}
+
+\def\equation{\@beginparpenalty\predisplaypenalty
+  \@endparpenalty\postdisplaypenalty
+\refstepcounter{equation}\trivlist
+   \@topsep \eqntopsep                      % used by first \item
+   \@topsepadd \eqntopsep                   % used by \@endparenv
+   \item[]\leavevmode
+  \hbox to\linewidth\bgroup $ \displaystyle \hskip\mathindent\bgroup}
+\def\endequation{\egroup$\hfil \displaywidth\linewidth
+  \@eqnnum\egroup \endtrivlist}
+
+\def\eqnarray{%
+  \par                                               %BW
+  \noindent                                          %BW
+  \baselineskip\eqnbaselineskip\lineskip\eqnlineskip %BW
+  \lineskiplimit\eqnlineskip                         %BW
+  \stepcounter{equation}%
+  \let\@currentlabel=\theequation
+  \global\@eqnswtrue
+  \global\@eqcnt\z@ \tabskip\mathindent \let\\=\@eqncr
+  \abovedisplayskip\eqntopsep\ifvmode\advance\abovedisplayskip\partopsep\fi
+  \belowdisplayskip\abovedisplayskip
+  \advance\abovedisplayskip\@bls
+  \advance\abovedisplayskip-\eqnbaselineskip
+  \advance\abovedisplayskip \z@ plus \eqnglue     % BW, cosmetic
+  \belowdisplayshortskip\abovedisplayskip
+  \abovedisplayshortskip\abovedisplayskip
+  $$\halign to \displaywidth\bgroup\@eqnsel
+    \pre@coli$\displaystyle\tabskip\z@{##}$\post@coli
+    &\global\@eqcnt\@ne 
+    \pre@colii$\displaystyle{##}$\post@colii
+    &\global\@eqcnt\tw@
+    \pre@coliii $\displaystyle\tabskip\z@{##}$\post@coliii
+    \tabskip\@centering&\llap{##}\tabskip\z@\cr}
+\def\endeqnarray{\@@eqncr\egroup
+ \global\advance\c@equation\m@ne$$\global\@ignoretrue }
+
+\newdimen\mathindent
+
+
+\def\pre@coli{\hskip\@centering}          \def\post@coli{}
+\def\pre@colii{\hskip 2\arraycolsep \hfil}\def\post@colii{\hfil}
+\def\pre@coliii{\hskip 2\arraycolsep}     \def\post@coliii{\hfil}
+
+\mathindent 10pt
+
+
+
+
+\arraycolsep 2pt         % Half the space between columns in array environment.
+\tabcolsep 2pt           % idem in tabular environment.
+\arrayrulewidth 0.4pt    % Width of rules and space between adjacent
+\doublerulesep 2pt       % rules in any of these two environments.
+
+
+
+\tabbingsep \labelsep   % Space used by the \' command.  (See LaTeX manual.)
+
+
+
+\skip\@mpfootins = \skip\footins
+
+\fboxsep = 7pt    % Space left between box and text by \fbox and \framebox.
+\fboxrule = 0.4pt % Width of rules in box made by \fbox and \framebox.
+
+
+\newcounter{section}
+\newcounter{subsection}[section]
+\newcounter{subsubsection}[subsection]
+\newcounter{paragraph}[subsubsection]
+\newcounter{subparagraph}[paragraph]
+
+\if@seceqn
+ \@addtoreset{equation}{section}
+ \def\theequation{\arabic{section}.\arabic{equation}}
+\else
+  \def\theequation{\arabic{equation}}
+\fi
+
+\def\thesection      {\arabic{section}}
+\def\thesubsection   {\thesection.\arabic{subsection}}
+\def\thesubsubsection{\thesubsection.\arabic{subsubsection}}
+\def\theparagraph    {\thesubsubsection.\arabic{paragraph}}
+\def\thesubparagraph {\theparagraph.\arabic{subparagraph}}
+
+\input theorem.sty
+
+
+\def\qed{\relax\ifmmode\hskip2pc \Box\else\unskip\nobreak\hskip1pc $\Box$\fi}
+\let\proof@headerfont\bf
+\gdef\th@plain{\it
+  \def\@begintheorem##1##2{\item[\hskip\labelsep
+    {\theorem@headerfont ##1\ ##2.}]}%
+  \def\@opargbegintheorem##1##2##3{\item[\hskip\labelsep
+    {\theorem@headerfont ##1\ ##2.}\ {\normalshape (##3).}]}}
+\gdef\th@definition{\rm
+  \def\@begintheorem##1##2{\item[\hskip\labelsep
+    {\theorem@headerfont ##1\ ##2.}]}%
+  \def\@opargbegintheorem##1##2##3{\item[\hskip\labelsep
+    {\theorem@headerfont ##1\ ##2.}\ {\normalshape (##3).}]}}
+\def\rom#1{\leavevmode\skip@\lastskip\unskip\/%
+        \ifdim\skip@=\z@\else\hskip\skip@\fi
+   {\normalshape#1}}
+\theorempreskipamount=\@bls plus 0.5\@bls minus 0.1\@bls
+\theorempostskipamount=\theorempreskipamount
+
+\ifx\normalshape\undefined
+  \gdef\normalshape{\rm}
+\fi
+
+\newenvironment{pf}%
+  {\par\addvspace{\theorempreskipamount}\noindent 
+   {\proof@headerfont\proofname}\enspace\ignorespaces}%
+  {\par\addvspace{\theorempreskipamount}}
+
+\def\proofname{Proof.}
+
+\@namedef{pf*}#1{\par\begingroup\def\proofname{#1}\pf\endgroup\ignorespaces}
+\expandafter\let\csname endpf*\endcsname=\endpf
+
+
+\theoremstyle{plain}
+\if@secthm
+  \newtheorem{thm}{Theorem}[section]\else
+  \newtheorem{thm}{Theorem}\fi
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{claim}[thm]{Claim}
+\newtheorem{axiom}[thm]{Axiom}
+\newtheorem{conj}[thm]{Conjecture}
+\newtheorem{fact}[thm]{Fact}          
+\newtheorem{hypo}[thm]{Hypothesis}
+\newtheorem{assum}[thm]{Assumption}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{crit}[thm]{Criterion}
+ 
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{exmp}[thm]{Example}
+\newtheorem{rem}[thm]{Remark}         
+\newtheorem{prob}[thm]{Problem}
+\newtheorem{prin}[thm]{Principle}
+\newtheorem{alg}{Algorithm}
+
+\long\def\@makealgocaption#1#2{\vskip 2ex \small
+  \hbox to \hsize{\parbox[t]{\hsize}{{\bf #1.} #2}}}
+
+\newcounter{algorithm}
+\def\thealgorithm{\@arabic\c@algorithm}
+\def\fps@algorithm{tbp}
+\def\ftype@algorithm{4}
+\def\ext@algorithm{lof}
+\def\fnum@algorithm{Algorithm \thealgorithm}
+\def\algorithm{\let\@makecaption\@makealgocaption\@float{algorithm}}
+\let\endalgorithm\end@float
+
+\newtheorem{note}{Note}          
+\newtheorem{summ}{Summary}       
+\newtheorem{case}{Case}
+
+ 
+\def\@pnumwidth{2.2em}
+\def\@tocrmarg{0.0em}
+\def\@dotsep{0.5}
+\setcounter{tocdepth}{3}
+ 
+\def\tableofcontents{%
+  \section*{\contentsname}%
+  \@starttoc{toc}}
+ 
+\def\l@section{\@dottedtocline{1}{0.0em}{1.40em}}
+\def\l@subsection{\@dottedtocline{2}{1.40em}{2.24em}}
+\def\l@subsubsection{\@dottedtocline{3}{2.24em}{3.09em}}
+ 
+ 
+
+\def\thebibliography{\section*{\refname}\@thebibliography}
+\let\endthebibliography=\endlist
+
+\def\@thebibliography#1{\small
+\list{\@biblabel{\arabic{enumiv}}}{\settowidth\labelwidth{\@biblabel{#1}}
+    \leftmargin\labelwidth \advance\leftmargin\labelsep
+    \itemsep 0pt plus 0.5pt minus 0.5pt % change \baselineskip if this
+    \usecounter{enumiv}\let\p@enumiv\@empty
+    \def\theenumiv{\arabic{enumiv}}}%
+  \def\newblock{\hskip 0.11em plus 0.33em minus -0.07em}
+  \tolerance\@M \hyphenpenalty\@M \hbadness5000 \sfcode`\.=1000\relax}
+
+
+\def\@biblabel#1{[#1]\hfill}    % Produces the label for the \bibitem[...]
+
+
+\newcount\@tempcntc
+\def\@citex[#1]#2{\if@filesw\immediate\write\@auxout{\string\citation{#2}}\fi
+ \@tempcnta\z@\@tempcntb\m@ne\def\@citea{}\@cite{\@for\@citeb:=#2\do
+  {\@ifundefined
+   {b@\@citeb}{\@citeo\@tempcntb\m@ne\@citea\def\@citea{,}{\bf ?}\@warning
+   {Citation `\@citeb' on page \thepage \space undefined}}%
+  {\setbox\z@\hbox{\global\@tempcntc0\csname b@\@citeb\endcsname\relax}%
+   \ifnum\@tempcntc=\z@ \@citeo\@tempcntb\m@ne
+    \@citea\def\@citea{,}\hbox{\csname b@\@citeb\endcsname}%
+   \else
+    \advance\@tempcntb\@ne
+    \ifnum\@tempcntb=\@tempcntc
+    \else\advance\@tempcntb\m@ne\@citeo
+    \@tempcnta\@tempcntc\@tempcntb\@tempcntc\fi\fi}}\@citeo}{#1}}
+
+\def\@citeo{\ifnum\@tempcnta>\@tempcntb\else\@citea\def\@citea{,}%
+ \ifnum\@tempcnta=\@tempcntb\the\@tempcnta\else
+  {\advance\@tempcnta\@ne\ifnum\@tempcnta=\@tempcntb \else \def\@citea{--}\fi
+   \advance\@tempcnta\m@ne\the\@tempcnta\@citea\the\@tempcntb}\fi\fi}
+
+
+\def\footnote{\@ifnextchar[{\@xfootnote}{\refstepcounter
+   {\@mpfn}\xdef\@thefnmark{\thempfn}\@footnotemark\@footnotetext}}
+
+\def\footnotemark{\@ifnextchar[{\@xfootnotemark
+    }{\refstepcounter{footnote}\xdef\@thefnmark{\thefootnote}\@footnotemark}}
+
+\def\footnoterule{}
+
+
+
+\def\thempfootnote{\alph{mpfootnote})}
+
+\def\fn@presym{}
+\long\def\@makefntext#1{\parindent 1em\noindent
+  \hbox{$^{\@thefnmark}$} #1}
+
+\def\@makefnmark{\,\hbox{$^{\fn@presym\mathrm{\@thefnmark}}$}}
+
+\setcounter{topnumber}{5}
+\def\topfraction{0.99}
+\def\textfraction{0.05}
+\def\floatpagefraction{0.9}
+\setcounter{bottomnumber}{5}
+\def\bottomfraction{0.99}
+\setcounter{totalnumber}{10}
+\def\dbltopfraction{0.99}
+\def\dblfloatpagefraction{0.8}
+\setcounter{dbltopnumber}{5}
+
+
+\newbox\@tempboxb
+
+\def\restline@center{%
+  \leftskip    0pt plus  0.5fil
+  \rightskip   0pt plus -0.5fil
+  \parfillskip 0pt plus  1fil}
+
+
+\long\def\@maketablecaption#1#2{\footnotesize
+  \hbox to \hsize{\parbox[t]{\hsize}{#1 \\ #2}}}
+\long\def\@makefigurecaption#1#2{\footnotesize
+  \vskip 10pt
+  \setbox\@tempboxa\hbox{#1. #2}
+  \ifdim \wd\@tempboxa >\hsize              % IF longer than one line THEN
+    \unhbox\@tempboxa\par                   %   set as justified paragraph
+  \else                                     % ELSE
+    \hbox to\hsize{\hfil\box\@tempboxa\hfil}%   center single line.
+  \fi}
+
+\def\conttablecaption{\par \begingroup \@parboxrestore \normalsize
+  \@makecaption{\fnum@table\,---\,continued}{}\par
+  \vskip-1pc \endgroup}
+
+\def\contfigurecaption{\vskip-1pc \par \begingroup \@parboxrestore \normalsize
+  \@makecaption{\fnum@figure\,---\,continued}{}\par
+  \endgroup}
+
+
+
+\newcounter{figure}
+\def\thefigure{\@arabic\c@figure}
+\def\fps@figure{tbp}
+\def\ftype@figure{1}
+\def\ext@figure{lof}
+\def\fnum@figure{\figurename~\thefigure}
+\def\figure{\let\@makecaption\@makefigurecaption
+  \let\contcaption\contfigurecaption \@float{figure}}
+\let\endfigure\end@float
+\@namedef{figure*}{\let\@makecaption\@makefigurecaption
+  \let\contcaption\contfigurecaption \@dblfloat{figure}}
+\@namedef{endfigure*}{\end@dblfloat}
+
+\newcounter{table}
+\def\thetable{\@arabic\c@table}
+\def\fps@table{tbp}
+\def\ftype@table{2}
+\def\ext@table{lot}
+\def\fnum@table{\tablename~\thetable}
+\def\table{\let\@makecaption\@maketablecaption \small
+  \let\contcaption\conttablecaption \@float{table}}
+\let\endtable\end@float
+\@namedef{table*}{\let\@makecaption\@maketablecaption \small
+  \let\contcaption\conttablecaption \@dblfloat{table}}
+\@namedef{endtable*}{\end@dblfloat}
+
+
+\newtoks\t@glob@notes             % List of all notes
+\newtoks\t@loc@notes              % List of notes for one element
+\newcount\note@cnt                % Number of notes per element
+\newcounter{author}               % Author counter
+\newcount\n@author                % Total number of authors
+\def\n@author@{}                  % idem, read from .aux file
+\newcounter{collab}               % Collaboration counter
+\newcount\n@collab                % Total number of collaborations
+\def\n@collab@{}                  % idem, read from .aux file
+\newcounter{address}              % Address counter
+
+\newdimen\sv@mathsurround         % Dimen register to save \mathsurround
+\newcount\sv@hyphenpenalty        % Count register to save \hyphenpenalty
+
+\newcount\prev@elem \prev@elem=0  % Variables to keep track of
+\newcount\cur@elem  \cur@elem=0   % types of elements that are processed
+\chardef\e@title=1
+\chardef\e@subtitle=1
+\chardef\e@author=2
+\chardef\e@collab=3
+\chardef\e@address=4
+
+\newif\if@newelem                 % Switch to new type of element?
+\newif\if@firstauthor             % First author or collaboration?
+\newif\if@preface                 % If preface: omit history and abstract
+\newif\if@articletype             % If article type given: reduce white
+
+\newbox\fm@box                    % Box for collected front matter
+\newdimen\fm@size                 % Total height of \fm@box
+\newdimen\fm@margin               % Indentation of front matter
+\fm@margin=2pc
+\newbox\t@abstract                % Box for abstract
+\newbox\t@keyword                 % Box for keyword abstract
+
+\let\report@elt\@gobble
+
+\def\add@tok#1#2{\global#1\expandafter{\the#1#2}}
+
+\def\add@xtok#1#2{\begingroup
+  \no@harm
+  \xdef\@act{\global\noexpand#1{\the#1#2}}\@act
+\endgroup}
+
+\def\beg@elem{\global\t@loc@notes={}\global\note@cnt\z@}
+
+\def\@xnamedef#1{\expandafter\xdef\csname #1\endcsname}
+
+\def\no@harm{%
+  \let\\=\relax  \let\rm\relax
+  \let\ss=\relax \let\ae=\relax \let\oe=\relax
+  \let\AE=\relax \let\OE=\relax
+  \let\o=\relax  \let\O=\relax
+  \let\i=\relax  \let\j=\relax
+  \let\aa=\relax \let\AA=\relax
+  \let\l=\relax  \let\L=\relax
+  \let\d=\relax  \let\b=\relax \let\c=\relax
+  \let\and=\relax 
+  \def\protect{\noexpand\protect\noexpand}}
+
+\def\proc@elem#1#2{\begingroup
+    \no@harm                             % make a few instructions harmless
+    \let\thanksref\@gobble               % remove \thanksref from element
+    \@xnamedef{@#1}{#2}%                 % and store as \@#1
+  \endgroup
+  \prev@elem=\cur@elem                   % keep track of type of previous
+  \cur@elem=\csname e@#1\endcsname       % and current element
+  \expandafter\elem@nothanksref#2\thanksref\relax}
+
+\def\elem@nothanksref#1\thanksref{\futurelet\@peektok\elem@thanksref}
+
+\def\elem@thanksref{\ifx\@peektok\relax  % No more \thanksref, so now exit
+  \else \expandafter\elem@morethanksref \fi}
+
+\def\elem@morethanksref#1{\add@thanksref{#1}\elem@nothanksref}
+
+\def\add@thanksref#1{\global\advance\note@cnt\@ne
+  \ifnum\note@cnt>\@ne \add@xtok\t@loc@notes{\note@sep}\fi
+  \add@tok\t@loc@notes{\ref{#1}}}
+
+\def\note@sep{,}
+
+\def\thanks{\@ifnextchar[{\@tempswatrue
+  \thanks@optarg}{\@tempswafalse\thanks@optarg[]}}
+
+\def\thanks@optarg[#1]#2{\refstepcounter{footnote}\if@tempswa
+  \label{#1}\else\relax\fi
+  \add@tok\t@glob@notes{\footnotetext}%
+  \add@xtok\t@glob@notes{[\the\c@footnote]}%
+  \add@tok\t@glob@notes{{#2}}}
+
+\def\frontmatter{%
+  \global\t@glob@notes={}\global\c@author\z@
+  \global\c@collab\z@ \global\c@address\z@
+  \sv@mathsurround\mathsurround \m@th
+  \global\n@author=0\n@author@\relax
+  \global\n@collab=0\n@collab@\relax
+  \global\advance\n@author\m@ne   % In comparisons later on we need
+  \global\advance\n@collab\m@ne   % n@author-1 and n@collab-1
+  \global\@firstauthortrue        % set to false by first \author or \collab 
+  \global\@prefacefalse           % Default: not preface
+  \global\@articletypefalse       %          no special article type
+  \open@fm \ignorespaces}
+
+\def\preface{\@prefacetrue}
+
+\def\endfrontmatter{\global\n@author=\c@author
+  \global\n@collab=\c@collab \@writecount
+  \global\@topnum\z@
+  \thispagestyle{copyright}%           % Format rest of front matter:
+  \if@preface \else                    % IF not preface THEN
+  \history@fmt                         % print history (received, ...)
+  \unvbox\t@abstract                   % and print abstract.
+  \cchk@abstract      
+  \fi                                  % FI
+  \vskip 20pt                          % Vertical space below abstract
+  \close@fm                            % Close front matter material.
+  \output@glob@notes                   % Put notes at bottom of page
+  \global\@prefacefalse
+  \global\leftskip\z@                  % Restore the normal values of
+  \global\@rightskip\z@                % \leftskip,
+  \global\rightskip\@rightskip         % \rightskip and
+  \global\mathsurround\sv@mathsurround % \mathsurround.
+  \if@capcas \close@capcas \fi
+  \setcounter{footnote}{0}             % Reset footnote counter
+  \let\title\relax       \let\author\relax
+  \let\collab\relax      \let\address\relax
+  \let\frontmatter\relax \let\endfrontmatter\relax
+  \let\@maketitle\relax  \let\@@maketitle\relax
+  \@ifundefined{RIfM@}{}{\undo@AMS}\normal@text}
+
+\let\maketitle\relax
+
+\newdimen\t@xtheight
+\t@xtheight\textheight \advance\t@xtheight-\splittopskip
+
+\def\open@fm{\global\setbox\fm@box=\vbox\bgroup
+  \hsize=\textwidth                         % Front matter is page-wide
+  \sv@hyphenpenalty\hyphenpenalty           % (save \hyphenpenalty)
+  \hyphenpenalty\@M}                        % and not hyphenated
+
+\def\close@fm{\egroup                       % close \vbox (\fm@box)
+  \fm@size=\dp\fm@box \advance\fm@size by \ht\fm@box
+  \@whiledim\fm@size>\t@xtheight \do{%
+    \global\setbox\@tempboxa=\vsplit\fm@box to \t@xtheight
+    \unvbox\@tempboxa \newpage
+    \fm@size=\dp\fm@box \advance\fm@size by \ht\fm@box}
+  \if@TwoColumn
+    \emergencystretch=1pc \twocolumn[\unvbox\fm@box]\else \unvbox\fm@box
+  \fi}
+
+\def\output@glob@notes{\begingroup
+  \ifx\@corresp\empty@data \else
+    \corresp@note@fmt
+    \footnotetext[1]{{\it Correspondence to\/}: \@corresp}\fi
+  \the\t@glob@notes
+  \endgroup}
+
+\def\justify@off{\let\\=\@normalcr
+  \leftskip\fm@margin \@rightskip\@flushglue \rightskip\@rightskip}
+\def\justify@on{\let\\=\@normalcr
+  \leftskip\fm@margin \@rightskip\z@ \rightskip\@rightskip}
+\def\normal@text{\global\let\\=\@normalcr
+  \global\leftskip\z@ \global\@rightskip\z@ \global\rightskip\@rightskip
+  \global\parfillskip\@flushglue}
+
+\def\@writecount{\write\@mainaux{\string\global
+  \string\@namedef{n@author@}{\the\n@author}}%
+  \write\@mainaux{\string\global\string
+  \@namedef{n@collab@}{\the\n@collab}}}
+
+\def\title#1{%
+  \if@capcas \open@capcas \fi
+  \beg@elem
+  \title@note@fmt                      % formatting instruction
+  \add@tok\t@glob@notes                % for \thanks commands
+    {\title@note@fmt}%
+  \proc@elem{title}{#1}%
+  \cchk@title
+  \def\title@notes{\the\t@loc@notes}%  % store the notes of the title,
+  \title@fmt{\@title}{\title@notes}%   % print the title
+  \ignorespaces}
+
+\def\subtitle#1{%
+  \beg@elem
+  \proc@elem{subtitle}{#1}%
+  \cchk@subtitle
+  \def\title@notes{\the\t@loc@notes}%  % store the notes of the title,
+  \subtitle@fmt{\@subtitle}{\title@notes}% print the title
+  \ignorespaces}
+
+\def\title@fmt#1#2{\vspace*{38pt}%     % Vertical space above title
+  \bgroup \justify@off                 % Title indented by 2pc,
+    \Large\bf \noindent                % not justified
+    #1\,\hbox{$^{#2}$}\par             % and set in \Large
+  \egroup}
+
+\def\subtitle@fmt#1#2{\vspace*{5pt}%   % Vertical space above sub-title
+  \bgroup \justify@off                 % Sub-title indented by 2pc,
+    \normalsize \noindent              % not justified
+    #1\,\hbox{$^{#2}$}\par             % and set in \normalsize
+  \egroup}
+\def\title@note@fmt{\def\thefootnote{\fnsymbol{footnote}}}
+
+\def\corresp@note@fmt{\let\thefootnote\relax}
+
+\def\author{\@ifnextchar[{\author@optarg}{\author@optarg[]}}
+
+\def\author@optarg[#1]#2{\stepcounter{author}%
+  \beg@elem
+  \@for\@tempa:=#1\do{\expandafter\add@thanksref\expandafter{\@tempa}}%
+  \report@elt{author}\proc@elem{author}{#2}%
+  \author@fmt{\the\c@author}{\the\t@loc@notes}{\@author}%
+  \cchk@openauthor
+  \cchk@orf{#1}\cchk@closeauthor
+  \ignorespaces}
+
+\let\author@font\normalsize
+
+\def\author@fmt#1#2#3{\@newelemtrue
+  \if@firstauthor
+  \first@author \global\@firstauthorfalse \fi
+  \ifnum\prev@elem=\e@author \global\@newelemfalse \fi
+  \if@newelem \author@fmt@init \fi
+  {\author@font #3\,$^{\mathrm{#2}}$}\nobreak}
+
+\def\first@author{\author@note@fmt     % re-define \thefootnote as
+  \add@tok\t@glob@notes                % appropriate for author/address
+    {\author@note@fmt}%
+  \cchk@firstauthor}
+
+\def\author@fmt@init{%
+  \cchk@authorgroup
+  \par
+  \vskip 25pt                          % Vertical space above list
+  \justify@off                         % Authors not justified
+  \noindent}                           % and not indented.
+
+\def\and{\ {\author@font and}\ }
+\def\And{\par \vskip 10pt \noindent {\author@font and}\par
+  \cur@elem=\e@address} % to trick \author@fmt
+
+\def\collab{\@ifstar{\@tempswafalse}{\@tempswatrue}\collab@arg}
+
+\def\collab@arg#1{\stepcounter{collab}%
+  \if@firstauthor \first@collab \global\@firstauthorfalse \fi
+  \beg@elem
+  \proc@elem{collab}{#1}%
+  \collab@fmt{\the\c@collab}{\the\t@loc@notes}{\@collab}%
+  \if@tempswa % CAPCAS output
+    \cchk@opencollab%\cchk@orf{#1}
+    \cchk@closecollab\@tempswafalse
+  \else\relax\fi
+  \ignorespaces}
+
+\def\collab@fmt#1#2#3{\@newelemtrue
+  \ifnum\prev@elem=\e@collab \global\@newelemfalse \fi
+  \if@newelem \collab@fmt@init \fi
+  {\normalsize #3\,$^{\mathrm{#2}}$}}
+
+\def\first@collab{
+  \collab@note@fmt                     % re-define \thefootnote as
+  \add@tok\t@glob@notes                % appropriate for collab/address
+    {\collab@note@fmt}%
+  \cchk@firstauthor}
+
+\def\collab@fmt@init{%
+  \cchk@authorgroup
+  \par                                 % Start new paragraph
+  \vskip 1em                           % Vertical space above list
+  \justify@off                         % Authors not justified
+  \noindent}                           % and not indented.
+
+\def\author@note@fmt{\setcounter{footnote}{0}%
+  \def\thefootnote{\arabic{footnote}}}
+\let\collab@note@fmt=\author@note@fmt
+
+\def\address{\@ifstar{\address@star}%
+  {\@ifnextchar[{\address@optarg}{\address@noptarg}}}
+
+\def\address@optarg[#1]#2{\refstepcounter{address}%
+  \beg@elem
+  \report@elt{address}\proc@elem{address}{#2}%
+  \address@fmt{\the\c@address}{\the\t@loc@notes}{\@address}\label{#1}%
+  \cchk@openaddress
+  \cchk@oid{#1}\cchk@closeaddress
+  \ignorespaces}
+
+\def\address@noptarg#1{\refstepcounter{address}%
+  \beg@elem
+  \proc@elem{address}{#1}%
+  \address@fmt{\z@}{\the\t@loc@notes}{\@address}%
+  \cchk@openaddress 
+  \cchk@closeaddress
+  \ignorespaces}
+
+\def\address@star#1{%
+  \beg@elem
+  \proc@elem{address}{#1}%
+  \address@fmt{\m@ne}{\the\t@loc@notes}{\@address}%
+  \cchk@openaddress 
+  \cchk@closeaddress
+  \ignorespaces}
+
+\def\theaddress{\alph{address}}
+
+\def\address@fmt#1#2#3{\@newelemtrue
+  \ifnum\prev@elem=\e@address \@newelemfalse \fi
+  \if@newelem \address@fmt@init \fi
+  \noindent \bgroup \small\it
+  \ifnum#1=\z@
+    #3\,$^{\mathrm{#2}}$\space%
+  \else
+    \ifnum#1=\m@ne
+      \@hangfrom{$^{\phantom{0}}$\space}%
+                {#3\,$^{\mathrm{#2}}$}%
+    \else
+      \@hangfrom{$^{\mathrm{\theaddress}}$\space}%
+                {#3\,$^{\mathrm{#2}}$}%
+    \fi
+  \fi
+  \par \egroup}
+
+\def\address@fmt@init{%
+  \cchk@addressgroup
+  \par                                 % Start new paragraph
+  \vskip  6pt plus 2pt}                % Vertical space before addresses
+
+\def\abstract{\normal@text
+  \hyphenpenalty\sv@hyphenpenalty      % restore \hyphenpenalty
+  \global\setbox\t@abstract=\vbox\bgroup
+  \vskip 20pt                          % Vertical space above abstract.
+  \small\rm
+  \hangindent=18pt \hangafter=1
+  {\bf \abstractname:}                 % Heading of abstract boldface
+  \ignorespaces}
+\def\endabstract{\par \egroup}
+
+\def\keyword{%
+  \@@warning{Environment `keyword' not part of style}%
+  \@@warning{(contents will be discarded)}%
+  \let\MSC\@gobble                     % define macros \MSC and 
+  \let\PACS\@gobble                    % PACS ...
+  \global\setbox\t@keyword=\vbox\bgroup
+  \ignorespaces}
+\def\endkeyword{\egroup}
+
+\def\journal#1{\gdef\@journal{#1}} 
+
+\def\date#1{\gdef\@date{#1}}                  \def\@date{\today}
+
+\def\empty@data{\@nil}
+
+\def\corresp#1{\gdef\@corresp{#1}}            \def\@corresp{\@nil}
+
+
+\def\history@fmt{\bgroup
+  \cchk@openhist
+  \relax
+  \cchk@closehist
+  \egroup}
+
+
+
+
+\def\@ialph#1{\ifcase#1\or \or \or \or \or e\or f\or g\or h\or i\or j\or
+  k\or \ell\or m\or n\or o\or p\or q\or r\or s\or t\or u\or v\or w\or x\or
+  y\or z\or aa\or ab\or ac\or ad\or ae\or af\or ag\or ah\or ai\or aj\or
+  ak\or a\ell\or am\or an\or ao\or ap\or aq\or ar\or as\or at\or au\or av\or
+  aw\or ay\or az\else\@ctrerr\fi}
+\def\@fnsymbol#1{\ifcase#1\or \star\or \dagger\or \ddagger\or
+   \mathchar "278\or \mathchar "27B\or \|\or \star\star\or \dagger\dagger
+   \or \ddagger\ddagger \else\@ctrerr\fi\relax}
+
+
+\def\fnstar#1{\@fnstar{\@nameuse{c@#1}}}
+\def\@fnstar#1{\ifcase#1\or \star\or \star\star\or
+\star\star\star\or \star\star\star\star \else\@ctrerr\fi\relax}
+
+
+\mark{{}{}}   % Initializes TeX's marks
+
+
+\def\ps@plain{\let\@mkboth\@gobbletwo
+ \def\@oddhead{}%
+ \def\@evenhead{}%
+ \def\@oddfoot{\hfil {\rm\thepage} \hfil}%
+ \let\@evenfoot\@oddfoot}
+
+\def\@hexuple#1#2#3#4#5#6{\vtop{%
+  \hbox to \textwidth{\strut \rlap{#1} \hfil {#2} \hfil \llap{#3}}%
+  \hbox to \textwidth{\strut \rlap{#4} \hfil {#5} \hfil \llap{#6}}}}
+
+\newbox\logo@box
+\newlength{\logo@width}
+\relax
+
+\def\cpr@dash{--}
+\def\@copyright{\@issn/\the\@copyear/\$\,\@price~$\copyright$\,\the\@pubyear
+  \cpr@dash Elsevier Science Publishers B.V. All rights reserved}
+
+\def\sectionmark#1{}
+\def\subsectionmark#1{}
+
+\def\ps@copyright{\let\@mkboth\@gobbletwo
+  \def\@oddhead{}%
+  \let\@evenhead\@oddhead
+  \def\@oddfoot{\small\sl \@hexuple{Preprint submitted to \@journal}{}{\@date}{}{}{}}%
+  \def\@evenfoot{\small\sl \@hexuple{Preprint submitted to \@journal}{}{\@date}{}{}{}}}
+\let\ps@noissn\ps@empty
+\let\ps@headings\ps@plain
+
+\def\today{\number\day\space\ifcase\month\or
+  January\or February\or March\or April\or May\or June\or
+  July\or August\or September\or October\or November\or December\fi
+  \space\number\year}
+
+\if@nfss \relax \else
+  \def\mathrm#1{{\rm #1}}
+  \let\@@mit=\mit
+  \def\mit#1{{\@@mit #1}}
+\fi
+
+\def\nuc#1#2{\relax\ifmmode{}^{#1}{\protect\text{#2}}\else${}^{#1}$#2\fi}
+\def\itnuc#1#2{\setbox\@tempboxa=\hbox{\scriptsize\it #1}
+  \def\@tempa{{}^{\box\@tempboxa}\!\protect\text{\it #2}}\relax
+  \ifmmode \@tempa \else $\@tempa$\fi}
+
+\let\old@vec\vec % save old definition of \vec
+\def\pol#1{\old@vec{#1}}
+\def\@bfvec#1{\boldsymbol{#1}} \let\vec\@bfvec
+
+\def\undo@AMS{%
+  \global\let\vec\@bfvec
+  \global\let\rightleftharpoons\@@rightleftharpoons
+  \global\let\angle\@@angle
+  \global\let\hbar\@@hbar
+  \global\let\sqsubseteq\@@sqsubseteq
+  \global\let\sqsupseteq\@@sqsupseteq
+  \global\let\widehat\@@widehat
+  \global\let\widetilde\@@widetilde}
+
+
+\def\half{{\textstyle {1\over2}}}
+\def\threehalf{{\textstyle {3\over2}}}
+\def\quart{{\textstyle {1\over4}}}
+\def\d{\,\mathrm{d}}
+\def\e{\,\mathop{\mathrm{e}}\nolimits}
+
+
+\def\int{\intop}
+\def\oint{\ointop}
+
+
+\mathchardef\Gamma="0000
+\mathchardef\Delta="0001
+\mathchardef\Theta="0002
+\mathchardef\Lambda="0003
+\mathchardef\Xi="0004
+\mathchardef\Pi="0005
+\mathchardef\Sigma="0006
+\mathchardef\Upsilon="0007
+\mathchardef\Phi="0008
+\mathchardef\Psi="0009
+\mathchardef\Omega="000A
+\mathchardef\varGamma="0100
+\mathchardef\varDelta="0101
+\mathchardef\varTheta="0102
+\mathchardef\varLambda="0103
+\mathchardef\varXi="0104
+\mathchardef\varPi="0105
+\mathchardef\varSigma="0106
+\mathchardef\varUpsilon="0107
+\mathchardef\varPhi="0108
+\mathchardef\varPsi="0109
+\mathchardef\varOmega="010A
+
+\if@nfss
+  \def\Cset{\Bbb{C}}
+  \def\Hset{\Bbb{H}}
+  \def\Nset{\Bbb{N}}
+  \def\Qset{\Bbb{Q}}
+  \def\Rset{\Bbb{R}}
+  \def\Zset{\Bbb{Z}}
+\fi
+
+
+\def\pldots{\relax\ifmmode\@ldots\else\hbox{$\@ldots$}\fi}
+
+
+\ps@headings                      % 'headings' page style
+\pagenumbering{arabic}            % Arabic page numbers
+
+\endinput
+%%%%%%%%%% End of file espart.sty %%%%%%%%%%
+
+%                                  O /
+% ================================= x -------------------------------------
+% 				  o \
+
+%%%%%%%%%% espart12.sty %%%%%%%%%%
+
+\lineskip 1pt            % \lineskip is 1pt for all font sizes.
+\normallineskip 1pt
+\def\baselinestretch{1}
+\frenchspacing           % no extra space at end of sentence
+
+
+
+\def\@normalsize{\@setsize\normalsize{14.5pt}\xiipt\@xiipt
+\abovedisplayskip 5.75pt plus 2pt minus 2pt%
+\belowdisplayskip \abovedisplayskip
+\abovedisplayshortskip \z@ plus 2pt%
+\belowdisplayshortskip 3.5pt plus 2pt minus 2pt
+\let\@listi\@listI}
+
+\def\small{\@setsize\small{13.6pt}\xipt\@xipt
+\abovedisplayskip 11\p@ plus3\p@ minus6\p@
+\belowdisplayskip \abovedisplayskip
+\abovedisplayshortskip  \z@ plus3\p@
+\belowdisplayshortskip  6.5\p@ plus3.5\p@ minus3\p@
+\def\@listi{\leftmargin\leftmargini
+ \parsep 4.5\p@ plus2\p@ minus\p@ \itemsep \parsep
+            \topsep 9\p@ plus3\p@ minus5\p@}}
+
+\def\footnotesize{\@setsize\footnotesize{12pt}\xpt\@xpt
+\abovedisplayskip 10\p@ plus2\p@ minus5\p@
+\belowdisplayskip \abovedisplayskip
+\abovedisplayshortskip  \z@ plus3\p@
+\belowdisplayshortskip  6\p@ plus3\p@ minus3\p@
+\def\@listi{\leftmargin\leftmargini
+\topsep 6\p@ plus2\p@ minus2\p@\parsep 3\p@ plus2\p@ minus\p@
+\itemsep \parsep}}
+
+\def\scriptsize{\@setsize\scriptsize{9.5pt}\viiipt\@viiipt}
+\def\tiny{\@setsize\tiny{7pt}\vipt\@vipt}
+\def\large{\@setsize\large{18pt}\xivpt\@xivpt}
+\def\Large{\@setsize\Large{22pt}\xviipt\@xviipt}
+\def\LARGE{\@setsize\LARGE{25pt}\xxpt\@xxpt}
+\def\huge{\@setsize\huge{30pt}\xxvpt\@xxvpt}
+\let\Huge=\huge
+
+\def\baselinestretch{1.5}
+\normalsize                                 % Choose the normalsize font.
+\newdimen\@bls                              % Several dimensions are
+\@bls=\baselineskip                         % expressed in terms of this.
+
+
+\if@twoside                 % Values for two-sided printing:
+   \oddsidemargin  -10pt    %   Left margin on odd-numbered pages.
+   \evensidemargin -10pt    %   Left margin on even-numbered pages.
+   \marginparwidth  10pt    %   Width of marginal notes.
+\else                       % Values for one-sided printing:
+   \oddsidemargin  -10pt    %   Left margin on odd-numbered pages.
+   \evensidemargin -10pt    %   Left margin on even-numbered pages.
+   \marginparwidth   2pc
+\fi
+\marginparsep 20pt          % Horizontal space between outer margin and
+                            % marginal note
+
+                         % Top of page:
+\topmargin 0.5in         %    Nominal distance from top of page to top of
+                         %    box containing running head.
+\headheight  0pt         %    Height of box containing running head.
+\headsep     0pt         %    Space between running head and text.
+                         % Bottom of (first) page:
+\footskip 40pt           %    Distance from baseline of box containing foot
+                         %    to baseline of last line of text.
+
+\bigskipamount=\@bls plus 0.3\@bls minus 0.3\@bls % 1/1 line
+\medskipamount=0.5\bigskipamount                  % 1/2 line
+\smallskipamount=0.25\bigskipamount               % 1/4 line
+
+\textheight 26\baselineskip  % Height of text (including footnotes and figures,
+\advance\textheight\topskip  % excluding running head and foot).
+\textwidth 38pc              % Width of text line.
+                             % For two-column mode:
+\columnsep 2pc               %    Space between columns
+\columnseprule 0pt           %    Width of rule between columns.
+
+
+
+\footnotesep 8.4pt   % Height of strut placed at the beginning of every
+                      % footnote = height of normal \footnotesize strut,
+                      % so no extra space between footnotes.
+
+\skip\footins 12pt plus  8pt          % Space between last line of text and
+                                      % top of first footnote.
+
+\floatsep         8pt plus 4pt minus 2pt % Space between adjacent floats moved
+                                         % to top or bottom of text page.
+\textfloatsep    12pt plus 4pt minus 4pt % Space between main text and floats
+                                         % at top or bottom of page.
+\intextsep       12pt plus 4pt minus 2pt % Space between in-text figures and
+                                         % text.
+\@maxsep         20pt                    % The maximum of \floatsep,
+                                         % \textfloatsep and \intextsep (minus
+                                         % the stretch and shrink).
+\dblfloatsep      8pt plus 4pt minus 4pt % Same as \floatsep for double-column
+                                         % figures in two-column mode.
+\dbltextfloatsep 12pt plus 4pt minus 4pt % \textfloatsep for double-column
+                                         % floats.
+\@dblmaxsep      20pt                    % The maximum of \dblfloatsep and
+                                         % \dbltexfloatsep.
+
+\@fptop 0pt plus 1fil    % Stretch at top of float page/column. (Must be
+                         % 0pt plus ...)
+\@fpsep 8pt plus 2fil    % Space between floats on float page/column.
+\@fpbot 0pt plus 1fil    % Stretch at bottom of float page/column. (Must be
+                         % 0pt plus ... )
+
+\@dblfptop 0pt plus 1fil % Stretch at top of float page. (Must be 0pt plus ...)
+\@dblfpsep 8pt plus 2fil % Space between floats on float page.
+\@dblfpbot 0pt plus 1fil % Stretch at bottom of float page. (Must be
+                         % 0pt plus ... )
+
+\marginparpush 5pt       % Minimum vertical separation between two marginal
+                         % notes.
+
+\parskip 0pt                       % Extra vertical space between paragraphs.
+\parindent 1em                     % Width of paragraph indentation.
+\newskip\eqntopsep                 % Extra vertical space, in addition to
+\eqntopsep  0pt plus 1pt           % \parskip, added above and below
+                                   % displayed equation environments
+
+
+\@lowpenalty   51      % Produced by \nopagebreak[1] or \nolinebreak[1]
+\@medpenalty  151      % Produced by \nopagebreak[2] or \nolinebreak[2]
+\@highpenalty 301      % Produced by \nopagebreak[3] or \nolinebreak[3]
+
+\@beginparpenalty -\@lowpenalty    % Before a list or paragraph environment.
+\@endparpenalty   -\@lowpenalty    % After a list or paragraph environment.
+\@itempenalty     -\@lowpenalty    % Between list items.
+
+
+
+
+
+\def\section{\@startsection{section}{1}{\z@}{2\@bls
+  plus .5\@bls minus .2\@bls}{\@bls}{\normalsize\bf}}
+\def\subsection{\@startsection{subsection}{2}{\z@}{\@bls
+  plus .3\@bls minus .1\@bls}{\@bls}{\normalsize\it}}
+\def\subsubsection{\@startsection{subsubsection}{3}{\z@}{\@bls
+  plus .2\@bls}{0.0001pt}{\normalsize\it}}
+\def\paragraph{\@startsection{paragraph}{4}{\z@}{3.25ex plus
+  2ex minus 0.2ex}{-1em}{\normalsize\bf}}
+
+\setcounter{secnumdepth}{3}
+
+\def\half@em{\hskip 0.5em}
+
+\def\lb@section{\thesection.\half@em}
+\def\lb@subsection{\thesubsection.\half@em}
+\def\lb@subsubsection{\thesubsubsection.\half@em}
+\def\lb@paragraph{\theparagraph.\half@em}
+\def\lb@subparagraph{\thesubparagraph.\half@em}
+
+\def\head@style{\interlinepenalty\@M
+  \hyphenpenalty\@M \exhyphenpenalty\@M
+  \rightskip 0pt plus 0.5\hsize \relax}
+
+\def\@sect#1#2#3#4#5#6[#7]#8{%
+  \ifnum #2>\c@secnumdepth
+    \let\@svsec\@empty
+  \else
+    \refstepcounter{#1}%
+    \edef\@svsec{\csname lb@#1\endcsname}%
+  \fi
+  \@tempskipa #5\relax
+  \ifdim \@tempskipa>\z@
+    \begingroup #6\relax
+      \@hangfrom{\hskip #3\relax\@svsec}{\head@style #8\par}%
+    \endgroup
+    \csname #1mark\endcsname{#7}%
+    \addcontentsline{toc}{#1}{\ifnum #2>\c@secnumdepth \else
+      \protect\numberline{\csname the#1\endcsname}\fi #7}%
+  \else
+    \def\@svsechd{#6\hskip #3\relax \@svsec #8\csname #1mark\endcsname{#7}%
+    \addcontentsline{toc}{#1}{\ifnum #2>\c@secnumdepth \else
+      \protect\numberline{\csname the#1\endcsname}\fi #7}}%
+  \fi
+  \@xsect{#5}}
+
+
+\def\app@number#1{\setcounter{#1}{0}%
+  \@addtoreset{#1}{section}%
+  \@namedef{the#1}{\thesection.\arabic{#1}}}
+
+\def\appendix{\@ifstar{\appendix@star}{\appendix@nostar}}
+\def\appendix@nostar{%
+  \def\lb@section{Appendix \thesection.\half@em}
+  \setcounter{section}{0}\def\thesection{\Alph{section}}%
+  \setcounter{subsection}{0}%
+  \setcounter{subsubsection}{0}%
+  \setcounter{paragraph}{0}%
+  \app@number{equation}\app@number{figure}\app@number{table}}
+\def\appendix@star{%
+  \def\lb@section{Appendix}
+  \setcounter{section}{0}\def\thesection{\Alph{section}}%
+  \setcounter{subsection}{0}%
+  \setcounter{subsubsection}{0}%
+  \setcounter{paragraph}{0}%
+  \app@number{equation}\app@number{figure}\app@number{table}}
+
+\def\ack{\section*{Acknowledgement}}
+\@namedef{ack*}{\par\vskip 3.0ex plus 1.0ex minus 1.0ex}
+\let\endack\par
+\@namedef{endack*}{\par}
+
+
+
+
+\newdimen\labelwidthi
+\newdimen\labelwidthii
+\newdimen\labelwidthiii
+\newdimen\labelwidthiv
+
+
+\leftmargini \z@   \leftmarginii \z@
+\labelwidthi 0.9em \labelwidthii 0.9em
+\labelsep 0.2em
+
+\def\@listI{\leftmargin\leftmargini
+  \labelwidth\labelwidthi
+  \topsep\z@ \partopsep\z@ \parsep\z@ \itemsep\z@
+  \itemindent\labelwidth \advance\itemindent\labelsep
+  \listparindent\z@}
+\def\@listii{\leftmargin\leftmarginii
+  \labelwidth\labelwidthii
+  \topsep\z@ \partopsep\z@ \parsep\z@ \itemsep\z@
+  \itemindent\labelwidth \advance\itemindent\labelsep
+  \listparindent\z@}
+\let\@listi\@listI
+\@listi
+
+\endinput
+
+%%%%%%%%%% End of file espart12.sty %%%%%%%%%%
+
+%                                  O /
+% ================================= x -------------------------------------
+% 				  o \
+
+%%%%%%%%%% thp.sty %%%%%%%%%%
+% Save file as: THP.STY                Source: FILESERV@SHSU.BITNET  
+% From AMSLaTeX subdirectory: inputs
+% Save file in directory where TeX looks for input files
+%% 
+%% This is file `thp.sty' generated
+%% on <1991/6/21> with the docstrip utility (v1.1l test). 
+%% 
+%% The original source file was `thp.doc'.
+%% 
+%% 
+%% Copyright (C) 1989,1990,1991 by Frank Mittelbach. All rights reserved. 
+%% 
+%% IMPORTANT NOTICE: 
+%% 
+%% You are not allowed to change this file. You may however copy this file 
+%% to a file with a different name and then change the copy. 
+%% 
+%% You are NOT ALLOWED to distribute this file alone. You are NOT ALLOWED 
+%% to take money for the distribution or use of this file (or a changed 
+%% version) except for a nominal charge for copying etc. 
+%% 
+%% You are allowed to distribute this file under the condition that it is 
+%% distributed together with all files mentioned in readme.mz2. 
+%% 
+%% If you receive only some of these files from someone, complain! 
+%% 
+%% However, if these files are distributed by established suppliers as part 
+%% of a complete TeX distribution, and the structure of the distribution 
+%% would make it difficult to distribute the whole set of files, *those 
+%% parties* are allowed to distribute only some of the files provided that 
+%% it is made clear that the user will get a complete distribution-set upon 
+%% request to that supplier (not me). 
+%% Notice that this permission is not granted to the end user. 
+%% 
+%% Error Reports in case of UNCHANGED versions to 
+%% 
+%% F. Mittelbach 
+%% Eichenweg 29 
+%% D-6500 Mainz 1 
+%% Federal Republic of Germany 
+%% Bitnet: <PZF5HZ@RUIPC1E> 
+%% 
+
+\def\fileversion{v2.1b}
+\def\filedate{89/10/28}
+\def\docdate {89/09/19}
+
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+
+\begingroup \makeatletter
+\@ifundefined{theorem@style}{\input{theorem.sty}}{}
+\wlog{Style option: `theorem-plain' \fileversion \space\space
+         <\filedate>  (FMi)}
+\wlog{English documentation \@spaces\@spaces\@spaces\space\space
+         \space <\docdate>  (FMi)}
+\gdef\th@plain{\it
+  \def\@begintheorem##1##2{%
+        \item[\hskip\labelsep \theorem@headerfont ##1\ ##2]}%
+\def\@opargbegintheorem##1##2##3{%
+   \item[\hskip\labelsep \theorem@headerfont ##1\ ##2\ (##3)]}}
+\endgroup
+
+\endinput
+
+%%%%%%%%%% End of file thp.sty %%%%%%%%%%
+
+%                                  O /
+% ================================= x -------------------------------------
+% 				  o \
+
+%%%%%%%%%% theorem.sty %%%%%%%%%%
+% Save file as: THEOREM.STY            Source: FILESERV@SHSU.BITNET  
+% From AMSLaTeX subdirectory: inputs
+% Save file in directory where TeX looks for input files
+%% 
+%% This is file `theorem.sty' generated
+%% on <1991/6/21> with the docstrip utility (v1.1l test). 
+%% 
+%% The original source file was `theorem.doc'.
+%% 
+%% 
+%% Copyright (C) 1989,1990,1991 by Frank Mittelbach. All rights reserved. 
+%% 
+%% IMPORTANT NOTICE: 
+%% 
+%% You are not allowed to change this file. You may however copy this file 
+%% to a file with a different name and then change the copy. 
+%% 
+%% You are NOT ALLOWED to distribute this file alone. You are NOT ALLOWED 
+%% to take money for the distribution or use of this file (or a changed 
+%% version) except for a nominal charge for copying etc. 
+%% 
+%% You are allowed to distribute this file under the condition that it is 
+%% distributed together with all files mentioned in readme.mz2. 
+%% 
+%% If you receive only some of these files from someone, complain! 
+%% 
+%% However, if these files are distributed by established suppliers as part 
+%% of a complete TeX distribution, and the structure of the distribution 
+%% would make it difficult to distribute the whole set of files, *those 
+%% parties* are allowed to distribute only some of the files provided that 
+%% it is made clear that the user will get a complete distribution-set upon 
+%% request to that supplier (not me). 
+%% Notice that this permission is not granted to the end user. 
+%% 
+%% Error Reports in case of UNCHANGED versions to 
+%% 
+%% F. Mittelbach 
+%% Eichenweg 29 
+%% D-6500 Mainz 1 
+%% Federal Republic of Germany 
+%% Bitnet: <PZF5HZ@RUIPC1E> 
+%% 
+
+\def\fileversion{v2.1b}
+\def\filedate{90/06/04}
+\def\docdate {90/06/04}
+
+%% \CheckSum{509}
+%% \CharacterTable
+%%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%%   Digits        \0\1\2\3\4\5\6\7\8\9
+%%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%%   Dollar        \$     Percent       \%     Ampersand     \&
+%%   Acute accent  \'     Left paren    \(     Right paren   \)
+%%   Asterisk      \*     Plus          \+     Comma         \,
+%%   Minus         \-     Point         \.     Solidus       \/
+%%   Colon         \:     Semicolon     \;     Less than     \<
+%%   Equals        \=     Greater than  \>     Question mark \?
+%%   Commercial at \@     Left bracket  \[     Backslash     \\
+%%   Right bracket \]     Circumflex    \^     Underscore    \_
+%%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%%   Right brace   \}     Tilde         \~}
+%%
+\@ifundefined{theorem@style}{}{\endinput}
+\wlog{Style option: `theorem' \fileversion \space\space
+         <\filedate>  (FMi)}
+\wlog{English documentation as of \space\space\space
+         <\docdate>  (FMi)}
+\gdef\theoremstyle#1{%
+   \@ifundefined{th@#1}{\@warning
+          {Unknown theoremstyle `#1'. Using `plain'}%
+          \theorem@style{plain}}%
+      {\theorem@style{#1}}%
+      \begingroup
+        \csname th@\the\theorem@style \endcsname
+      \endgroup}
+\global\let\@begintheorem\relax
+\global\let\@opargbegintheorem\relax
+\newtoks\theorem@style
+\global\theorem@style{plain}
+\newtoks\theorembodyfont
+\global\theorembodyfont{}
+\gdef\theoremheaderfont#1{\gdef\theorem@headerfont{#1}%
+       \gdef\theoremheaderfont##1{%
+        \typeout{\string\theoremheaderfont\space should be used
+                 only once.}}}
+\ifx\normalshape\undefined
+\gdef\theorem@headerfont{\bf}
+\else \gdef\theorem@headerfont{\normalshape\bf}\fi
+\gdef\th@plain{\input thp.sty}
+\gdef\th@break{\input thb.sty}
+\gdef\th@marginbreak{\input thmb.sty}
+\gdef\th@changebreak{\input thcb.sty}
+\gdef\th@change{\input thc.sty}
+\gdef\th@margin{\input thm.sty}
+\gdef\@xnthm#1#2[#3]{\expandafter\@ifdefinable\csname #1\endcsname
+   {%
+    \@definecounter{#1}\@addtoreset{#1}{#3}%
+    \expandafter\xdef\csname the#1\endcsname
+      {\expandafter \noexpand \csname the#3\endcsname
+       \@thmcountersep \@thmcounter{#1}}%
+    \def\@tempa{\global\@namedef{#1}}%
+    \expandafter \@tempa \expandafter{%
+      \csname th@\the \theorem@style
+            \expandafter \endcsname \the \theorembodyfont
+     \@thm{#1}{#2}}%
+    \global \expandafter \let \csname end#1\endcsname \@endtheorem
+   }}
+\gdef\@ynthm#1#2{\expandafter\@ifdefinable\csname #1\endcsname
+   {\@definecounter{#1}%
+    \expandafter\xdef\csname the#1\endcsname{\@thmcounter{#1}}%
+    \def\@tempa{\global\@namedef{#1}}\expandafter \@tempa
+     \expandafter{\csname th@\the \theorem@style \expandafter
+     \endcsname \the\theorembodyfont \@thm{#1}{#2}}%
+    \global \expandafter \let \csname end#1\endcsname \@endtheorem}}
+\gdef\@othm#1[#2]#3{\expandafter\@ifdefinable\csname #1\endcsname
+  {\expandafter \xdef \csname the#1\endcsname
+     {\expandafter \noexpand \csname the#2\endcsname}%
+    \def\@tempa{\global\@namedef{#1}}\expandafter \@tempa
+     \expandafter{\csname th@\the \theorem@style \expandafter
+     \endcsname \the\theorembodyfont \@thm{#2}{#3}}%
+    \global \expandafter \let \csname end#1\endcsname \@endtheorem}}
+\gdef\@thm#1#2{\refstepcounter{#1}%
+   \trivlist
+   \@topsep \theorempreskipamount               % used by first \item
+   \@topsepadd \theorempostskipamount           % used by \@endparenv
+   \@ifnextchar [%
+   {\@ythm{#1}{#2}}%
+   {\@begintheorem{#2}{\csname the#1\endcsname}\ignorespaces}}
+\global\let\@xthm\relax
+\newskip\theorempreskipamount
+\newskip\theorempostskipamount
+\global\setlength\theorempreskipamount{12pt plus 5pt minus 3pt}
+\global\setlength\theorempostskipamount{8pt plus 3pt minus 1.5pt}
+\global\let\@endtheorem=\endtrivlist
+{\def\do{\noexpand\do\noexpand}
+\xdef\@preamblecmds{\@preamblecmds \do\@xnthm \do\@ynthm \do\@othm
+        \do\newtheorem \do\theoremstyle \do\theorembodyfont
+        \do\theoremheaderfont}
+}
+\theoremstyle{plain}
+
+\endinput
+
+%%%%%%%%%% End of file theorem.sty %%%%%%%%%%
+
+%%%%%%%%%% Begin oji.tex file %%%%%%%%%%%%%%%
+%
+% Upper-case    A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+% Lower-case    a b c d e f g h i j k l m n o p q r s t u v w x y z
+% Digits        0 1 2 3 4 5 6 7 8 9
+% Exclamation   !           Double quote "          Hash (number) #
+% Dollar        $           Percent      %          Ampersand     &
+% Acute accent  '           Left paren   (          Right paren   )
+% Asterisk      *           Plus         +          Comma         ,
+% Minus         -           Point        .          Solidus       /
+% Colon         :           Semicolon    ;          Less than     <
+% Equals        =           Greater than >          Question mark ?
+% At            @           Left bracket [          Backslash     \
+% Right bracket ]           Circumflex   ^          Underscore    _
+% Grave accent  `           Left brace   {          Vertical bar  |
+% Right brace   }           Tilde        ~
+
+\documentstyle{espart}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{Evolution, Complexity, Entropy, and Artificial Reality\thanksref{sub}}
+
+\thanks[sub]{Submitted to Physica D.}
+
+\author{Thomas S. Ray\thanksref{NSF}}
+
+\thanks[NSF]{This work was supported by grants CCR-9204339 and BIR-9300800
+from the United States National Science Foundation, a grant from the
+Digital Equipment Corporation, and by the Santa Fe Institute, Thinking
+Machines Corp., IBM, and Hughes Aircraft.}
+
+\address{ATR Human Information Processing Research Laboratories, 2-2 Hikaridai,
+Seika-cho, Soraku-gun, Kyoto, 619-02, Japan, ray@hip.atr.co.jp\thanksref{ATR}}
+
+\thanks[ATR]{This work was conducted while at: Santa Fe Institute, 1660 Old
+Pecos Trail, Suite A, Santa Fe, New Mexico, 87501, USA, ray@santafe.edu;
+School of Life \& Health Sciences, University of Delaware, Newark, Delaware,
+19716, USA, ray@udel.edu; Omar Dengo Foundation, Apartado 1032--2050,
+San Jos\'{e}, Costa Rica, fodtr@huracan.cr}
+
+\date{August 20, 1993}
+
+\begin{abstract}
+The process of Darwinian evolution by natural selection was
+inoculated into four artificial worlds (virtual computers).
+These systems were used for a comparative study of the rates,
+degrees and patterns of evolutionary optimizations, showing
+that many features of the evolutionary process are sensitive to
+the structure of the underlying genetic language.  Some specific
+examples of the evolution of increasingly complex structures are
+described.  In addition a measure of entropy (diversity) of the
+evolving ecological community over time was used to study the
+relationship between evolution and entropy.
+\end{abstract}
+
+\end{frontmatter}
+
+\section{INTRODUCTION}
+
+Evolution is the process that has generated most if not all known
+complex systems.  These are either the direct products of biological
+evolution: nervous systems, immune systems, ecologies; or the eip-phenomena
+of biological evolution: culture, language, economies.  Thus understanding
+evolution is important to understanding complex systems.  This
+understanding has been advanced recently by the advent of artificial
+realities into which natural evolution can be inoculated.
+
+Evolution is an extremely powerful natural force, which given enough
+time, is capable of spontaneously creating extraordinary complexity
+out of simple materials.  The greatest obstacles to understanding
+evolution have been that we have had only a single example
+of evolution available for study (life on earth), and that in this
+example, evolution is played out over time spans which are very large
+compared to a scientific career.  In spite of these limitations,
+evolutionary theory has firmly established many basic principles.
+However, these principles have been established through the logical
+analysis of the static products of evolution, but without actually
+observing the process, without experimental test, and without the
+benefit of comparing completely independent instances of evolution.
+
+Darwin \cite{Darw59} laid out the core of the currently accepted theory of
+evolution after the voyage of the Beagle.  This voyage gave him the
+opportunity to observe first hand, the variation of species preserved
+in the fossil record, and preserved among geographically isolated
+populations in areas like the Galapagos archipelago.  Darwin
+formulated the elements of the theory that is still the core of
+evolutionary biology today:
+
+1) Individuals vary in their viability in the environments that they occupy.
+
+2) This variation is heritable.
+
+3) Self-replicating individuals tend to produce more offspring than can
+   survive on the limited resources available in the environment.
+
+4) In the ensuing struggle for survival, the individuals best adapted to the
+   environment are the ones that will survive to reproduce.
+
+As a result of the iteration of this process over many generations,
+populations of organisms change, generally becoming better adapted to
+their environment.
+
+Darwin developed this theory without actually observing the process,
+and without the benefit of experimental test.  In this paper I will
+describe the inoculation of Darwinian evolution into an artificial
+reality, and describe some of the resultant macro-evolutionary
+processes: variation in the patterns of evolution in different
+worlds, the building of increasingly complex structures,
+and transient reduction of entropy in evolving communities.
+
+\section{METHODS}
+
+The methodology has already been described in detail
+\cite{Fefe,Ray91a,Ray91b,Ray91c,Ray91d,RayIP},
+so it will be described only briefly here.  A new set computer
+architectures has been designed which have the feature that their
+machine code is robust to the genetic operations of mutation and
+recombination.  This means that computer programs written in the
+machine code of these architectures remain viable some of the time
+after being randomly altered by bit-flips which cause the swapping
+of individual instructions with others from within the instruction
+set, or by swapping segments of code between programs (through a
+spontaneous sexual process).  These new computers have not been built
+in silicon, but exist only as software prototypes known as ``virtual
+computers''.  These virtual computers have been called ``Tierra'',
+Spanish for Earth.
+
+A self-replicating program was written, initially in Intel machine language.
+This program was then implemented in the first of the four Tierran
+languages in the fall of 1989.  The program functions by examining itself
+to determine where it begins and ends, then calculating its size (80 bytes),
+and then copying itself one byte at a time to another location in memory.
+After that, both programs replicate, and the number of programs ``living''
+in memory doubles in each generation.
+
+These programs are referred to as ``creatures'' or ``organisms''.  The
+creatures occupy a finite amount of memory called the ``soup''.  The
+operating system of the virtual computer, Tierra, provides services to
+allocate CPU time to the growing population of self-replicating
+creatures.  When the creatures fill the soup, the operating system
+invokes a ``reaper'' facility which kills creatures to insure that
+memory will remain free for occupation by newborn creatures.  Thus a
+turnover of generations of individuals begins when the memory is full.
+
+The operating system also generates a variety of errors which play the role
+of mutations.  One kind of error is a bit-flip, in which a zero is converted
+to a one, or a one is converted to a zero.  This occurs in the soup, which
+is where the ``genetic'' information that constitutes the programs of the
+creatures resides.  The bit-flips are the analogs of mutations, and cause
+swapping among the thirty-two instructions of the machine code.  Another
+kind of error imposed by the operating system is called a ``flaw'', in which
+calculations taking place within the CPU of the virtual machine may be
+inaccurate, or in which any transfer of information may move information
+to or from the wrong place, or may slightly alter information in transit.
+
+The machine code that makes up the program of a creature is the analog of
+the genome, the DNA, of organic creatures.  Mutations cause genetic
+change and are therefore heritable.  Flaws do not directly cause genetic
+change, and so are not heritable.  However, flaws may cause errors in the
+{\it process} of self-replication, resulting in offspring which are
+genetically different from their parents, and those differences are then
+heritable.
+
+The running of the self-replicating program (creature) on the virtual computer
+(Tierra), with the errors imposed by the operating system (mutations) results
+in precisely the conditions described by Darwin as causing evolution by
+natural selection.  While this is actually an instantiation of Darwinian
+evolution in a digital medium, it can also be viewed as a metaphor:  The
+sequence of machine instructions that constitute the program of a creature
+is analogous to the sequence of nucleotides that constitute the genome,
+the DNA, of organic organisms.  The soup, a block of RAM memory of the
+computer, is thought of as the spatial resource.  The CPU time provided
+by the virtual computer is thought of as the energy resource.  The
+sequences of machine instructions that make up the genomes of the
+creatures constitute an informational resource which plays an important
+role in evolution.
+
+\subsection{Four Artificial Worlds}
+
+The original Tierran virtual computer was designed by the author in the
+fall of 1989.  In the summer of 1992, a series of meetings was held at
+the Santa Fe Institute to attempt to improve on the original design.
+Present at these meetings were: Steen Rassmussen (Santa Fe Institute),
+Walter Tackett (Hughes Aircraft), Chris Stephenson (IBM), Kurt Thearling
+(Thinking Machines), Dan Pirone (Santa Fe Institute), and the author.
+The discussions did not lead to a consensus as to how to improve on the
+original design, but rather, to three suggestions: instruction set 2
+proposed by Kurt Thearling, instruction set 3 proposed by the author,
+and instruction set 4 proposed by Walter Tackett.  In August 1992, the
+author implemented all three new instruction sets, and integrated
+them into the Tierra program.  These four instruction sets are summarized
+in Appendix A.
+
+The original 80 byte program was slightly modified so that it could be
+implemented in a consistent manner across the four instruction sets.
+The four new seed organisms were then tested in a series of eight runs
+in each of the four worlds (only four runs in the original world).  The
+resulting twenty-eight runs form the basis of the comparisons of
+patterns of evolution across different worlds, and the analysis of the
+development of complex structures in one of those worlds (the fourth).
+
+\subsection{Evolution and Entropy}
+
+Independently of these studies, a series of runs was conducted using
+the original program with the original instruction set, and applying
+a tool for the calculation of entropy and its changes over time in
+an evolving ecological community.  The entropy measure is negative
+sum of p log p, where p is the proportion of the community occupied
+by each genotype.  For the purposes of this study a filter was used,
+which ignored all genotypes represented by a single individual.  The
+purpose of the filter was to eliminate all mutants which were never
+able to reproduce (thus reducing the sensitivity of the measure to
+mutation rate).  In addition, this entropy data was calculated for
+every birth and death, and then averaged over each million CPU cycle
+period.  Only the averages over each period were recorded.
+
+\subsection{Getting the Tierra System}
+
+     The complete source code and documentation (but not executables) is
+available by anonymous ftp at:
+
+\begin{verbatim}
+tierra.slhs.udel.edu [128.175.41.34] and
+  life.slhs.udel.edu [128.175.41.33]
+in the directories: almond/, beagle/, doc/, and tierra/.
+\end{verbatim}
+
+To get it, ftp to tierra or life, log in as user ``anonymous'' and
+give your email address (eg. tom@udel.edu) as a password.  Be sure
+to transfer binaries in binary mode (it is safe to transfer everything
+in binary mode).  Each directory contains a compressed tar file
+(filename.tar.Z) and a SRC directory that contains all the files in
+raw ascii format.  You can just pick up the .tar.Z files, and they
+will expand into the complete directory structure with the following
+commands (Unix only):
+
+\begin{verbatim}
+uncompress tierra.tar.Z
+tar oxvf tierra.tar
+\end{verbatim}
+
+The source code compiles and runs on either DOS or UNIX systems (and
+some others).  If you do not have ftp access, the complete UNIX/DOS
+system is also available on DOS disks with an easy installation
+program.  For the disk set, contact the author.
+
+\section{RESULTS}
+
+The details and mechanisms of the evolution of creatures in the
+Tierran computer have been described in detail
+\cite{Fefe,Ray91a,Ray91b,Ray91c,Ray91d,RayIP},
+and will only be summarized here.  Running of the self-replicating
+program on the error prone computer creates a situation that is in
+fact identical to the one outlined by Darwin.  Those genotypes that
+are most efficient at replicating leave more descendants in the future
+generations, and increase in frequency in the population.
+
+An interesting characteristic of this process is the surprising variety
+and inventiveness of evolved means of increasing efficiency of replication.
+Some of the increase in efficiency is achieved through straightforward
+optimization of the replication algorithm.  However, efficiency is also
+achieved through more surprising avenues involving interactions between
+creatures.
+
+Evolution increases the adaptation of organisms to their environment.  In the
+Tierran universe, initially the environment consists largely of the memory
+which is fairly uniform and always available, and the CPU which allocates
+time to each creature in a consistent and uniform fashion.  In such a simple
+environment the most obvious route to efficiency is optimization of the
+algorithm.  However, once the memory is filled with creatures, the
+creatures themselves become a prominent feature of the environment.  Now
+evolution also discovers ways for creatures to exploit one another, and to
+defend against such exploitation.
+
+\subsection{Evolutionary Patterns in Four Different Worlds}
+
+In comparing the patterns of evolution across the four instruction
+sets, two major differences are apparent:  1) The degree and rate of
+optimization attained.  2) The patterns of gradualism, punctuation
+and equilibrium.  These results are summarized in Table 1, and
+described below.
+
+\begin{table}
+
+{\bf Comparison of optimizations in the four instruction
+sets}, I1, I2, I3 and I4 (described in Appendix A).  The first column,
+``Set'', specifies which of the four sets.  The second column,
+``Ancestor'', specifies the size in instructions, of the ancestral
+algorithm of that set.  The following eight columns, ``R0'' through
+``R7'' refer to the eight runs, and contain the size of the smallest
+algorithms evolved during that run.  The column ``Avg. Opt.'' shows
+the average optimization for that set.  This is calculated by averaging
+the sizes of the smallest algorithms to evolve in each run for that set,
+and dividing by the size of the ancestral algorithm.  The column
+``Max. Opt.'' shows the maximum optimization achieved by this set.
+This is calculated by dividing the size of the smallest algorithm
+to evolve by the size of the ancestral algorithm.
+
+\caption{{\bf Comparison of Optimizations in the Four Instruction
+Sets}}
+
+\begin{tabular}{cccccccccccc}
+Set & Ancestor & R0 & R1 & R2 & R3 & R4 & R5 & R6 & R7 & Avg. Opt. & Max. Opt.\\
+
+I1 & 73 & 27 & 27 & 26 & 22 &    &    &    &    & .35 & .30 \\
+I2 & 94 & 54 & 57 & 54 & 55 & 60 & 56 & 57 & 55 & .60 & .57 \\
+I3 & 93 & 54 & 37 & 34 & 36 & 49 & 53 & 54 & 40 & .48 & .37 \\
+I4 & 82 & 26 & 23 & 23 & 26 & 35 & 24 & 43 & 23 & .34 & .28 \\
+
+\end{tabular}
+\end{table}
+
+\begin{figure}
+\caption{{\bf Optimization Patterns in Four Instruction Sets.}
+For each of the twenty-eight graphs, the horizontal axis is
+elapsed time in generations, and the vertical axis is the size
+of the algorithm in instructions.  Points appear on the graph
+when a new genotype increases in frequency across some threshold.
+Each group of four graphs is labeled as to which instruction set,
+e.g., INST 1 is the first set, INST 3 is the third.}
+\end{figure}
+
+The original instruction set (Figure 1) shows the most rapid
+optimization, generally reaching its final plateau within 600
+generations.  In addition, this instruction set showed one of
+the highest degrees of optimization, with the best performance
+reducing the seed program from seventy-two to twenty-two
+instructions, 30\% of its original size, and the average reduced
+to 35\%.  This instruction set generally showed a pattern of
+gradualism, with an occasional punctuation.  This pattern could
+be described as punctuated gradualism.
+
+The second instruction set (Figure 1) shows slower optimization,
+generally taking bout 1000 generations to reach its final plateau.
+Also, the degree of optimization shown by this set is not as great.
+The best performance reduced the algorithm from ninety-four to
+fifty-four instructions, 57\% of its original size, and the average
+reduced to 60\%.  This instruction set generally showed
+a pattern of gradualism, punctuations were completely absent.
+
+The third instruction set (Figure 1) performed much like the second,
+taking about 1000 generations to reach its final plateau, and showing
+a pattern of gradualism, completely lacking in punctuations.  This
+instruction set showed somewhat better optimization than the second,
+with the best performance reducing the algorithm from ninety-three
+to thirty-four instructions, 37\% of its initial size, and the average
+reduced to 48\%.
+
+The fourth instruction set (Figure 1) showed very distinctive patterns
+of evolution.  The time to reach its final plateau varied widely,
+ranging from about 350 generations to about 2000 generations.  The
+greatest degree of optimization resulted in reducing the algorithm from
+eighty-two to twenty-three instructions, 28\% of the original size,
+and the average reduced to 34\%.  This instruction set showed what
+could only be described as punctuated equilibrium, with
+no clear signs of gradualism.
+
+\subsection{Complex Structures}
+
+Optimization in digital organisms involves finding algorithms for which
+less CPU time is required to effect a replication.  This is always a
+selective force, regardless of how the environmental parameters of the
+Tierran universe are set.  However, selection may also favor reduction or
+increase in size of the creatures, depending on how CPU time is allocated
+to the creatures.  If each creature gets an equal share of CPU time,
+selection strongly favors reduction in size.  The reason is that all
+other things being equal, a smaller creature requires less CPU time
+because it need copy fewer instructions to a new location in memory.
+
+Under selection favoring a decrease in size, evolution has converted an
+original eighty-two instruction creature (instruction set four) to
+creatures of as few as twenty-three instructions, within a time span of
+four hundred generations.  Different runs under the same initial parameters,
+but using different seeds to the random generator, achieved different
+degrees of optimization.  These runs have plateaued at fourty-three,
+thirty-five, twenty-six, twenty-four and twenty-three instructions.
+
+An obvious interpretation of these results is that evolution
+gets caught on a local optima, from which it can not reach the global
+optima \cite{Ray91d}.  However, analysis of the "sub-optimal" (larger)
+final algorithms suggests an alternative interpretation.  An efficiency
+measure was calculated for each resultant organism, in which the total
+number of CPU cycles expended in replication is divided by the size of
+the organism.  The efficiency index measures the cost of moving a
+byte of information by that algorithm, in units of CPU cycles per byte.
+
+\begin{table}
+
+{\bf Comparisons of Size, Efficiency and Complexity in Evolved
+Algorithms} from eight runs of instruction set four.  The first column,
+``Run'', refers to which of the eight runs this result occurred in
+(compare to Table 1).  The second column, ``Genotype'', lists the name
+of an example of an algorithm of the smallest size evolved in that run.
+The third column, ``Efficiency'', lists the efficiency of that algorithm,
+calculated as CPU cycles expended for each byte moved during reproduction.
+The rows of the table are sorted on this value, with the highest
+efficiency (least CPU cycle expenditure) at the top of the table.
+The fourth column, ``Unrolling'', is an indication of the complexity
+of the central loop of the algorithms.  This indicates the level to which
+the central loop is ``unrolled'' (see explanation in text).  An
+asterisk in the final column indicates that the assembler code for
+this algorithm can be found in Appendix B.  The algorithm 0082aaa is
+the ancestral program, written by the author, and is included for the
+sake of comparison.
+
+\caption{{\bf Comparisons of Size, Efficiency and Complexity in Evolved
+Algorithms}}
+
+\begin{tabular}{ccccc}
+Run & Genotype & Efficiency & Unrolling &   \\
+\vspace{3pt}
+R6  & 0043crg  &    3.33    &     3     &   \\
+R4  & 0035bfj  &    3.49    &     3     & * \\
+R3  & 0026ayz  &    3.73    &     2     &   \\
+R5  & 0024aah  &    3.96    &     2     & * \\
+R2  & 0023awn  &    4.96    &     1     & * \\
+R1  & 0023api  &    5.04    &     1     &   \\
+R7  & 0023aod  &    5.09    &     1     &   \\
+R0  & 0026abk  &    5.19    &     1     &   \\
+\vspace{4pt}
+RX  & 0082aaa  &    8.39    &     1     & * \\
+\end{tabular}
+\end{table}
+
+Table 2 ranks the evolved organisms by this measure of efficiency.
+They arrange themselves almost perfectly in reverse order of size.
+With the exception of the last algorithm, 0026abk, the evolved
+algorithms show a pattern in which the larger algorithms are
+the most efficient.  Examination of the individual algorithms shows
+that the larger individuals have discovered an optimization technique
+called ``unrolling the loop''.  This technique involves the production
+of more intricate algorithms.
+
+The central loop of the copy procedure of the ancestor (0082aaa) for
+instruction set four (see appendix B) performs the following
+operations: 1) copies an instruction from the mother to the daughter,
+2) decrements the CX register which initially contains the size of the
+parent genome, 3) tests to see if CX is equal to zero, if so it
+exits the loop, if not it remains in the loop, 4) jumps back to the
+top of the loop.
+
+The work of the loop is contained in steps 1 and 2.  Steps 3 and 4 are
+overhead associated with executing a loop.  The efficiency of the loop
+can be increased by duplicating the work steps within the loop, thereby
+saving on overhead.  The creatures 0024aah and 0026ayz had repeated the
+work steps twice within the loop, while the creatures 0035bfj and 0043crg
+had repeated the work steps three times within the loop.
+
+These optima appear to represent stable endpoints for the course of
+evolution, in that running the system longer does not appear to produce
+any significant further evolution.  The increase in CPU economy of
+the replicating algorithms is even greater than the decrease in the
+size of the code.  The ancestor for instruction set four is 82
+instructions long and requires 688 CPU cycles to replicate.  A
+creature of size 24 only requires 95 CPU cycles to replicate, a
+7.24--fold difference in CPU cycles, and a 2.12--fold difference
+in efficiency (CPU cycles expended per byte moved).  A creature of
+size 43 requires only 143 CPU cycles to replicate, a 4.81--fold
+difference in CPU cycles, and a 2.52--fold difference in efficiency.
+
+Unrolling of the loop is not unique to instruction set four.  It
+has also been observed in the original instruction set.  Appendix C
+contains the central copy loop of the ancestor (0080aaa) of
+instruction set one, and also the central copy loop of an
+organisms that evolved from it (0072etq), which exhibits loop
+unrolling to level three.
+
+\subsection{Evolution and Entropy}
+
+Figure 2 illustrates the measure of community entropy over a period of
+one billion CPU cycles.  This measure, negative sum of p log p,
+where p is the proportion of the population occupied by a particular
+genotype, is the same index that ecologists use to measure community
+diversity.  Initially, the entropy/diversity measures zero, because
+there is only a single genotype in the community.  Mutation introduces
+new genotypes, and the diversity quickly rises to some ``equilibrium''
+value.  Over the course of the billion cycles, this equilibrium
+value slowly drifts up.  This is probably due to the fact that during
+this same period, the average size of the individuals gradually decreases.
+This results in a gradual rise in the population of creatures in the
+community (since the area of memory available is fixed).  Evidently
+larger populations are able to sustain a greater equilibrium
+diversity.
+
+Another feature of the lower graph is the striking peaks representing
+abrupt drops in entropy/diversity.  These peaks are major extinction
+events.  They are not generated by external perturbations to the system,
+but arise entirely out of the internal dynamics of the evolving system.
+
+The population records for this run were reviewed, and all genotypes
+which had achieved frequencies representing 20\% or more of the total
+population in the community were identified.  Ten genotypes had
+achieved these frequency levels, and they are listed in Table 3.
+Each of these ten genotypes is marked with a letter on the lower graph
+of Figure 2, to indicate the time of its occurrence.  It appears that
+these extremely successful genotypes correspond to all the major peaks
+of diversity loss.
+
+The upper portion of Figure 2 shows the changes in the size of
+organisms during the run.  A point appears on this graph each time
+a new genotype increases in frequency across a threshold of
+2\%.  That is to say, that when the population a new genotype first
+comes to represent 2\% of the total population of individuals in
+the soup, a point appears on the graph indicating the size of that
+organism, and the time that it reached the threshold.  Therefore
+the upper part of Figure 2 illustrates the size trends for the
+appearance of successful new genotypes.
+
+Two distinct data clouds can be recognized in the upper part of
+Figure 2.  The upper cloud of points spans the full range of time,
+and is located principally in the 60 to 80 instruction size range.
+These points represent ``hosts'', or fully self-replicating algorithms.
+By contrast, the lower cloud of points represents the smaller parasites.
+The lower cloud is located principally in the 25 to 45 instruction
+size range.
+
+While the lower cloud also spans the full range of time,
+it contains obvious gaps which represent periods where parasites were
+absent from the community.  The coming and going of parasites over
+time evidently relates to the turns in the evolutionary race between
+hosts and parasites.  Parasites disappear when hosts evolve defenses,
+and reappear when the defenses are breached, or when the defenses are
+lost through evolution in the absence of parasites.
+
+\begin{figure}
+\caption{{\bf Entropy/Diversity Changes in an Evolving Ecological
+Community.}  In both graphs, the horizontal axis is time, in millions
+of instructions executed by the system.  The upper graph shows
+changes in the sizes of the organisms, in the same style as Figure 1.
+The lower graph shows changes in ecological entropy over time (see text).}
+\end{figure}
+
+\begin{table}
+
+Most Successful Genotypes, Their Times of Occurrence,
+and Maximum Frequency.  The first column ``Letter'' indicates the
+letter used to mark the location of the genotype on Figure 2.
+The second column ``Time'' indicates the time of occurrence of
+this genotype, in millions of instructions.  The third column
+``Genotype'' indicates the name of this organism.  The fourth
+column ``Max. Frequency'' indicates the maximum frequency achieved
+by this genotype, as a proportion of the total population of
+creatures in the soup.
+
+\caption{{\bf Most Successful Genotypes, Their Times of Occurrence,
+and Maximum Frequency}}
+
+\begin{tabular}{cccc}
+Letter & Time & Genotype & Max. Frequency \\
+\vspace{3pt}
+
+a & 117 & 0039aab & 0.25 \\
+b & 166 & 0037aaf & 0.30 \\
+c & 245 & 0070aac & 0.20 \\
+d & 313 & 0036aaj & 0.25 \\
+e & 369 & 0038aan & 0.21 \\
+f & 542 & 0027aaj & 0.21 \\
+g & 561 & 0023abg & 0.34 \\
+h & 683 & 0029aae & 0.24 \\
+i & 794 & 0029aab & 0.23 \\
+j & 866 & 0024aar & 0.33 \\
+
+\end{tabular}
+\end{table}
+
+\section{DISCUSSION}
+
+\subsection{Evolutionary Patterns in Four Different Worlds}
+
+The four worlds differ in the characteristics of the underlying
+genetic system, the machine language.  In fact, the four languages
+differ only subtly, yet the rates, degrees and patterns of evolution
+vary widely among them.
+
+Unfortunately, it is not possible to conclude from these data, which
+specific differences in the machine languages are responsible for
+specific differences in the evolutions.  This would require carefully
+controlled studies in which specific individual features of the
+machine languages are varied independently to determine the effects of
+those differences on evolution.  These would be studies to determine
+the elements of evolvability in genetic systems.  The current study
+was not designed in this fashion.
+
+What we can conclude from the data available is that many features
+of the evolutionary process are sensitive to the characteristics of
+the underlying genetic system.  It is also interesting to note that
+the greatest levels of optimization occurred in those systems in
+which punctuations at least some times were present.
+
+\subsection{Complex Structures}
+
+Does evolution lead to greater complexity?  It is obvious that it
+can, but it would be erroneous to believe that there is a general
+trend in evolution toward greater complexity.  In fact evolution
+also leads to greater simplicity.
+
+Genetic variation is generated through essentially random processes.
+Thus the generation of novel genotypes should not be biased toward
+either greater or lesser complexity.  Natural selection could very
+well be biased, however, there are abundant examples of selection leading
+to less complexity.  Parasitic digital organisms are good examples.
+
+In the organic world, many kinds of parasites have evolved into
+relatively simple forms, as they rely on their host for certain
+services.  For example, gut parasites do not require a digestive
+system, and have evolved very simple body plans.  The eyes of some
+cave dwelling animals have evolved into rudimentary non-functional
+structures.  Viruses must have arisen from renegade DNA of cellular
+organisms, perhaps from transposons.  Thus viruses must be much
+simpler than their ancestors, having become metabolic parasites at
+the molecular level.
+
+Probably the best way to view the issue is to note that evolution is
+always pushing the boundaries, in all directions, of any measure.
+If we look at complexity of organisms over the history of life on
+Earth, we clearly see a large increase over time.  However, this does
+not necessarily arise from an inherent directionality.  It may also
+arise from the fact that the original organisms were extremely simple,
+thus any moves in the direction of greater complexity are readily
+noted.  Meanwhile, later evolutions in the direction of less complexity
+do not push the envelope of pre-existing complexity levels, and
+are easily lost amidst the background of pre-existing simpler organisms.
+Because the original organisms were so extremely simple, only evolutions
+to greater complexity push the envelope of life, and are readily noted
+(the origin of viruses may be a counter-example).
+
+This study cited some examples of the evolution of more complex
+algorithms.  These algorithms achieve high levels of optimization
+through a technique called ``unrolling the loop''.  In the ancestral
+algorithm of instruction set four, the ``work'' part of the copy
+loop consists of only two instructions: dec and movii.  Therefore
+the unrolling of this loop through the duplication of these two
+instructions would seem to be not too evolutionarily challenging.
+
+However, in the ancestral algorithm of instruction set one, the
+``work'' part of the copy loop consists of four instructions:
+movii, dec\_c, inc\_a and inc\_b.  Due to other circumstances that
+occurred in the course of evolution, this set of work instructions
+became slightly more complex, requiring two instances of dec\_c.
+Thus, the ``work'' part of the evolving copy loop requires the
+proper combination and order of five instructions.  Yet the
+organism 0072etq shows this set of instructions repeated three
+times (with varying ordering, indicating that the unrolling did
+not occur through an actual replication of the complete sequence).
+
+These algorithms are substantially more intricate than the unevolved
+ones written by the author.  The astonishing improbability of these
+complex orderings of instructions is testimony to the ability of
+evolution through natural selection to build complexity.
+
+\subsection{Evolution and Entropy}
+
+Does evolution lead to a decrease in entropy?  In the context of the
+current study, entropy was measured as genetic diversity in an ecological
+community.  This measure showed occasional sharp but transient drops
+in entropy.  These drops in entropy appear to correspond to the
+appearance of highly successful new genotypes whose populations come
+to dominate large portions of the memory, pushing other genotypes out,
+and generating major extinction events.
+
+It is interesting also, that nine of the ten genotypes listed in Table 3
+are parasites (all except for `c', 0070aac).  The peaks of diversity
+loss are greatest on the occasions that parasites reappear in the
+community after a period of absence.
+
+It appears likely from these observations, that these extinction
+episodes correspond to the emergence of novel adaptations among the
+evolving organisms (particularly a breaching of the hosts defense
+mechanisms by parasites).  These adaptations bestow the bearers with
+the ability to dominate the memory, excluding other organisms.
+
+This suggests a process in which random genetic changes generated by
+mutation and recombination explores the genotype space.  Occasionally,
+these explorations stumble onto a significant innovation.  These
+innovations can bestow such an advantage that the population of the
+new genotype explodes, generating an episode of mass extinction as it
+drives other genotypes out of memory.  The extinction episode is noted
+as a sharp drop in the entropy/diversity measure.  Thus, ecological
+entropy drops appear to correspond to the chance discovery of
+significant innovations.
+
+However, continued mutation and recombination generates new variants of
+the successful new form.  This process generally restores the community
+to the equilibrium entropy about as rapidly as the entropy was lost  
+in the extinction episode.
+
+\newpage
+
+\begin{thebibliography}{99}
+
+\bibitem{Darw59}
+Darwin, Charles.  1859.  On the origin of species by means of natural
+selection or the preservation of favored races in the struggle for life.
+Murray, London.
+
+\bibitem{Fefe}
+Feferman, Linda.  1992.  Simple rules... complex behavior [video].
+Santa Fe, NM: Santa Fe Institute.
+
+\bibitem{Ray91a}
+Ray, T. S.  1991a.  Is it alive, or is it GA?
+{\em In\/} : Belew, R. K., and L. B. Booker [eds.], Proceedings of the 1991
+International Conference on Genetic Algorithms, 527--534.  San Mateo, CA:
+Morgan Kaufmann.
+
+\bibitem{Ray91b}
+\rule[0pt]{3em}{.4pt}.  1991b.  An approach to the synthesis of life.
+{\em In\/} : Langton, C., C. Taylor, J. D. Farmer, \& S. Rasmussen [eds],
+Artificial Life II, Santa Fe Institute Studies in the Sciences of
+Complexity, vol. XI, 371--408.  Redwood City, CA: Addison-Wesley.
+
+\bibitem{Ray91c}
+\rule[0pt]{3em}{.4pt}.  1991c.  Population dynamics of digital organisms.
+{\em In\/} : Langton, C. G. [ed.], Artificial Life II Video Proceedings.
+Redwood City, CA: Addison Wesley.
+
+\bibitem{Ray91d}
+\rule[0pt]{3em}{.4pt}.  1991d.  Evolution and optimization of digital
+organisms.  {\em In\/} : Billingsley K. R., E. Derohanes, H. Brown, III [eds.],
+Scientific Excellence in Supercomputing: The IBM 1990 Contest Prize Papers,
+Athens, GA, 30602: The Baldwin Press, The University of Georgia.
+
+\bibitem{RayIP}
+\rule[0pt]{3em}{.4pt}.  In Press.  An evolutionary approach to synthetic
+biology.  Artificial Life 1(1): xx-xx.  MIT Press.
+
+\end{thebibliography}
+
+\newpage
+
+\section{APPENDIX A}
+
+\subsection{Instruction Set \#1}
+
+The original instruction set, designed and implemented by Tom Ray.
+This instruction set was literally designed only to run a single
+program, the original 80 instruction ``ancestor''.  As a consequence
+of this narrow design criteria, this instruction set has several
+obvious deficiencies: There is no method of moving information between
+the CPU registers and the RAM memory (soup).  There is no mechanism
+for input/output.  Only two inter-register moves are available,
+although this limitation can be overcome by using the stack to move
+data between registers (as is done in instruction set 4).  There
+are no options for the control of the positioning in memory of
+the daughter cells (only the ``first fit'' technique is used).  There
+are no facilities to support multi-cellularity.  These deficiencies
+were addressed in the creation of instruction sets two through four.
+
+\begin{verbatim}
+No Operations: 2
+
+nop0
+nop1
+
+Memory Movement: 11
+
+pushax (push AX onto stack)
+pushbx (push BX onto stack)
+pushcx (push CX onto stack)
+pushdx (push DX onto stack)
+popax  (pop from stack into AX)
+popbx  (pop from stack into BX)
+popcx  (pop from stack into CX)
+popdx  (pop from stack into DX)
+movcd  (DX = CX)
+movab  (BX = AX)
+movii  (move from ram [BX] to ram [AX])
+
+Calculation: 9
+
+sub_ab (CX = AX - BX)
+sub_ac (AX = AX - CX)
+inc_a  (increment AX)
+inc_b  (increment BX)
+inc_c  (increment CX)
+dec_c  (decrement CX)
+zero   (zero CX)
+not0   (flip low order bit of CX)
+shl    (shift left all bits of CX)
+
+Instruction Pointer Manipulation: 5
+
+ifz    (if CX == 0 execute next instruction, otherwise, skip it)
+jmp    (jump to template)
+jmpb   (jump backwards to template)
+call   (push IP onto the stack, jump to template)
+ret    (pop the stack into the IP)
+
+Biological and Sensory: 5
+
+adr    (search outward  for template, put address in AX, template size in CX)
+adrb   (search backward for template, put address in AX, template size in CX)
+adrf   (search forward  for template, put address in AX, template size in CX)
+mal    (allocate amount of space specified in CX)
+divide (cell division)
+
+Total: 32
+\end{verbatim}
+
+\subsection{Instruction Set \#2}
+
+Based on a design suggested by Kurt Thearling of Thinking Machines,
+and implemented by Tom Ray.  The novel feature of this instruction set
+is the ability to reorder the relative positions of the registers,
+using the AX, BX, CX and DX instructions.  There are in essence, two
+sets of registers, the first set contains the values that the
+instruction set operates on, the second set points to the first set,
+in order to determine which registers any operation will act on.
+
+Let the four registers containing values be called AX, BX, CX and DX.
+Let the four registers pointing to these registers be called R0, R1, R2
+and R3.  When a virtual cpu is initialized, R0 points to AX, R1 to BX,
+R2 to CX and R3 to DX.  The instruction "add" does the following:
+(R2 = R1 + R0).  Therefore CX = BX + AX.  However, if we execute the DX
+instruction, the R0 points to DX, R1 to AX, R2 to BX and R3 to CX.  Now
+if we execute the add instruction, we will perform: BX = AX + DX.  If we
+execute the DX instruction again, R0 points to DX, R1 to DX, R2 to AX,
+and R3 to BX.  Now the add instruction would perform: AX = DX + DX.
+Now the registers can be returned to their original configuration by
+executing the following three instructions in order: CX, BX, AX.
+
+\begin{verbatim}
+No Operations: 2
+
+nop0
+nop1
+
+Memory Movement: 12
+
+AX     (make AX R0, R1 = R0, R2 = R1, R3 = R2, R3 is lost)
+BX     (make BX R0, R1 = R0, R2 = R1, R3 = R2, R3 is lost)
+CX     (make CX R0, R1 = R0, R2 = R1, R3 = R2, R3 is lost)
+DX     (make DX R0, R1 = R0, R2 = R1, R3 = R2, R3 is lost)
+movdd  (move R1 to R0)
+movdi  (move from R1 to ram [R0])
+movid  (move from ram [R1] to R0)
+movii  (move from ram [R1] to ram [R0])
+push   (push R0 onto stack)
+pop    (pop from stack into R0)
+put    (write R0 to output buffer, three modes:
+         #ifndef ICC: write R0 to own output buffer
+         #ifdef ICC:  write R0 to input buffer of cell at address R1,
+           or, if template, write R0 to input buffers of all creatures within
+           PutLimit who have the complementary get template)
+get    (read R0 from input port)
+
+Calculation: 8
+
+inc    (increment R0)
+dec    (decrement R0)
+add    (R2 = R1 + R0)
+sub    (R2 = R1 - R0)
+zero   (zero R0)
+not0   (flip low order bit of R0)
+shl    (shift left all bits of R0)
+not    (flip all bits of R0)
+
+Instruction Pointer Manipulation: 5
+
+ifz  (if   R1 == 0 execute next instruction, otherwise, skip it)
+iffl (if flag == 1 execute next instruction, otherwise, skip it)
+jmp  (jump to template, or if no template jump to address in R0)
+jmpb (jump back to template, or if no template jump back to address in R0)
+call (push IP + 1 onto the stack; if template, jump to complementary templ)
+
+Biological and Sensory: 5
+
+adr    (search outward for template, put address in R0, template size in R1,
+           and offset in R2, start search at offset +- R0)
+adrb   (search backward for template, put address in R0, template size in R1,
+           and offset in R2, start search at offset - R0)
+adrf   (search forward for template, put address in R0, template size in R1,
+           and offset in R2, start search at offset + R0)
+mal    (allocate amount of space specified in R0, prefer address at R1,
+           if R1 < 0 use best fit, place address of allocated block in R0)
+divide (cell division, the IP is offset by R0 into the daughter cell, the
+           values in the four CPU registers are transferred from mother to
+           daughter, but not the stack.  If !R1, eject genome from soup)
+
+Total: 32
+\end{verbatim}
+
+\subsection{Instruction Set \#3}
+
+Based on a design suggested and implemented by Tom Ray.  This includes
+certain features of the RPN Hewlett-Packard calculator.
+
+\begin{verbatim}
+No Operations: 2
+
+nop0
+nop1
+
+Memory Movement: 11
+
+rollu  (roll registers up:   AX = DX, BX = AX, CX = BX, DX = CX)
+rolld  (roll registers down: AX = BX, BX = CX, CX = DX, DX = AX)
+enter  (AX = AX, BX = AX, CX = BX, DX = CX, DX is lost)
+exch   (AX = BX, BX = AX)
+movdi  (move from BX to ram [AX])
+movid  (move from ram [BX] to AX)
+movii  (move from ram [BX] to ram [AX])
+push   (push AX onto stack)
+pop    (pop from stack into AX)
+put    (write AX to output buffer, three modes:
+         #ifndef ICC: write AX to own output buffer
+         #ifdef ICC:  write AX to input buffer of cell at address BX,
+           or, if template, write AX to input buffers of all creatures within
+           PutLimit who have the complementary get template)
+get    (read AX from input buffer)
+
+Calculation: 9
+
+inc    (increment AX)
+dec    (decrement AX)
+add    (AX = BX + AX, BX = CX, CX = DX))
+sub    (AX = BX - AX, BX = CX, CX = DX))
+zero   (zero AX)
+not0   (flip low order bit of AX)
+not    (flip all bits of AX)
+shl    (shift left all bits of AX)
+rand   (place random number in AX)
+
+Instruction Pointer Manipulation: 5
+
+ifz  (if   AX == 0 execute next instruction, otherwise, skip it)
+iffl (if flag == 1 execute next instruction, otherwise, skip it)
+jmp  (jump to template, or if no template jump to address in AX)
+jmpb (jump back to template, or if no template jump back to address in AX)
+call (push IP + 1 onto the stack; if template, jump to complementary templ)
+
+Biological and Sensory: 5
+
+adr    (search outward for template, put address in AX, template size in BX,
+           and offset in CX, start search at offset +- BX)
+adrb   (search backward for template, put address in AX, template size in BX,
+           and offset in CX, start search at offset - BX)
+adrf   (search forward for template, put address in AX, template size in BX,
+           and offset in CX, start search at offset + BX)
+mal    (allocate amount of space specified in BX, prefer address at AX,
+           if AX < 0 use best fit, place address of allocated block in AX)
+divide (cell division, the IP is offset by AX into the daughter cell, the
+           values in the four CPU registers are transferred from mother to
+           daughter, but not the stack. If !CX genome will be ejected from
+           the simulator)
+
+Total: 32
+\end{verbatim}
+
+\subsection{Instruction Set \#4}
+
+Based on a design suggested by Walter Tackett of
+Hughes Aircraft, and implemented by Tom Ray.  The special features of
+this instruction set are that all movement between registers of the
+cpu takes place via push and pop through the stack.  Also, all indirect
+addressing involves an offset from the address in the CX register.
+Also, the CX register is where most calculations take place.
+
+\begin{verbatim}
+No Operations: 2
+
+nop0
+nop1
+
+Memory Movement: 13
+
+movdi  (move from BX to ram [AX + CX])
+movid  (move from ram [BX + CX] to AX)
+movii  (move from ram [BX + CX] to ram [AX + CX])
+pushax (push AX onto stack)
+pushbx (push BX onto stack)
+pushcx (push CX onto stack)
+pushdx (push DX onto stack)
+popax  (pop from stack into AX)
+popbx  (pop from stack into BX)
+popcx  (pop from stack into CX)
+popdx  (pop from stack into DX)
+put    (write DX to output buffer, three modes:
+         #ifndef ICC: write DX to own output buffer
+         #ifdef ICC:  write DX to input buffer of cell at address CX,
+           or, if template, write DX to input buffers of all creatures within
+           PutLimit who have the complementary get template)
+get    (read DX from input port)
+
+Calculation: 7
+
+inc    (increment CX)
+dec    (decrement CX)
+add    (CX = CX + DX)
+sub    (CX = CX - DX)
+zero   (zero CX)
+not0   (flip low order bit of CX)
+shl    (shift left all bits of CX)
+
+Instruction Pointer Manipulation: 5
+
+ifz    (if   CX == 0 execute next instruction, otherwise, skip it)
+iffl   (if flag == 1 execute next instruction, otherwise, skip it)
+jmp    (jump to template, or if no template jump to address in AX)
+jmpb   (jump back to template, or if no template jump back to address in AX)
+call (push IP + 1 onto the stack; if template, jump to complementary templ)
+
+Biological and Sensory: 5
+
+adr    (search outward for template, put address in AX, template size in DX,
+           and offset in CX, start search at offset +- CX)
+adrb   (search backward for template, put address in AX, template size in DX,
+           and offset in CX, start search at offset - CX)
+adrf   (search forward for template, put address in AX, template size in DX,
+           and offset in CX, start search at offset + CX)
+mal    (allocate amount of space specified in CX, prefer address at AX,
+           if AX < 0 use best fit, place address of allocated block in AX)
+divide (cell division, the IP is offset by CX into the daughter cell, the
+           values in the four CPU registers are transferred from mother to
+           daughter, but not the stack.  If !DX genome will be ejected from
+           the simulator)
+
+Total: 32
+\end{verbatim}
+
+\newpage
+
+\section{APPENDIX B}
+
+This appendix contains the assembler source code for the 82 instruction
+ancestor written for instruction set four, and three descendant organisms
+that evolved from the ancestor.  The three descendants are derived from
+different runs, and represent forms found after optimization was apparently
+complete in each run.  The three evolved forms illustrate three levels
+of loop unrolling: 1) no unrolling, level 1, 2) unrolling to level 2,
+and 3) unrolling to level 3.
+
+\begin{verbatim}
+GENOTYPE: 0082aaa
+comments: ancestor for instruction set 4
+
+nop1    ; 010 110 01   0 beginning marker
+nop1    ; 010 110 01   1 beginning marker
+nop1    ; 010 110 01   2 beginning marker
+nop1    ; 010 110 01   3 beginning marker
+zero    ; 010 110 13   4 CX = 0, offset for search
+adrb    ; 010 110 1c   5 find start, AX = start + 4, DX = templ size
+nop0    ; 010 110 00   6 complement to beginning marker
+nop0    ; 010 110 00   7 complement to beginning marker
+nop0    ; 010 110 00   8 complement to beginning marker
+nop0    ; 010 110 00   9 complement to beginning marker
+pushax  ; 010 110 05  10 push start + 4 on stack
+popcx   ; 010 110 0b  11 pop start + 4 into CX
+sub     ; 010 110 12  12 CX = CX - DX, CX = start
+pushcx  ; 010 110 07  13 push start on stack
+zero    ; 010 110 13  14 CX = 0, offset for search
+adrf    ; 010 110 1d  15 find end, AX = end, CX = offset, DX = templ size
+nop0    ; 010 110 00  16 complement to end marker
+nop0    ; 010 110 00  17 complement to end marker
+nop0    ; 010 110 00  18 complement to end marker
+nop1    ; 010 110 01  19 complement to end marker
+pushax  ; 010 110 05  20 push end on stack
+popcx   ; 010 110 0b  21 pop end into CX
+inc     ; 010 110 0f  22 increment to include dummy instruction at end
+popdx   ; 010 110 0c  23 pop start into DX
+sub     ; 010 110 12  24 CX = CX - DX, AX = end, CX = size, DX = start
+nop1    ; 010 110 01  25 reproduction loop marker
+nop1    ; 010 110 01  26 reproduction loop marker
+nop0    ; 010 110 00  27 reproduction loop marker
+nop1    ; 010 110 01  28 reproduction loop marker
+mal     ; 010 110 1e  29 AX = daughter, CX = size, DX = mom
+call    ; 010 110 1a  30 call copy procedure
+nop0    ; 010 110 00  31 copy procedure complement
+nop0    ; 010 110 00  32 copy procedure complement
+nop1    ; 010 110 01  33 copy procedure complement
+nop1    ; 010 110 01  34 copy procedure complement
+divide  ; 010 110 1f  35 create daughter cell
+jmpb    ; 010 110 19  36 jump back to top of reproduction loop
+nop0    ; 010 110 00  37 reproduction loop complement
+nop0    ; 010 110 00  38 reproduction loop complement
+nop1    ; 010 110 01  39 reproduction loop complement
+nop0    ; 010 110 00  40 reproduction loop complement
+ifz     ; 010 110 16  41 dummy instruction to separate templates
+nop1    ; 010 110 01  42 copy procedure template
+nop1    ; 010 110 01  43 copy procedure template
+nop0    ; 010 110 00  44 copy procedure template
+nop0    ; 010 110 00  45 copy procedure template
+pushcx  ; 010 110 07  46 push size on stack
+pushdx  ; 010 110 08  47 push start on stack
+pushdx  ; 010 110 08  48 push start on stack
+popbx   ; 010 110 0a  49 pop start into BX
+nop1    ; 010 110 01  50 copy loop template
+nop0    ; 010 110 00  51 copy loop template
+nop1    ; 010 110 01  52 copy loop template
+nop0    ; 010 110 00  53 copy loop template
+dec     ; 010 110 10  54 decrement size
+movii   ; 010 110 04  55 move from [BX + CX] to [AX + CX]
+ifz     ; 010 110 16  56 test when to exit loop
+jmp     ; 010 110 18  57 exit loop
+nop0    ; 010 110 00  58 copy procedure exit complement
+nop1    ; 010 110 01  59 copy procedure exit complement
+nop0    ; 010 110 00  60 copy procedure exit complement
+nop0    ; 010 110 00  61 copy procedure exit complement
+jmpb    ; 010 110 19  62 jump to top of copy loop
+nop0    ; 010 110 00  63 copy loop complement
+nop1    ; 010 110 01  64 copy loop complement
+nop0    ; 010 110 00  65 copy loop complement
+nop1    ; 010 110 01  66 copy loop complement
+ifz     ; 010 110 16  67 dummy instruction to separate jmp from template
+nop1    ; 010 110 01  68 copy procedure exit template
+nop0    ; 010 110 00  69 copy procedure exit template
+nop1    ; 010 110 01  70 copy procedure exit template
+nop1    ; 010 110 01  71 copy procedure exit template
+popdx   ; 010 110 0c  72 pop start into DX
+popcx   ; 010 110 0b  73 pop size into CX
+popax   ; 010 110 09  74 pop call IP into AX
+jmp     ; 010 110 18  75 jump to call (return)
+ifz     ; 010 110 16  76 dummy instruction to separate jmp from template
+nop1    ; 010 110 01  77 end marker
+nop1    ; 010 110 01  78 end marker
+nop1    ; 010 110 01  79 end marker
+nop0    ; 010 110 00  80 end marker
+ifz     ; 010 110 16  81 dummy instruction to separate creatures
+
+GENOTYPE: 0023awn
+
+call    ; 010 000 1a   0 push ip + 1 on stack
+popcx   ; 010 000 0b   1 pop ip + 1 into CX
+dec     ; 010 000 10   2 CX = start
+pushcx  ; 010 000 07   3 save start on stack
+zero    ; 010 000 13   4 CX = 0
+divide  ; 010 000 1f   5 cell division, will fail first time
+adrf    ; 010 000 1d   6 AX = end + 1
+nop0    ; 010 000 00   7
+pushax  ; 010 000 05   8 push end address on stack
+popcx   ; 010 000 0b   9 CX = end address + 1
+popdx   ; 010 000 0c  10 DX = start address
+sub     ; 010 000 12  11 (CX = CX - DX) CX = size
+adr     ; 010 000 1b  12 this instruction will fail
+pushdx  ; 010 000 08  13 put start address on stack
+mal     ; 010 000 1e  14 allocate daughter, AX = start of daughter
+popbx   ; 010 000 0a  15 BX = start address
+nop0    ; 010 000 00  16 top of copy loop
+dec     ; 010 000 10  17 decrement size
+movii   ; 010 000 04  18 copy byte to daughter
+ifz     ; 010 000 16  19 if CX == 0 jump to address in AX (start of daughter)
+jmp     ; 010 000 18  20
+jmpb    ; 010 000 19  21 jump back to line 17 (top of copy loop)
+nop1    ; 010 000 01  22
+
+GENOTYPE: 0024aah
+
+call    ; 010 000 1a   0 push ip + 1 on stack
+popcx   ; 010 000 0b   1 pop ip + 1 into CX
+dec     ; 010 000 10   2 CX = start
+pushcx  ; 010 000 07   3 save start on stack
+zero    ; 010 000 13   4 CX = 0
+adrf    ; 010 000 1d   5 AX = end + 1
+nop1    ; 010 000 01   6
+pushax  ; 010 000 05   7 push end address on stack
+divide  ; 010 000 1f   8 cell division, will fail first time
+popcx   ; 010 000 0b   9 CX = end address + 1
+popdx   ; 010 000 0c  10 DX = start address
+sub     ; 010 000 12  11 (CX = CX - DX) CX = size
+pushdx  ; 010 000 08  12 put start address on stack
+popbx   ; 010 000 0a  13 BX = start address
+mal     ; 010 000 1e  14 allocate daughter, AX = start of daughter
+nop1    ; 010 000 01  15 top of copy loop
+dec     ; 010 000 10  16 decrement size
+movii   ; 010 000 04  17 copy byte to daughter
+dec     ; 010 000 10  18 decrement size
+movii   ; 010 000 04  19 copy byte to daughter
+ifz     ; 010 000 16  20 if CX == 0 jump to address in AX (start of daughter)
+jmp     ; 010 000 18  21
+jmpb    ; 010 000 19  22 jump back to line 16 (top of copy loop)
+nop0    ; 010 000 00  23
+
+GENOTYPE: 0035bfj
+
+call    ; 010 000 1a   0 push ip + 1 on stack
+popcx   ; 010 000 0b   1 pop ip + 1 into CX
+dec     ; 010 000 10   2 CX = start
+pushcx  ; 010 000 07   3 save start on stack
+adrf    ; 010 000 1d   4 dummy instruction
+divide  ; 010 000 1f   5 cell division, will fail first time
+movid   ; 010 000 03   6 dummy instruction (AX = 0x1a, call instruction)
+zero    ; 010 000 13   7 CX = 0
+adrf    ; 010 000 1d   8 AX = end + 1
+nop1    ; 010 000 01   9
+pushax  ; 010 000 05  10 push end address on stack
+popcx   ; 010 000 0b  11 CX = end address + 1
+adrf    ; 010 000 1d  12 dummy instruction
+popdx   ; 010 000 0c  13 DX = start address
+pushdx  ; 010 000 08  14 push start address on stack
+pushdx  ; 010 000 08  15 push start address on stack
+sub     ; 010 000 12  16 (CX = CX - DX) CX = size
+mal     ; 010 000 1e  17 allocate daughter, AX = start of daughter
+pushdx  ; 010 000 08  18 push start address on stack
+popbx   ; 010 000 0a  19 BX = start address
+pushbx  ; 010 000 06  20 push start address on stack
+mal     ; 010 000 1e  21 allocate daughter, AX = start of daughter (fails)
+put     ; 010 000 0d  22 dummy instruction (write to get buffer of other creat)
+nop1    ; 010 000 01  23
+nop1    ; 010 000 01  24 top of copy loop
+dec     ; 010 000 10  25 decrement size
+movii   ; 010 000 04  26 copy byte to daughter
+dec     ; 010 000 10  27 decrement size
+movii   ; 010 000 04  28 copy byte to daughter
+ifz     ; 010 000 16  29 if CX == 0 jump to address in AX (start of daughter)
+jmpb    ; 010 000 19  30
+dec     ; 010 000 10  31 decrement size
+movii   ; 010 000 04  32 copy byte to daughter
+jmpb    ; 010 000 19  33 jump back to line 25 (top of copy loop)
+nop0    ; 010 000 00  34
+\end{verbatim}
+
+\newpage
+
+\section{APPENDIX C}
+
+Assembler code for the central copy loop of the ancestor of instruction
+set one (80aaa) and a descendant after fifteen billion instructions
+(72etq).  Within the loop, the ancestor does each of the following
+operations once: copy instruction (51), decrement CX (52), increment
+AX (59) and increment BX (60).  The descendant performs each of the
+following operations three times within the loop: copy instruction
+(15, 22, 26), increment AX (20, 24, 31) and increment BX (21, 25, 32).
+The decrement CX operation occurs five times within the loop
+(16, 17, 19, 23, 27).  Instruction 28 flips the low order bit of the
+CX register.  Whenever this latter instruction is reached, the value
+of the low order bit is one, so this amounts to a sixth instance of
+decrement CX.  This means that there are two decrements for every
+increment.  The reason for this is related to another adaptation of
+this creature.  When it calculates its size, it shifts left (12) before
+allocating space for the daughter (13).  This has the effect of
+allocating twice as much space as is actually needed to accommodate
+the genome.  The genome of the creature is 36 instructions long, but
+it allocates a space of 72 instructions.  This occurred in an
+environment where the CPU time slice size was set equal to the size of
+the cell.  In this way the creatures were able to garner twice as much
+energy.  However, they had to compliment this change by doubling the
+number of decrements in the loop.
+
+\newpage
+
+\begin{verbatim}
+nop1    ; 01  47 copy loop template      COPY LOOP OF 80AAA
+nop0    ; 00  48 copy loop template
+nop1    ; 01  49 copy loop template
+nop0    ; 00  50 copy loop template
+movii   ; 1a  51 move contents of [BX] to [AX] (copy instruction)
+dec_c   ; 0a  52 decrement CX
+ifz     ; 05  53 if CX = 0 perform next instruction, otherwise skip it
+jmp     ; 14  54 jump to template below (copy procedure exit)
+nop0    ; 00  55 copy procedure exit compliment
+nop1    ; 01  56 copy procedure exit compliment
+nop0    ; 00  57 copy procedure exit compliment
+nop0    ; 00  58 copy procedure exit compliment
+inc_a   ; 08  59 increment AX (point to next instruction of daughter)
+inc_b   ; 09  60 increment BX (point to next instruction of mother)
+jmp     ; 14  61 jump to template below (copy loop)
+nop0    ; 00  62 copy loop compliment
+nop1    ; 01  63 copy loop compliment
+nop0    ; 00  64 copy loop compliment
+nop1    ; 01  65 copy loop compliment (10 instructions executed per loop)
+
+
+shl     ; 000 03  12 shift left CX        COPY LOOP OF 72ETQ
+mal     ; 000 1e  13 allocate daughter cell
+nop0    ; 000 00  14 top of loop
+movii   ; 000 1a  15 copy instruction
+dec_c   ; 000 0a  16 decrement CX
+dec_c   ; 000 0a  17 decrement CX
+jmpb    ; 000 15  18 junk
+dec_c   ; 000 0a  19 decrement CX
+inc_a   ; 000 08  20 increment AX
+inc_b   ; 000 09  21 increment BX
+movii   ; 000 1a  22 copy instruction
+dec_c   ; 000 0a  23 decrement CX
+inc_a   ; 000 08  24 increment AX
+inc_b   ; 000 09  25 increment BX
+movii   ; 000 1a  26 copy instruction
+dec_c   ; 000 0a  27 decrement CX
+not0    ; 000 02  28 flip low order bit of CX, equivalent to dec_c
+ifz     ; 000 05  29 if CX == 0 do next instruction
+ret     ; 000 17  30 exit loop
+inc_a   ; 000 08  31 increment AX
+inc_b   ; 000 09  32 increment BX
+jmpb    ; 000 15  33 go to top of loop (6 instructions per copy)
+nop1    ; 000 01  34 bottom of loop    (18 instructions executed per loop)
+\end{verbatim}
+
+\end{document}

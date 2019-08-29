@@ -1,0 +1,150 @@
+The license agreement on the DOS version of Tierra does not allow free
+distribution.  It is however for sale.  The Beagle DOS executable can
+however be freely distributed.  The following is a flyer announcing
+the availability of the DOS version:
+
+                   Announcing the Availability of:
+                     The Tierra Simulator V3.11
+                     Beagle Explorer and Tools
+                     Source Code & Executables
+
+The Tierra Simulator has been widely reported in the media:
+
+New York Times (Malcolm Browne, USA) August 27, 1991: ``Lively Computer
+Creation Blurs Definition of Life.  Software forms, obeying Darwin's rules,
+vie to avoid the `reaper'.''
+
+Nature (John Maynard Smith, UK) February 27, 1992: ``Byte-sized evolution.
+...we badly need a comparative biology.  So far, we have been able to study
+only one evolving system and we cannot wait for interstellar flight to
+provide us with a second.  If we want to discover generalizations about
+evolving systems, we will have to look at artificial ones.  Ray's study is a
+good start.''
+
+Science News (John Travis, USA) August 10, 1991: ``Digital Darwinism:
+Electronic Ecosystem.  Evolving `life' flourishes and surprises in a
+novel electronic world''.
+
+Scientific American (John Rennie, USA) January 1992: ``Cybernetic Parasites...
+Tierra... has been hailed as the most sophisticated artificial-life program
+yet developed...''
+
+New Scientist (Roger Lewin, UK) February 22, 1992: ``Life and death in a
+digital world.  No one can turn back the evolutionary clock, but we can
+follow the fate of a rich menagerie of artificial organisms as they evolve
+in a model world.''
+
+The Economist (Anon, UK) January 4, 1992: ``The meaning of `life'.
+In order to understand the origin of life, scientists are switching from the
+chemistry set to the computer.  In the process, they are beginning to
+understand what it means to be alive.''
+
+Actuel (Ariel Kyrou, France) April 1992: ``Visite Guidee Aux Extremes De
+La Science: La Vie Artificielle.  Etes-vous pr\^{e}ts \`{a} entrer dans
+l'univers vertigineux de la vie artificielle?  Un champ scientifique tout neuf
+sur lequel se penchent les grosses t\^{e}tes et les Nobel de labos
+am\'{e}ricains.''
+
+The Chronicle of Higher Education (David Wilson, USA) December 4, 1991:
+``Approaching Artificial Life on a Computer.  Survival-of-the-fittest
+electronic organisms dramatically illustrate Darwinian principles.''
+
+Mikrobitti (Pekka Tolonen, Finland) November 1991: ``Olemmeko humanoiden
+biologinen koe?  Tierra simuloi el\"{a}m\"{a}\"{a}.''
+
+Europeo (Giovanni Caprara, Italy) September 1991: ``Anche il computer ha
+fatto un figlio.  Un biologo americano ha creato un software capace di
+elaborare programmi che si evolvono da soli.''
+
+GenteMoney (Riccardo Orizio, Italy) November 1991: ``Cos\`{\i} ho dato
+la vita al software.''
+
+Computerworld (Michael Alexander, USA) September 30, 1991: ``Tierra adds to
+evolutionary studies.  A computerized world created on an IBM PC could
+have real-world benefits for scientists.''
+
+Sueddeutsche Zeitung (Konrad Peters, Germany) October 21, 1991:
+``Die Evolution im Computer.  `K\"{u}nstliches Leben' hilft Biologen und
+Informatikern auf die Spr\"{u}nge.''
+
+Super Interessante (Anon, Brazil) November 1991: ``A vida dentro do
+computador.''
+
+Technology Review (Susan Scheck, USA) April 14, 1991: ``Is It Live Or Is
+It Memory?''
+
+Corriere Della Sera (Giovanni Capara, Italy) August 28, 1991: ``Pronto in
+USA il programma che si riproduce.  Il computer `padre' crea vita
+informatica.''
+
+Fakta (Tom Ottmar, Norway) March 1992: ``Den Lever!  En `skabning', der
+best\aa r af nuller og \'{e}nere, er vokset ud af indamaden p\aa \ en
+computer og er blevet en videnskabelig sensation i USA.''
+
+Associated Press (Theresa Humphrey, USA) October 1991: ``Bringing life to
+computer.  U of D biologist's program is self-replicating, shows evolution.''
+
+Hovedomr\aa det (Jakob Skipper, Denmark) December 6, 1990: ``Kunstigt liv.
+Nu kommer det kunstige liv.  En voksende gruppe af dataloger, biologer,
+fysikere, psykologer og mange andre forskere efterlinger p\aa \ computer
+det naturlige liv.''
+
+              You may now obtain Tierra for yourself
+
+Tierra is available by anonymous ftp from tierra.slhs.udel.edu [128.175.41.34]
+and life.slhs.udel.edu [128.175.41.33] in the directories: DOS/, almond/,
+beagle/, doc/, and tierra/.
+
+If you do not have ftp access you may obtain everything on DOS disks
+by making a check for $65 (US dollars drawn on a US bank) payable to
+Virtual Life.  $20 for an upgrade from earlier versions.  Specify 3.5" or
+5.25" disks.  Send the check to one of the following addresses:
+
+Tom Ray                (January through August)
+Santa Fe Institute
+1660 Old Pecos Trail
+Suite A
+Santa Fe, NM 87501
+
+Virtual Life           (September through December)
+P.O. Box 625
+Newark, Delaware 19715
+
+     The DOS disks include DOS executables, source code and extensive
+documentation.  The DOS disks include an easy installation program.  The
+source code can be compiled on DOS or Unix systems.
+
+The Tierra Simulator has a new user interface which allows you to graphically
+view the distributions of size and genotype classes during a run.
+
+The disk set includes several new (and some old) tools:
+
+rnd_inst - A tool for altering the physics of the system by randomly mapping
+     opcodes to instructions, with some optional restrictions on hamming
+     distances between pairs of instructions.  The output is an opcode.map
+     file.
+
+probe - A tool for surveying the genebank, with various optional selection
+     criteria (a new tool, but proving very useful).
+
+tieout - A tool for generating x,y data from the tierra.log file.  This is
+     used on a regular basis to generate graphics of size of creatures over
+     time during a run.
+
+diverse - A tool that reads the birth and death records (break.X files) output
+     by Tierra and transforms them into various measures of diversity, for
+     graphical or other analysis.
+
+beagle - A DOS only tool which provides a variety of graphical displays of
+     the output from the Tierra simulator.  It is used after a run, and is
+     highly recommended as a tool for analyzing the results of a run.
+
+run_info - A function of the beagle program, also available as a stand-alone,
+     due to its hunger for memory.
+
+fragment - A function of the beagle program, also available as a stand-alone,
+     due to its hunger for memory.
+
+Many new genomes are now available.  These are the genomes of most of the
+creatures described in the publications and videos: parasites,
+hyper-parasites, social creatures, cheaters, etc.

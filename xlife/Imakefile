@@ -1,0 +1,22 @@
+LOCAL_LIBRARIES = $(XTOOLLIB) $(XLIB)
+
+# Define HAVE_RANDOM if you have the improved random() call in libc.
+# If you haven't, then xlife will use rand().
+
+DEFINES = -DPATFILE=\"$(LIBDIR)/xlife.pat\" # -DHAVE_RANDOM -DWINDOWDEBUG
+CDEBUGFLAGS = -O #-g
+
+# Uncomment if you want xlife2 as well.
+
+PROGRAMS = xlife xlife2
+
+OBJS1 = xlife.o
+SRCS1 = xlife.c
+
+OBJS2 = xlife2.o
+SRCS2 = xlife2.c
+
+ComplexProgramTarget_1(xlife, $(LOCAL_LIBRARIES),)
+InstallNonExec(xlife.pat, $(LIBDIR))
+
+ComplexProgramTarget_2(xlife2, $(LOCAL_LIBRARIES),)

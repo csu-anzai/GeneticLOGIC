@@ -1,0 +1,86 @@
+
+format: 3  bits: 2  EX      TC      TP      MF      MT      MB      
+genotype: 0072aaa  parent genotype: 0072fon
+1st_daughter:  flags: 14  inst: 232  mov_daught: 36          breed_true: 1
+2nd_daughter:  flags: 13  inst: 228  mov_daught: 36          breed_true: 0
+Origin: InstExe: 15289,0  clock: 0  Thu Jan 01 -5:00:00 1970
+MaxPropPop: 0.0024  MaxPropInst: 0.0012 mpp_time: 0,0 
+ploidy: 1  track: 0
+comments: a phenomenal example of optimization through evolution,
+involving the unrolling of the copy loop.  Was originally named 0072etq,
+has been renamed to 0072aaa.
+
+track 0: prot
+          xwr
+nop1    ; 010 000 01   0
+adrb    ; 010 000 1c   1
+nop0    ; 010 000 00   2
+divide  ; 010 000 1f   3
+sub_ac  ; 010 000 07   4
+movab   ; 010 000 19   5
+adrf    ; 010 000 1d   6
+nop0    ; 010 000 00   7
+inc_a   ; 010 000 08   8
+call    ; 010 000 16   9
+sub_ab  ; 010 000 06  10
+pushbx  ; 010 000 0d  11
+shl     ; 010 000 03  12
+mal     ; 010 000 1e  13
+nop0    ; 010 000 00  14
+movii   ; 010 000 1a  15
+dec_c   ; 010 000 0a  16
+dec_c   ; 010 000 0a  17
+jmpb    ; 010 000 15  18
+dec_c   ; 010 000 0a  19
+inc_a   ; 010 000 08  20
+inc_b   ; 010 000 09  21
+movii   ; 010 000 1a  22
+dec_c   ; 010 000 0a  23
+inc_a   ; 010 000 08  24
+inc_b   ; 010 000 09  25
+movii   ; 010 000 1a  26
+dec_c   ; 010 000 0a  27
+not0    ; 010 000 02  28
+ifz     ; 010 000 05  29
+ret     ; 010 000 17  30
+inc_a   ; 010 000 08  31
+inc_b   ; 010 000 09  32
+jmpb    ; 010 000 15  33
+nop1    ; 010 000 01  34
+ifz     ; 010 000 05  35
+nop1    ; 010 000 01  36
+adrb    ; 010 000 1c  37
+nop0    ; 010 000 00  38
+divide  ; 010 000 1f  39
+sub_ac  ; 010 000 07  40
+movab   ; 010 000 19  41
+adrf    ; 010 000 1d  42
+nop0    ; 010 000 00  43
+inc_a   ; 010 000 08  44
+call    ; 010 000 16  45
+sub_ab  ; 010 000 06  46
+pushbx  ; 010 000 0d  47
+shl     ; 010 000 03  48
+mal     ; 010 000 1e  49
+nop0    ; 010 000 00  50
+movii   ; 010 000 1a  51
+dec_c   ; 010 000 0a  52
+dec_c   ; 010 000 0a  53
+jmpb    ; 010 000 15  54
+dec_c   ; 010 000 0a  55
+inc_a   ; 010 000 08  56
+inc_b   ; 010 000 09  57
+movii   ; 010 000 1a  58
+dec_c   ; 010 000 0a  59
+inc_a   ; 010 000 08  60
+inc_b   ; 010 000 09  61
+movii   ; 010 000 1a  62
+dec_c   ; 010 000 0a  63
+not0    ; 010 000 02  64
+ifz     ; 010 000 05  65
+ret     ; 010 000 17  66
+inc_a   ; 010 000 08  67
+inc_b   ; 010 000 09  68
+jmpb    ; 010 000 15  69
+nop1    ; 010 000 01  70
+ifz     ; 010 000 05  71

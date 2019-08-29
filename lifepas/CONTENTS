@@ -1,0 +1,12 @@
+ Length  Method   Size  Ratio   Date    Time   CRC-32     Name ("^" ==> case
+ ------  ------   ----  -----   ----    ----   ------     ----   conversion)
+  24141  Deflate   6368  74%  10-07-93  09:08  478c993a  ^lifew2d.pas
+   4120  Deflate   1796  56%  12-09-93  11:01  09b452e7  ^hr_timer.pas
+   2000  Deflate    674  66%  08-13-93  14:34  4c343884  ^randlfsr.pas
+   1515  Deflate    537  65%  09-16-91  15:39  4df6858c  ^keyboard.pas
+   1464  Deflate    514  65%  10-07-93  08:48  07ae593f  ^dolined.asm
+   1162  Deflate    833  28%  10-07-93  08:49  fb055806  ^dolined.obj
+  25680  Deflate  17481  32%  10-07-93  09:08  23cab7ad  ^lifew2d.exe
+    688  Deflate    429  38%  05-13-94  15:07  18050ebb  ^readme
+ ------          ------  ---                              -------
+  60770           28632  53%                              8      

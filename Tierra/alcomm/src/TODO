@@ -1,0 +1,38 @@
+
+   need some way of breaking out of the waiting state when waiting for a reply
+   if for some reason the reply doesn't happen... is there any possibility of
+   this at all??  I don't *think* so, but verify.
+     |
+     \---> this should have been fixed by requiring the query handler to
+	   call MGenReply.  if it doesn't, the mlayer issues a bogus (error)
+	   reply which satisfies the blocking end, so there should never be
+	   a problem.
+
+MAY WANT TO PROVIDE a function to do messages, to do queries, etc... so that
+the user doesn't have to use MGenRequest and MGenRequestWithReply and get
+himself into trouble!  Think about it - it's just a few lines!
+
+use MrERROR to signal out-of-range messages, queries, etc.
+
+when enabling a new dataflow, should we automatically call the Initialise
+procedure (if one is registered) from within MDataflowControl(), or should
+we enter a request in the queue and deal with it separately?
+  |
+  \---> right now, it's handled inside MDataflowControl().
+
+look over AL and M layers wherever handles are used; make sure there's enough
+verification for valid handles... don't want to crash something.
+
+wherever status return values are used, make sure variable holding them
+has value either ALtStatus or MtStatus (depending on package)
+
+=============================================================================
+
+tierra-end TODO:
+
+replace instances of ALGripe in tierra with whatever error reporting
+scheme is to be used.
+
+provide a mechanism for rerouting errors (but still through ALGripe) wherever
+user code requires - alerror.c will have to change slightly.  maybe a
+callback-type approach would work?

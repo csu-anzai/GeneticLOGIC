@@ -1,0 +1,88 @@
+
+format: 3  bits:
+genotype: 0082aaa  parent genotype: 0666god
+
+track 0: prot
+          xwr
+nop1    ; 010 110 01   0 beginning marker
+nop1    ; 010 110 01   0 beginning marker
+nop1    ; 010 110 01   0 beginning marker
+nop1    ; 010 110 01   0 beginning marker
+zero    ; 010 110 01   0 cx = 0, offset for search
+adrb    ; 010 110 01   0 find start, ax = start + 4, dx = templ size
+nop0    ; 010 110 01   0 complement to beginning marker
+nop0    ; 010 110 01   0 complement to beginning marker
+nop0    ; 010 110 01   0 complement to beginning marker
+nop0    ; 010 110 01   0 complement to beginning marker
+pushax  ; 010 110 01   0 push start + 4 on stack
+popcx   ; 010 110 01   0 pop start + 4 into cx
+sub     ; 010 110 01   0 cx = cx - dx, cx = start
+pushcx  ; 010 110 01   0 push start on stack
+zero    ; 010 110 01   0 cx = 0, offset for search
+adrf    ; 010 110 01   0 find end, ax = end, cx = offset, dx = templ size
+nop0    ; 010 110 01   0 complement to end marker
+nop0    ; 010 110 01   0 complement to end marker
+nop0    ; 010 110 01   0 complement to end marker
+nop1    ; 010 110 01   0 complement to end marker
+pushax  ; 010 110 01   0 push end on stack
+popcx   ; 010 110 01   0 pop end into cx
+inc     ; 010 110 01   0 increment to include dummy instruction at end
+popdx   ; 010 110 01   0 pop start into dx
+sub     ; 010 110 01   0 cx = cx - dx, ax = end, cx = size, dx = start
+nop1    ; 010 110 01   0 reproduction loop marker
+nop1    ; 010 110 01   0 reproduction loop marker
+nop0    ; 010 110 01   0 reproduction loop marker
+nop1    ; 010 110 01   0 reproduction loop marker
+mal     ; 010 110 01   0 ax = daughter, cx = size, dx = mom
+call    ; 010 110 01   0 call copy procedure
+nop0    ; 010 110 01   0 copy procedure complement
+nop0    ; 010 110 01   0 copy procedure complement
+nop1    ; 010 110 01   0 copy procedure complement
+nop1    ; 010 110 01   0 copy procedure complement
+divide  ; 010 110 01   0 create daughter cell
+jmpb    ; 010 110 01   0 jump back to top of reproduction loop
+nop0    ; 010 110 01   0 reproduction loop complement
+nop0    ; 010 110 01   0 reproduction loop complement
+nop1    ; 010 110 01   0 reproduction loop complement
+nop0    ; 010 110 01   0 reproduction loop complement
+ifz     ; 010 110 01   0 dummy instruction to separate templates
+nop1    ; 010 110 01   0 copy procedure template
+nop1    ; 010 110 01   0 copy procedure template
+nop0    ; 010 110 01   0 copy procedure template
+nop0    ; 010 110 01   0 copy procedure template
+pushcx  ; 010 110 01   0 push size on stack
+pushdx  ; 010 110 01   0 push start on stack
+pushdx  ; 010 110 01   0 push start on stack
+popbx   ; 010 110 01   0 pop start into bx
+nop1    ; 010 110 01   0 copy loop template
+nop0    ; 010 110 01   0 copy loop template
+nop1    ; 010 110 01   0 copy loop template
+nop0    ; 010 110 01   0 copy loop template
+dec     ; 010 110 01   0 decrement size
+movii   ; 010 110 01   0 move from [bx + cx] to [ax + cx]
+ifz     ; 010 110 01   0 test when to exit loop
+jmp     ; 010 110 01   0 exit loop
+nop0    ; 010 110 01   0 copy procedure exit complement
+nop1    ; 010 110 01   0 copy procedure exit complement
+nop0    ; 010 110 01   0 copy procedure exit complement
+nop0    ; 010 110 01   0 copy procedure exit complement
+jmpb    ; 010 110 01   0 jump to top of copy loop
+nop0    ; 010 110 01   0 copy loop complement
+nop1    ; 010 110 01   0 copy loop complement
+nop0    ; 010 110 01   0 copy loop complement
+nop1    ; 010 110 01   0 copy loop complement
+ifz     ; 010 110 01   0 dummy instruction to separate jmp from template
+nop1    ; 010 110 01   0 copy procedure exit template
+nop0    ; 010 110 01   0 copy procedure exit template
+nop1    ; 010 110 01   0 copy procedure exit template
+nop1    ; 010 110 01   0 copy procedure exit template
+popdx   ; 010 110 01   0 pop start into dx
+popcx   ; 010 110 01   0 pop size into cx
+popax   ; 010 110 01   0 pop call IP into ax
+jmp     ; 010 110 01   0 jump to call (return)
+ifz     ; 010 110 01   0 dummy instruction to separate jmp from template
+nop1    ; 010 110 01   0 end marker
+nop1    ; 010 110 01   0 end marker
+nop1    ; 010 110 01   0 end marker
+nop0    ; 010 110 01   0 end marker
+ifz     ; 010 110 01   0 dummy instruction to separate creatures

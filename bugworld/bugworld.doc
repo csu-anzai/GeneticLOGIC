@@ -1,0 +1,324 @@
+BUGWORLD - Copyright 1993 Martyn Amos
+
+1. INTRODUCTION
+
+BugWorld is a simple introduction to the world of Genetic Algorithms
+(GAs). A virtual physical environment is created within the computer,
+which is then populated by various creatures, or "bugs", composed entirely
+of machine instructions (cf. Tierra).
+
+The environment may be visualized as a 2D, toroidal grid, the size of which
+may be specified at the start of each simulation. At the start of each
+generation, the bugs are randomly distributed over the grid.
+
+The bugs compete for both energy and material resources. The
+energy resource is represented by food items distributed around the
+environment. Bugs may eat this food, which increases their energy 
+level. Bugs lose energy at a constant rate, and must occasionally replace
+it. If a bug's energy level reaches zero, it becomes exhausted and must rest
+for a certain period of time, after which its energy level is restored to
+its initial value.
+
+The material resource is represented by items of litter. The more litter
+items a bug (litterbug, geddit?!) collects, the more successful it is
+deemed to be. Both resources are also randomly distributed at the start
+of each generation. Food and litter items are generated anew (ie. each
+generations is faced with a brand-new, unique environment).
+
+2. THE POPULATION
+
+The genome of the population members consists of a sequence of machine
+instructions that encode the organism's behaviour. There are two
+species of organism - LitterBugs and Bullies. LitterBugs must move around
+the environment, foraging for food and collecting litter. At the end of
+each generation, certain LitterBugs are selected as parent of the next
+generation.
+
+Bullies are predators in that their sole task is to attack LitterBugs and
+deplete their litter collections. Bullies do not require food and do not
+breed - they have a fixed genome.
+
+At the start of each simulation, each LitterBug has a pseudo-random genome
+assigned to it.
+
+3. THE VIRTUAL COMPUTER
+
+Each organism has associated with it a program counter (PC) and
+several registers/flags:
+
+	- memory register (integer)
+	- energy level register (integer)
+	- current direction register ([N|S|E|W])
+	- resting register (integer)
+	- litter collected register (integer)
+	- organism type flag ([L|B])
+	- exhausted flag (Boolean)
+
+4. THE BUGWORLD LANGUAGE
+
+The complete list of instructions is given below:
+
+Opcode	Mnemonic	Interpretation
+
+00	LOOK		"Look" in the current direction. A value
+			corresponding to what can be seen is placed in
+			the memory register:
+
+				0: nothing
+				1: food
+				2: litter
+				3: LitterBug
+				4: Bully
+
+01	MEMUP		Increment value in memory register
+02	MEMDOWN		Decrement value in memory register
+03	RESTART		Jump to start of program (ie. PC = 0)
+04	MOVE x		Move forward with an x% probability
+05	TURN x		Turn left or right with an x% probability
+06	JUMP x		Jump to program line x
+07	REMEMBER x	Place x in memory register
+08	REST x		Rest for x cycles (consume no energy)
+09	ENERGY x y	If energy < x, jump to program line y
+10	LESS x y	If value in memory < x, jump to program line y
+11	MORE x y	If value in memory > x, jump to program line y
+12	EQUAL x y	If value in memory = x, jump to program line y
+
+Each gene (ie. program line)  consists of three components, which are 
+copied "en bloc". It is important to note that when an organism's genome is
+first created it is only pseudo-random, in that the different fields of the
+genes must remain within their defined limits. For example, the gene
+04 103 ??? would be illegal, as it corresponds to MOVE 103%. This is
+clearly illegal.
+
+The Bully's fixed genome corresponds to the program below:
+
+	0	LOOK		(in the current direction)
+	1	EQUAL 3 5	(is LitterBug visible?)
+	2	TURN 75%	(didn't jump, so try to turn)
+	3	MOVE 75%	(move in another direction)
+	4 	RESTART		(and then look again...)
+	5	MOVE 100%	(move towards LitterBug)
+	6	RESTART		(continue this process...)
+
+5. THE SELECTION MECHANISM
+
+Several selection schemes are implemented. The choice of mechanism can
+greatly affect the rate of evolution (ie. how quickly a reasonably efficient
+LitterBug evolves).
+
+5.1 Random Selection
+
+It is perhaps difficult to justify calling random selection of parents a
+selection "strategy" at all. It simply involves choosing two members of the
+population, purely at random, as parents. Each organism, regardless of its
+fitness has an equal chance of selection. This mechanism is employed
+mainly to demonstrate that other strategies are more effective.
+
+5.2 Roulette Wheel Selection
+
+The most commonly used strategy used in GA applications is probably stochastic
+selection with replacement (or "roulette wheel" selection). We define the
+probability that organism x is chosen as a parent as
+
+                f(x)
+	P(x) =  ----
+                f(p)
+
+where f(x) is organism's fitness
+      f(p) is total fitness of entire population
+
+This method is called "roulette wheel" because each individual is assigned
+a wedge of an imaginary roulette wheel, the size of the wedge being     
+proportional to the individual's fitness taken as a proportion of the total
+fitness of the entire population. The greater an individual's fitness,
+the larger the likelihood that the roulette ball will stop within that
+individual's wedge, thus selecting it as a parent.
+
+"Pure" roulette wheel selection uses this method to select both parents.
+
+5.3 Impure Roulette Wheel Selection
+
+This uses a combination of pure roulette wheel and random selection, one 
+parent being selected by each method.
+
+5.4 Tournament Selection
+
+Each parent is selected by selecting two individuals at random and comparing 
+their fitnesses. The probability that the fittest individual "wins" the
+encounter and is selected as a parent is usually set to 75%. This procedure
+is performed twice, once to select each parent.
+
+6. FITNESS MEASUREMENT
+
+So far we have assumed that a fitness measurement is available, without
+discussing how it may be obtained. A reasonable measure is the amount of
+litter that a LitterBug collects within a single generation, so we will
+use that.
+
+7. REPRODUCTION
+
+Reproduction involves taking two parent LitterBugs and combining their
+genomes to create an offspring's genome. When this occurs, a random section
+of one parent's genome is joined to a section of the other parent's
+genome, a process known as crossover.
+
+For example, if parent A's genome is
+
+	##########
+
+and parent B's genome is 
+
+ 	XXXXXXXXXX
+
+with a totally arbitrary crossover point denoted by |, we get
+
+	##########
+           | 		= ####XXXXXX
+	XXXXXXXXXX
+
+as the offspring's genome.
+
+8. MUTATION
+
+While copying instructions during reproduction, genes are randomly altered
+at some rate. The copy mutation rate is set to an artificially high
+value (1%) in order to illustrate the concept.
+
+Usually, mutation involves "flipping" one bit of the genome, but because
+of the brittle nature of the genome, flipping a bit within a gene may
+result in an invalid instruction. Therefore, mutation is (very) loosely
+emulated by randomly creating a whole new gene and substituting it for the
+one selected for mutation.
+
+10. BUGWORLD OPERATION AND CONFIGURATION
+
+The program must be invoked from the command line, using the following
+syntax:
+
+	bugworld -c <configuration filename> [-t]
+
+The -t flag is used to select terse statistics.
+
+A lot of application parameters may have their values specified at the
+start of each run. For ease of use, the starting configuration must be read
+in from a text file. This file contains an arbitrary number of entries of
+the form
+
+	<parameter name> <value> <NEWLINE>
+
+The available parameter names and their associated range of values are
+described below:
+
+Parameter name		Description		Range
+
+POPSIZE			Size of initial		Even number 2..200
+			population
+
+GENERATIONS		No. of generations to 	1..1000
+			simulate
+
+GENOMESIZE		Size of LitterBug 	7..25
+			genome (no. of genes)
+
+BUGVISION		LitterBug's range of	1..20
+			vision
+
+BULLYVISION		As above, for Bullies	1..20
+
+SEED			Random number seed	Any integer
+
+XBOUNDARY		X dimension of world	50..500
+
+YBOUNDARY		Y dimension of world	20..500
+
+FOODAMOUNT		Amount of food at	100..5000
+			start of generation
+
+LITTERAMOUNT		As above, for litter	100..5000
+
+SELECTION		Selection mechanism	1..4
+
+MUTATIONRATE		Probability that a	0..100
+			gene mutates when copied
+
+MOVES			Moves per organism per 	1500..10000
+			generation
+
+FITTESTCHANCE		Probability of fittest	0..100
+			organism being selected
+			(tournament only)
+
+TRACE			Number of organism to 	As POPSIZE
+			trace
+
+Default values are given below:
+
+Parameter name		Default value
+
+POPSIZE			UNDEFINED
+GENERATIONS		UNDEFINED
+GENOMESIZE		15
+BUGVISION		5
+BULLYVISION		5
+SEED			Current process' PID
+XBOUNDARY		150
+YBOUNDARY		60
+FOODAMOUNT		300
+LITTERAMOUNT		900
+SELECTION		3 (Impure roulette)
+MUTATIONRATE		1
+MOVES			3000
+FITTESTCHANCE		75
+TRACE			UNDEFINED
+
+POPSIZE and GENERATIONS must be defined by the user at all times.
+An example configuration file is given in the ir.cfg file.
+
+11. STATISTICS AND TRACING
+
+The user of the package may select the type of statistics displayed
+during a simulation. If terse statistics are selected, the program
+simply prints out the average fitness of the population at the end of
+each generation.
+
+If terse statistics are not selected (the default), the program displays
+a header, and various statistics for each generation (generation number,
+average fitness, number and fitness of fittest LitterBug and the genome
+of the fittest LitterBug).
+
+All statistics are printed to standard output (usually the terminal
+screen). This may be redirected to a text file or piped to a printer.
+
+The facility to trace the execution of an individual organism's genetic
+program is available. This is mainly used for debugging purposes, but
+is useful for watching an organism's interactions with its environment.
+The number of the organism to be traced must be specified by the
+TRACE parameter. The organism is traced for each generation and the
+trace information is placed in a file named 'trace' in the current
+directory.
+
+12. CONCLUSIONS
+
+The behaviour of the simulated population generally conforms to basic
+principles of GAs, such as premature convergence. It was hoped that
+"intelligent" LitterBugs that avoided predators and efficiently foraged
+for food would evolve, but this didn't happen during the limited number of
+runs performed, due to time constraints.
+
+The package doesn't try to stick to formal GA principles (for example,
+mutation is performed in a very crude manner), but it does illustrate
+several basic concepts, such as crossover, selection and convergence.
+
+Comments regarding this software are welcome. Please direct correspondence
+to
+
+	Martyn Amos
+	Parallel Computation Group
+	Department of Computer Science
+	University of Warwick
+	COVENTRY
+	United Kingdom
+	CV4 7AL
+
+	martyn@dcs.warwick.ac.uk
+

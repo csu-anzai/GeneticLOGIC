@@ -1,0 +1,244 @@
+                                TIERRA UPDATE:
+
+Version V3.13 Now Available; Unified License Agreement; FTP Site Reorganized;
+Bug Fixes; Virtual Debugger; Instruction Set Documented; Genome Injector;
+Genebank Hash Function; Haploid Sex; Resolution Toggle; Diversity Tool Improved;
+Chris Stephenson, Kurt Thearling and Walter Tackett visit SFI;
+Future Phylogeny; Tierra in the News; Tierra Publications; Mailing Lists;
+What Tierra Is;
+
+This message contains:
+
+1) Availability of Tierra V3.13 Source Code
+   a) by ftp
+   b) by snail mail on disk
+2) Unified License Agreement
+3) FTP Site Reorganized
+4) Bug Fixes
+5) Virtual Debugger
+6) Instruction Set Documented
+7) Genome Injector
+8) Genebank Hash Function
+9) Haploid Sex
+10) Resolution Toggle
+11) Diversity Tool Improved
+12) Chris Stephenson, Kurt Thearling and Walter Tackett visit SFI
+13) Converation with Paul Barton-Davis (Evolution of a Decision)
+14) Future Phylogeny
+15) Tierra Funding
+16) Tierra in the News
+17) Tierra Publications
+18) Mailing Lists
+19) What Tierra Is (If you don't know what Tierra is, read this first)
+
+1) Availability of Tierra V3.13 Source Code
+
+[deleted]
+
+2) Unified License Agreement
+
+     If you have seen the earlier versions (pre V3.12), you may have noticed
+that there were different license agreements for the DOS and Unix versions.
+There is now a single and perhaps more coherent license agreement.
+
+3) FTP Site Reorganized
+
+     With Version 3.11 the ftp site was reorganized.  The files are no
+longer distributed in shar format.  They are in both raw form, and in
+compressed tar files.  All the documentation has been moved to the doc/
+directory.  The doc/ directory also includes manuscripts on Tierra in LaTeX
+and Postscript formats.
+
+4) Bug Fixes
+
+new in V3.13:
+
+adr() - the parse function for the adr instruction, previous to V3.13, set
+     is.iip = 0, which meant that the instruction pointer would not increment.
+     This means that if ever the adr instruction were executed, the virtual
+     cpu would hang on this instruction.  This has been fixed in V3.13.
+
+GarbageCollectGB() - previous to V3.13, this function (in bookeep.c) caused
+     some empty .gen files to be created, which would clutter up the genebank
+     directory.  This has been fixed.
+
+genotype histogram - there were some problems with the genotype histogram
+     display in V3.12, these have been fixed.
+
+new in V3.12:
+
+template search - Version 3.11 and earlier had a bug in the bi-directional
+     template search algorithm.  God intended that the search should move
+     outward at equal rates in both directions.  However, some situations
+     caused one direction to get ahead of the other.  This does not matter
+     to the creatures or evolution; evolution makes due with whatever
+     physics or chemistry it has at hand.  However, it makes it difficult
+     for the observer reading the genome files to tell what the outcome of
+     a bi-directional template search might be.  Another problem with the
+     same algorithm is that the limit on the distance of the template
+     search was not properly implemented, they tend to search farther than
+     the intended limit.  Both these bugs are fixed in V3.12.
+
+5) Virtual Debugger
+
+     In V3.13 the virtual debugger has been spiffed up, and the system is
+configured to compile with the debugger implemented, and the dubugger is
+documented in the tierra.doc file.  This allows the user to single step
+through the code of a creature, while viewing the virutal cpu.  This will
+be useful to anyone writing a creature, or trying to see what a creature
+does.
+
+6) Instruction Set Documented
+
+     With V3.13, the tierra.doc file includes a new section that provides
+a detailed documentation of what each of the 32 Tierran instructions actually
+does.
+
+7) Genome Injector
+
+     With V3.13, a mechanism has been provided for injecting genomes into a
+running simulation.  The tool is available through the menu system, and allows
+a genome from the genebank to be injected into the run at the users command.
+However, there is a function Inject(), in the genebank.c module, which takes
+a pointer to a genome as an argument.  This function can be used to inject
+genomes from any source.  An interesting use of this function would be to
+facilitate migration of genomes between simulations running on separate
+machines, creating an archipelago.
+
+8) Genebank Hash Function
+
+     In V3.13 a hash function has been added to the genebanker.  The
+function CheckGenotype() applies the hash function to each new genome.
+This means that when a new genotype appears, its sequence no longer must
+be compare to the sequence of every same-sized genome in the bank.  Generally,
+only a single integer must be compared.  This means that the .gen files
+for V3.13 are not compatible with earlier versions.
+
+9) Haploid Sex
+
+     An option is now available to force creatures to cross-over their genomes
+with other creatures while reproducing.  This feature is documented in the
+tierra.doc file.
+
+10) Resolution Toggle
+
+     In V3.12 and higher on DOS machines with a VGA display, the simulator
+will come up in low resolution mode.  If you select a histogram or size list
+display, it will toggle into high resolution mode.  When you return to the
+plan display, it will toggle back into low resolution mode.  This is easier
+on the eyes.
+
+11) Diversity Tool Improved
+
+     Several changes have been made to the diversity tool to improve its
+utility.  The divrange file now also contains the average value of each of
+the eight variables, in addition to the minimum and maximum values that it
+formerly contained.  Also when multiple divdat.X output files are produced,
+they now each contain header information so that they can be processed
+independently by the diversity graphics tools in Beagle.  To facilitate this,
+a brkrange file is also produced which contains the maximum value of each
+variable at the end of each divdat.X file.
+
+12) Chris Stephenson, Kurt Thearling and Walter Tackett visit SFI
+
+     Kurt Thearling of Thinking Machines Corporation (kurt@think.com) is
+visiting the Santa Fe Institute from June 12 through May 12 to work on the
+Tierra project.  His primary objective will be to port Tierra to the CM5.
+
+     Chris Stephenson of the IBM T. J. Watson Research Center
+(cjs@yktem.vnet.ibm.com) will visit SFI from June 29 through July 13 to work
+on the Tierra project.  His primary objective will be to provide a new memory
+allocator for Tierra.  He will use a memory allocation scheme that he
+developed, which will allow us to specify where we would like the new
+creature to be placed in memory.
+
+     Walter Tackett of Hughes Aircraft (tackett@ipld01.hac.com) will visit
+SFI from June 12 through July 3.  His main objective will be discuss his work
+in applying artificial selection to Tierran creatures in order to evolve them
+to do ``useful'' work.
+
+13) Converation with Paul Barton-Davis (Evolution of a Decision)
+
+     At the recent Artificial Life III conference in Santa Fe I had an
+interesting conversation with Paul Barton-Davis (pauld@cs.washington.edu)
+about his work with his own implementation of Tierra.  Paul built his version
+of Tierra from scratch, but used the same instruction set described in Ray's
+publications.  However, one thing he did differently was to eliminate the
+reaper.  Instead his creatures become increasingly flawed as they age, and
+eventually die from these effects.  One of the consequences of this is that
+free memory is not always available when a creature requests it.  Paul
+provided the following details:
+
+    You might or might want to note the other conditions that, in addition
+    to the reaper-removal, led to this adapatation and that are absent in
+    the release version of Tierra:
+
+    1) a memory allocator that uses virtual memory addresses beginning at
+       1, not zero (thus creating a "flag" value that can specifically
+       and easily be tested for by a tierran creature).
+    2) selection pressure (via the slice size) for medium size        
+       creatures (256 to 5K instructions in size) (gaussian
+       distribution of slice size around a mean creature size
+       of about 2K)
+    3) memory protect bits turned on, and used in a significant fashion.
+    4) a more complex ancestor, although the copy code is almost
+       identical to Ray's 80aaa.
+
+     An adaptation which evolved under these conditions is the first example
+I know of in which a Tierran creature evolved a decision making mechanism.
+If memory is not available when a creature requests it, the memory allocator
+returns a value of zero in the AX register, rather than the address of the
+allocated block.  The adaptation then, is to somehow move the value in the
+AX register into CX (for example by first pushing AX onto the stack and then
+popping that value into the CX register).  Then the creature executes if_cz,
+which tests to see if the CX register is zero.  If CX is not zero, the
+creature proceeds with reproduction, if CX is zero the creature executes some
+code which leads to making another request for memory rather than trying to
+copy the genome without having a cell to copy it into.  Paul provided the
+following details:
+
+    I recall seeing both:
+
+        mal       ;  111
+        push_ax   ;  111
+        pop_cx    ;  111
+        if_cz     ;  111
+
+    as well as the slightly more expensive:
+
+        mal        ; 111
+        mov_ab     ; 111 
+        push_bx    ; 111
+        pop_cx     ; 111
+        if_cz      ; 111
+
+14) Future Phylogeny
+
+     At the moment, the primary effort in new code development is dedicated
+to an extension to the genebanker that will produce an ironclad phylogeny.
+The requires that we trace the genetic source of every instruction written
+into every creature.  Stay tuned.
+
+15) Tierra Funding
+
+     The National Science Foundation has awared a Small Grant for Exploratory
+Research to Dr. Ray to support the Tierra project.  The grant is titled:
+``Computer Architectures for the Natural Evolution of Machine Code''.  It
+is jointly funded through the Computer Systems Architecutre program and the
+Computational Biology Activities programs.
+
+16) Tierra in the News
+
+[deleted]
+
+17) Tierra Publications
+
+[deleted]
+
+18) Mailing Lists
+
+[deleted]
+
+19) What Tierra Is
+
+[deleted]

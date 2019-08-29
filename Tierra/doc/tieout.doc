@@ -1,0 +1,81 @@
+                        TIERRA Log File Filter
+                               - TIEOUT -
+                            by Daniel Pirone
+
+PURPOSE:
+
+   This document describes a software tool that aids in the analysis of 
+ log files from the Tierra Artificial Life Simulation (1).  Given a log file,
+ and 2 parameters, TIEOUT will produce an X,Y list from the log.
+
+THE INTERFACE:
+
+   The TIEOUT user interface is a simple command line driven system. 
+ All of the menu options are Case Sensative (Turn Caps Lock Off).
+ Running TIEOUT with no options will produce the following help message:
+   
+> syntax:  tieout infile xfield yfield 
+
+ From this we see that you must provide at least 3 parameters:
+
+   - infile , the first param, specifying an existing path and tierra log
+     filename ( eg tierra.log ).  A '-' in place of a filename, indicates
+     that TIEOUT should use the keyboard (stdin) as input.
+   - xfield , the second param, specifying the 2 character symbol to be
+     used as first (X) search field ( eg 'ie' ).
+   - yfield , the third param, specifying the 2 character symbol to be
+     used as second (Y) search field ( eg 'ex', 'as' ). Due to its chaotic
+     nature, the 'ex' field may ONLY be used as the seond param.
+
+ Normally, the output list is printed to the screen (stdout).  Some examples 
+ of use are:
+
+> tieout tierra.log ie ex > ex_out
+
+   The example above will produce a list of all Tierra gene extractions,
+ a very useful measure of diversity.  This list is redirected to a file
+ called ex_out.
+
+> tieout - ie as > as_out < tierra.log
+
+   The example above will produce a list of the Average Size of the genomes,
+ as a function of time.  Note that we use the '-' as the filname here, only
+ as an example.  In general the '-' infile is best when using TIEOUT
+ in a complex stream piping situation.
+
+> tieout tierra.log ie as 
+>
+> "ie_as
+> 0 80
+> 1 79
+> 2 79
+> 3 73
+> 4 67
+> 5 60
+> 6 59
+
+   The example above will produce a list of the Average Size of the genes,
+ but this time, the X,Y data is simply printed to the screen.  The first
+ column (X) is the values of 'ie' ( millions of instructions executed),
+ and the second (Y) column is the next occurence of 'as' found after the 'ie'.
+ In the special case of 'ex' as the Y parameter, if another extraction is
+ found before the next X parameter is, the previous value of X is used in the
+ printing.  This allows for multiple extraction per million.  No other
+ parameter is recorded this frequently.
+
+   Note the label is a concatenation of the X and Y parameters.  Also note
+ the blank line before the label.  This allows the output to be easily sent
+ to a graphing tool ( eg: xgraph ).
+
+   Please send bug reports to : tierra-bug@life.slhs.udel.edu
+
+-----------------------------------------------------------------------------
+
+(1) Tierra is available by anonymous ftp from:
+
+tierra.slhs.udel.edu ( 128.175.41.33 )
+
+or on disk by mail from Virtual Life, P.O. Box 625, Newark, DE 19715.
+Make check for $65 payable to Virtual Life, and specify 3.5" or 5.25" disks.
+
+-----------------------------------------------------------------------------

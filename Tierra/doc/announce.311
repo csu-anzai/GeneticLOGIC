@@ -1,0 +1,143 @@
+                                TIERRA UPDATE:
+   (Version 3.11 now available, FTP site reorganized, New Tools, Bug Fixes,
+      Genebank Verification, Garbage Collection, New Genomes, Mneumonics
+                Shortened, Virtual Extraction, DEC Grant, Sex)
+
+This message contains:
+
+1) Availability of Tierra V3.11 source code
+   a) by ftp
+   b) by snail mail on disk
+2) FTP Site Reorganized
+2) New Tools
+3) Bug Fixes
+4) Genebank Verification
+5) Garbage Collection
+6) New genomes distributed
+7) Opcode mneumonics limited to six characters
+8) Virtual Extraction
+9) Grant from Digital Equipment Corporation
+10) Future Sex
+
+1) Availability of Tierra V3.11 source code
+
+[deleted]
+
+2) New Tools
+
+     Several new (and some old) tools, developed by Dan Pirone and Tom Ray,
+are now fully documented and available in the ftp site:
+
+rnd_inst - A tool for altering the physics of the system by randomly mapping
+     opcodes to instructions, with some optional restrictions on hamming
+     distances between pairs of instructions.  The output is an opcode.map
+     file.
+
+probe - A tool for surveying the genebank, with various optional selection
+     criteria (a new tool, but proving very useful).
+
+tieout - A tool for generating x,y data from the tierra.log file.  This is
+     used on a regular basis to generate graphics of size of creatures over
+     time during a run.
+
+diverse - A tool that reads the birth and death records (break.X files) output
+     by Tierra and transforms them into various measures of diversity, for
+     graphical or other analysis.
+
+beagle - A DOS only tool which provides a variety of graphical displays of
+     the output from the Tierra simulator.  It is used after a run, and is
+     highly recommended as a tool for analyzing the results of a run.
+
+run_info - A function of the beagle program, also available as a stand-alone,
+     due to its hunger for memory.
+
+fragment - A function of the beagle program, also available as a stand-alone,
+     due to its hunger for memory.
+
+ALmond - A UNIX only tool which runs as a separate process on the same or a
+     different machine.  ALmond establishes socket communications with a
+     running Tierra, and provides a color display of the spatial distribution
+     of the creatures in the soup, showing all births and deaths.  This tool
+     has some new functions: you can view the positions of the instruction
+     pointers, or the activity of the moviab instruction.
+
+3) Bug Fixes
+
+histograms - Version 3.1 included some obvious errors in the histogram
+     display.  These have been corrected.
+
+moviab - This instruction allows creatures to alter their own genome by
+     writing on themselves.  Before V3.11, the genebanker did not watch
+     for genetic changes occurring in this manner.  This created observational
+     errors comparable to the ploidy bug corrected in V3.1.  The genebanker
+     now catalogs genetic change by this mechanism.  It is believed that
+     the genebanker is now fully reliable (see below).
+
+chmod - The chmod function was supposed to return a value, but did not.
+     This had the consequence that a flag was set every time a creature
+     allocated space for a daughter, and these were recorded with the
+     demography data associated with each creature.  This has been corrected.
+
+arg r option - The arg r option (replace or add) was not working, but
+     is now.
+
+4) Genebank Verification
+
+     Error checking code has been added which completely verifies that the
+distribution of genotypes in the soup matches that reflected in the genebank,
+and that various counts are internally consistent within the genebank.
+
+5) Garbage Collection
+
+     Routines have been added which clean-up the genebank once per million
+exectued instructions.  Among other things, once a size class is extinct,
+all genomes of that size are eliminated from RAM.  Permanent genomes are first
+saved to disk.
+
+6) New genomes distributed
+
+     Many new genomes were first distributed with V3.1, but they were not
+mentioned in the announcement.  These are the genomes of most of the
+creatures described in the publications and videos: parasites,
+hyper-parasites, social creatures, cheaters, etc.
+
+7) Opcode mneumonics limited to six characters
+
+     To facilitate their display by the Beagle tools, the opcode mneumonics
+have been limited to six characters.  This affects push_ax, push_bx, push_cx,
+push_dx, and mov_iab.  These have been changed to pushax, pushbx, pushcx,
+pushdx and moviab.  This means that old ascii genome files can not be read
+by the new tools.  It does not affect binary genome files.  Old binary files
+will be mapped to the new names when they are converted to ascii by the new
+software.  All the ascii .tie files are redistributed in the new format.
+
+8) Virtual Extraction
+
+     When a new genotype crosses one of the thresholds (SavThrMem or
+SavThrPop) its name becomes permanent and it is ``extracted'' (written to
+disk).  This event is noted in the user interface and in the tierra.log
+file like: ex = 0079aaa @ 13
+The new feature is that when a genotype goes extinct, then reappears and
+crosses the thresholds again, it experiences a ``virtual extraction'',
+which means that it is not written to disk (since it is already there),
+but the extraction event is written to the interface and the tierra.log
+file like: ex = 0079aaa @ 13 v
+This was done to facilitate the use of the tieout tool with cumulative
+genebanks, but it results in nicer extraction data in other senses as well.
+
+9) Grant from Digital Equipment Corporation
+
+     The Semiconductor Engineering Group of Digital Equipment Corporation has
+donated two fully loaded DS5000 workstations to the Santa Fe Institute as a
+part of a grant to Tom Ray titled: ``Computer Architectures for the Natural
+Evolution of Machine Codes''.  These two machines will be the primary platform
+for Tierra research and development in the near future.
+
+10) Future Sex
+
+     Walter Tackett (tackett@ipld01.hac.com or tackett@priam.usc.edu)
+has implemented haploid sex based on cross-over (a random cross-over point
+used by the moviab instruction) in his private copy of Tierra V3.0.  The
+methodology used by Tackett has been implemented in the Santa Fe verison of
+Tierra.  It will be released when it has undergone more testing to verify its
+functions.

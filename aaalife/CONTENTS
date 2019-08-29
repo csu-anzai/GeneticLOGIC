@@ -1,0 +1,9 @@
+ Length  Method   Size  Ratio   Date    Time   CRC-32     Name ("^" ==> case
+ ------  ------   ----  -----   ----    ----   ------     ----   conversion)
+  19074  Implode   4977  74%  05-11-89  20:05  5e57edd0  ^aaalife.c
+  53214  Implode  34011  36%  05-11-89  20:07  4f1a9377  ^aaalife.exe
+   1918  Implode   1284  33%  07-12-89  23:49  a8752d09  ^aaalife.msg
+     68  Shrunk      62   9%  05-11-89  10:40  8c0a2130  ^makelife.bat
+    180  Shrunk      94  48%  04-29-89  10:06  3d3453ab  ^rpent.lif
+ ------          ------  ---                              -------
+  74454           40428  46%                              5      

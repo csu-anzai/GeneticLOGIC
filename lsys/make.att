@@ -1,0 +1,16 @@
+#!/bin/sh
+# This invokes make with command-line options to override the compiler
+#   and parsing tools defined therein, forcing use of CC and the standard
+#   Unix tools. This is suitable for an AT&T cfront environment; for a
+#   Sun C++ environment, just change INCLUDEDIR=/usr/CC/incl
+# You can add MEMLIB=-lmalloc for DECstations; the script attempts to
+#   determine this automatically.
+
+MEMLIB=
+if fgrep -is ultrix /usr/include/stdio.h ; then
+    echo Assuming you\'re using Ultrix, linking with -lmalloc
+    MEMLIB=-lmalloc
+fi
+
+make CC=CC OLDC=cc YACC=yacc LEX=lex PARSELIBS="-ly -ll" MEMLIB=$MEMLIB \
+    INCLUDEDIR=/usr/include/CC $*

@@ -1,0 +1,39 @@
+
+
+  There are two connection-oriented (TCP) CLinks: Pathways (connected sockets)
+and Portals (listening sockets).
+
+CLinks may be Synchronous or Asynchronous (more later).
+
+To `service' a CLink means:
+  Pathway: if data are available, then requests are read from the pathway and
+	entered into the request queue (except private requests, which are
+	handled immediately and discarded).
+  Portal: if connections are pending, they are accepted and made into active
+	CLinks (default synchronous) and a `new-connect' request is added to
+	the local request queue.
+
+------------------------------------------------------
+
+Nice solution to deadlocking problem:
+
+  Make flowcontrol a service of the UPPER layer (M layer), NOT the lower
+	layer (AL layer)
+
+
+--------------------------------------------------------------
+
+
+Are these things necessary:
+
+ALCheckRequestQueue
+
+
+-----------------------------------------------------------------------
+
+MProcessRequests()
+
+  - calls ALServiceCLinks() with a NoWait option.
+  - calls ALDequeueRequest(); if successful, processes that request.
+
+--------------------

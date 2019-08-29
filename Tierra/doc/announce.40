@@ -1,0 +1,509 @@
+                         TIERRA UPDATE
+		     V4.0, September 1992:
+
+This message contains:
+
+1) Availability of Tierra V4.0 Source Code
+   a) by ftp
+   b) by snail mail on disk
+2) Bug Fixes
+3) Three New Instruction Sets Implemented
+4) New Memory Allocator Installed by Chris Stephenson of IBM
+5) Full Memory Protection Implemented
+6) Virtual Debugger Enhanced
+7) Diversity Tool Enhanced
+8) Tierra Display Color Mapping
+9) Alive Variable Changed
+10) CM5 Port
+11) Future Phylogeny
+12) Tierra in the News
+13) Tierra Publications
+14) Mailing Lists
+15) What Tierra Is (If you don't know what Tierra is, read this first)
+
+1) Availability of Tierra V4.0 Source Code
+
+     The Tierra V4.0 source code; and the source code, and DOS executables of
+all tools is available now.  Please note that the source code in the ftp
+site and the source code provided on disk will each compile and run on either
+DOS or UNIX platforms.  It is exactly the same source code in either case.
+The DOS executables are available only on disk, and can not be freely
+distributed.
+
+     If you purchase this program on disk, thank you for your support.
+If you obtain the source code through the net or friends, we invite you to
+contribute an amount that represents the program's worth to you.  You may
+make a check in US dollars payable to Virtual Life, and mail the check to
+one of the two addresses listed below.
+
+   a) by ftp
+
+     If you use the software, be sure to pick up new versions from the ftp
+site.  The source in the ftp site will be replaced on a roughly monthly or
+bi-monthly basis.
+
+     The complete source code and documentation (but not executables) is
+available by anonymous ftp at:
+
+tierra.slhs.udel.edu [128.175.41.34] and
+  life.slhs.udel.edu [128.175.41.33]
+
+in the directories: almond/, beagle/, doc/, and tierra/.
+
+To get it, ftp to tierra or life, log in as user "anonymous" and give your
+email address (eg. tom@udel.edu) as a password.  Be sure to transfer binaries
+in binary mode (it is safe to transfer everything in binary mode).
+Each directory contains a compressed tar file (filename.tar.Z) and a SRC
+directory that contains all the files in raw ascii format.  You can just
+pick up the .tar.Z files, and they will expand into the complete directory
+structure with the following commands (Unix only):
+
+uncompress tierra.tar.Z
+tar oxvf tierra.tar
+
+   b) by snail mail on disk
+
+     The source code, documentation and the beagle.exe file can be distributed
+freely, however, the executables (the .exe files in DOS) are for sale and
+cannot be freely distributed (with the exeception of beagle.exe).
+
+    If you do not have ftp access you may obtain everything on DOS disks
+by making a check for $50 (US dollars drawn on a US bank) payable to
+Virtual Life.  $20 for an upgrade from earlier versions (specify serial
+number and previous version number).  No charge for shipping.  Foreign
+orders may make a transfer to account #031100089 00 84313505,
+Bank of Delaware, Wilmington, Delaware.
+Specify 3.5" 720K, or 3.5" 1.4M, or 5.25" 360K, or 5.25" 1.2M disks.
+Send the check to the address below.
+
+Please note that the source code in the ftp site and the source code provided
+on disk will each compile and run on either DOS or UNIX platforms.  It is
+exactly the same source code in either case.  The DOS disks contain everything
+but ALmond (ALmond can be provided on disk by request, but it only runs on a
+Unix platform).  The DOS disks include DOS executables, source code and
+extensive documentation.  The DOS disks include an easy installation program.
+Executables are not available in the ftp site.  If you have ftp access, there
+is no need to buy the disks.
+
+     If you purchase this program on disk, thank you for your support.
+If you obtain the source code through the net or friends, we invite you to
+contribute an amount that represents the program's worth to you.  You may
+make a check in US dollars payable to Virtual Life, and mail the check to
+the address listed below.
+
+Virtual Life
+25631 Jorgensen Rd. 
+Newman, CA  95360 
+
+2) Bug Fixes
+
+new in V4.0:
+
+call(), jmp(), jmpb() - for each of these instructions, if there was no
+     template following the instruction, the instruction pointer failed
+     to increment, so the cpu would hang on the instruction.  This has
+     been fixed in V4.0.
+
+moviab() - (renamed to movii) this instruction looks to see if the target
+     address is not in the daughter cell, in which case it calls MutBookeep()
+     to keep track of genetic changes caused in the target creature.  Before
+     V4.0, it did not look at changes to the byte following the daughter cell,
+     this has been fixed.
+
+break files - previous to V4.0, if the Tierra program was terminated by a
+     system crash, or by the Q command, it would not be possible to fully
+     recover by restarting the simulator.  The reason was that when restarted,
+     the simulator would start the clock from the last system save, but would
+     append birth death records to the end of the break.X files.  This meant
+     that the part of the break files produced after the crash would be
+     invalid.  This has been corrected in V4.0 by saving the file position
+     pointer in the soup_out file.
+
+diverse - in earlier releases, there was a bias in the calculation of the
+     average age of the genotypes towards higher values.  This has been
+     corrected, and it is believed that all of the statistics put out by
+     this tool are now valid.
+
+new in V3.13:
+
+adr() - the parse function for the adr instruction, previous to V3.13, set
+     is.iip = 0, which meant that the instruction pointer would not increment.
+     This means that if ever the adr instruction were executed, the virtual
+     cpu would hang on this instruction.  This has been fixed in V3.13.
+
+GarbageCollectGB() - previous to V3.13, this function (in bookeep.c) caused
+     some empty .gen files to be created, which would clutter up the genebank
+     directory.  This has been fixed.
+
+genotype histogram - there were some problems with the genotype histogram
+     display in V3.12, these have been fixed.
+
+3) Three New Instruction Sets Implemented
+
+     The Tierra simulator now comes with four complete instruction sets,
+the original and three new ones.  The three new sets came out of a series
+of meetings held by the Tierra group at the Santa Fe Institute over the
+summer.  These meetings were attended by Tom Ray, Dan Pirone, Kurt Thearling,
+Chris Stephenson and Walter Tackett.  The new instruction sets are designed
+to be more suitable for general purpose computation.  They overcome some of
+the obvious weaknesses of the original set.  Specifically, they allow for
+movement of data between the soup and the cpu registers, and they provide
+I/O services.  In addition, they include some important biological features.
+Specifically, they provide facilites for inter-cellular communication.  They
+also allow for the transmittal of non-genetic information between mother
+and daughter, and they allow the mother cell to force the daughter cell to
+differentiate, by controlling where the instruction pointer starts in the
+daughter cell.
+
+4) New Memory Allocator Installed by Chris Stephenson of IBM
+
+Chris Stephenson of the IBM T. J. Watson Research Center
+(cjs@yktem.vnet.ibm.com) has contributed a new memory allocator to Tierra,
+based on a cartesian tree scheme that he developed.  The new allocator is
+more efficient than the old and provides a variety of options for controlling
+where offspring are placed.  Free blocks are maintained in a two dimensional
+binary tree, in which daughter blocks can not be larger than their parents,
+and blocks are ordered from left to right according to their position in
+memory.  The options are provided through the soup_in variable MalMode:
+
+MalMode = 1 0 = first fit, 1 = better fit, 2 = random preference,
+# 3 = near mother's address, 4 = near dx address, 5 = near top of stack address
+
+5) Full Memory Protection Implemented
+
+     The memory protection options used to create the "cell membranes"
+around creatures now allow full read, write or execute protection.  The
+two forms of protection, with and without membranes, are controlled by
+two soup_in variables.
+
+6) Virtual Debugger Enhanced
+
+     The virtual debugger has been enhanced by a tracking feature which
+will allow you to either follow exclusively the execution of a single cell,
+or to swap between execution of cells as the slicer swaps.
+
+7) Diversity Tool Enhanced
+
+     The diversity tool has been enhanced in two way.  It optionally
+calculates an average of each of the diversity indicies, over a user defined
+interval, and outputs only the cumulative averages at the end of each
+interval.  Otherwise it may output the diversity indices after each birth
+and death.  Outputting only the averages greatly reduces the volume of output.
+The other enhancement is a frequency filter which allows the diversity
+indices to be calculated on the basis of only size or genotype classes with
+at least some user defined number of individuals.  The default is two
+individuals.  This means that the calculations will not include the numerous
+mutants of which there are only a single individual.  This prevents the
+diversity indices from being dominated by the large number of inviable
+mutants that always exist in the populations.
+
+8) Tierra Display Color Mapping
+
+     In order to facilitate the needs of a user running Tierra on an LCD
+display, the mapping of colors in the Tierra standard display are now
+configurable by means of an ascii file called tcolors.cfg.
+
+9) Alive Variable Changed
+
+     The alive soup_in variable that controls the length of a run now
+counts generations rather than millions of cpu cycles.  This has been done
+to provide a control that is more comparable across instruction sets.
+
+10) CM5 Port
+
+     Kurt Thearling of Thinking Machines Corp. is working on a port of
+Tierra to the new CM5.  This will be a true MIMD port: some processors will
+run the simulator while other processors will run the genebanker.  The port
+is based on an archipelago model, in which each Tierra processor will run
+a compete Tierra soup.  However, creatures will be able to migrate between
+processors through the dispersal of offspring.
+
+11) Future Phylogeny
+
+     At the moment, the primary effort in new code development is dedicated
+to an extension to the genebanker that will produce an ironclad phylogeny.
+The requires that we trace the genetic source of every instruction written
+into every creature.  Stay tuned this project is projected to be completed
+by the end of September 1992.
+
+12) Tierra in the News
+
+The Tierra Simulator has been widely reported in the media.  Below is a
+list of most of the national or international reports that I am aware of.
+If you know of some news report not on this list, please send me a hard
+copy.
+
+New York Times (Malcolm Browne, USA) August 27, 1991: ``Lively Computer
+Creation Blurs Definition of Life.  Software forms, obeying Darwin's rules,
+vie to avoid the `reaper'.''
+
+Nature (John Maynard Smith, UK) February 27, 1992: ``Byte-sized evolution.
+...we badly need a comparative biology.  So far, we have been able to study
+only one evolving system and we cannot wait for interstellar flight to
+provide us with a second.  If we want to discover generalizations about
+evolving systems, we will have to look at artificial ones.  Ray's study is a
+good start.''
+
+Science (Mitchell Waldrop, USA) August 21, 1992: ``Artificial Life's Rich
+Harvest, Startlingly realistic simulations of organisms, ecosystems, and
+evolution are unfolding on computer screens as researchers try to recreate
+the dynamics of living things.''
+
+The Daily Telegraph (Roger Highfield, UK) June 14, 1993: ``Life, but not
+as we know it.  An American academic has developed a computer program
+that successfully simulates Darwinian evolution, natural selection and
+all.''
+
+Whole Earth Review (Steven Levy, USA) Fall 1992: ``Artificial Life, The
+Quest for a New Creation.''  Reprinted from a book of the same name published
+by Pantheon Books.
+
+Science News (John Travis, USA) August 10, 1991: ``Digital Darwinism:
+Electronic Ecosystem.  Evolving `life' flourishes and surprises in a
+novel electronic world''.
+
+Nature (Laurence Hurst \& Richard Dawkins, UK) May 21, 1992:
+``Life in a test tube.''
+
+Scientific American (Elizabeth Corcoran, USA) October 1992: ``The Edge of
+Chaos, Complexity is a metaphor at the Santa Fe Institute.''
+
+Scientific American (John Rennie, USA) January 1992: ``Cybernetic Parasites...
+Tierra... has been hailed as the most sophisticated artificial-life program
+yet developed...''
+
+New Scientist (Roger Lewin, UK) February 22, 1992: ``Life and death in a
+digital world.  No one can turn back the evolutionary clock, but we can
+follow the fate of a rich menagerie of artificial organisms as they evolve
+in a model world.''
+
+New Scientist (Roger Lewin, Melanie Mitchell, Jacqueline McGlade, UK)
+February 13, 1993: ``Complexity, New Scientist Supplement.  Order
+for free (Standing at the edge of chaos).  Alternate ecologies.
+Imitation of life.''
+
+The Economist (Anon, UK) December 19, 1992: ``Bugs in the program...
+the use of computers to create new forms of `life'.''
+
+The Economist (Anon, UK) January 4, 1992: ``The meaning of `life'.
+In order to understand the origin of life, scientists are switching from the
+chemistry set to the computer.  In the process, they are beginning to
+understand what it means to be alive.''
+
+U.S. News \& World Report (Karen F. Schmidt, US) May 3, 1993: ``Computing
+the primordial ooze.  Scientists are modeling the origins of life.''
+
+Maclean's (Mark Nichols, Canada) June 7, 1993: ``Compelling signs of
+artificial life.  Digital `creatures' that clone themselves may
+really be alive.''
+
+Release 1.0 (Esther Dyson, US) April 28, 1992: ``Artificial Worlds: A
+Field Scientist in Tierra Cognita.''
+
+Computer Graphics World (Diana Phillips Mahoney, US) July 1993:
+``That's Life.''
+
+Computer Graphics World (Diana Phillips Mahoney, US) February 1993:
+``Artificial Life, organisms and systems created in the computer
+exhibit behaviors characteristic of natural evoltuion.''
+
+PC Magazine (Michael J. Miller, US) May 25, 1993: ``It's Alive!  Lots
+of computer users give funny names to their computers.  But did you
+ever stop to think that your computer programs might actually be alive?''
+
+Focus (John Browning, UK) March 1993: ``It's life, but not as we know it...
+How close is technology to creating artificial life.''
+
+Guardian (Jocelyn Paine, UK) January 9, 1992: ``Unravelling the loop in the
+primordial soup.  Tierran machine code is so adaptable it survives.  Jocelyn
+Paine charts the evolution of artificial life within the computer.''
+
+The Chronicle of Higher Education (David Wilson, USA) December 4, 1991:
+``Approaching Artificial Life on a Computer.  Survival-of-the-fittest
+electronic organisms dramatically illustrate Darwinian principles.''
+
+Computerworld (Michael Alexander, USA) September 30, 1991: ``Tierra adds to
+evolutionary studies.  A computerized world created on an IBM PC could
+have real-world benefits for scientists.''
+
+Technology Review (Susan Scheck, USA) April 14, 1991: ``Is It Live Or Is
+It Memory?''
+
+Associated Press (Theresa Humphrey, USA) October 1991: ``Bringing life to
+computer.  U of D biologist's program is self-replicating, shows evolution.''
+
+Asahi (Katsura Hattori, Japan) September 15, 1992: Title in Japanese
+characters.
+
+Science Journal Kagaku (Roger Lewin, Japan) March 1992: Title in
+Japanese characters.
+
+Semanario Universidad (Eduardo Ramirez F., Costa Rica) June 16, 1993:
+``Un creador de vida en computadoras.''
+
+Esta Semana (G. Aburto and J. C. Cruz, Costa Rica) May 18--24, 1993:
+``Un programa de computadora devela los misterios del origen de
+la vida y la evoluci\'on.''
+
+Actuel (Ariel Kyrou, France) April 1992: ``Visite Guidee Aux Extremes De
+La Science: La Vie Artificielle.  Etes-vous pr\^{e}ts \`{a} entrer dans
+l'univers vertigineux de la vie artificielle?  Un champ scientifique tout neuf
+sur lequel se penchent les grosses t\^{e}tes et les Nobel de labos
+am\'{e}ricains.''
+
+Helsingin Sanomat (Timo Paukku, Finland) March 27, 1993:
+``Tekoel\"{a}m\"{a}n evoluutio etenee sekunneissa.  Voidaanko uusia
+lajeja tuotta my\"{o}s s\"{a}hk\"{o}ll\"{a} ja piisiruilla?
+Pikaevoluutio synnytti tuhansia lajeja, loisia ja seksin.''
+
+Mikrobitti (Pekka Tolonen, Finland) November 1991: ``Olemmeko humanoiden
+biologinen koe?  Tierra simuloi el\"{a}m\"{a}\"{a}.''
+
+Europeo (Giovanni Caprara, Italy) September 1991: ``Anche il computer ha
+fatto un figlio.  Un biologo americano ha creato un software capace di
+elaborare programmi che si evolvono da soli.''
+
+GenteMoney (Riccardo Orizio, Italy) November 1991: ``Cos\`{\i} ho dato
+la vita al software.''
+
+Sueddeutsche Zeitung (Wolfgang Blum, Germany) December ?, 1992:
+``Evolution im Zeitraffer, Ein Computermodell untersucht die
+Vielfalt der Arten.''
+
+Sueddeutsche Zeitung (Konrad Peters, Germany) October 21, 1991:
+``Die Evolution im Computer.  `K\"{u}nstliches Leben' hilft Biologen und
+Informatikern auf die Spr\"{u}nge.''
+
+Super Interessante (Anon, Brazil) November 1991: ``A vida dentro do
+computador.''
+
+Corriere Della Sera (Giovanni Capara, Italy) August 28, 1991: ``Pronto in
+USA il programma che si riproduce.  Il computer `padre' crea vita
+informatica.''
+
+Fakta (Tom Ottmar, Norway) March 1992: ``Den Lever!  En `skabning', der
+best\aa r af nuller og \'{e}nere, er vokset ud af indamaden p\aa \ en
+computer og er blevet en videnskabelig sensation i USA.''
+
+Hovedomr\aa det (Jakob Skipper, Denmark) December 6, 1990: ``Kunstigt liv.
+Nu kommer det kunstige liv.  En voksende gruppe af dataloger, biologer,
+fysikere, psykologer og mange andre forskere efterlinger p\aa \ computer
+det naturlige liv.''
+
+13) Tierra Publications
+
+Ray, T. S.  1991.  ``Is it alive, or is it GA?''
+Proceedings of the 1991 International Conference on Genetic Algorithms,
+Eds. Belew, R. K., and L. B. Booker, San Mateo, CA: Morgan Kaufmann, 527-534.
+
+Ray, T. S.  1991.  ``An approach to the synthesis of life.''
+Artificial Life II, Santa Fe Institute Studies in the Sciences of
+Complexity, vol. XI, Eds. Farmer, J. D., C. Langton, S. Rasmussen, &
+C. Taylor, Redwood City, CA: Addison-Wesley, 371-408.
+
+Ray, T. S.  1991.  ``Population dynamics of digital organisms.''
+Artificial Life II Video Proceedings,  Ed. C.G. Langton,
+Redwood City, CA: Addison Wesley.
+
+Ray, T. S.  1991.  ``Evolution and optimization of digital organisms.''
+Scientific Excellence in Supercomputing: The IBM 1990 Contest Prize
+Papers, Eds. Keith R. Billingsley, Ed Derohanes, Hilton Brown, III.
+Athens, GA, 30602, The Baldwin Press, The University of Georgia.
+
+Ray, T. S.  1992.  ``Evolution ecology and optimization of digital organisms.''
+Santa Fe Institute working paper 92-08-042 (available in the ftp site as
+tierra.tex).
+
+Ray, T. S.  1992.  J'ai jou\'{e} \`{a} Dieu et cr\'{e}\'{e}
+la vie dans mon ordinateur.  Le Temps strat\'{e}gique 47: 68--81.
+
+Ray, T. S.  In press.  Evolution and complexity.  {\it In}:
+Cowan, George A., David Pines and David Metzger [eds.],
+Complexity: Metaphor and Reality.  Addison-Wesley Publishing Co.
+
+Ray, T. S.  In press.  An evolutionary approach to synthetic biology.
+Artificial Life 1(1): XXX--XXX.  MIT Press.
+
+Ray, T. S.  Submitted.  Evolution, complexity, entropy,
+and artificial reality.  Physica D.
+
+14) Mailing Lists
+
+     There are two mailing lists for Tierra users.  The first list is for
+people who only want to get the official announcements, updates and bug-fixes.
+The other will carry the official postings, and are intended for discussion
+of Tierra by users.  This one is distributed in digest form, when there is
+enough material.  The lists are:
+
+tierra-announce    official updates, patches and announcements only
+tierra-digest      discussion, updates, etc. (digest form)
+
+The addresses are: 
+
+tierra-request@life.slhs.udel.edu   the list administrator (Tom Uffner). to
+                                    be added, removed, or complain about
+                                    problems with any of these lists.
+
+tierra-digest@life.slhs.udel.edu    to post to the list.
+
+tierra-bug@life.slhs.udel.edu       for bug-reports or questions about the
+                                    code or installation.
+
+     You may also be interested in the Artificial Life mailing list.
+Subscribe to the list by sending a message to:
+
+alife-request@cognet.ucla.edu
+
+     Post to the list by sending a message to:
+
+alife@cognet.ucla.edu
+
+15) What Tierra Is
+
+     The C source code creates a virtual computer and its operating system,
+whose architecture has been designed in such a way that the executable
+machine codes are evolvable.  This means that the machine code can be mutated
+(by flipping bits at random) or recombined (by swapping segments of code
+between algorithms), and the resulting code remains functional enough of the
+time for natural (or presumably artificial) selection to be able to improve
+the code over time.
+
+     Along with the C source code which generates the virtual computer, we
+provide several programs written in the assembler code of the virtual
+computer.  Some of these were written by a human and do nothing more than make
+copies of themselves in the RAM of the virtual computer.  The others evolved
+from the first, and are included to illustrate the power of natural selection.
+
+     The operating system of the virtual computer provides memory management
+and timesharing services.  It also provides control for a variety of factors
+that affect the course of evolution: three kinds of mutation rates,
+disturbances, the allocation of CPU time to each creature, the size of the
+soup, etc.  In addition, the operating system provides a very elaborate
+observational system that keeps a record of births and deaths, sequences
+the code of every creature, and maintains a genebank of successful genomes.
+The operating system also provides facilities for automating the ecological
+analysis, that is, for recording the kinds of interactions taking place
+between creatures.
+
+     This system results in the production of synthetic organisms based on
+a computer metaphor of organic life in which CPU time is the ``energy''
+resource and memory is the ``material'' resource.  Memory is organized into
+informational patterns that exploit CPU time for self-replication.  Mutation
+generates new forms, and evolution proceeds by natural selection as different
+genotypes compete for CPU time and memory space.
+
+     Diverse ecological communities have emerged.  These digital communities
+have been used to experimentally examine ecological and evolutionary
+processes: e.g., competitive exclusion and coexistence, host/parasite density
+dependent population regulation, the effect of parasites in enhancing
+community diversity, evolutionary arms race, punctuated equilibrium, and the
+role of chance and historical factors in evolution.  This evolution in a
+bottle may prove to be a valuable tool for the study of evolution and ecology.
+
+                              Tom Ray
+                       University of Delaware
+                  School of Life & Health Sciences
+                      Newark, Delaware  19716
+                         302-831-2281 (FAX)
+                            302-831-2753
+                            ray@udel.edu

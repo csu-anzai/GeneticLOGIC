@@ -1,0 +1,622 @@
+
+====== BEAGLE DOCUMENTATION =================================================
+
+How to use Beagle:
+
+     Beagle runs only on DOS based computers with VGA or CGA graphics cards.
+Beagle will search for the cga.bgi or egavga.bgi files that come with the
+Borland compilers.  If you don't have these, you need to get them, they
+have been placed in the directory with the executable and this file.
+Beagle reads the files that are written to disk by the Tierra simulator,
+and displays them graphically.  Beagle reads the break.1 ... break.X files
+that are written to the /td directory, and it also reads the 00XX.gen files
+that are written to the /gb directory.
+
+====== BEAGLE ===============================================================
+
+     Start Beagle by typing beagle to the DOS prompt:
+
+C> beagle
+
+     From the top level menu, use cursor keys to select an option, then
+use the Enter key to activate that option.
+
+====== PREPARE - RUN INFO ===================================================
+
+     You must process the break.X files with the "Prepare - Run Info"
+option from the Beagle menu, or the stand-alone run_info utility, which
+produces output files called run_info and run_info.g which are used by Beagle:
+
+   select the Prepare option
+   then select the Run Info option
+
+     Selecting the "Prepare - Run Info" option will produce a window that
+looks like this:
+
++tierun------------------------------------+
+| directory  = c:\tierra\td                |
+| input file = break.1                     |
+| update frequency   = 100                 |
++------------------------------------------+
+
+     Within this window, use the cursor key to move to an option, then type
+in your choice.  When you have all the options as you want them, use Ctrl-Enter
+to activate the "Prepare - Run Info" process.  Use the Escape key to exit from
+the window.
+
+     An explanation of these "Prepare - Run Info" options follows:
+
+ directory  = c:\tierra\td
+
+     This is the path to the file containing the birth and death records
+output by the Tierra program (the break.X files).
+
+ input file = break.1
+
+     This is the name of the file containing the birth and death records
+output by the Tierra program.  In long runs, a series of these files may be
+produced, with the names break.1, break.2, break.3, ..., break.X.  The
+Prepare - Run Info program will read each of them in turn, if you specify
+the name of the first one.
+
+ update frequency   = 100
+
+     The "Prepare - Run Info" will preview the entire record of births and
+deaths in order to rank all the size and genotype classes by their relative
+abundances.  If the "update frequency" option is non-zero, there will be two
+rankings.  One ranking will be for the entire run.  Another ranking will occur
+repeatedly throughout the run, at the frequency indicated by this option
+(measured in millions of instructions, the default is to rank the classes
+every 100 million instruction).  I suggest you leave the update frequency
+at 100.
+
+     Start the "Prepare - Run Info" option running by hitting Ctrl-Enter.
+When the program finishes, go back to the main menu by hitting the Escape key.
+When the "Prepare - Run Info" option is finished, you can go ahead and use
+the Bar and Trace displays.  To use the Bar and Trace displays in the future,
+you do not have to repeat the Prepare process (you Prepare once for each
+output file).
+
+     The "Prepare - Run Info" option uses a lot of memory.  On long runs,
+it may run out of memory.  If this happens, you should use the stand-alone
+run_info tool.  It takes the same input parameters, but by not being bundled
+with the rest of the Beagle tools, it has a lot more memory to spare.  Just
+type run_info to the DOS prompt.
+
+====== BARS ================================================================
+
+     The Bars option will display a running frequency distribution of up
+to 55 size or genotype classes simultaneously, in the form of a moving bar
+graph.
+
+     Selecting the Bars option generates a window that looks like this:
+
++bars----------------------------+
+| directory  = c:\tierra\td      |
+| input file = break.1           |
+| x-axis (pop,inst)  = inst      |
+| separate genotypes = Y         |
+| update display     = Y         |
+| view run_info      = N         |
+| num bars (24,55)   = 24        |  * this line appears only with VGA display
++--------------------------------+
+
+     Within this window, use the cursor key to move to an option, then type
+in your choice.  When you have all the options as you want them, use Ctrl-Enter
+to activate the Bars display.  Use the Escape key to exit from the Bars option.
+
+     While the display is running, hitting the "p" key will cause the display
+to pause.  Hitting any key while the display is paused will cause the display
+to resume.  Hitting the Escape key while the display is running will cause the
+display to stop, hitting the Escape key a second time will terminate the
+display and return to the option window.  If the "g" key is hit while the
+display is running, or when it has terminated but is still displayed, the
+image on the screen will be saved to a .gif file.  When the display is
+complete, the machine will beep; hitting the Escape key will return to the
+option window.
+
+     An explanation of the Bars options follows:
+
+ directory  = c:\tierra\td
+
+     This is the path to the file containing the birth and death records
+output by the Tierra program (the break.X files).
+
+ input file = break.1
+
+     This is the name of the file containing the birth and death records
+output by the Tierra program.  In long runs, a series of these files may be
+produced, with the names break.1, break.2, break.3, ..., break.X.  The
+Bars program will read each of them in turn, if you specify the name of the
+first one.
+
+ x-axis (pop,inst)  = inst
+
+     This item gives you two options for how the horizontal scale is defined.
+"pop" means that the horizontal scale specifies the population of each class
+of creature.  "inst" means that the horizontal scale specifies how much memory
+(measured in instructions) is occupied by each class of creature.
+
+ separate genotypes = Y
+
+     This options allows you to decide if the bars will represent unique
+genotypes (Y) or only distinct size classes (N).
+
+ update display     = Y
+
+     The "Prepare - Run Info" option ranked all the size and genotype classes
+by their relative abundances, through the whole run, and for every period
+indicated by the update frequency.  The Bar option will display up to 55 bars
+(see the "num bars" option below).  The bars displayed will be only the most
+abundant size or genotype classes.  If the "update display" option is selected
+(Y), the list of bars will be updated at the frequency selected during the
+"Prepare - Run Info" process.  If the "update display" option is not
+selected (N), the list will not be updated throughout the run.
+
+ view run_info      = N
+
+     If the option is selected (Y), a window will appear that displays a
+summary of the information contained in the relevant run_info file.  The
+contents and format of the display will depend on the other options chosen
+in this window (try it and see).
+     
+ num bars (24,55)   = 24
+
+     This option will only appear if you have a VGA display.  On a CGA display,
+it is only possible to display up to 24 bars.  However, on a VGA, it is
+possible to display up to 55 bars.  You may specify any number of bars you
+choose, up to the limit of your display.  On a VGA, if you choose up to 24
+bars, they will be wide and have large labels.  If you choose from 25 to 55
+bars, they will be narrow and have small labels.
+
+====== TRACE ===============================================================
+
+     This option will produce a phase diagram, illustrating the relative
+abundances of two size or genotype classes over time, as an x,y plot.
+
+     Selecting the Trace option generates a window that looks like this:
+
++trace---------------------------+
+| directory  = c:\tierra\td      |
+| input file = break.1           |
+| x size     = 80aaa             |
+| y size     = 45aaa             |
+| axis (pop,inst)    = pop       |
+| shrink factor      = 1         |
+| separate genotypes = Y         |
++--------------------------------+
+
+     Within this window, use the cursor key to move to an option, then type
+in your choice.  When you have all the options as you want them, use Ctrl-Enter
+to activate the Trace display.  Use the Escape key to exit from the Trace
+option.
+
+     While the display is running, hitting the "p" key will cause the display
+to pause.  Hitting any key while the display is paused will cause the display
+to resume.  Hitting the Escape key while the display is running will cause the
+display to stop, hitting the Escape key a second time will terminate the
+display and return to the option window.  If the "g" key is hit while the
+display is running, or when it has terminated but is still displayed, the
+image on the screen will be saved to a .gif file.  When the display is
+complete, the machine will beep; hitting the Escape key will return to the
+option window.
+
+     An explanation of the Trace options follows:
+
+ directory  = c:\tierra\td
+
+     This is the path to the file containing the birth and death records
+output by the Tierra program (the break.X files).
+
+ input file = break.1
+
+     This is the name of the file containing the birth and death records
+output by the Tierra program.  In long runs, a series of these files may be
+produced, with the names break.1, break.2, break.3, ..., break.X.  The
+Trace program will read each of them in turn, if you specify the name of the
+first one.
+
+ x size     = 80aaa
+
+     The size or genotype class to be plotted on the x axis.
+
+ y size     = 45aaa
+
+     The size or genotype class to be plotted on the y axis.
+
+ axis (pop,inst)    = pop
+
+     This item gives you two options for how the horizontal axes are defined.
+"pop" means that the axes specify the population of each class of creature.
+"inst" means that the axes specify how much memory (measured in instructions)
+is occupied by each class of creature.
+
+ shrink factor      = 1
+
+     The axes will normally fill the whole screen, but if you use a shrink
+factor of less than 1, the y axis will shrink to fill only part of the screen.
+This option was introduced to get the display to fit a device that was
+cropping the vertical dimension (when making a video tape).
+
+ separate genotypes = Y
+
+     This options allows you to decide if the axes will represent unique
+genotypes (Y) or only distinct size classes (N).
+
+====== DIVERSITY ===========================================================
+
+     This option provides a graphical display of the output from the
+DIVERSE.EXE program (see the diverse.doc file).  The DIVERSE.EXE program
+generates files containing indices of diversity and turnover throughout a
+run.  The Diversity option displays these indices.  You must run the
+DIVERSE.EXE program before you can use the Diversity option.
+
+     Selecting the Diversity option generates a window that looks like this:
+
++diversity---------------------------+
+| directory  = c:\tierra\td          |
+| x var      = Time                  |
+| y var      = GenoDiv               |
+| data file  = divdat.1              |
+| range file = divrange              |
+| shrink factor = 1                  |
++------------------------------------+
+
+     Within this window, use the cursor key to move to an option, then type
+in your choice.  When you have all the options as you want them, use Ctrl-Enter
+to activate the Diversity display.  Use the Escape key to exit from the
+Diversity option.
+
+     While the display is running, hitting the "p" key will cause the display
+to pause.  Hitting any key while the display is paused will cause the display
+to resume.  Hitting the Escape key while the display is running will cause the
+display to stop, hitting the Escape key a second time will terminate the
+display and return to the option window.  If the "g" key is hit while the
+display is running, or when it has terminated but is still displayed, the
+image on the screen will be saved to a .gif file.  When the display is
+complete, the machine will beep; hitting the Escape key will return to the
+option window.
+
+     An explanation of the Diversity options follows:
+
+ directory  = c:\tierra\td
+
+     This is the path to the file containing the diversity indices, output
+by the diverse.exe program (the divdat.X and divrange files).
+
+ x var      = Time
+ y var      = GenoDiv
+
+     These options allow you to choose which two, of the eight indices
+output by the Diverse program, you wish to display in your graphical x,y
+display.  When you move to these lines in the window, a menu of options will
+pop up:
+
+               +---------+------------------------------+
+               | Time    | elapsed time in instructions |
+               | NumCell | number of cells              |
+               | NumSize | number of sizes              |
+               | SizeDiv | size diversity               |
+               | AgeSize | average age of sizes         |
+               | NumGeno | number of genotypes          |
+               | GenoDiv | genotype diversity           |
+               | AgeGeno | average age of genotypes     |
+               +---------+------------------------------+
+
+     To select a parameter, cursor to that line and hit Enter.  Below, a
+more technical explanation of some of these parameters is provided:
+
+            NumCell | number of cells: total number of adult cells living
+                      in the soup.
+            NumSize | number of sizes: total number of distinct size classes
+                      of adult cells living in the soup.
+            SizeDiv | size diversity: (- sum of p * log(p)), where p is the
+                      proportion of all adult cells in the soup that fall in
+                      a size class.
+            AgeSize | average age of sizes: whenever a new size class appears
+                      or reappears, its age starts counting at zero.  At each
+                      instant of time, the age of all size classes is summed
+                      and divided by the number of size classes.
+            NumGeno | number of genotypes: total number of distinct genotype
+                      classes of adult cells living in the soup.
+            GenoDiv | genotype diversity: (- sum of p * log(p)), where p is the
+                      proportion of all adult cells in the soup that fall in
+                      a genotype class.
+            AgeGeno | average age of genotypes: whenever a new genotype class
+                      appears or reappears, its age starts counting at zero.
+                      At each instant of time, the age of all genotype classes
+                      is summed and divided by the number of size classes.
+
+ data file = divdat.1
+
+     This is the name of the file containing the diversity indices
+output by the Diverse program.  In long runs, a series of these files may be
+produced, with the names divdat.1, divdat.2, divdat.3, ..., divdat.X.  The
+Diversity option will read each of them in turn, if you specify the name of
+the first one.
+
+ range file = divrange
+
+     This is the name of the file containing the ranges of the diversity
+indices, output by the Diverse program.
+
+ shrink factor      = 1
+
+     The axes will normally fill the whole screen, but if you use a shrink
+factor of less than 1, the y axis will shrink to fill only part of the screen.
+This option was introduced to get the display to fit a device that was
+cropping the vertical dimension (when making a video tape).
+
+====== TEMPLATE ============================================================
+
+     This option provides a display of the structure of a genome, as
+indicated by the arrangement of instructions using templates.  Since all
+instructions that affect the control flow of the program (jump, call) use
+templates, this provides a sort of schematic of the program structure.
+The Template option will read and display genomes from the genebank.
+You will need to know what genome are stored there.  Use the arg t option
+to get a list of the genomes stored in any of the .gen files in the genebank:
+e.g.:  arg t 0080.gen
+will produce a list of the genotypes in the 80 size class in the 0080.gen
+file.
+
+     Selecting the Template option generates a window that looks like this:
+
++templates--------------------------+
+| genebank path = c:\tierra\gb      |
+| genefile name = 0080.gen          |
+| genotype      = aaa               |
+| min temp size = 3                 |
++-----------------------------------+
+
+     Within this window, use the cursor key to move to an option, then type
+in your choice.  When you have all the options as you want them, use Ctrl-Enter
+to activate the Template display.  Use the Escape key to exit from the
+Template option.
+
+     An explanation of the Template options follows:
+
+ genebank path = c:\tierra\gb
+
+     This is the path to the genebank, where the files containing the saved
+genomes of the creatures are written by the Tierra program (XXXX.gen,
+XXXX.tmp, XXXX.mem files).
+
+ genefile name = 0080.gen
+
+     This is the name of the file in the genebank containing the genomes of
+the size that you want to examine.
+
+ genotype      = aaa
+
+     This is the actual genotype name of the creature that you want to examine,
+of the size indicated by the name of the genefile.
+
+ min temp size = 3
+
+     You might want to ignore templates below a certain size.  There is a
+MinTemplSize parameter in the soup_in file used by the Tierra simulator.
+Templates below this size are not recognized as templates.  You should set
+min temp size to the same value as was set in the soup_in file of the run
+that produced the genome you are examining.
+
+     When you run the Template program by hitting Ctrl-Enter, you will get
+a window that looks like this (for 0080aaa):
+
+        +-------------------------+
+        | locus:   9, adrb  0000  |
+        | locus:  16, adrf  0001  |
+        | locus:  28, call  0011  |
+        | locus:  34,  jmp  0010  |
+        | locus:  54,  jmp  0100  |
+        | locus:  61,  jmp  0101  |
+        +-------------------------+
+
+     The second column (numbers) contains the position in the genome of the
+instructions using templates.  The third column contains the names of the
+instructions at those positions that use the templates.  The fourth column
+contains the actual templates used by the instructions at those positions.
+
+====== PROBE ===============================================================
+
+     This option allows you to compare two genomes by probing the sequence of
+one with the sequence of the other.  Probe slides the probe sequence along
+the genome sequence and determines the positions of the major alignments.
+These alignments are then reported to you, and you may choose how many you
+want to recognize.  Then the two genomes are displayed together, in their
+alignments, with the differences highlighted.  The Probe program makes a
+heroic effort to deal with complications like multiple allignments, insertions
+and deletions, and overlaping alignments.  However, it fails miserably for
+some of the more complicated cases (the ability to detect insertions or
+deletions may not be working).  This program is not mature, but it
+provides some help in comparing sequences.
+
+     
+     The Probe option will read and display genomes from the genebank.
+You will need to know what genome are stored there.  Use the arg t option
+to get a list of the genomes stored in any of the .gen files in the genebank:
+e.g.:  arg t 0080.gen
+e.g.:  arg t 0045.gen
+will produce a list of the genotypes in the 80 size class in the 0080.gen
+file, and in the 45 size class in the 0045.gen file.
+
+     Selecting the Probe option generates a window that looks like this:
+
++probe----------------------------+
+| genome path = c:\tierra\gb      |
+| genome file = 0080.gen          |
+| genome      = aaa               |
+| probe path = c:\tierra\gb       |
+| probe file = 0045.gen           |
+| probe      = aaa                |
++---------------------------------+
+
+     Within this window, use the cursor key to move to an option, then type
+in your choice.  When you have all the options as you want them, use Ctrl-Enter
+to activate the Probe display.  Use the Escape key to exit from the
+Probe option.
+
+     An explanation of the Probe options follows:
+
+ genome path = c:\tierra\gb
+
+     This is the path to the genebank, where the files containing the saved
+genomes of the creatures are written by the Tierra program (XXXX.gen,
+XXXX.tmp, XXXX.mem files).
+
+ genome file = 0080.gen
+
+     This is the name of the file in the genebank containing the genomes of
+the size that you want to examine.
+
+ genome      = aaa
+
+     This is the actual genotype name of the creature that you want to compare
+to the probe, of the size indicated by the name of the genome file.
+
+ probe path = c:\tierra\gb
+
+     This is the path to the genebank, where the files containing the saved
+genomes of the creatures are written by the Tierra program (XXXX.gen,
+XXXX.tmp, XXXX.mem files).
+
+ probe file = 0080.gen
+
+     This is the name of the file in the genebank containing the genomes of
+the size that you want to examine.
+
+ probe      = aaa
+
+     This is the actual genotype name of the probe that you want to slide
+along the genome indicated by the first three options, (size indicated by the
+name of the probe file).
+
+     When you run the Probe program by hitting Ctrl-Enter, you will get
+a window that looks like this (for 0080aaa and 0045aaa):
+
+        +----------------------------------------------+
+        | position:  0   fit: 44   diff: 0   idpos: 0  |
+        | position: -1   fit: 16   diff: 0   idpos: 0  |
+        | position:  1   fit: 14   diff: 0   idpos: 0  |
+        | position: 25   fit: 13   diff: 0   idpos: 0  |
+        | position: 23   fit: 12   diff: 0   idpos: 0  |
+        | position:  7   fit: 11   diff: 0   idpos: 0  |
+        +----------------------------------------------+
+
+     The first pair of columns (positon) contains the relative position of the
+alignments of the two genomes.  0 indicates that the alignment occurred with
+the first instruction of the two genomes together, -1 indicates that the first
+instruction of the genome is aligned with the second instructions of the probe,
+1 indicates that the first instruction of the probe is aligned with the
+second instruction of the genome.
+
+     The second pair of columns (fit) contains the goodness of fit, as the
+number of instructions that matched between the genome and probe in that
+alignment.  In this example, the probe is 45 instructions long, so a match
+of 44 indicates that only one instruction is diferent between the probe and
+genome.  
+
+     The third pair of columns (diff) indicates a difference in length
+resulting from an insertion (positive) or deletion (negative).
+
+     The fourth pair of columns (idpos) indicates the position of the
+insertion of deletion.
+
+     When this window appears, you examine the alignments to decide how many
+you want to use.  In this case, there is only one really good alignment, so
+we will use one.  Now hit Esc, and another window will appear that looks
+like this:
+                                           +number of matches to use-----+
+                                           | number of matches = 1       |
+                                           +-----------------------------+
+
+     You either accept the suggested value (1) or change it, the hit
+Ctrl-Enter, and the alignments will be displayed in two windows that look
+like this:
+
++instruction list--------------------------------------------------------------+
+|   0:nop_0  1:nop_1  2:or1    3:shl    4:zero   5:if_cz  6:sub_ab 7:sub_ac    |
+|   8:inc_a  9:inc_b  a:dec_c  b:inc_c  c:pushax d:pushbx e:pushcx f:pushdx    |
+|   g:pop_ax h:pop_bx i:pop_cx j:pop_dx k:jmp    l:jmpb   m:call   n:ret       |
+|   o:mov_cd p:mov_ab q:moviab r:adr    s:adrb   t:adrf   u:mal    v:divide    |
++------------------------------------------------------------------------------+
++genome-to-probe match:  genome (top) - 0080aaa    probe - 0045aaa ------------+
+| 11114233os00007pt0001861101um0011vk001051100cde1010qa5k010089k010151011ihgn1 |
+| 11114233os00007pt0001861101um0011vk001051110c                                |
+|                                                                              |
+| 1105                                                                         |
+|                                                                              |
++------------------------------------------------------------------------------+
+
+     The highlighting is not indicated above, but it indicates where the two
+genomes do not match.
+
+====== PREPARE - FRAGMENT ===================================================
+
+     If you want to display a portion of a long run, you may edit the long
+run using the "Prepare - Fragment" option from the Beagle menu, or the
+stand-alone fragment utility.  This will produce an output file which may
+be read by itself, or you may produce several fragments, and then concatenate
+them together in order to produce an edited version of a longer run.  The
+edited fragment(s) resulting from this process MUST be used as the input file
+operated on by the "Prepare - Run Info" option to produce the run_info files
+read by the Bars and Trace displays.  Beware that if the fragments begin or
+end at the same time that the "update" attempts to create a new list, very bad
+interactions can result.  Just be sure you don't try to fragment and update at
+the same time (if you use the default update frequency of 100, don't break
+your fragments at 100 million marks).
+
+   select the Prepare option
+   then select the Fragment option
+
+     Selecting the "Prepare - Fragment" option will produce a window that
+looks like this:
+
++fragment----------------------------------+
+| directory    = c:\tierra\td              |
+| input file   = break.1                   |
+| output file  = fragment.run              |
+| start time   = 0                         |
+| stop time    = 1                         |
++------------------------------------------+
+
+     Within this window, use the cursor key to move to an option, then type
+in your choice.  When you have all the options as you want them, use Ctrl-Enter
+to activate the "Prepare - Fragment" process.  Use the Escape key to exit from
+the window.
+
+     An explanation of these "Prepare - Fragment" options follows:
+
+ directory  = c:\tierra\td
+
+     This is the path to the file containing the birth and death records
+output by the Tierra program (the break.X files).
+
+ input file = break.1
+
+     This is the name of the file containing the birth and death records
+output by the Tierra program.  In long runs, a series of these files may be
+produced, with the names break.1, break.2, break.3, ..., break.X.  The
+Prepare - Fragment program will read each of them in turn, if you specify the
+name of the first one.
+
+ output file  = fragment.run
+
+     This is the name of the fragmentary output file that will be produced.
+
+ start time   = 0
+
+     This is the start time of the fragment that you wish to produce, in
+millions of instructions.
+
+ stop time    = 1
+
+     This is the stop time of the fragment that you wish to produce, in
+millions of instructions.  Be sure the start and stop times do not coincide
+with update times.  The stop time must be greater than the start time.
+
+     The "Prepare - Fragment" option uses a lot of memory.  On long runs,
+it may run out of memory.  If this happens, you should use the stand-alone
+fragment tool.  It takes the same input parameters, but by not being bundled
+with the rest of the Beagle tools, it has a lot more memory to spare.  Just
+type fragment the DOS prompt.

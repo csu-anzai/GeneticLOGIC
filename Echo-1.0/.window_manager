@@ -1,0 +1,1 @@
+"ECHO" !"xterm -title 'ECHO status' -fn 9x15 -sl 2000 -sb -geometry 85x24+355+53 -bg DodgerBlue1 -fg white -e /usr/local/echo/Echo &"
