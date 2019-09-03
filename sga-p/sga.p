@@ -44,7 +44,7 @@
 program sga;
 
 const
-  maxpop		= 100;
+  maxpop			= 100;
   maxstring		= 30;
 
 type
@@ -90,7 +90,7 @@ end;
 
 function rand: real;
 begin
-  rand := (random (32767) * 32767.0) / 23767.0;
+  rand := (random (32767) / 32767.0);
 end;
 
 function flip (probability: real): boolean;
@@ -174,6 +174,7 @@ begin
   write ('Crossover Probability: '); readln (pcross);
   write (' Mutation Probability: '); readln (pmutation);
 
+	
   nmutation := 0;
   ncross := 0;
   writeln;
@@ -195,23 +196,24 @@ procedure initpop;
 var
   j, j1: integer;
 begin
-  for j := 1 to popsize do
+  for j := 1 to popsize do				
     with oldpop[j] do
       begin
-        for j1:= 1 to lchrom do
-	  chrom[j1]:= flip (0.5);
+        for j1:= 1 to lchrom do chrom[j1]:= flip (0.5);
         x := decode (chrom, lchrom);
         fitness := objfunc (x);
         parent1 := 0;
         parent2 := 0;
-        xsite := 0;
-  end;
+        xsite := 0;		
+			end;
+	writeln('done');
 end;
 
 procedure initialize;
 begin
   initdata;
   initpop;
+	writeln('initpop');
   statistics (oldpop);
   initreport;
 end;
